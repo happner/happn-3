@@ -2,6 +2,9 @@
 
 <img src="https://raw.githubusercontent.com/happner/happner-website/master/images/HAPPN%20Logo%20B.png" width="300"></img>
 
+VERSION 3
+---------
+
 Introduction
 -------------------------
 
@@ -15,18 +18,31 @@ Technologies used:
 Happn uses [Primus](https://github.com/primus/primus) to power websockets for its pub/sub framework and mongo or nedb depending on the mode it is running in as its data store, the API uses [connect](https://github.com/senchalabs/connect).
 [nedb](https://github.com/louischatriot/nedb) as the embedded database, although we have forked it happn's purposes [here](https://github.com/happner/happn-nedb)
 
+VERSION 2 and what has changed
+------------------------------
+
+Happn v2 can be found [here](https://github.com/happner/happn)
+
+changes are:
+
+(1) more modular layout, services are broken up into logical modules
+(2) introduction of a queue service
+(3) introduction of a protocol service, this allows for the creation of protocol plugins that takemessages of the inbound and outbound queues and convert them into happn messages, essentially means we are able to use different protocols to talk to happn (ie. MQTT)
+(4) simplified intra process client instantiation
+(5) intra process client shares the same code as the websockets client, using a special intra-proc socket, instead of a primus spark
+
 Getting started
 ---------------------------
 
 ```bash
-npm install happn
+npm install happn-3
 ```
 
 You need NodeJS and NPM of course, you also need to know how node works (as my setup instructions are pretty minimal)
 To run the tests, clone the repo, npm install then npm test: 
 
 ```bash
-git clone https://github.com/happner/happn.git
+git clone https://github.com/happner/happn-3.git
 npm install
 npm test
 ```
@@ -34,7 +50,7 @@ npm test
 But if you want to run your own service do the following:
 Create a directory you want to run your happn in, create a node application in it - with some kind of main.js and a package.json
 
-*In node_modules/happn/test in your folder, the e2e_test.js script demonstrates the server and client interactions shown in the following code snippets*
+*In node_modules/happn/test in your folder, the 1_eventemitter_embedded_sanity.js and 2_websockets_embedded_sanity.js scripts demonstrate the server and client interactions shown in the following code snippets*
 
 starting service:
 -------------------------------------------------------

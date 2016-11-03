@@ -1,7 +1,7 @@
 {
-  "name": "happn",
+  "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb, use in production at your own risk",
-  "version": "2.15.4",
+  "version": "3.0.0",
   "main": "./lib/index",
   "protocol": "1.1.0",
   "scripts": {
@@ -9,7 +9,7 @@
     "test-cover": "istanbul cover _mocha -- silence.js test",
     "test-memory": "mocha --expose-gc test/test-memory"
   },
-  "author": "",
+  "author": "Tenacious and NSOFT",
   "license": "MIT",
   "keywords": [
     "mongo",
@@ -20,7 +20,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/happner/happn.git"
+    "url": "https://github.com/happner/happn-3.git"
   },
   "dependencies": {
     "JSONStream": "0.10.0",
