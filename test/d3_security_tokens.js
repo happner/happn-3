@@ -470,7 +470,7 @@ describe('d3-security-tokens', function () {
       loginType:'digest'
     };
 
-    clientInstance.performRequest = function(path, action, data, options, cb){
+    clientInstance.__performSystemRequest = function(action, data, options, cb){
 
       var nonce_requests = {};
 
