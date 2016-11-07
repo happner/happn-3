@@ -8,4 +8,9 @@
 ----------------
 
  - passing publicKey back with login response on encrypted payloads
+ 
+ 0.0.3 2016-11-07
+ ----------------
+ 
+  - security audits and modifiedBy
 
