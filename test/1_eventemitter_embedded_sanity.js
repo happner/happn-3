@@ -91,9 +91,7 @@ describe('1_eventemitter_embedded_sanity', function () {
           publisherclient.get('1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/' + test_path_end, null, function (e, results) {
 
             expect(results.property1 == 'property1').to.be(true);
-
-            if (mode != 'embedded')
-              expect(results.payload[0].created == results.payload[0].modified).to.be(true);
+            expect(results.created == results.modified).to.be(true);
 
             callback(e);
           });

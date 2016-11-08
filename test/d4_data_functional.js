@@ -214,12 +214,8 @@ describe('d3_data_functional', function() {
           callback();
 
         });
-
       });
-
     });
-
-
   });
 
   it('gets data with complex search', function(callback) {
@@ -241,13 +237,12 @@ describe('d3_data_functional', function() {
         {"towns": {$in: ['North.Cape Town', 'South.East London']}},
         {"categories": {$in: ["Action", "History"]}}],
       "keywords": {$in: ["bass", "Penny Siopis"]}
-    }
+    };
 
     var options1 = {
-      fields: {"data": 1},
       sort: {"field1": 1},
       limit: 1
-    }
+    };
 
     var criteria2 = null;
 
@@ -255,7 +250,7 @@ describe('d3_data_functional', function() {
       fields: null,
       sort: {"field1": 1},
       limit: 2
-    }
+    };
 
     serviceInstance.upsert('/1_eventemitter_embedded_sanity/' + testId + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
 
