@@ -13,4 +13,9 @@
  ----------------
  
   - security audits and modifiedBy
+  
+  0.0.4 2016-11-15
+  ---------------
+  
+  - modified login method to be simpler, check for secure - then set auth type to digest if no password
 
