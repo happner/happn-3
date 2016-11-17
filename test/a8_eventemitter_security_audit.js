@@ -19,6 +19,8 @@ describe('a8_eventemitter_security_audit', function () {
 
   before('it starts a secure service with auditing switched on', function (done) {
 
+    this.timeout(15000);
+
     getService({
       secure: true,
       services:{

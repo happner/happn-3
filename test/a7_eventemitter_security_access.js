@@ -35,7 +35,7 @@ describe('a7_eventemitter_security_access', function () {
 
     adminClient.disconnect(function(e){
       if (e) return callback(e);
-        serviceInstance.stop(callback);
+      serviceInstance.stop(callback);
     });
   });
 

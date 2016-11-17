@@ -101,6 +101,7 @@ describe('c5_client_events', function () {
       });
 
       clientInstance.set('/setting/data/before/reconnect', {test: "data"}, function (e, response) {
+
         if (e) return callback(e);
 
         for (var key in serviceInstance.connections) serviceInstance.connections[key].destroy();
