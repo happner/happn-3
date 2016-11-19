@@ -26,3 +26,10 @@
   - have layered security more, not so many conditional statements, now have distinct login, and processLogin methods
   - fixed issue where onEvent in client was not pushing the actual event data, as the data was being pushed into the scope argument for a "call"
   - fixed bug in client, with incorrcetly spelled enum STATE.diconnected
+  
+0.2.0 2016-11-18
+----------------
+
+  - update to default policies, both now have no ttl
+  - fix the session service disconnect to allow client reconnections (reconnect true if options.reconnect == null)
+  
