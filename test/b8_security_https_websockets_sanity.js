@@ -14,7 +14,7 @@ describe('b8_security_https_websockets_sanity', function () {
   var happnInstance = null;
   var test_id;
 
-  this.timeout(60000);
+  this.timeout(120000);
 
   /*
    This test demonstrates starting up the happn service -
@@ -52,8 +52,6 @@ describe('b8_security_https_websockets_sanity', function () {
   var listenerclient;
 
   after(function (done) {
-
-    this.timeout(10000);
 
     publisherclient.disconnect(function(){
       listenerclient.disconnect(function(){
@@ -509,16 +507,13 @@ describe('b8_security_https_websockets_sanity', function () {
 
 
       });
-
     });
-
   });
 
 
-//  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  // We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
-
 
     try {
 
@@ -599,6 +594,7 @@ describe('b8_security_https_websockets_sanity', function () {
 
 
     try {
+
       var test_path_end = require('shortid').generate();
 
       publisherclient.set('2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/' + test_path_end, {
@@ -633,7 +629,6 @@ describe('b8_security_https_websockets_sanity', function () {
 //We are testing pushing a specific value to a path which will actually become an array in the database
 
   it('the publisher should push a sibling and get all siblings', function (callback) {
-
 
     try {
 
@@ -671,7 +666,6 @@ describe('b8_security_https_websockets_sanity', function () {
 //  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
-
 
     try {
 
