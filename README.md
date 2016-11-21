@@ -786,62 +786,62 @@ PAYLOAD ENCRYPTION
 
 *if the server is running in secure mode, it can also be configured to encrypt payloads between it and socket clients, this means that the client must include a keypair as part of its credentials on logging in, to see payload encryption in action plase go to the [following test](https://github.com/happner/happn/blob/master/test/c2_websockets_embedded_sanity_encryptedpayloads.js)*
 
-PUBSUB MIDDLEWARE
-------------------
+INBOUND AND OUTBOUND LAYERS (MIDDLEWARE)
+-----------------------------------------
 
-*incoming and outgoing packets delivery can be intercepted on the server side, this is how payload encryption works, to add a custom middleware you need to add it to the pubsub service's configuration, a middleware must adhere to a specific interface, as demonstrated below:*
+*incoming and outgoing packets delivery can be intercepted on the server side, as demonstrated below:*
 
 ```javascript
 
 
-var testMiddleware = {
+var layerLog1 = [];
+var layerLog2 = [];
+var layerLog3 = [];
+var layerLog4 = [];
 
-  incomingCount:0,
-  outgoingCount:0,
-
-  incoming:function(packet, next){
-    //modify incoming packet here
-    packet.modified = true;
-    this.incomingCount++;
-    next();
+var inboundLayers = [
+  function(message, cb){
+    layerLog3.push(message);
+    return cb(null, message);
   },
-
-  outgoing:function(packet, next){
-    //modify outgoing packet here
-    packet.modified = true;
-    this.outgoingCount++;
-    next();
+  function(message, cb){
+    layerLog4.push(message);
+    return cb(null, message);
   }
-};
+];
 
-var happn_service = happn.service;
-var test_client = happn.client;
+var outboundLayers = [
+  function(message, cb){
+    layerLog1.push(message);
+    return cb(null, message);
+  },
+  function(message, cb){
+    layerLog2.push(message);
+    return cb(null, message);
+  }
+];
 
-var testConfig = {
+var serviceConfig = {
   secure: true,
-  port:44445,
   services:{
-    pubsub:{
+    protocol:{
       config:{
-        transformMiddleware:[{instance:testMiddleware}]//middelware added in the order it is required to run in
-                                                      // either as an instance or as a path {path:'my-middleware-module'}
-                                                      // path style middlewares are instantiated using require and new
+        outboundLayers:outboundLayers,
+        inboundLayers:inboundLayers
       }
     }
   }
 };
 
-service.create(testConfig,
+service.create(serviceConfig,
 
   function (e, happnInst) {
-    if (e)
-      return callback(e);
 
-    serviceInst = happnInst;
+    if (e) return callback(e);
+    var serviceInstance = happnInst;
 
     happn_client.create({
       config: {
-        port:44445,
         username: '_ADMIN',
         password: 'happn'
       },
@@ -852,14 +852,25 @@ service.create(testConfig,
 
       if (e) return callback(e);
 
-      clientInst = instance;
+      var clientInstance = instance;
 
-      //the login of the client generated traffic
-      expect(testMiddleware.incomingCount > 0).to.be(true);
-      expect(testMiddleware.outgoingCount > 0).to.be(true);
+      clientInstance.on('/did/both',  function(data){
 
-      clientInst.disconnect(function(){
-        serviceInst.stop(callback);
+        expect(layerLog1.length > 0).to.be(true);
+        expect(layerLog2.length > 0).to.be(true);
+        expect(layerLog3.length > 0).to.be(true);
+        expect(layerLog4.length > 0).to.be(true);
+
+        clientInstance.disconnect(function(){
+
+          serviceInstance.stop({reconnect:false}, callback);
+        });
+      }, function(e){
+        if (e) return callback(e);
+        clientInstance.set('/did/both', {'test':'data'}, function(e){
+
+          if (e) return callback(e);
+        });
       });
     });
   }

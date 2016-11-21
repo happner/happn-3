@@ -33,3 +33,7 @@
  - update to default policies, both now have no ttl
  - fix the session service disconnect to allow client reconnections (reconnect true if options.reconnect == null)
   
+0.3.0 2016-11-21
+----------------
+
+ - inbound and outbound layer plugins
