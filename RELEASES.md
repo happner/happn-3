@@ -37,3 +37,8 @@
 ----------------
 
  - inbound and outbound layer plugins
+ 
+0.4.0 2016-11-21
+----------------
+
+ - services other than system services can now be loaded
