@@ -1,5 +1,6 @@
 var path = require('path');
 var filename = path.basename(__filename);
+var expect = require('expect.js');
 
 describe(filename, function () {
 
