@@ -47,3 +47,8 @@
 ----------------
 
  - proper error returned when token from deleted user is used in an attempt to access a resource
+
+0.4.3 2016-11-22
+----------------
+
+ - upgrade from node-uuid to uuid
