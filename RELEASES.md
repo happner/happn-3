@@ -42,3 +42,8 @@
 ----------------
 
  - services other than system services can now be loaded
+ 
+0.4.2 2016-11-22
+----------------
+
+ - proper error returned when token from deleted user is used in an attempt to access a resource
