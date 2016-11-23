@@ -52,3 +52,9 @@
 ----------------
 
  - upgrade from node-uuid to uuid
+ 
+0.5.0 2016-11-22
+----------------
+
+ - fix to pubsub, allow for noCluster option
+ - added mergeObjects function to utils
