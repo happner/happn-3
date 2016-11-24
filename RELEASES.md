@@ -58,3 +58,12 @@
 
  - fix to pubsub, allow for noCluster option
  - added mergeObjects function to utils
+ 
+0.6.0 2016-11-23
+----------------
+ 
+  - client connect timeout
+  - made getConnection more logical
+  - token login reuse
+ 
+ 

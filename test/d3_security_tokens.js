@@ -1858,8 +1858,110 @@ describe('d3-security-tokens', function () {
       done();
 
     })
-
   });
+
+  it('should create a user and login, getting a token - then should be able to use the token to log in again', function (done) {
+
+    this.timeout(20000);
+
+    var config =  {
+      secure:true,
+      sessionTokenSecret:"absolutely necessary if you want tokens to carry on working after a restart",
+      profiles:[
+        {
+          name:"web-session",
+          session:{
+            user:{username:{$eq:'WEB_SESSION'}},
+            type:{$eq:0}
+          },
+          policy:{
+            ttl: 4000,
+            inactivity_threshold:2000//this is costly, as we need to store state on the server side
+          }
+        }
+      ]
+    };
+
+    getService(config, function (e, instance) {
+
+      if (e) return done(e);
+
+      var testGroup = {
+        name: 'CONNECTED_DEVICES',
+        permissions:{
+          '/CONNECTED_DEVICES/*':{actions: ['*']},
+          '/test/data':{actions: ['*']}
+        }
+      };
+
+      var testUser = {
+        username: 'WEB_SESSION',
+        password: 'test'
+      };
+
+      var addedTestGroup;
+      var addedTestuser;
+
+      var serviceInstance = instance;
+
+      serviceInstance.services.security.users.upsertGroup(testGroup, {overwrite: false}, function (e, result) {
+
+        if (e) return done(e);
+        addedTestGroup = result;
+
+        serviceInstance.services.security.users.upsertUser(testUser, {overwrite: false}, function (e, result) {
+
+          if (e) return done(e);
+          addedTestuser = result;
+
+          serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function (e) {
+
+            if (e) return done(e);
+
+            var creds = {
+
+              username: testUser.username,
+              password: testUser.password
+
+            };
+
+            happn.client.create(creds)
+
+              .then(function (clientInstance) {
+
+                var tokenCreds = {
+                  username: testUser.username,
+                  token: clientInstance.session.token
+                };
+
+                happn.client.create(tokenCreds)
+
+                  .then(function (tokenClientInstance) {
+
+                    tokenClientInstance.set('/test/data', {test:"data"}, function(e){
+
+                      if (e) return done(e);
+                      serviceInstance.stop(done);
+                    });
+
+                  })
+
+                  .catch(function (e) {
+                    done(e);
+                  });
+
+              })
+
+              .catch(function (e) {
+                done(e);
+              });
+
+          });
+        });
+      });
+    });
+  });
+
 
   //require('benchmarket').stop();
 

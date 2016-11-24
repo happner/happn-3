@@ -29,7 +29,7 @@ describe('c5_client_events', function () {
 
   after('it stops the test service', function (done) {
 
-    serviceInstance.stop(done);
+    serviceInstance.stop({reconnect:false}, done);
   });
 
   before('start the test service', function (done) {
@@ -116,11 +116,12 @@ describe('c5_client_events', function () {
 
             if (e) return callback(e);
             if (eventsFired['reconnect-scheduled'] && eventsFired['reconnect-successful']) return callback();
+
             callback(new Error('reconnection events did not fire'));
 
           });
 
-        }, 2000);
+        }, 3000);
 
       });
     });
