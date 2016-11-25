@@ -80,14 +80,10 @@ describe('d2_primus_client_options.js', function () {
     try {
 
       happn_client.create({
-          config:{
-            pubsub:{
-              options:{
-                reconnect:{
-                  retries:60,
-                  max:2100000
-                }
-              }
+          socket:{
+            reconnect:{
+              retries:60,
+              max:2100000
             }
           }
         },function (e, instance) {

@@ -62,8 +62,13 @@
 0.6.0 2016-11-23
 ----------------
  
-  - client connect timeout
-  - made getConnection more logical
-  - token login reuse
+ - client connect timeout
+ - made getConnection more logical
+ - token login reuse
+  
+0.6.1 2016-11-25
+----------------
+
+ - fix to test c1
  
  

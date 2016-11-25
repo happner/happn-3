@@ -92,7 +92,7 @@ describe(require('path').basename(__filename), function () {
 
     try {
 
-      happn_client.create({config:{host:'99.99.99.99', connectTimeout:3000}}, function (e, instance) {
+      happn_client.create({config:{host:'99.99.99.99', connectTimeout:3000}}, function (e) {
 
         expect(e.toString()).to.be('Error: connection timed out');
         callback();

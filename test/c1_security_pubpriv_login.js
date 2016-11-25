@@ -227,6 +227,10 @@ describe('c1_security_pubpriv_login', function () {
 
   it('logs in with 2 test clients, supplying a public key - receives a sessionSecret annd performs an on operation between the 2 clients', function (callback) {
 
+    this.timeout(20000);
+
+    var onHappened = false;
+
     happn.client.create({
         config: {
           username: '_ADMIN',
@@ -252,20 +256,21 @@ describe('c1_security_pubpriv_login', function () {
             admClient1 = clientInstance;
 
             admClient1.on('/an/encrypted/payload/target/event', function (data) {
-
-              callback();
-
+              onHappened = true;
             }, function (e, response) {
 
               expect(e).to.equal(null);
 
               admClient.set('/an/encrypted/payload/target/event', {"test": "on"}, function (e, response) {
-                if (e) return callback(e);
+
+                setTimeout(function(){
+
+                  if (onHappened) return callback();
+                  callback(new Error('on didn\'t happen'));
+
+                }, 4000);
               })
-
-
             });
-
           })
 
           .catch(function (e) {
