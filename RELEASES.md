@@ -70,5 +70,12 @@
 ----------------
 
  - fix to test c1
+ - have correct management of connection timeout
+ - upgrade to primus 6
+ 
+0.6.2 2016-11-25
+----------------
+
+ - downgrade to primus 5.2.2 (support node 0.10)
  
  
