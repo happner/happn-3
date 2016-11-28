@@ -85,6 +85,7 @@
  
 0.6.5 2016-11-27
 ----------------
+<<<<<<< HEAD
  
  - upgrade to primus 5.2.2 (didnt make a difference)
  
@@ -92,6 +93,6 @@
 ----------------
   
   - update to __getConnection
-  - issues possibly with scope
+
  
  

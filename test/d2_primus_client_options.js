@@ -56,11 +56,11 @@ describe('d2_primus_client_options.js', function () {
         if (e) return callback(e);
         primusClient = instance;
 
-        expect(primusClient.pubsub.options.reconnect.retries).to.be(Infinity);
-        expect(primusClient.pubsub.options.reconnect.max).to.be(180000);
+        expect(primusClient.socket.options.reconnect.retries).to.be(Infinity);
+        expect(primusClient.socket.options.reconnect.max).to.be(180000);
 
-        expect(primusClient.pubsub.recovery.retries).to.be(Infinity);
-        expect(primusClient.pubsub.recovery.max).to.be(180000);
+        expect(primusClient.socket.recovery.retries).to.be(Infinity);
+        expect(primusClient.socket.recovery.max).to.be(180000);
 
         primusClient.disconnect(callback);
 
@@ -91,11 +91,11 @@ describe('d2_primus_client_options.js', function () {
         if (e) return callback(e);
         primusClient = instance;
 
-        expect(primusClient.pubsub.options.reconnect.retries).to.be(60);
-        expect(primusClient.pubsub.options.reconnect.max).to.be(2100000);
+        expect(primusClient.socket.options.reconnect.retries).to.be(60);
+        expect(primusClient.socket.options.reconnect.max).to.be(2100000);
 
-        expect(primusClient.pubsub.recovery.retries).to.be(60);
-        expect(primusClient.pubsub.recovery.max).to.be(2100000);
+        expect(primusClient.socket.recovery.retries).to.be(60);
+        expect(primusClient.socket.recovery.max).to.be(2100000);
 
         primusClient.disconnect(callback);
 
@@ -124,11 +124,11 @@ describe('d2_primus_client_options.js', function () {
         if (e) return callback(e);
         primusClient = instance;
 
-        expect(primusClient.pubsub.options.reconnect.retries).to.be(50);
-        expect(primusClient.pubsub.options.reconnect.max).to.be(2000000);
+        expect(primusClient.socket.options.reconnect.retries).to.be(50);
+        expect(primusClient.socket.options.reconnect.max).to.be(2000000);
 
-        expect(primusClient.pubsub.recovery.retries).to.be(50);
-        expect(primusClient.pubsub.recovery.max).to.be(2000000);
+        expect(primusClient.socket.recovery.retries).to.be(50);
+        expect(primusClient.socket.recovery.max).to.be(2000000);
 
         primusClient.disconnect(callback);
 

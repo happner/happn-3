@@ -3,3 +3,4 @@
   - this means we have faster processing per request
   - we can leave out things like security and logging when these are not switched on
 - the protocol success is in the stack, only the fail is out
+- test idea
