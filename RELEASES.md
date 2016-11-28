@@ -83,7 +83,7 @@
 
  - downgrade to primus 4.0.5 (last known good version)
  
- 0.6.4 2016-11-27
+ 0.6.5 2016-11-27
  ----------------
  
   - upgrade to primus 5.2.2 (didnt make a difference)
