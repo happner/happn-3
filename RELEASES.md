@@ -92,5 +92,6 @@
 ----------------
   
   - update to __getConnection
+  - issues possibly with scope
  
  
