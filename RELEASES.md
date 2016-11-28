@@ -78,4 +78,9 @@
 
  - downgrade to primus 5.2.2 (support node 0.10)
  
+0.6.3 2016-11-27
+----------------
+
+ - downgrade to primus 4.0.5 (last known good version)
+ 
  
