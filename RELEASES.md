@@ -85,14 +85,18 @@
  
 0.6.5 2016-11-27
 ----------------
-<<<<<<< HEAD
  
  - upgrade to primus 5.2.2 (didnt make a difference)
  
 0.6.6 2016-11-27
 ----------------
   
-  - update to __getConnection
+ - update to __getConnection
+
+0.6.7 2016-11-28
+----------------
+
+ - safeSession and updateSession returns null if session booted
 
  
  
