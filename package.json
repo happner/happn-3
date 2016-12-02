@@ -5,10 +5,10 @@
   "main": "./lib/index",
   "protocol": "1.1.0",
   "scripts": {
-    "test": "mocha --expose-gc silence.js test",
-    "test-cover": "istanbul cover _mocha -- silence.js test",
-    "test-memory": "mocha --expose-gc test/test-memory",
-    "test-serial": "node test/lib/serial-run --expose-gc"
+    "test": "mocha silence.js test --benchmarket-off",
+    "test-cover": "istanbul cover _mocha -- silence.js test --benchmarket-off",
+    "test-memory": "mocha --expose-gc test/test-memory --benchmarket-off",
+    "test-benchmarket": "node --expose-gc test/lib/serial-run"
   },
   "author": "Tenacious and NSOFT",
   "license": "MIT",
@@ -55,7 +55,7 @@
     "ws": "1.0.1"
   },
   "devDependencies": {
-    "benchmarket": "0.0.11",
+    "benchmarket": "0.2.0",
     "chai": "^3.5.0",
     "coveralls": "^2.11.6",
     "debug": "^2.2.0",
