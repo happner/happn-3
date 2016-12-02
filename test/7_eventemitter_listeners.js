@@ -23,11 +23,11 @@ describe('7_eventemitter_listeners', function () {
 
     this.timeout(10000);
 
-    publisherclient.disconnect(function(e){
-      listenerclient.disconnect(function(e){
-        happnInstance.stop(done);
-      })
-    })
+    publisherclient.disconnect({timeout:2000})
+      .then(listenerclient.disconnect({timeout:2000}))
+      .then(happnInstance.stop())
+      .then(done)
+      .catch(done);
   });
 
   before('should initialize the service', function (callback) {

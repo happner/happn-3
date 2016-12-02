@@ -42,12 +42,31 @@ describe('2_websockets_embedded_sanity', function () {
 
   after(function (done) {
 
-    publisherclient.disconnect()
-      .then(listenerclient.disconnect()
-        .then(happnInstance.stop()
-          .then(done)))
-      .catch(done);
+    this.timeout(20000);
 
+    // publisherclient.disconnect({timeout:2000}, function(e){
+    //
+    //   if (e) console.warn('failed disconnecting publisher');
+    //
+    //   listenerclient.disconnect({timeout:2000}, function(e){
+    //
+    //     if (e) console.warn('failed disconnecting listener');
+    //
+    //     happnInstance.stop(function(e){
+    //
+    //       if (e) console.warn('failed disconnecting instance');
+    //
+    //       done();
+    //     })
+    //   })
+    // });
+
+    //happnInstance.stop().then(done).catch(done);
+
+    publisherclient.disconnect({timeout:2000})
+      .then(listenerclient.disconnect({timeout:2000}))
+      .then(happnInstance.stop(done))
+      .catch(done);
   });
 
   var publisherclient;

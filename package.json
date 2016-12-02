@@ -1,13 +1,14 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb, use in production at your own risk",
-  "version": "0.6.7",
+  "version": "0.7.0",
   "main": "./lib/index",
   "protocol": "1.1.0",
   "scripts": {
     "test": "mocha --expose-gc silence.js test",
     "test-cover": "istanbul cover _mocha -- silence.js test",
-    "test-memory": "mocha --expose-gc test/test-memory"
+    "test-memory": "mocha --expose-gc test/test-memory",
+    "test-serial": "node test/lib/serial-run --expose-gc"
   },
   "author": "Tenacious and NSOFT",
   "license": "MIT",
@@ -69,7 +70,8 @@
     "karma-mocha-reporter": "^1.1.3",
     "mocha": "*",
     "objective": "0.0.40",
-    "request": "^2.67.0"
+    "request": "^2.67.0",
+    "happner-serial-mocha": "1.2.5"
   },
   "readmeFilename": "README.md"
 }

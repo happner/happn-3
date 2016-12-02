@@ -97,6 +97,14 @@
 ----------------
 
  - safeSession and updateSession returns null if session booted
+ 
+0.7.0 2016-12-02
+----------------
+
+ - major updates to disconnect
+ - fix to browser (Primus now attached to window)
+ - happner-mocha-serial tests
+ 
 
  
  

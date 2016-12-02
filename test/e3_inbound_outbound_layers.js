@@ -214,13 +214,11 @@ describe('e3_inbound_outbound_layers', function () {
             expect(layerLog4.length > 0).to.be(true);
 
             clientInstance.disconnect(function(){
-
               serviceInstance.stop({reconnect:false}, callback);
             });
           }, function(e){
             if (e) return callback(e);
             clientInstance.set('/did/both', {'test':'data'}, function(e){
-
               if (e) return callback(e);
             });
           });

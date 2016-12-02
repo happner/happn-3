@@ -23,19 +23,13 @@ describe('9a_websockets_meta.js', function () {
    the logon session. The utils setting will set the system to log non priority information
    */
 
-  var disconnected = false;
-
   after(function (done) {
 
-  publisherclient.disconnect()
-    .then(listenerclient.disconnect()
-        .then(function () {
-          if (!disconnected){
-            happnInstance.stop(done);
-            disconnected = true;
-          }
-        }))
-    .catch(done);
+    publisherclient.disconnect({timeout:2000})
+      .then(listenerclient.disconnect({timeout:2000}))
+      .then(happnInstance.stop())
+      .then(done)
+      .catch(done);
 
   });
 

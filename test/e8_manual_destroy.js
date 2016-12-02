@@ -1,4 +1,4 @@
-describe('2_websockets_embedded_sanity', function () {
+describe('e8_manual_destroy', function () {
 
   // require('benchmarket').start();
   // after(require('benchmarket').store());
@@ -40,29 +40,9 @@ describe('2_websockets_embedded_sanity', function () {
     happnInstance.stop(done);
   });
 
-  var clientCount = 100;
-
-  function getter (object, propertyName, value) {
-    Object.defineProperty(object, propertyName, {
-      get: function () {
-        return value;
-      },
-      enumerable: true
-    })
-  }
-
-  function property (object, propertyName, value) {
-    Object.defineProperty(object, propertyName, {
-      value: value,
-      enumerable: false,
-      writable: true
-    })
-  }
+  var clientCount = 10;
 
   function Tester(){}
-
-  Tester.prototype.__onHappnDisconnect = function(){};
-  Tester.prototype.__onHappnReconnect = function(){};
 
   it('create, then manually destroy ' + clientCount + ' clients', function (callback) {
 
@@ -76,22 +56,9 @@ describe('2_websockets_embedded_sanity', function () {
 
         if (e) return clientCB(e);
 
-        getter(tester, 'client', instance);
-
-        property(tester, '__disconnectSubscriptionId',
-          instance.onEvent('connection-ended', tester.__onHappnDisconnect.bind(tester))
-        );
-
-        property(tester, '__retryConnectSubscriptionId',
-          instance.onEvent('reconnect-scheduled', tester.__onHappnDisconnect.bind(tester))
-        );
-
-        property(tester, '__reconnectSubscriptionId',
-          instance.onEvent('reconnect-successful', tester.__onHappnReconnect.bind(tester))
-        );
+        tester.client = instance;
 
         tester.client.socket.on('destroy', function(){
-          console.log('destroyed:::', counter);
           clientCB();
         });
 

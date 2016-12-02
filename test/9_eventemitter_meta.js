@@ -22,18 +22,12 @@ describe('9_eventemitter_meta.js', function () {
   var publisherclient;
   var listenerclient;
 
-  var disconnected = false;
-
   after(function (done) {
 
-    publisherclient.disconnect()
-      .then(listenerclient.disconnect()
-        .then(function () {
-          if (!disconnected){
-            happnInstance.stop(done);
-            disconnected = true;
-          }
-        }))
+    publisherclient.disconnect({timeout:2000})
+      .then(listenerclient.disconnect({timeout:2000}))
+      .then(happnInstance.stop())
+      .then(done)
       .catch(done);
   });
 
