@@ -370,8 +370,8 @@ describe('d3-security-tokens', function () {
       }
     });
 
-    expect(clientInstance.options.config.publicKey).to.be('AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2');
-    expect(clientInstance.options.config.privateKey).to.be('Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=');
+    expect(clientInstance.options.publicKey).to.be('AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2');
+    expect(clientInstance.options.privateKey).to.be('Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=');
 
     var clientInstance = happn_client.__instance({
       username:'_ADMIN',
@@ -379,16 +379,16 @@ describe('d3-security-tokens', function () {
       privateKey:'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M='
     });
 
-    expect(clientInstance.options.config.publicKey).to.be('AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2');
-    expect(clientInstance.options.config.privateKey).to.be('Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=');
+    expect(clientInstance.options.publicKey).to.be('AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2');
+    expect(clientInstance.options.privateKey).to.be('Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=');
 
     var clientInstance = happn_client.__instance({
       username:'_ADMIN',
       password: 'happntest'
     });
 
-    expect(clientInstance.options.config.username).to.be('_ADMIN');
-    expect(clientInstance.options.config.password).to.be('happntest');
+    expect(clientInstance.options.username).to.be('_ADMIN');
+    expect(clientInstance.options.password).to.be('happntest');
 
     var clientInstance = happn_client.__instance({
       config:{
@@ -397,8 +397,8 @@ describe('d3-security-tokens', function () {
       }
     });
 
-    expect(clientInstance.options.config.username).to.be('_ADMIN');
-    expect(clientInstance.options.config.password).to.be('happntest');
+    expect(clientInstance.options.username).to.be('_ADMIN');
+    expect(clientInstance.options.password).to.be('happntest');
 
     done();
 
@@ -422,7 +422,7 @@ describe('d3-security-tokens', function () {
     clientInstance.serverInfo = {};
 
     var loginParameters = {
-      username:clientInstance.options.config.username,
+      username:clientInstance.options.username,
       password:'happnTestPWD'
     };
 
@@ -435,7 +435,7 @@ describe('d3-security-tokens', function () {
 
       if (e) return callback(e);
 
-      expect(prepared.username).to.be(clientInstance.options.config.username);
+      expect(prepared.username).to.be(clientInstance.options.username);
       expect(prepared.password).to.be('happnTestPWD');
 
       done();
@@ -465,8 +465,8 @@ describe('d3-security-tokens', function () {
     clientInstance.serverInfo = {};
 
     var loginParameters = {
-      username:clientInstance.options.config.username,
-      publicKey:clientInstance.options.config.publicKey,
+      username:clientInstance.options.username,
+      publicKey:clientInstance.options.publicKey,
       loginType:'digest'
     };
 
@@ -500,7 +500,7 @@ describe('d3-security-tokens', function () {
 
         if (e) return callback(e);
 
-        var verificationResult = crypto.verify(nonce, prepared.digest, clientInstance.options.config.publicKey);
+        var verificationResult = crypto.verify(nonce, prepared.digest, clientInstance.options.publicKey);
 
         expect(verificationResult).to.be(true);
 

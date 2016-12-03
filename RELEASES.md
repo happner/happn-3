@@ -105,6 +105,17 @@
  - fix to browser (Primus now attached to window)
  - happner-mocha-serial tests
  
+0.7.1 2016-12-02
+----------------
+
+ - disabled benchmarket on all tests except benchmarket
+ 
+0.8.0 2016-12-03
+----------------
+
+ - changed config on client to not have config.config
+ - changed client.options.config to just client.options
+ 
 
  
  
