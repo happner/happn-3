@@ -1,7 +1,7 @@
 describe('a9_eventemitter_security_metadata', function () {
 
-  // require('benchmarket').start();
-  // after(require('benchmarket').store());
+  require('benchmarket').start();
+  after(require('benchmarket').store());
 
   var happn = require('../lib/index');
   var serviceInstance;
@@ -142,6 +142,6 @@ describe('a9_eventemitter_security_metadata', function () {
     });
   });
 
-  //require('benchmarket').stop();
+  require('benchmarket').stop();
 
 });

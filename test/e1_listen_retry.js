@@ -1,7 +1,7 @@
 describe('e1_listen_retry', function () {
 
-  // require('benchmarket').start();
-  // after(require('benchmarket').store());
+  require('benchmarket').start();
+  after(require('benchmarket').store());
 
   var expect = require('expect.js');
   var happn = require('../lib/index')
@@ -84,6 +84,6 @@ describe('e1_listen_retry', function () {
     }
   });
 
-  //require('benchmarket').stop();
+  require('benchmarket').stop();
 
 });

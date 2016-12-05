@@ -8,8 +8,8 @@ context('b3_login_info', function () {
 
   this.timeout(60000);
 
-  // require('benchmarket').start();
-  // after(require('benchmarket').store());
+  require('benchmarket').start();
+  after(require('benchmarket').store());
 
   this.timeout(60000);
 
@@ -157,6 +157,6 @@ context('b3_login_info', function () {
 
   });
 
-  //require('benchmarket').stop();
+  require('benchmarket').stop();
 
 });

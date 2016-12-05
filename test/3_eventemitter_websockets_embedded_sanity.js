@@ -1,7 +1,7 @@
 describe('3_eventemitter_websockets_embedded_sanity', function () {
 
-  // require('benchmarket').start();
-  // after(require('benchmarket').store());
+  require('benchmarket').start();
+  after(require('benchmarket').store());
 
   var expect = require('expect.js');
   var happn = require('../lib/index')
@@ -822,6 +822,6 @@ describe('3_eventemitter_websockets_embedded_sanity', function () {
       .catch(callback);
   });
 
-  //require('benchmarket').stop();
+  require('benchmarket').stop();
 
 });

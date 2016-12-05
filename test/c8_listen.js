@@ -1,7 +1,7 @@
 describe('c8_deferred_listen', function () {
 
-  // require('benchmarket').start();
-  // after(require('benchmarket').store());
+  require('benchmarket').start();
+  after(require('benchmarket').store());
 
   var expect = require('expect.js');
   var happn = require('../lib/index')
@@ -158,7 +158,7 @@ describe('c8_deferred_listen', function () {
 
   after(function (done) {
 
-    //require('benchmarket').stop();
+    require('benchmarket').stop();
 
     if (happnInstance)
       happnInstance.stop(done);

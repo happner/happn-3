@@ -1,8 +1,8 @@
 describe('e3_inbound_outbound_layers', function () {
 
-  // require('benchmarket').start();
+  require('benchmarket').start();
   //
-  // after(require('benchmarket').store());
+  after(require('benchmarket').store());
 
   var expect = require('expect.js');
   var happn = require('../lib/index')
@@ -227,5 +227,5 @@ describe('e3_inbound_outbound_layers', function () {
     );
   });
 
-  //require('benchmarket').stop();
+  require('benchmarket').stop();
 });
