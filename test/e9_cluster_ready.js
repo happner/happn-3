@@ -23,10 +23,7 @@ describe('e9_cluster_ready', function () {
 
   var random_activity = require("happn-random-activity-generator");
 
-  //  var randomActivity = new RandomActivityGenerator(instance);
-  //  randomActivity.generateActivityStart("test", function () {
-  //  randomActivity.generateActivityEnd("test", function (aggregatedLog) {
-  //  randomActivity2.verify(callback);
+  var aggregatedLogs = [];
 
   function Cluster(){
 
@@ -96,9 +93,10 @@ describe('e9_cluster_ready', function () {
 
       var child = _this.children[childPort];
 
-      if (childPort === port) child.disconnectAll(childCB);
+      if (childPort === port.toString()) child.disconnectAll(childCB);
 
       else child.disconnectFrom(childPort, childCB);
+
 
     }, function(e){
 
@@ -108,14 +106,13 @@ describe('e9_cluster_ready', function () {
 
       callback();
     });
-
   };
 
   Cluster.prototype.stop = function(callback){
 
     var _this = this;
 
-    console.log('STOPPING CLUSTER:::');
+    //console.log('STOPPING CLUSTER:::');
 
     var serverPorts = Object.keys(_this.servers);
 
@@ -123,18 +120,18 @@ describe('e9_cluster_ready', function () {
 
     async.eachSeries(serverPorts, function(serverPort, serverCB){
 
-      console.log('STOPPING SERVER:::', serverPort);
+      //console.log('STOPPING SERVER:::', serverPort);
 
       var server = _this.servers[serverPort];
 
       server.stop(function(e){
 
         if (e){
-          console.log('ERROR STOPPING SERVER:::', serverPort);
+          //console.log('ERROR STOPPING SERVER:::', serverPort);
           return serverCB(e);
         }
 
-        console.log('STOPPED SERVER:::', serverPort);
+        //console.log('STOPPED SERVER:::', serverPort);
 
         delete _this.servers[serverPort];
 
@@ -165,7 +162,7 @@ describe('e9_cluster_ready', function () {
 
     var _this = this;
 
-    console.log('DISCONNECT ALL:::' + _this.port);
+    //console.log('DISCONNECT ALL:::' + _this.port);
 
     async.eachSeries(Object.keys(_this.connections), function(port, eachCB){
 
@@ -183,11 +180,11 @@ describe('e9_cluster_ready', function () {
 
       var connection = _this.connections[port];
 
-      console.log('DISCONNECT:::' + connection.code);
-
       connection.randomActivity.generateActivityEnd(connection.code, function (aggregatedLog) {
 
         connection.activityLog = aggregatedLog;
+
+        aggregatedLogs.push(aggregatedLog);
 
         connection.randomActivity.verify(function(e){
 
@@ -198,7 +195,7 @@ describe('e9_cluster_ready', function () {
             if (e) return callback(e);
 
             delete _this.connections[port];
-            console.log('DISCONNECTED:::' + connection.code);
+            //console.log('DISCONNECTED:::' + connection.code);
             callback();
 
           });
@@ -213,8 +210,6 @@ describe('e9_cluster_ready', function () {
     var _this = this;
 
     var connectionCode = _this.port.toString() + '-' + child.port.toString();
-
-    console.log('CONNECT:::' + connectionCode);
 
     happn_client.create({port:child.port}, function(e, instance){
 
@@ -233,7 +228,6 @@ describe('e9_cluster_ready', function () {
 
         _this.connections[child.port] = connection;
 
-        console.log('CONNECTED:::' + connectionCode);
         CLUSTER_TOTAL_CONNECTIONS++;
 
         callback();
@@ -250,7 +244,7 @@ describe('e9_cluster_ready', function () {
 
     async.timesSeries(INSTANCE_COUNT, function(counter, clientCB){
 
-      console.log('doing time:::', counter);
+      //console.log('doing time:::', counter);
 
       service.create({port:currentPort}, function (e, instance) {
 
@@ -279,6 +273,8 @@ describe('e9_cluster_ready', function () {
 
     async.timesSeries(INSTANCE_COUNT, function(counter, clientCB){
 
+      //console.log('REMOVING CHILD:::', currentPort);
+
       CLUSTER.removeChild(currentPort, function(e){
 
         if (e) return clientCB(e);
@@ -302,6 +298,27 @@ describe('e9_cluster_ready', function () {
         expect(Object.keys(CLUSTER.servers).length).to.be(0);
 
         console.log('RUN COMPLETE:::' + INSTANCE_COUNT + ' nodes generated ' + CLUSTER_TOTAL_CONNECTIONS + ' connections');
+        console.log('-------AGGREGATED ACTIVITY-------');
+
+        var aggregatedTotals = {on:0, get:0, remove:0, set:0};
+
+        aggregatedLogs.forEach(function(log){
+
+          aggregatedTotals.on += log.initial.on?log.initial.on:0;
+          aggregatedTotals.get += log.initial.get?log.initial.get:0;
+          aggregatedTotals.set += log.initial.set?log.initial.set:0;
+          aggregatedTotals.remove += log.initial.remove?log.initial.remove:0;
+
+          aggregatedTotals.get += log.get?log.get:0;
+          aggregatedTotals.set += log.set?log.set:0;
+          aggregatedTotals.remove += log.remove?log.remove:0;
+          aggregatedTotals.on += log.on?log.on:0;
+
+        });
+
+        Object.keys(aggregatedTotals).forEach(function(activity){
+          console.log(activity, aggregatedTotals[activity]);
+        });
 
         callback();
 
