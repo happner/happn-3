@@ -116,6 +116,12 @@
  - changed config on client to not have config.config
  - changed client.options.config to just client.options
  
+0.8.1 2016-12-06
+----------------
+
+ - server shutdown, if connections are destroyed by primus, destroy not called in transport.stop
+ 
+ 
 
  
  
