@@ -269,6 +269,8 @@ describe('e9_cluster_ready', function () {
 
   it('stops ' + INSTANCE_COUNT + ' instances', function (callback) {
 
+    this.timeout((INSTANCE_COUNT * 10000) + CLUSTER_OPERATION_TIME);
+
     var currentPort = INITIAL_PORT;
 
     async.timesSeries(INSTANCE_COUNT, function(counter, clientCB){
