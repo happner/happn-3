@@ -27,9 +27,12 @@ changes are:
 
 (1) more modular layout, services are broken up into logical modules
 (2) introduction of a queue service
-(3) introduction of a protocol service, this allows for the creation of protocol plugins that takemessages of the inbound and outbound queues and convert them into happn messages, essentially means we are able to use different protocols to talk to happn (ie. MQTT)
+(3) introduction of a protocol service, this allows for the creation of protocol plugins that take messages of the inbound and outbound queues and convert them into happn messages, essentially means we are able to use different protocols to talk to happn (ie. MQTT)
 (4) simplified intra process client instantiation
 (5) intra process client shares the same code as the websockets client, using a special intra-proc socket, instead of a primus spark
+
+[Migration plan from happn 2 to happn-3](https://github.com/happner/happn-3/blob/master/docs/migration-plan.md)
+--------------------------------------
 
 Getting started
 ---------------------------
@@ -51,6 +54,10 @@ But if you want to run your own service do the following:
 Create a directory you want to run your happn in, create a node application in it - with some kind of main.js and a package.json
 
 *In node_modules/happn/test in your folder, the 1_eventemitter_embedded_sanity.js and 2_websockets_embedded_sanity.js scripts demonstrate the server and client interactions shown in the following code snippets*
+
+[configuration](https://github.com/happner/happn-3/blob/master/docs/config.md)
+--------------------------------------
+*for full service and client configuration options*
 
 starting service:
 -------------------------------------------------------
@@ -348,62 +355,62 @@ UNSUBSCRIBING FROM EVENTS
 
 ```javascript
 
- var currentListenerId;
-    var onRan = false;
-    var pathOnRan = false;
+var currentListenerId;
+var onRan = false;
+var pathOnRan = false;
 
-    listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0}, function (message) {
+listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0}, function (message) {
 
-      if (pathOnRan) return callback(new Error('subscription was not removed by path'));
-      else pathOnRan = true;
+  if (pathOnRan) return callback(new Error('subscription was not removed by path'));
+  else pathOnRan = true;
 
-      //NB - unsubscribing by path
-      listenerclient.offPath('/e2e_test1/testsubscribe/data/on_off_test', function (e) {
+  //NB - unsubscribing by path
+  listenerclient.offPath('/e2e_test1/testsubscribe/data/on_off_test', function (e) {
 
-        if (e)
-          return callback(new Error(e));
+    if (e)
+      return callback(new Error(e));
 
-        listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0},
-          function (message) {
-            if (onRan) return callback(new Error('subscription was not removed'));
-            else {
-              onRan = true;
-              //NB - unsubscribing by listener handle
-              listenerclient.off(currentListenerId, function (e) {
-                if (e)
-                  return callback(new Error(e));
-
-                publisherclient.set('/e2e_test1/testsubscribe/data/on_off_test', {"test":"data"}, function (e, setresult) {
-                  if (e) return callback(new Error(e));
-                  setTimeout(callback, 2000);
-                });
-              });
-            }
-          },
-          function (e, listenerId) {
-          
-            //NB - listener id is passed in on the .on callback
-          
-            if (e) return callback(new Error(e));
-
-            currentListenerId = listenerId;
+    listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0},
+      function (message) {
+        if (onRan) return callback(new Error('subscription was not removed'));
+        else {
+          onRan = true;
+          //NB - unsubscribing by listener handle
+          listenerclient.off(currentListenerId, function (e) {
+            if (e)
+              return callback(new Error(e));
 
             publisherclient.set('/e2e_test1/testsubscribe/data/on_off_test', {"test":"data"}, function (e, setresult) {
               if (e) return callback(new Error(e));
+              setTimeout(callback, 2000);
             });
           });
-      });
-
-    }, function (e, listenerId) {
-      if (e) return callback(new Error(e));
-
-      currentListenerId = listenerId;
-
-      publisherclient.set('/e2e_test1/testsubscribe/data/on_off_test', {"test":"data"}, function (e) {
+        }
+      },
+      function (e, listenerId) {
+      
+        //NB - listener id is passed in on the .on callback
+      
         if (e) return callback(new Error(e));
-      });
 
-    });
+        currentListenerId = listenerId;
+
+        publisherclient.set('/e2e_test1/testsubscribe/data/on_off_test', {"test":"data"}, function (e, setresult) {
+          if (e) return callback(new Error(e));
+        });
+      });
+  });
+
+}, function (e, listenerId) {
+  if (e) return callback(new Error(e));
+
+  currentListenerId = listenerId;
+
+  publisherclient.set('/e2e_test1/testsubscribe/data/on_off_test', {"test":"data"}, function (e) {
+    if (e) return callback(new Error(e));
+  });
+
+});
 
 ```
 
@@ -456,7 +463,7 @@ function (e, instance) {
 
 ```
 
-*at the moment, adding users, groups and permissions can only be done by directly accessing the security service, to see how this is done - please look at the [functional test for security](https://github.com/happner/happn/blob/master/test/a7_eventemitter_security_access.js)*
+*at the moment, adding users, groups and permissions can only be done by directly accessing the security service, to see how this is done - please look at the [functional test for security](https://github.com/happner/happn-3/blob/master/test/a7_eventemitter_security_access.js)*
 
 SECURITY CLIENT
 ----------------
@@ -485,9 +492,6 @@ SECURITY PROFILES
 
  var serviceConfig = {
     services:{
-      data:{
-
-      },
       security: {
         config: {
           sessionTokenSecret:"TESTTOKENSECRET",
@@ -587,7 +591,7 @@ SECURITY PROFILES
 
 ```
 
-*the test that clearly demonstrates profiles can be found [here](https://github.com/happner/happn/blob/master/test/d3-security-tokens)*
+*the test that clearly demonstrates profiles can be found [here](https://github.com/happner/happn-3/blob/master/test/d3-security-tokens)*
 
 *the default policies look like this:*
 
@@ -688,7 +692,7 @@ function (e, instance) {
 //logging in with the _ADMIN user, who has permission to all web routes
 
 var happn = require('happn');
-happn.client.create({config:{username:'_ADMIN', password:'testPWD'}, secure:true},function(e, instance) {
+happn.client.create({username:'_ADMIN', password:'testPWD'},function(e, instance) {
 
 	//the token can be derived from instance.session.token now
 
@@ -730,30 +734,42 @@ HTTPS SERVER
 //cert and key defined in config
 
 var config = {
-  	transport:{
-    	mode:'https',
-    	cert: '-----BEGIN CERTIFICATE-----\n[CERT ETC...]\n-----END CERTIFICATE-----',
-    	key: '-----BEGIN RSA PRIVATE KEY-----\n[KEY ETC...]\n-----END RSA PRIVATE KEY-----'
-  	}
+  services: {
+    transport:{
+      config:{
+        mode: 'https',
+        cert: '-----BEGIN CERTIFICATE-----\nMIICpDCCAYwCCQDlN4Axwf2TVzANBgkqhkiG9w0BAQsFADAUMRIwEAYDVQQDEwls\nb2NhbGhvc3QwHhcNMTYwMTAzMTE1NTIyWhcNMTcwMTAyMTE1NTIyWjAUMRIwEAYD\nVQQDEwlsb2NhbGhvc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDc\nSceGloyefFtWgy8vC7o8w6BTaoXMc2jsvMOxT1pUHPX3jJn2bUOUC8wf3vTM8o4a\n0HY+w7cEZm/BuyTAV0dmS5SU43x9XlCF877jj5L6+ycZDncgyqW3WUWztYyqpQEz\nsMu76XvNEHW+jMMv2EGtze6k1zIcv4FiehVZR9doNOm+SilmmfVpmTmQk+E5z0Bl\n8CSnBECfvtkaYb4YqsV9dZXZcAm5xWdid7BUbqBh5w5XHz9L4aC9WiUEyMMUtwcm\n4lXDnlMkei4ixyz8oGSeOfpAP6Lp4mBjXaMFT6FalwCDAKh9rH2T3Eo9fUm18Dof\nFg4q7KcLPwd6mttP+dqvAgMBAAEwDQYJKoZIhvcNAQELBQADggEBABf8DZ+zv1P7\n8NnDZzuhif+4PveSfAMQrGR+4BS+0eisciif1idyjlxsPF28i82eJOBya4xotRlW\netAqSIjw8Osqxy4boQw3aa+RBtEAZR6Y/h3dvb8eI/jmFqJzmFjdGZzEMO7YlE1B\nxZIbA86dGled9kI1uuxUbWOZkXEdMgoUzM3W4M1ZkWH5WNyzIROvOGSSD73c1fAq\nkeC9MkofvTh3TO5UXFkLCaaPLiETZGI9BpF34Xm3NHS90Y7SUVdiawCVCz9wSuki\nD98bUTZYXu8dZxG6AdgAUEFnMuuwfznpdWQTUpp0k7jbsX/QTbFIjbI9lCZpP9k7\np07A5npzFVo=\n-----END CERTIFICATE-----',
+        key: '-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA3EnHhpaMnnxbVoMvLwu6PMOgU2qFzHNo7LzDsU9aVBz194yZ\n9m1DlAvMH970zPKOGtB2PsO3BGZvwbskwFdHZkuUlON8fV5QhfO+44+S+vsnGQ53\nIMqlt1lFs7WMqqUBM7DLu+l7zRB1vozDL9hBrc3upNcyHL+BYnoVWUfXaDTpvkop\nZpn1aZk5kJPhOc9AZfAkpwRAn77ZGmG+GKrFfXWV2XAJucVnYnewVG6gYecOVx8/\nS+GgvVolBMjDFLcHJuJVw55TJHouIscs/KBknjn6QD+i6eJgY12jBU+hWpcAgwCo\nfax9k9xKPX1JtfA6HxYOKuynCz8HeprbT/narwIDAQABAoIBADoWFk+t6PxtbCQ+\nyTVNkVkueFsmjotfrz4ldDCP7RCa5lzVLU/mddhW2AdbYg+csc3uRA++ycaWQEfE\nUieJnCEkMtSju5LPSMpZgG8+z5Hwodmgj9cMuG/FUXTWnXXttohryP0Ozv8+pN2O\n/nTiQEdVMuUyfVtJQBO4f2KgZ/No6uuSGhYEGFRTRUgdM1E1f2yTu82HIfETAbnW\nMHpdhQORQKmHr7cE9/sr7E+BhJPSQxGZKmgi+/8tiHXAW5MoZ4K88EO9V/BnVHcL\n/1uVUJOvcyf2mEtsQ22WCeelPChoE8TH1lf0HHadqse5+eu9l3LQWb4Z96fZRK7G\nesk+WAkCgYEA/ZueKDbiyT2i9pS1VDop9BLDaxC3GWwYAEU8At/KzXAfuKdzcduj\nZuMBecS5SgU3wW/1hqBJ2lQF8ifUzQUuyh1tydSnolafurvHDqkWzgbo6EbjjFro\nAyyHHtYRxo/f1TWWs6RpNjJ3hDCc3OpghkwkZkN9v9wd4RMCW2kdA2MCgYEA3l20\nhxpSTJffbKKQTAxURW9v+YUxNQFb74892AMlCnMiCppvS0it8wt0gJwnlNPV92no\nUVLZ+gVXdo8E+kKca4GW/TDgceDPqw2EbkTF1ZCxxy/kwgPWR471ku3Zyg6xel3Z\nMU67EriKz1zJaMjm7JmSjoz3+u8PbLYIf+fpm0UCgYAnkU0GtzGA9lXjpOX5oy2C\ngB7vKGd41u2TtTmctS/eB51bYPzZCcyfs9E6H2BNVS0SyBYFkCKVpsBavK4t4p4f\nOKI1eDFDWcKIDt4KwoTlVhymiNDdyB0kyaC3Rez2DuJ8UGUX2BH2O797513B9etj\naKPRNLx836nlwOKAQpEdQwKBgQCvV7io6CqJVyDI6w9ZyEcTUaI8YbjBkUbLimo7\n0Y79xHfNYKXt+WuhQSEm4PudMcWBCTQ2HFzh+CBVzsUgCjKJ23ASSt5RLfLTcR9C\nTFyr4SMubCe4jYoEd0hSCdg4qolscmB3rxt40agzh3kSdYkSfK7CVYqdhrDlCk19\nfoQI+QKBgQD9PIEvhEnQO0R1k3EzchRo67IkWLyR4uX4hXa7IOXppde9dAwhbZqP\nUkw8tqj7Cg02hfXq+KdRn+xfh6pc708RMqqdqNqSfL2PYedAR65hDKV4rL8PVmL9\n0P4j3FT1nwa/sHW5jLuO5TcevPrlhEQ9xVbKw7I7IJivKMamukskUA==\n-----END RSA PRIVATE KEY-----'
+      }
+    }
+  }
 }
 
 // or cert and key file paths defined in config
 // IF BOTH OF THESE FILES DONT EXIST, THEY ARE AUTOMATICALLY CREATED AS SELF SIGNED
 
 var config = {
-	transport:{
-    	mode:'https',
-    	certPath:'home/my_cert.pem',
-    	keyPath:'home/my_key.rsa'
-	}
+  services:{
+    transport:{
+      config:{
+        mode: 'https',
+        certPath: __dirname + path.sep + 'b7_cert.pem',
+        keyPath: __dirname + path.sep + 'b7_key.rsa'
+      }
+    }
+  }
 }
 
 // or have the system create a cert and key for you, in the home directory of the user that started the happn process - called .happn-https-cert and .happn-https-key
 
 var config = {
-	transport:{
-    	mode:'https'
-	}
+	services:{
+    transport:{
+      config:{
+        mode: 'https'
+      }
+    }
+  }
 }
 
 var happn = require('../lib/index')
@@ -776,7 +792,7 @@ HTTPS CLIENT
 
 var happn = require('happn');
 
-happn.client.create({config:{protocol:'https', allowSelfSignedCerts:true}},function(e, instance) {
+happn.client.create({protocol:'https', allowSelfSignedCerts:true},function(e, instance) {
 ...
 
 ```
@@ -784,7 +800,7 @@ happn.client.create({config:{protocol:'https', allowSelfSignedCerts:true}},funct
 PAYLOAD ENCRYPTION
 ------------------
 
-*if the server is running in secure mode, it can also be configured to encrypt payloads between it and socket clients, this means that the client must include a keypair as part of its credentials on logging in, to see payload encryption in action plase go to the [following test](https://github.com/happner/happn/blob/master/test/c2_websockets_embedded_sanity_encryptedpayloads.js)*
+*if the server is running in secure mode, it can also be configured to encrypt payloads between it and socket clients, this means that the client must include a keypair as part of its credentials on logging in, to see payload encryption in action plase go to the [following test](https://github.com/happner/happn-3/blob/master/test/c2_websockets_embedded_sanity_encryptedpayloads.js)*
 
 INBOUND AND OUTBOUND LAYERS (MIDDLEWARE)
 -----------------------------------------
@@ -840,11 +856,10 @@ service.create(serviceConfig,
     if (e) return callback(e);
     var serviceInstance = happnInst;
 
-    happn_client.create({
-      config: {
+    happn_client.create(
+    {
         username: '_ADMIN',
         password: 'happn'
-      },
       info:{
         from:'startup'
       }
@@ -885,7 +900,7 @@ testing payload encryption on the browser:
 gulp --gulpfile test/test-browser/gulp-01.js
 
 
-OTHER PLACES WHERE HAPPN IS USED:
+OTHER PLACES WHERE HAPPN-3 IS USED:
 ----------------------------------
-HAPPNER - an experimental application engine that uses happn for its nervous system, see: www.github.com/happner/happner
+HAPPNER - an experimental application engine that uses happn for its nervous system, see: www.github.com/happner/happner-2 - happner is now on version 2 so relatively mature.
 
