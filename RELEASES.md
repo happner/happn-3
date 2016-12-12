@@ -122,6 +122,12 @@
  - server shutdown, if connections are destroyed by primus, destroy not called in transport.stop
  - made call timeout configurable in client, defaults to 30 seconds
  
+0.9.1 2016-12-12
+----------------
+
+ - updated README
+ - added migration plan
+ 
  
 
  

@@ -55,6 +55,10 @@ Create a directory you want to run your happn in, create a node application in i
 
 *In node_modules/happn/test in your folder, the 1_eventemitter_embedded_sanity.js and 2_websockets_embedded_sanity.js scripts demonstrate the server and client interactions shown in the following code snippets*
 
+[configuration](https://github.com/happner/happn-3/blob/master/docs/config.md)
+--------------------------------------
+*for full service and client configuration options*
+
 starting service:
 -------------------------------------------------------
 
