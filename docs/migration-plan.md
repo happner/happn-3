@@ -124,3 +124,24 @@ var clientConfig = {username:'simon', port:10000}
  happnInstance.services.session.localClient(function(e, instance){...
 
 ```
+##protocol changes:
+*the happn protocol has changed in 3 places:*
+
+###disconnect message form server:
+*the server will warn all clients that they are about to be diconnected from the server side:*
+```javascript
+
+```
+
+###disconnect message from client:
+*to disconnect the client form the server properly, post a disconnect message*
+```javascript
+
+```
+
+###error message
+
+```javascript
+OLD:
+
+```
