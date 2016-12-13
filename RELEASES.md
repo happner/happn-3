@@ -128,6 +128,11 @@
  - updated README
  - added migration plan
  
+0.9.2 2016-12-13
+----------------
+
+ - updated __createResponse to include the message of the error (was previously looping through the properties - 'message' was non-iterable)
+ 
  
 
  
