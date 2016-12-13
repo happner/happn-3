@@ -137,7 +137,7 @@
  1.0.1 2016-12-13
  ----------------
  
-  - fixed issue where outbound responses where not going through layers
+  - fixed issue where outbound responses where not going through layers if custom outbound layers configured
 
  
  
