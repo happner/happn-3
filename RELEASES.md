@@ -134,10 +134,13 @@
  - protocol update!: error in message now has separate name and message, ie: {error:{name:'AccessDenied', message:'unauthorised'}} previous {error:{name:'AccessDenied: unauthorised'}} 
  - updated __createResponse to include the message of the error (was previously looping through the properties - 'message' was non-iterable)
  
- 1.0.1 2016-12-13
- ----------------
+1.0.1 2016-12-13
+----------------
  
   - fixed issue where outbound responses where not going through layers if custom outbound layers configured
 
- 
+1.0.2 2016-12-13
+----------------
+
+- fixed persisted cache does not set __sync flag, when db is empty
  

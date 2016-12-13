@@ -142,6 +142,8 @@ var clientConfig = {username:'simon', port:10000}
 ###error message
 
 ```javascript
-OLD:
+OLD: {error:{name:'AccessDenied: unauthorized'}}
+
+NEW: {error:{name:'AccessDenied', message:'unauthorized'}}
 
 ```
