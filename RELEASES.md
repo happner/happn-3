@@ -128,9 +128,10 @@
  - updated README
  - added migration plan
  
-0.9.2 2016-12-13
+1.0.0 2016-12-13
 ----------------
 
+ - protocol update!: error in message now has separate name and message, ie: {error:{name:'AccessDenied', message:'unauthorised'}} previous {error:{name:'AccessDenied: unauthorised'}} 
  - updated __createResponse to include the message of the error (was previously looping through the properties - 'message' was non-iterable)
  
  
