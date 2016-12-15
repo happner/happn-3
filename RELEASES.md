@@ -150,3 +150,8 @@
  - fixed outbound system messages to include logging and custom outbound layers
  - fixed issue with tags working regardless of whether the data to tag exists or not
  
+1.0.4 2016-12-15
+----------------
+
+ - allow for event_type * as well as 'all' in client 'on' option
+ 
