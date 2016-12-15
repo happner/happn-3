@@ -137,10 +137,15 @@
 1.0.1 2016-12-13
 ----------------
  
-  - fixed issue where outbound responses where not going through layers if custom outbound layers configured
+ - fixed issue where outbound responses where not going through layers if custom outbound layers configured
 
 1.0.2 2016-12-13
 ----------------
 
-- fixed persisted cache does not set __sync flag, when db is empty
+ - fixed persisted cache does not set __sync flag, when db is empty
+
+1.0.3 2016-12-15
+----------------
+
+ - fixed outbound system messages to include logging and custom outbound layers
  
