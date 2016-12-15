@@ -148,4 +148,5 @@
 ----------------
 
  - fixed outbound system messages to include logging and custom outbound layers
+ - fixed issue with tags working regardless of whether the data to tag exists or not
  
