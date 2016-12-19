@@ -1,7 +1,7 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb, use in production at your own risk",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "main": "./lib/index",
   "protocol": "1.1.0",
   "scripts": {
@@ -24,11 +24,9 @@
     "url": "https://github.com/happner/happn-3.git"
   },
   "dependencies": {
-    "JSONStream": "0.10.0",
     "async": "1.5.2",
     "bluebird": "2.10.2",
     "body-parser": "1.14.1",
-    "byline": "4.2.1",
     "connect": "3.4.0",
     "connect-cookies": "0.0.0",
     "deep-copy": "1.1.2",
@@ -51,17 +49,19 @@
     "traverse": "0.6.6",
     "underscore.string": "3.3.4",
     "user-home": "2.0.0",
-    "uuid": "^3.0.0",
+    "uuid": "3.0.0",
     "ws": "1.0.1"
   },
   "devDependencies": {
     "benchmarket": "0.2.0",
+    "byline": "5.0.0",
     "chai": "^3.5.0",
     "coveralls": "^2.11.6",
     "debug": "^2.2.0",
     "expect.js": "*",
     "gulp": "^3.9.1",
     "happn-random-activity-generator": "^0.2.0",
+    "happner-serial-mocha": "1.3.0",
     "istanbul": "^0.4.1",
     "karma": "^0.13.15",
     "karma-chai": "^0.1.0",
@@ -70,8 +70,7 @@
     "karma-mocha-reporter": "^1.1.3",
     "mocha": "*",
     "objective": "0.0.40",
-    "request": "^2.67.0",
-    "happner-serial-mocha": "1.3.0"
+    "request": "^2.67.0"
   },
   "readmeFilename": "README.md"
 }
