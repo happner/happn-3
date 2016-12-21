@@ -155,3 +155,10 @@
 
  - allow for event_type * as well as 'all' in client 'on' option
  
+1.1.0 2016-12-21
+----------------
+
+ - protocol version update 1.2.0
+ - happn protocol 0.1.1 in place
+ - default protocol is 1.1.0 (oldest)
+ 
