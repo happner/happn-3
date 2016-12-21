@@ -11,6 +11,8 @@ describe(filename, function () {
 
   var server;
 
+  this.timeout(60000);
+
   benchmarket.start();
 
   before('start server', function (done) {
@@ -25,6 +27,7 @@ describe(filename, function () {
   });
 
   after('stop server', function (done) {
+
     if (!server) return done();
     server.stop({reconnect: false}, done);
   });
@@ -39,6 +42,7 @@ describe(filename, function () {
 
   SocketProxy.prototype.start = function () {
     var _this = this;
+
     return new Promise(function (resolve, reject) {
       _this.server = net.createServer(function (clientSocket) {
 
@@ -101,7 +105,6 @@ describe(filename, function () {
 
     it('subscriptions are resumed without duplication after network outage', function (done) {
 
-      this.timeout(60000);
       var now;
 
       var client;
