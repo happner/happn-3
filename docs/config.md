@@ -1,5 +1,5 @@
 #happn-3 configuration options:
-*what follows is the full configuartion options for a happn server and client, whowing what the defaults are when the config is omitted:*
+*What follows is the full configuartion options for a happn server and client, showing what the defaults are when the config is omitted:*
 
 ##server
 ```javascript
@@ -73,7 +73,9 @@ var serverConfig = {
 
     transport:{
       config:{
-        mode: 'https'//'http' by default
+        mode: 'https'//'http' by default,
+        certPath: __dirname + '/cert.pem', // optional, defaults creates in home dir
+        keyPath: __dirname + '/key.pem'
       }
     },
     
@@ -81,6 +83,8 @@ var serverConfig = {
      config:{
        middleware:{
          security: {
+           cookieName: 'happn_token', // default shown
+           cookieDomain: 'example.com', // optional
            exclusions: [//http paths to exclude from security checks
              '/test/excluded/specific',
              '/test/excluded/wildcard/*',
@@ -95,8 +99,8 @@ var serverConfig = {
        inboundLayers:'[inbound plugin]',
        outboundLayers:'[outbound plugin]',
        protocols:{'happn':require('happn-protocol')}//array of protocols, ie: MQTT
-     }
-   }
+      }
+    }
   }
 }
           
@@ -116,5 +120,4 @@ var clientConfig = {
   info: {"KEY": "VALUE"}//anything you want to attach to your session
   loginType:'digest'// you want to use your keypair to login
 }
-
 ```
