@@ -5,49 +5,49 @@
 ```javascript
 var serverConfig = {
 
-  port:55000, //happn-3 port
+  port: 55000, //happn-3 port
   secure: true, //false by default
   encryptPayloads: true,//false by default
-  
-  services:{
-  
+
+  services: {
+
     security: {
-    
+
       config: {
-      
-        sessionTokenSecret:"TESTTOKENSECRET",//how our session tokens are encrypted
-      
+
+        sessionTokenSecret: "TESTTOKENSECRET",//how our session tokens are encrypted
+
         keyPair: {//ECDSA keypair
           privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=',
           publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
         },
-        
+
         adminUser: {
           password: 'happn', //happn by default, console logs a warning if secure:true and no admin password specified - breaks if ENV is production
           publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
         },
-        
-        profiles:[ //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
-        {
-          name:"web-session",
-          session:{//how we match this profile to a session, mongo-like filter
-            $and:[{
-              user:{username:{$eq:'WEB_SESSION'}},
-              type:{$eq:0}
-            }]
-          },
-          policy:{
-            ttl: '4 seconds',
-            inactivity_threshold:'2 seconds'//this is costly, as we need to store state on the server side
+
+        profiles: [ //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
+          {
+            name: "web-session",
+            session: {//how we match this profile to a session, mongo-like filter
+              $and: [{
+                user: {username: {$eq: 'WEB_SESSION'}},
+                type: {$eq: 0}
+              }]
+            },
+            policy: {
+              ttl: '4 seconds',
+              inactivity_threshold: '2 seconds'//this is costly, as we need to store state on the server side
+            }
           }
-        }
       }
     },
-    
-    data:{
-      config:{
+
+    data: {
+      config: {
         compactInterval: 5000,//compact every 5 seconds
-        filename:filename,//where you want your data persisted to
+        filename: filename,//where you want your data persisted to
         datastores: [//you can choose where you want the data persisted depending on the key
           {
             name: 'memory',
@@ -71,34 +71,34 @@ var serverConfig = {
       }
     },
 
-    transport:{
-      config:{
+    transport: {
+      config: {
         mode: 'https'//'http' by default,
         certPath: __dirname + '/cert.pem', // optional, defaults creates in home dir
         keyPath: __dirname + '/key.pem'
       }
     },
-    
-    connect:{
-     config:{
-       middleware:{
-         security: {
-           cookieName: 'happn_token', // default shown
-           cookieDomain: 'example.com', // optional
-           exclusions: [//http paths to exclude from security checks
-             '/test/excluded/specific',
-             '/test/excluded/wildcard/*',
-           ]
-         }
-       }
-     }
-   },
-   
-   protocol:{
-     config:{
-       inboundLayers:'[inbound plugin]',
-       outboundLayers:'[outbound plugin]',
-       protocols:{'happn':require('happn-protocol')}//array of protocols, ie: MQTT
+
+    connect: {
+      config: {
+        middleware: {
+          security: {
+            cookieName: 'happn_token', // default shown
+            cookieDomain: 'example.com', // optional
+            exclusions: [//http paths to exclude from security checks
+              '/test/excluded/specific',
+              '/test/excluded/wildcard/*',
+            ]
+          }
+        }
+      }
+    },
+
+    protocol: {
+      config: {
+        inboundLayers: '[inbound plugin]',
+        outboundLayers: '[outbound plugin]',
+        protocols: {'happn': require('happn-protocol')}//array of protocols, ie: MQTT
       }
     }
   }
