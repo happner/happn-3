@@ -84,7 +84,7 @@ var serverConfig = {
         middleware: {
           security: {
             cookieName: 'happn_token', // default shown
-            cookieDomain: 'example.com', // optional
+            cookieDomain: '.example.com', // optional, allows for cookie domain control in browser
             exclusions: [//http paths to exclude from security checks
               '/test/excluded/specific',
               '/test/excluded/wildcard/*',
