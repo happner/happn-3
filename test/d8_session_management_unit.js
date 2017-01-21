@@ -1,7 +1,7 @@
 describe('d8_session_management', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store());
 
   this.timeout(60000);
 
@@ -512,5 +512,5 @@ describe('d8_session_management', function () {
     });
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 });

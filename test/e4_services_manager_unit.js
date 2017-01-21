@@ -4,8 +4,8 @@ var expect = require('expect.js');
 
 describe(filename, function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store({timeout:10000}));
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store({timeout:10000}));
 
   it('starts up system and app-land services', function (done) {
 
@@ -97,6 +97,6 @@ describe(filename, function () {
 
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });

@@ -1,7 +1,7 @@
 describe('f1_client_call_timeout', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store());
 
   var expect = require('expect.js');
   var async = require('async');
@@ -100,6 +100,6 @@ describe('f1_client_call_timeout', function () {
 
 });
 
-require('benchmarket').stop();
+//require('benchmarket').stop();
 
 

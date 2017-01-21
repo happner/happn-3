@@ -6,8 +6,8 @@ var utils = new Utils();
 
 describe(filename, function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store({timeout:10000}));
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store({timeout:10000}));
 
   it('tests mergeObjects', function (done) {
 
@@ -46,6 +46,6 @@ describe(filename, function () {
 
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });

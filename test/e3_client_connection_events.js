@@ -1,7 +1,7 @@
 var path = require('path');
 var filename = path.basename(__filename);
 
-var benchmarket = require('benchmarket');
+var benchmarket = //require('benchmarket');
 var Promise = require('bluebird');
 var expect = require('expect.js');
 var Happn = require('../');

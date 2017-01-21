@@ -1,7 +1,7 @@
 describe('a8_eventemitter_security_audit', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store());
 
   var happn = require('../lib/index');
   var serviceInstance;
@@ -272,6 +272,6 @@ describe('a8_eventemitter_security_audit', function () {
 
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });

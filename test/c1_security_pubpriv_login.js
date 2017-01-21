@@ -1,7 +1,7 @@
 describe('c1_security_pubpriv_login', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store());
 
   var expect = require('expect.js');
   var happn = require('../lib/index');
@@ -306,6 +306,6 @@ describe('c1_security_pubpriv_login', function () {
   });
 
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });

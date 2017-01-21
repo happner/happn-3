@@ -1,7 +1,7 @@
 describe('a5_eventemitter_security_groups', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store());
 
   context('manage users and groups and permissions', function () {
 
@@ -614,6 +614,6 @@ describe('a5_eventemitter_security_groups', function () {
 
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });
