@@ -162,3 +162,13 @@
  - happn protocol 0.1.1 in place
  - default protocol is 1.1.0 (oldest)
  
+1.1.1 2016-12-22
+----------------
+ 
+ - error serialization enhancement
+ 
+1.2.1 2017-01-21
+-----------------
+
+ - targetClients enhancement
+ 
