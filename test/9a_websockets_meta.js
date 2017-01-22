@@ -17,20 +17,17 @@ describe('9a_websockets_meta.js', function () {
 
   var publisherclient;
 
-  /*
-   This test demonstrates starting up the happn service -
-   the authentication service will use authTokenSecret to encrypt web tokens identifying
-   the logon session. The utils setting will set the system to log non priority information
-   */
-
   after(function (done) {
 
-    publisherclient.disconnect({timeout:2000})
-      .then(listenerclient.disconnect({timeout:2000}))
-      .then(happnInstance.stop())
-      .then(done)
-      .catch(done);
+    this.timeout(10000);
 
+    publisherclient.disconnect({timeout:2000}, function(e){
+      if (e) return console.warn('failed to disconnect:::', publisherclient);
+      listenerclient.disconnect({timeout:2000}, function(e){
+        if (e) return console.warn('failed to disconnect:::', listenerclient);
+        happnInstance.stop(done);
+      });
+    });
   });
 
   before('should initialize the service', function (callback) {
