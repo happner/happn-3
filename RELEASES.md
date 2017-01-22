@@ -173,4 +173,5 @@
  - targetClients enhancement
  - removed benchmarket
  - fixed bug with subscribe on keys without preceding '/'
+ - client disconnect improvements and test
  

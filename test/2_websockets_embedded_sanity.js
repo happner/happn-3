@@ -63,10 +63,18 @@ describe('2_websockets_embedded_sanity', function () {
 
     //happnInstance.stop().then(done).catch(done);
 
-    publisherclient.disconnect({timeout:2000})
-      .then(listenerclient.disconnect({timeout:2000}))
-      .then(happnInstance.stop(done))
-      .catch(done);
+    publisherclient.disconnect({timeout:2000}, function(e){
+      if (e) console.warn('failed disconnecting publisher client');
+      listenerclient.disconnect({timeout:2000}, function(e){
+        if (e) console.warn('failed disconnecting listener client');
+        happnInstance.stop(done);
+      });
+    });
+
+    // publisherclient.disconnect({timeout:2000})
+    //   .then(listenerclient.disconnect({timeout:2000}))
+    //   .then(happnInstance.stop(done))
+    //   .catch(done);
   });
 
   var publisherclient;
