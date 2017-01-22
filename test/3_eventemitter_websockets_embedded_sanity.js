@@ -1,7 +1,7 @@
 describe('3_eventemitter_websockets_embedded_sanity', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store());
 
   var expect = require('expect.js');
   var happn = require('../lib/index')
@@ -40,11 +40,17 @@ describe('3_eventemitter_websockets_embedded_sanity', function () {
 
   after(function (done) {
 
-    publisherclient.disconnect({timeout:2000})
-      .then(listenerclient.disconnect({timeout:2000}))
-      .then(happnInstance.stop())
-      .then(done)
-      .catch(done);
+    publisherclient.disconnect({timeout:2000}, function(e){
+
+      if (e) console.warn('failed diconnecting test client');
+
+      listenerclient.disconnect({timeout:2000}, function(e){
+
+        if (e) console.warn('failed diconnecting test client');
+
+        happnInstance.stop(done);
+      })
+    });
   });
 
   var publisherclient;
@@ -822,6 +828,6 @@ describe('3_eventemitter_websockets_embedded_sanity', function () {
       .catch(callback);
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });

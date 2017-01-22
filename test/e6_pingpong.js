@@ -1,7 +1,7 @@
 describe('e6_pingpong', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store());
 
     var expect = require('expect.js');
     var async = require('async');
@@ -109,6 +109,6 @@ describe('e6_pingpong', function () {
 
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 

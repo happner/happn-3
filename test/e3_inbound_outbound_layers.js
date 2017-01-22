@@ -1,14 +1,16 @@
 describe('e3_inbound_outbound_layers', function () {
 
-  require('benchmarket').start();
+  //require('benchmarket').start();
   //
-  after(require('benchmarket').store());
+  //after(//require('benchmarket').store());
 
   var expect = require('expect.js');
   var happn = require('../lib/index')
   var service = happn.service;
   var happn_client = happn.client;
   var async = require('async');
+
+  this.timeout(10000);
 
   it('injects inbound protocol layers', function (callback) {
 
@@ -227,5 +229,5 @@ describe('e3_inbound_outbound_layers', function () {
     );
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 });

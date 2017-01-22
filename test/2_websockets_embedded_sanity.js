@@ -1,7 +1,7 @@
 describe('2_websockets_embedded_sanity', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store());
 
   var expect = require('expect.js');
   var happn = require('../lib/index');
@@ -63,10 +63,18 @@ describe('2_websockets_embedded_sanity', function () {
 
     //happnInstance.stop().then(done).catch(done);
 
-    publisherclient.disconnect({timeout:2000})
-      .then(listenerclient.disconnect({timeout:2000}))
-      .then(happnInstance.stop(done))
-      .catch(done);
+    publisherclient.disconnect({timeout:2000}, function(e){
+      if (e) console.warn('failed disconnecting publisher client');
+      listenerclient.disconnect({timeout:2000}, function(e){
+        if (e) console.warn('failed disconnecting listener client');
+        happnInstance.stop(done);
+      });
+    });
+
+    // publisherclient.disconnect({timeout:2000})
+    //   .then(listenerclient.disconnect({timeout:2000}))
+    //   .then(happnInstance.stop(done))
+    //   .catch(done);
   });
 
   var publisherclient;
@@ -137,6 +145,108 @@ describe('2_websockets_embedded_sanity', function () {
             property2: 'property2',
             property3: 'property3'
           }, null, function (e, result) {
+
+            if (e) return callback(e);
+          });
+        }
+        else callback(e);
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('the listener should pick up a wildcard event, no parameters', function (callback) {
+
+    try {
+
+      //first listen for the change
+      listenerclient.on('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/anyevent/*', function (message) {
+
+        expect(listenerclient.events['/ALL@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/anyevent/*'].length).to.be(1);
+        callback();
+
+      }, function (e) {
+
+        if (!e) {
+
+          expect(listenerclient.events['/ALL@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/anyevent/*'].length).to.be(1);
+
+          //then make the change
+          publisherclient.set('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/anyevent/blah', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          }, null, function (e, result) {
+
+            if (e) return callback(e);
+          });
+        }
+        else callback(e);
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('the listener should pick up a wildcard event, key without preceding /', function (callback) {
+
+    try {
+
+      //first listen for the change
+      listenerclient.on('2_websockets_embedded_sanity/anyevent/*', function (message) {
+
+        expect(listenerclient.events['/ALL@2_websockets_embedded_sanity/anyevent/*'].length).to.be(1);
+        callback();
+
+      }, function (e) {
+
+        if (!e) {
+
+          expect(listenerclient.events['/ALL@2_websockets_embedded_sanity/anyevent/*'].length).to.be(1);
+
+          //then make the change
+          publisherclient.set('2_websockets_embedded_sanity/anyevent/blah', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          }, null, function (e, result) {
+
+            if (e) return callback(e);
+          });
+        }
+        else callback(e);
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('the listener should pick up a wildcard event, key without preceding / once', function (callback) {
+
+    try {
+
+      //first listen for the change
+      listenerclient.on('2_websockets_embedded_sanity/anyeventonce/*', {count: 1}, function (message) {
+
+        expect(listenerclient.events['/ALL@2_websockets_embedded_sanity/anyeventonce/*'].length).to.be(0);
+        callback();
+
+      }, function (e) {
+
+        if (!e) {
+
+          expect(listenerclient.events['/ALL@2_websockets_embedded_sanity/anyeventonce/*'].length).to.be(1);
+
+          //then make the change
+          publisherclient.set('2_websockets_embedded_sanity/anyeventonce/blah', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          }, {}, function (e, result) {
 
             if (e) return callback(e);
           });
@@ -1014,6 +1124,6 @@ describe('2_websockets_embedded_sanity', function () {
     });
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });

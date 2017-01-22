@@ -1,7 +1,7 @@
 describe('a7_eventemitter_security_access', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store());
 
   var happn = require('../lib/index');
   var serviceInstance;
@@ -413,6 +413,6 @@ describe('a7_eventemitter_security_access', function () {
 
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });

@@ -414,6 +414,30 @@ listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set
 
 ```
 
+TARGETING EVENTS
+----------------
+
+*sets and removes can be targeted for a specific client session, if you have access to a client session id, or need to do a return-ticket post, you can add the session id's you want your event data to go to to the targetClients option*
+
+```
+var mySessionId = my_client_instance.sesson.id;
+
+//only publish to myself:
+
+other_client_instance.on('for/my/eyes/only', function(data){
+//should NOT receive this
+});
+
+my_client_instance.on('for/my/eyes/only', function(data){
+//should receive this
+});
+
+my_client_instance.set('for/my/eyes/only', {property1:'property1'}, {targetClients:[mySessionId]}, function(e, result){
+  ...
+});
+
+```
+
 TAGGING
 ----------------------------
 

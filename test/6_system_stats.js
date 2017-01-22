@@ -6,8 +6,8 @@ var happnInstance;
 
 describe(filename, function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store({timeout:10000}));
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store({timeout:10000}));
 
   before('should initialize the service', function (callback) {
 
@@ -41,6 +41,6 @@ describe(filename, function () {
 
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });

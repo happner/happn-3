@@ -6,9 +6,6 @@ var utils = new Utils();
 
 describe(filename, function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store({timeout:10000}));
-
   it('tests mergeObjects', function (done) {
 
     var test1 = utils.mergeObjects({'test1':1}, {'test2':2});
@@ -45,7 +42,5 @@ describe(filename, function () {
     done();
 
   });
-
-  require('benchmarket').stop();
 
 });

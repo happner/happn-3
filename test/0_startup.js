@@ -5,8 +5,8 @@ var service = happn.service;
 
 describe(filename, function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store({timeout:10000}));
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store({timeout:10000}));
 
   beforeEach(function () {
     delete process.env.UPDATE_BROWSER_PRIMUS;
@@ -40,6 +40,6 @@ describe(filename, function () {
     }).catch(done);
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });

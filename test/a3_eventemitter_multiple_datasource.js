@@ -1,7 +1,7 @@
 describe('a3_eventemitter_multiple_datasource', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+  //require('benchmarket').start();
+  //after(//require('benchmarket').store());
 
   var expect = require('expect.js');
   var async = require('async');
@@ -9,7 +9,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
   var happn = require('../lib/index');
 
   var test_secret = 'test_secret';
-  
+
   var tempFile1 = __dirname + '/tmp/testdata_' + require('shortid').generate() + '.db';
   var test_id = Date.now() + '_' + require('shortid').generate();
 
@@ -103,15 +103,13 @@ describe('a3_eventemitter_multiple_datasource', function () {
             callback();
 
           });
-
         });
-
-
       });
 
   });
 
   after('should delete the temp data files', function (callback) {
+
     fs.unlink(tempFile1, function (e) {
       if (e) return callback(e);
 
@@ -681,6 +679,6 @@ describe('a3_eventemitter_multiple_datasource', function () {
 
   });
 
-  require('benchmarket').stop();
+  //require('benchmarket').stop();
 
 });
