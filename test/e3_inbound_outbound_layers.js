@@ -10,6 +10,8 @@ describe('e3_inbound_outbound_layers', function () {
   var happn_client = happn.client;
   var async = require('async');
 
+  this.timeout(10000);
+
   it('injects inbound protocol layers', function (callback) {
 
     var layerLog1 = [];
