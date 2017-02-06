@@ -1,4 +1,4 @@
-describe('3_eventemitter_websockets_embedded_sanity', function () {
+describe('f5_client_disconnection', function () {
 
   var expect = require('expect.js');
   var happn = require('../lib/index')
