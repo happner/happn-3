@@ -168,10 +168,14 @@
  - error serialization enhancement
  
 1.2.1 2017-01-21
------------------
+----------------
 
  - targetClients enhancement
  - removed benchmarket
  - fixed bug with subscribe on keys without preceding '/'
  - client disconnect improvements and test
  
+1.3.0 2017-02-06
+----------------
+
+ - added support for passing custom _meta into `set()` options

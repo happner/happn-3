@@ -1,4 +1,4 @@
-describe('2_websockets_embedded_sanity', function () {
+describe('f3_target_clients', function () {
 
   var expect = require('expect.js');
   var happn = require('../lib/index');
