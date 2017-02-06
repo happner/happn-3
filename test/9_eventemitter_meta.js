@@ -256,7 +256,7 @@ describe('9_eventemitter_meta.js', function () {
     });
   });
 
-  it.only('tests created and modified dates for an update, merge', function (callback) {
+  it('tests created and modified dates for an update, merge', function (callback) {
 
     publisherclient.set(test_path_created_modified_update, {
       property1: 'property1',
