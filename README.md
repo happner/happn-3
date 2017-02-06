@@ -452,6 +452,8 @@ client.on('/some/topic', function(data, meta) {
 });
 ```
 
+Reserved meta key names will have no effect. ('created','modified','path','action','type','published','status','eventId','sessionId')
+
 TAGGING
 ----------------------------
 
