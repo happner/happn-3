@@ -135,6 +135,8 @@ describe('9_eventemitter_meta.js', function () {
 
       if (e) return callback(e);
 
+      console.log('result._meta:::',result._meta);
+
       expect(result._meta.path).to.be(test_path);
 
       callback();
@@ -254,7 +256,7 @@ describe('9_eventemitter_meta.js', function () {
     });
   });
 
-  it('tests created and modified dates for an update, merge', function (callback) {
+  it.only('tests created and modified dates for an update, merge', function (callback) {
 
     publisherclient.set(test_path_created_modified_update, {
       property1: 'property1',
@@ -284,6 +286,8 @@ describe('9_eventemitter_meta.js', function () {
         }, {merge: true}, function (e, result) {
 
           if (e) return callback(e);
+
+          console.log('OK MERGE HAPPENED:::', result);
 
           expect(result._meta.created.toString()).to.be(firstCreated.toString());
 

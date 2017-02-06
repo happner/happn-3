@@ -103,6 +103,7 @@ describe('5_eventemitter_stoppingstarting', function () {
     it('should disconnect then reconnect and reverify the data', function (callback) {
 
       this.timeout(default_timeout);
+
       initService(tmpFile, '5_eventemitter_stoppingstarting', function (e) {
 
         if (e) return callback(e);

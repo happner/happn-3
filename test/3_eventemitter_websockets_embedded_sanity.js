@@ -21,7 +21,7 @@ describe('3_eventemitter_websockets_embedded_sanity', function () {
    the logon session. The utils setting will set the system to log non priority information
    */
 
-  it('should initialize the service', function (callback) {
+  before('should initialize the service', function (callback) {
 
     this.timeout(20000);
 
@@ -60,7 +60,7 @@ describe('3_eventemitter_websockets_embedded_sanity', function () {
    We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
    */
-  it('should initialize the clients', function (callback) {
+  before('should initialize the clients', function (callback) {
     this.timeout(default_timeout);
 
     try {
@@ -177,8 +177,6 @@ describe('3_eventemitter_websockets_embedded_sanity', function () {
 
   it('should search for a complex object', function (callback) {
 
-    //////////////////////////console.log('DOING COMPLEX SEARCH');
-
     var test_path_end = require('shortid').generate();
 
     var complex_obj = {
@@ -190,40 +188,38 @@ describe('3_eventemitter_websockets_embedded_sanity', function () {
       field1: 'field1'
     };
 
-
     var criteria1 = {
       $or: [{"regions": {$in: ['North', 'South', 'East', 'West']}},
         {"towns": {$in: ['North.Cape Town', 'South.East London']}},
         {"categories": {$in: ["Action", "History"]}}],
       "keywords": {$in: ["bass", "Penny Siopis"]}
-    }
+    };
 
     var options1 = {
-      fields: {"data": 1},
       sort: {"field1": 1},
       limit: 1
-    }
+    };
 
     var criteria2 = null;
 
     var options2 = {
-      fields: null,
+      fields: {towns:1, keywords:1},
       sort: {"field1": 1},
       limit: 2
-    }
+    };
 
     publisherclient.set('/e2e_test1/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
+
       expect(e == null).to.be(true);
+
       publisherclient.set('/e2e_test1/testsubscribe/data/complex/' + test_path_end + '/1', complex_obj, null, function (e, put_result) {
+
         expect(e == null).to.be(true);
 
-        ////////////console.log('searching');
         publisherclient.get('/e2e_test1/testsubscribe/data/complex*', {
           criteria: criteria1,
           options: options1
         }, function (e, search_result) {
-
-          ////////////console.log([e, search_result]);
 
           expect(e == null).to.be(true);
           expect(search_result.length == 1).to.be(true);

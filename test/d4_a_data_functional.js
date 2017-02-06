@@ -1,19 +1,20 @@
-describe('d3_data_functional', function() {
+describe('d4_a_data_functional', function() {
 
   this.timeout(20000);
 
   var expect = require('expect.js');
 
   var service = require('../lib/services/data/service');
+
   var serviceInstance = new service();
 
   var testId = require('shortid').generate();
 
-  var config = {};
+  var empty_config = {};
 
   before('should initialize the service', function(callback) {
 
-    serviceInstance.initialize(config, callback);
+    serviceInstance.initialize(empty_config, callback);
   });
 
   after(function(done) {
@@ -138,6 +139,7 @@ describe('d3_data_functional', function() {
         if (e) return callback(e);
 
         expect(response.data.data.test).to.equal('data');
+
         expect(response.data._meta.path).to.equal('/tag/' + testId);
 
         expect(response._meta.tag).to.equal(tag);
@@ -271,6 +273,7 @@ describe('d3_data_functional', function() {
             criteria: criteria2,
             options: options2
           }, function (e, search_result) {
+
             expect(e == null).to.be(true);
             expect(search_result.length == 2).to.be(true);
             callback(e);
@@ -320,6 +323,7 @@ describe('d3_data_functional', function() {
   it('sets value data', function (callback) {
 
     try {
+
       var test_string = require('shortid').generate();
       var test_base_url = '/a1_eventemitter_embedded_datatypes/' + testId + '/set/string/' + test_string;
 
@@ -394,7 +398,7 @@ describe('d3_data_functional', function() {
 
         });
 
-        serviceInstance.get(base_path + '*', {options:{sort:{item_sort_id:1}}, limit:50}, function(e, items){
+        serviceInstance.get(base_path + '*', {options:{sort:{item_sort_id:1}, limit:50}}, function(e, items){
 
           if (e) return done(e);
 
@@ -403,19 +407,20 @@ describe('d3_data_functional', function() {
             if (itemIndex >= 50) break;
 
             var item_from_mongo = items[itemIndex];
+
             var item_from_array = randomItems[itemIndex];
 
             if (item_from_mongo.data.item_sort_id != item_from_array.item_sort_id) return done(new Error('ascending sort failed'));
           }
 
-          //ascending
+          //descending
           randomItems.sort(function(a, b){
 
             return b.item_sort_id - a.item_sort_id;
 
           });
 
-          serviceInstance.get(base_path + '/*', {sort:{"item_sort_id":-1}, limit:50}, function(e, items){
+          serviceInstance.get(base_path + '/*', {options:{sort:{"item_sort_id":-1}, limit:50}}, function(e, items){
 
             if (e) return done(e);
 

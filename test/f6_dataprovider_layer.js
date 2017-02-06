@@ -22,23 +22,7 @@ describe('d3_data_functional', function() {
               settings: {
                 filename: tempFile1
               }
-            },
-            {
-              name: 'memory',
-              provider:'./providers/memory',
-              patterns: [
-                '/a3_eventemitter_multiple_datasource/' + test_id + '/memorytest/*',
-                '/a3_eventemitter_multiple_datasource/' + test_id + '/memorynonwildcard'
-              ]
-            },
-            // {
-            //   name: 'mongo',
-            //   provider:'happner-service-mongo-2',//mongo - dev dependancy
-            //   patterns: [
-            //     '/a3_eventemitter_multiple_datasource/' + test_id + '/memorytest/*',
-            //     '/a3_eventemitter_multiple_datasource/' + test_id + '/memorynonwildcard'
-            //   ]
-            // }
+            }
           ]
         }
       }
@@ -56,7 +40,6 @@ describe('d3_data_functional', function() {
   });
 
   it('sets data', function(callback) {
-
 
 
   });
