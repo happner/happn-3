@@ -438,6 +438,20 @@ my_client_instance.set('for/my/eyes/only', {property1:'property1'}, {targetClien
 
 ```
 
+EVENTS WITH CUSTOM META
+-----------------------
+
+*sets and removes can declare custom metadata that will be sent to subscribers*
+
+```javascript
+client.set('/some/topic', {DATA: 1}, {meta: {custom: 1}}, function(e) {})
+
+// elsewhere
+client.on('/some/topic', function(data, meta) {
+  meta.custom == 1;
+});
+```
+
 TAGGING
 ----------------------------
 
