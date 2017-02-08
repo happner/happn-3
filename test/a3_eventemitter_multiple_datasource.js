@@ -41,7 +41,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
 
     var serviceConfigs = [
       {
-        port: 55001,
+        port: 55001
       },
       {
         services: {
@@ -195,8 +195,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
 
         stream.on('data', function (line) {
 
-          if (found)
-            return;
+          if (found) return;
 
           var record = JSON.parse(line);
 
@@ -269,6 +268,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
     this.timeout(4000);
 
     try {
+
       var test_path_end = require('shortid').generate();
       var test_path = '/a3_eventemitter_multiple_datasource/' + test_id + '/persistedtest/' + test_path_end;
 
@@ -279,6 +279,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
       }, {}, function (e, result) {
 
         if (!e) {
+
           multipleClient.get(test_path, null, function (e, results) {
 
             expect(results.property1 == 'property1').to.be(true);
@@ -289,19 +290,14 @@ describe('a3_eventemitter_multiple_datasource', function () {
 
               //console.log('rec: ', record);
 
-              if (record)
-                callback();
-              else
-                callback(new Error('record not found in persisted file'));
+              if (record) callback();
+              else callback(new Error('record not found in persisted file'));
 
             });
-
           });
-        }
-        else
-          callback(e);
-      });
+        } else callback(e);
 
+      });
     } catch (e) {
       callback(e);
     }

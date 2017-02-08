@@ -167,6 +167,7 @@ describe('d3-security-tokens', function () {
     async.eachSeries(['log','error','utils', 'crypto', 'cache', 'session','data', 'security'], function (serviceName, eachServiceCB) {
 
       testServices[serviceName] = new testServices[serviceName]({logger: Logger});
+
       testServices[serviceName].happn = happnMock;
 
       happnMock.services[serviceName] = testServices[serviceName];
@@ -183,13 +184,13 @@ describe('d3-security-tokens', function () {
 
       if (!happnMock.services[serviceName].initialize) return eachServiceCB();
 
-      else testServices[serviceName].initialize(happnMock.services[serviceName], eachServiceCB);
+      else testServices[serviceName].initialize(testConfig.services[serviceName], eachServiceCB);
 
     }, function(e){
 
       if (e) return callback(e);
-      callback(null, happnMock);
 
+      callback(null, happnMock);
     });
   };
 
@@ -267,6 +268,7 @@ describe('d3-security-tokens', function () {
       if (e) return done(e);
 
       var Crypto = require('happn-util-crypto');
+
       var crypto = new Crypto();
 
       var testKeyPair = crypto.createKeyPair();
@@ -763,8 +765,7 @@ describe('d3-security-tokens', function () {
 
       done();
 
-    }, serviceConfig);
-
+    });
   });
 
   it('tests the security services authorize method', function(done){
@@ -1544,7 +1545,7 @@ describe('d3-security-tokens', function () {
 
       done();
 
-    }, serviceConfig);
+    });
 
   });
 
@@ -1592,7 +1593,7 @@ describe('d3-security-tokens', function () {
 
         });
 
-      }, serviceConfig);
+      });
 
     });
 
@@ -1644,7 +1645,7 @@ describe('d3-security-tokens', function () {
             });
           }, 1000);
         });
-      }, serviceConfig);
+      });
     });
   });
 

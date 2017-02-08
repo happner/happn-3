@@ -21,12 +21,32 @@ describe('1_eventemitter_embedded_sanity', function () {
    the logon session. The utils setting will set the system to log non priority information
    */
 
+  var config_file = {
+    services:{
+      data:{
+        config:{
+          filename:__dirname + '/tmp/1_eventemitter_sanity.json'
+        }
+      }
+    }
+  }
+
+  var config = {};
+
   before('should initialize the service', function (callback) {
 
     test_id = Date.now() + '_' + require('shortid').generate();
 
     try {
-      service.create({},
+
+      try{
+        require('fs').unlinkSync(__dirname + '/tmp/1_eventemitter_sanity.json');
+      }catch(e){
+
+      }
+
+
+      service.create(config,
         function (e, happnInst) {
 
           if (e) return callback(e);
@@ -436,6 +456,24 @@ describe('1_eventemitter_embedded_sanity', function () {
     });
   });
 
+  it('tests sift', function (callback) {
+
+    var array = [
+      {value:0},
+      {value:1},
+      {value:2}
+    ];
+
+    var sift = require('sift');
+
+    var sifted = sift({value:{$gte:0, $lte:2}}, array);
+
+    console.log(sifted);
+
+    callback();
+
+  });
+
   it('should search for a complex object by dates', function (callback) {
 
     var test_path_end = require('shortid').generate();
@@ -475,22 +513,46 @@ describe('1_eventemitter_embedded_sanity', function () {
           limit: 2
         };
 
+        console.log('from and to:::', from, to);
+
         ////////////console.log('searching');
         publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*', {
           criteria: criteria,
           options: options
         }, function (e, search_result) {
 
+          console.log('e:::',e);
+          console.log('search_result:::',search_result);
+
           expect(e == null).to.be(true);
-          expect(search_result.length == 1).to.be(true);
-          callback();
+          //1486456492128
+          //1486456492129
+          //1486456492433
 
+          if (search_result.length == 0){
+
+            publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, function (e, unmatched) {
+
+              console.log('unmatched:::', unmatched);
+
+              callback(new Error('no items found in the date range'));
+
+            });
+
+          } else {
+
+            publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, function (e, unmatched) {
+
+              console.log('matched:::', unmatched);
+
+              callback();
+
+            });
+          }
         });
-
-      }, 200);
+      }, 300);
 
     });
-
   });
 
 
