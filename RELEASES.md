@@ -168,7 +168,7 @@
  - error serialization enhancement
  
 1.2.1 2017-01-21
------------------
+----------------
 
  - targetClients enhancement
  - removed benchmarket
@@ -177,7 +177,10 @@
  
 1.3.0 2017-02-08
 ------------------
-
- - dataprovider functionality
- - updates to tests
+ - added support for passing custom _meta into `set()` options
  
+1.4.0 2017-02-08
+----------------
+  - dataprovider functionality
+  - updates to tests
+
