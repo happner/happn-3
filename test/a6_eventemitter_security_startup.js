@@ -53,7 +53,7 @@ describe('a6_eventemitter_security_groups', function () {
 
       if (!happnMock.services[serviceName].initialize) return eachServiceCB();
 
-      else testServices[serviceName].initialize(happnMock.services[serviceName], eachServiceCB);
+      else testServices[serviceName].initialize(testConfigs[serviceName], eachServiceCB);
 
     }, callback);
 

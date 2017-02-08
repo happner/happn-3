@@ -175,7 +175,12 @@
  - fixed bug with subscribe on keys without preceding '/'
  - client disconnect improvements and test
  
-1.3.0 2017-02-06
-----------------
-
+1.3.0 2017-02-08
+------------------
  - added support for passing custom _meta into `set()` options
+ 
+1.4.0 2017-02-08
+----------------
+  - dataprovider functionality
+  - updates to tests
+

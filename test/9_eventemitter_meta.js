@@ -140,7 +140,6 @@ describe('9_eventemitter_meta.js', function () {
       callback();
 
     });
-
   });
 
   it('tests the delete meta data', function (callback) {
@@ -376,11 +375,8 @@ describe('9_eventemitter_meta.js', function () {
             callback();
 
           });
-
-        })
-
+        });
       }, 1000);
-
     });
   });
 
@@ -424,9 +420,10 @@ describe('9_eventemitter_meta.js', function () {
               }
             };
 
-            publisherclient.get('*', {criteria: searchCriteria}, function (e, items) {
+            publisherclient.get(test_path_timestamp + '*', {criteria: searchCriteria}, function (e, items) {
 
               if (e) return callback(e);
+
               expect(items.length == 10).to.be(true);
 
               var searchCriteria = {
@@ -456,7 +453,7 @@ describe('9_eventemitter_meta.js', function () {
                       '_meta.modified': {
                         '$gte': lastModified
                       }
-                    }
+                    };
 
                     publisherclient.get('*', {criteria: searchCriteria}, function (e, items) {
 
@@ -466,7 +463,6 @@ describe('9_eventemitter_meta.js', function () {
                       expect(items[0].ind).to.be(0);
 
                       callback();
-
                     });
                   });
                 }, 1000);
@@ -475,7 +471,6 @@ describe('9_eventemitter_meta.js', function () {
           });
         }, 2000);
       });
-
   });
 
   xit('tests the meta data is not enumerable for responses', function (callback) {

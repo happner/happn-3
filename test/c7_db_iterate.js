@@ -1,12 +1,13 @@
 describe('c7_ds_iterate', function () {
 
   var expect = require('expect.js');
-  var happn = require('../lib/index')
+  var happn = require('../lib/index');
   var service = happn.service;
   var happn_client = happn.client;
   var async = require('async');
 
   var test_id = Date.now() + '_' + require('shortid').generate();
+
   var fs = require('fs');
 
   this.timeout(20000);
@@ -25,7 +26,7 @@ describe('c7_ds_iterate', function () {
         }
       }
     }
-  }
+  };
 
   var serviceConfig2 = {
     secure: true,
@@ -135,7 +136,7 @@ describe('c7_ds_iterate', function () {
     serviceInstance1.services.data.__iterateDataStores(function (key, ds, next) {
 
       expect(key).to.be("default");
-      expect(ds.db['persistence']).to.not.be(null);
+      expect(ds.provider['persistence']).to.not.be(null);
       next();
 
     }, callback)
@@ -148,7 +149,7 @@ describe('c7_ds_iterate', function () {
     serviceInstance2.services.data.__iterateDataStores(function (key, ds, next) {
 
       expect(['file2', 'file2a'].indexOf(key) > -1).to.be(true);
-      expect(ds.db['persistence']).to.not.be(null);
+      expect(ds.provider['persistence']).to.not.be(null);
 
       keyCount++;
       next();
@@ -164,7 +165,7 @@ describe('c7_ds_iterate', function () {
 
     serviceInstance2.services.data.__iterateDataStores('file2a', function (key, ds, next) {
       expect(key).to.be('file2a');
-      expect(ds.db['persistence']).to.not.be(null);
+      expect(ds.provider['persistence']).to.not.be(null);
       keyCount++;
       next();
     }, function (e) {
@@ -179,7 +180,7 @@ describe('c7_ds_iterate', function () {
 
     serviceInstance2.services.data.__iterateDataStores('file2', function (key, ds, next) {
       expect(key).to.be('file2');
-      expect(ds.db['persistence']).to.not.be(null);
+      expect(ds.provider['persistence']).to.not.be(null);
       keyCount++;
       next();
     }, function (e) {
@@ -193,7 +194,7 @@ describe('c7_ds_iterate', function () {
       next(new Error('this should not have happened'));
     }, function (e) {
       expect(e).to.not.be(null);
-      expect(e.toString()).to.be('Error: datastore with key badkey, specified, but multiple datastores not configured');
+      expect(e.toString()).to.be('Error: datastore with key badkey, does not exist');
       callback();
     })
   });

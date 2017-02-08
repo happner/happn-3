@@ -21,12 +21,32 @@ describe('1_eventemitter_embedded_sanity', function () {
    the logon session. The utils setting will set the system to log non priority information
    */
 
+  var config_file = {
+    services:{
+      data:{
+        config:{
+          filename:__dirname + '/tmp/1_eventemitter_sanity.json'
+        }
+      }
+    }
+  }
+
+  var config = {};
+
   before('should initialize the service', function (callback) {
 
     test_id = Date.now() + '_' + require('shortid').generate();
 
     try {
-      service.create({},
+
+      try{
+        require('fs').unlinkSync(__dirname + '/tmp/1_eventemitter_sanity.json');
+      }catch(e){
+
+      }
+
+
+      service.create(config,
         function (e, happnInst) {
 
           if (e) return callback(e);
@@ -366,7 +386,6 @@ describe('1_eventemitter_embedded_sanity', function () {
       field1: 'field1'
     };
 
-
     var criteria1 = {
       $or: [{
         "regions": {
@@ -384,33 +403,32 @@ describe('1_eventemitter_embedded_sanity', function () {
       "keywords": {
         $in: ["bass", "Penny Siopis"]
       }
-    }
+    };
 
     var options1 = {
-      fields: {
-        "data": 1
-      },
       sort: {
         "field1": 1
       },
       limit: 1
-    }
+    };
 
     var criteria2 = null;
 
     var options2 = {
-      fields: null,
+      fields: {towns:1, keywords:1},
       sort: {
         "field1": 1
       },
       limit: 2
-    }
+    };
 
     publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
 
-      expect(e == null).to.be(true);
+      if (e) return callback(e);
+
       publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end + '/1', complex_obj, null, function (e, put_result) {
-        expect(e == null).to.be(true);
+
+        if (e) return callback(e);
 
         ////////////console.log('searching');
         publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*', {
@@ -418,23 +436,41 @@ describe('1_eventemitter_embedded_sanity', function () {
           options: options1
         }, function (e, search_result) {
 
-          expect(e == null).to.be(true);
+          if (e) return callback(e);
+
           expect(search_result.length == 1).to.be(true);
 
           publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*', {
             criteria: criteria2,
             options: options2
           }, function (e, search_result) {
-            expect(e == null).to.be(true);
+
+            if (e) return callback(e);
+
             expect(search_result.length == 2).to.be(true);
             callback(e);
           });
 
         });
-
       });
-
     });
+  });
+
+  it('tests sift', function (callback) {
+
+    var array = [
+      {value:0},
+      {value:1},
+      {value:2}
+    ];
+
+    var sift = require('sift');
+
+    var sifted = sift({value:{$gte:0, $lte:2}}, array);
+
+    console.log(sifted);
+
+    callback();
 
   });
 
@@ -457,37 +493,66 @@ describe('1_eventemitter_embedded_sanity', function () {
     publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
 
       expect(e == null).to.be(true);
-      to = Date.now();
 
-      var criteria = {
-        "_meta.created": {
-          $gte: from,
-          $lte: to
-        }
-      }
+      setTimeout(function(){
 
-      var options = {
-        fields: null,
-        sort: {
-          "field1": 1
-        },
-        limit: 2
-      }
+        to = Date.now();
 
-      ////////////console.log('searching');
-      publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*', {
-        criteria: criteria,
-        options: options
-      }, function (e, search_result) {
+        var criteria = {
+          "_meta.created": {
+            $gte: from,
+            $lte: to
+          }
+        };
 
-        expect(e == null).to.be(true);
-        expect(search_result.length == 1).to.be(true);
-        callback();
+        var options = {
+          fields:null,
+          sort: {
+            "field1": 1
+          },
+          limit: 2
+        };
 
-      });
+        console.log('from and to:::', from, to);
+
+        ////////////console.log('searching');
+        publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*', {
+          criteria: criteria,
+          options: options
+        }, function (e, search_result) {
+
+          console.log('e:::',e);
+          console.log('search_result:::',search_result);
+
+          expect(e == null).to.be(true);
+          //1486456492128
+          //1486456492129
+          //1486456492433
+
+          if (search_result.length == 0){
+
+            publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, function (e, unmatched) {
+
+              console.log('unmatched:::', unmatched);
+
+              callback(new Error('no items found in the date range'));
+
+            });
+
+          } else {
+
+            publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, function (e, unmatched) {
+
+              console.log('matched:::', unmatched);
+
+              callback();
+
+            });
+          }
+        });
+      }, 300);
 
     });
-
   });
 
 
