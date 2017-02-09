@@ -450,7 +450,6 @@ describe('1_eventemitter_embedded_sanity', function () {
             expect(search_result.length == 2).to.be(true);
             callback(e);
           });
-
         });
       });
     });
@@ -467,8 +466,6 @@ describe('1_eventemitter_embedded_sanity', function () {
     var sift = require('sift');
 
     var sifted = sift({value:{$gte:0, $lte:2}}, array);
-
-    console.log(sifted);
 
     callback();
 
@@ -513,27 +510,17 @@ describe('1_eventemitter_embedded_sanity', function () {
           limit: 2
         };
 
-        console.log('from and to:::', from, to);
-
         ////////////console.log('searching');
         publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*', {
           criteria: criteria,
           options: options
         }, function (e, search_result) {
 
-          console.log('e:::',e);
-          console.log('search_result:::',search_result);
-
           expect(e == null).to.be(true);
-          //1486456492128
-          //1486456492129
-          //1486456492433
 
           if (search_result.length == 0){
 
             publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, function (e, unmatched) {
-
-              console.log('unmatched:::', unmatched);
 
               callback(new Error('no items found in the date range'));
 
@@ -542,8 +529,6 @@ describe('1_eventemitter_embedded_sanity', function () {
           } else {
 
             publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, function (e, unmatched) {
-
-              console.log('matched:::', unmatched);
 
               callback();
 
