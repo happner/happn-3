@@ -20,7 +20,7 @@ describe('d8_session_management', function () {
   Services.DataService = require('../lib/services/data/service');
   Services.CryptoService = require('../lib/services/crypto/service');
   Services.ProtocolService = require('../lib/services/protocol/service');
-  Services.PubSubService = require('../lib/services/pubsub/service');
+  Services.PubSubService = require('./service');
   Services.UtilsService = require('../lib/services/utils/service');
   Services.SessionService = require('../lib/services/session/service');
   Services.SystemService = require('../lib/services/system/service');

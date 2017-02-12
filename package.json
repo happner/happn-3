@@ -44,6 +44,7 @@
     "shortid": "2.2.4",
     "sift": "3.2.6",
     "sillyname": "0.1.0",
+    "sorted-object-array": "^1.0.0",
     "tcp-port-used": "0.1.2",
     "traverse": "0.6.6",
     "underscore.string": "3.3.4",
@@ -52,7 +53,7 @@
     "ws": "1.0.1"
   },
   "devDependencies": {
-    "byline": "5.0.0",
+    "byline": "^5.0.0",
     "chai": "^3.5.0",
     "coveralls": "^2.11.6",
     "debug": "^2.2.0",
