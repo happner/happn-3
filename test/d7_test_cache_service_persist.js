@@ -27,14 +27,20 @@ describe('d7_test_cache_service_persisted', function() {
 
   before('should initialize the service', function(callback) {
 
+    var UtilService = require('../lib/services/utils/service');
+    var utilService = new UtilService();
+
+    dataServiceInstance.happn = {
+      services:{
+        utils:utilService
+      }
+    };
+
     dataServiceInstance.initialize({}, function(e){
 
       if (e) return callback(e);
 
       config.defaultCacheOpts.cache.dataStore = dataServiceInstance;
-
-      var UtilService = require('../lib/services/utils/service');
-      var utilService = new UtilService();
 
       serviceInstance.happn = {
         services:{
@@ -56,6 +62,8 @@ describe('d7_test_cache_service_persisted', function() {
     var key = testId + 'test1';
 
     serviceInstance.set(key, {"dkey":key}, function(e, result){
+
+      console.log('error is:::', e);
 
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
