@@ -4,6 +4,10 @@ describe('d4_a_data_functional', function() {
 
   var expect = require('expect.js');
 
+  var Utils = require('../lib/services/utils/service');
+
+  var utils = new Utils();
+
   var service = require('../lib/services/data/service');
 
   var serviceInstance = new service();
@@ -13,6 +17,12 @@ describe('d4_a_data_functional', function() {
   var empty_config = {};
 
   before('should initialize the service', function(callback) {
+
+    serviceInstance.happn = {
+      services:{
+        utils:utils
+      }
+    };
 
     serviceInstance.initialize(empty_config, callback);
   });
