@@ -183,4 +183,9 @@
 ----------------
   - dataprovider functionality
   - updates to tests
+  
+1.4.1 2017-02-08
+----------------
+  - fixed issue where the options where getting attached to request options in dataprovider
+  - updates to tests
 
