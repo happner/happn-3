@@ -445,4 +445,78 @@ describe('f7_subscription_service', function () {
     });
   });
 
+  it('does a clearSubscriptions for a specific session', function (done) {
+
+    var config = {
+
+    };
+
+    var testItems = [];
+
+    mockSubscriptionService(config, testItems, function(e, instance){
+
+      if (e) return done(e);
+
+      var subscribeMessage = {
+        request:{
+          path:'/SET@test/path/*',
+          options:{
+            other:'data'
+          }
+        },
+        session:{
+          id:'1'
+        }
+      };
+
+      var unsubscribeMessage = {
+        request:{
+          path:'/SET@test/path/*',
+          options:{
+            other:'data'
+          }
+        },
+        session:{
+          id:'1'
+        }
+      };
+
+      instance.processSubscribe(subscribeMessage, function(e, result){
+
+        if (e) return done(e);
+
+        expect(result.response._meta.status).to.be('ok');
+
+        var getRecipientsMessage = {
+          request:{
+            action:'SET',
+            path:'test/path/1'
+          }
+        };
+
+        instance.processGetRecipients(getRecipientsMessage, function(e, result){
+
+          if (e) return done(e);
+
+          expect(result.recipients.length).to.be(1);
+
+          instance.clearSubscriptions('1', function(e){
+
+            if (e) return done(e);
+
+            instance.processGetRecipients(getRecipientsMessage, function(e) {
+
+              if (e) return done(e);
+
+              expect(result.recipients.length).to.be(0);
+
+              done();
+
+            });
+          });
+        });
+      });
+    });
+  });
+
 });
