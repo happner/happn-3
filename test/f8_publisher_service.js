@@ -134,7 +134,7 @@ describe('f8_publisher_service', function () {
 
     expect(publication.id).to.be(message.session.id + '-' + message.request.eventId);//publications have a unique id built up from session and eventId
 
-    expect(publication.payload).to.eql(expectedMessage);//not what gets queued exactly, just the data bit
+    expect(publication.payload).to.eql(JSON.stringify(expectedMessage));//not what gets queued exactly, just the data bit
 
     expect(publication.recipients.length).to.eql(message.recipients.length);
 
@@ -217,7 +217,7 @@ describe('f8_publisher_service', function () {
 
     expect(publication.id).to.be(message.session.id + '-' + message.request.eventId);//publications have a unique id
 
-    expect(publication.payload).to.eql(expectedMessage);
+    expect(publication.payload).to.eql(JSON.stringify(expectedMessage));
 
     expect(publication.recipients.length).to.eql(message.recipients.length);
 
