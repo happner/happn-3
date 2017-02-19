@@ -18,12 +18,19 @@ describe('f8_publisher_service', function () {
 
   });
 
-  function mockQueueService(){
+  function mockQueueService(items, itemPushedHandler){
+
     return {
-      pushOutbound:function(message){
+      itemPushedHandler:itemPushedHandler,
+      pushOutbound:function(message, callback){
+
         this.items.push(message);
+
+        callback();
+
+        if (this.itemPushedHandler) this.itemPushedHandler(message);
       },
-      items:[]
+      items:items
     }
   }
 
@@ -126,9 +133,9 @@ describe('f8_publisher_service', function () {
       "protocol":"happn-1.0.0"
     };
 
-    var publication = new Publication(message, utilsService);
+    var publication = new Publication(message);
 
-    expect(publication.consistency).to.be(2);//transactional by default
+    expect(publication.options.consistency).to.be(2);//transactional by default
 
     expect(publication.origin).to.be(message.session.id);
 
@@ -209,9 +216,9 @@ describe('f8_publisher_service', function () {
       "protocol":"happn-1.0.0"
     };
 
-    var publication = new Publication(message, utilsService);
+    var publication = new Publication(message);
 
-    expect(publication.consistency).to.be(1);//this was defined
+    expect(publication.options.consistency).to.be(1);//this was defined
 
     expect(publication.origin).to.be(message.session.id);
 
@@ -225,15 +232,217 @@ describe('f8_publisher_service', function () {
 
   });
 
-  xit('tests the publications publish method, no recipients', function (done) {
+  it('tests the publication\'s publish method, no recipients', function (done) {
+
+    var Publication = require('../lib/services/publisher/publication');
+
+    var message = {
+      request:{
+        action:'set',
+        eventId:10,
+        path:'/set/some/data',
+        data:{
+          test:'data'
+        },
+        options:{
+          other:'data',
+          consistency:1
+        }
+      },
+      session:{
+        id:'1'
+      },
+      protocol:'happn-1.0.0',
+      recipients:[],
+      response:{
+        "data": {
+          "data": {
+            "was": "set"
+          }
+        },
+        "_meta": {
+          "path": "/set/some/data",
+          "action": "set",
+          "type": "response"
+        }
+      }
+    };
+
+    var expectedMessage = {
+      "data": {
+        "data": {
+          "was": "set"
+        }
+      },
+      "_meta": {
+        "path": "/set/some/data",
+        "action": "/SET@/set/some/data",
+        "type": "data"
+      },
+      "protocol":"happn-1.0.0"
+    };
+
+    var publication = new Publication(message);
+
+    expect(publication.recipients.length).to.eql(0);
+
+    var myArray = [];
+
+    var mockQueue = mockQueueService(myArray);
+
+    publication.publish(mockQueue, {}, function(e, results){
+
+      if (e) return done(e);
+
+      console.log('results:::', results);
+
+      done();
+
+    });
 
   });
 
-  xit('tests the publications publish method, with recipients, default consistency', function (done) {
+  it('tests the publications publish method, with recipients, default consistency', function (done) {
+
+    var Publication = require('../lib/services/publisher/publication');
+
+    var message = {
+      request:{
+        action:'set',
+        eventId:10,
+        path:'/set/some/data',
+        data:{
+          test:'data'
+        },
+        options:{
+          other:'data',
+          consistency:2
+        }
+      },
+      session:{
+        id:'1'
+      },
+      protocol:'happn-1.0.0',
+      recipients:[
+        {
+          session:{id:'1'}
+        },{
+          session:{id:'2'}
+        }
+      ],
+      response:{
+        "data": {
+          "data": {
+            "was": "set"
+          }
+        },
+        "_meta": {
+          "path": "/set/some/data",
+          "action": "set",
+          "type": "response"
+        }
+      }
+    };
+
+    var expectedMessage = {
+      "data": {
+        "data": {
+          "was": "set"
+        }
+      },
+      "_meta": {
+        "path": "/set/some/data",
+        "action": "/SET@/set/some/data",
+        "type": "data"
+      },
+      "protocol":"happn-1.0.0"
+    };
+
+    var publication = new Publication(message);
+
+    expect(publication.recipients.length).to.eql(2);
+
+    var myArray = [];
+
+    var mockQueue = mockQueueService(myArray);
+
+    publication.publish(mockQueue, {}, function(e, results){
+
+      if (e) return done(e);
+
+      console.log('results:::', results);
+
+      done();
+
+    });
 
   });
 
-  xit('tests the publications publish method, with recipients, optimistic consistency', function (done) {
+  it('tests the publications publish method, with recipients, acknowledged consistency', function (done) {
+
+    var Publication = require('../lib/services/publisher/publication');
+
+    var message = {
+      request:{
+        action:'set',
+        eventId:10,
+        path:'/set/some/data',
+        data:{
+          test:'data'
+        },
+        options:{
+          other:'data',
+          consistency:3
+        }
+      },
+      session:{
+        id:'1'
+      },
+      protocol:'happn-1.0.0',
+      recipients:[
+        {
+          session:{id:'1'}
+        },{
+          session:{id:'2'}
+        }
+      ],
+      response:{
+        "data": {
+          "data": {
+            "was": "set"
+          }
+        },
+        "_meta": {
+          "path": "/set/some/data",
+          "action": "set",
+          "type": "response"
+        }
+      }
+    };
+
+    var publication = new Publication(message);
+
+    expect(publication.recipients.length).to.eql(2);
+
+    var myArray = [];
+
+    var mockQueue = mockQueueService(myArray, function(processedMessage){
+
+      publication.acknowledge(processedMessage, function(e){
+        console.log('DID ACK:::',publication.unacknowledged);
+        if (e) return done(e);
+      });
+    });
+
+    publication.publish(mockQueue, {}, function(e, results){
+
+      if (e) return done(e);
+
+      console.log('results:::', results);
+
+      done();
+
+    });
 
   });
 
@@ -245,8 +454,6 @@ describe('f8_publisher_service', function () {
 
   });
 
-  xit('tests the publications publish method, with recipients, acknowledged consistency', function (done) {
 
-  });
 
 });
