@@ -323,9 +323,17 @@ describe('f8_publisher_service', function () {
       protocol:'happn-1.0.0',
       recipients:[
         {
-          session:{id:'1'}
+          subscription:{
+            data:{
+              session:{id:'1'}
+            }
+          }
         },{
-          session:{id:'2'}
+          subscription:{
+            data:{
+              session:{id:'2'}
+            }
+          }
         }
       ],
       response:{
@@ -397,9 +405,17 @@ describe('f8_publisher_service', function () {
       protocol:'happn-1.0.0',
       recipients:[
         {
-          session:{id:'1'}
+          subscription:{
+            data:{
+              session:{id:'1'}
+            }
+          }
         },{
-          session:{id:'2'}
+          subscription:{
+            data:{
+              session:{id:'2'}
+            }
+          }
         }
       ],
       response:{
@@ -460,9 +476,17 @@ describe('f8_publisher_service', function () {
       protocol:'happn-1.0.0',
       recipients:[
         {
-          session:{id:'1'}
+          subscription:{
+            data:{
+              session:{id:'1'}
+            }
+          }
         },{
-          session:{id:'2'}
+          subscription:{
+            data:{
+              session:{id:'2'}
+            }
+          }
         }
       ],
       response:{
@@ -530,12 +554,24 @@ describe('f8_publisher_service', function () {
       protocol:'happn-1.0.0',
       recipients:[
         {
-          session:{id:'1'}
+          subscription:{
+            data:{
+              session:{id:'1'}
+            }
+          }
         },{
-          session:{id:'2'}
+          subscription:{
+            data:{
+              session:{id:'2'}
+            }
+          }
         },
         {
-          session:{id:'3'}
+          subscription:{
+            data:{
+              session:{id:'3'}
+            }
+          }
         }
       ],
       response:{
@@ -603,12 +639,24 @@ describe('f8_publisher_service', function () {
       protocol:'happn-1.0.0',
       recipients:[
         {
-          session:{id:'1'}
+          subscription:{
+            data:{
+              session:{id:'1'}
+            }
+          }
         },{
-          session:{id:'2'}
+          subscription:{
+            data:{
+              session:{id:'2'}
+            }
+          }
         },
         {
-          session:{id:'3'}
+          subscription:{
+            data:{
+              session:{id:'3'}
+            }
+          }
         }
       ],
       response:{
@@ -690,12 +738,24 @@ describe('f8_publisher_service', function () {
         protocol:'happn-1.0.0',
         recipients:[
           {
-            session:{id:'1'}
+           subscription:{
+             data:{
+               session:{id:'1'}
+             }
+           }
           },{
-            session:{id:'2'}
+            subscription:{
+              data:{
+                session:{id:'2'}
+              }
+            }
           },
           {
-            session:{id:'3'}
+            subscription:{
+              data:{
+                session:{id:'3'}
+              }
+            }
           }
         ],
         response:{
@@ -768,12 +828,24 @@ describe('f8_publisher_service', function () {
         protocol:'happn-1.0.0',
         recipients:[
           {
-            session:{id:'1'}
+            subscription:{
+              data:{
+                session:{id:'1'}
+              }
+            }
           },{
-            session:{id:'2'}
+            subscription:{
+              data:{
+                session:{id:'2'}
+              }
+            }
           },
           {
-            session:{id:'3'}
+            subscription:{
+              data:{
+                session:{id:'3'}
+              }
+            }
           }
         ],
         response:{

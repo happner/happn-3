@@ -20,7 +20,8 @@ describe('d8_session_management', function () {
   Services.DataService = require('../lib/services/data/service');
   Services.CryptoService = require('../lib/services/crypto/service');
   Services.ProtocolService = require('../lib/services/protocol/service');
-  Services.PubSubService = require('./service');
+  Services.PublisherService = require('../lib/services/publisher/service');
+  Services.SubscriptionService = require('../lib/services/subscription/service');
   Services.UtilsService = require('../lib/services/utils/service');
   Services.SessionService = require('../lib/services/session/service');
   Services.SystemService = require('../lib/services/system/service');
@@ -75,6 +76,8 @@ describe('d8_session_management', function () {
       .then(mockService(happn, 'Queue'))
       .then(mockService(happn, 'Data'))
       .then(mockService(happn, 'Cache'))
+      .then(mockService(happn, 'Subscription'))
+      .then(mockService(happn, 'Publisher'))
       .then(mockService(happn, 'System'))
       .then(mockService(happn, 'Session', false))
       .then(mockService(happn, 'Security', {

@@ -90,6 +90,44 @@ describe('f7_subscription_service', function () {
 
   });
 
+  it('tests the catchall segment, allSubscriptions', function (done) {
+
+    var SubscriptionBucket = require('../lib/services/subscription/bucket.js');
+
+    var sessionId1 = '1';
+    var sessionId2 = '2';
+
+    var testBucket = new SubscriptionBucket({
+      type:1,
+      name:'testBucket'
+    });
+
+    testBucket.initialize(function(e){
+
+      if (e) return done(e);
+
+      testBucket.addSubscription('*', sessionId1);
+
+      testBucket.addSubscription('*', sessionId2);
+
+      expect(testBucket.allSubscriptions().length).to.be(2);
+
+      testBucket.getSubscriptions('/test/path/1', function(e, subscriptions){
+
+        expect(subscriptions.length).to.be(2);
+
+        testBucket.removeSubscription('*', sessionId2);
+
+        expect(testBucket.allSubscriptions().length).to.be(1);
+
+        expect(testBucket.__segments.array.length).to.be(0);//all subscriptions do not have segments
+
+        done();
+
+      });
+    });
+  });
+
   it('tests the subscription bucket adding and removing, with getSubscriptions', function (done) {
 
     var SubscriptionBucket = require('../lib/services/subscription/bucket.js');
@@ -143,7 +181,7 @@ describe('f7_subscription_service', function () {
 
   it('starts up the subscription service, adds ' + RANDOM_COUNT + ' subscriptions, checks we are able to retrieve recipients', function (done) {
 
-    this.timeout();
+    this.timeout(10000);
 
     var SubscriptionBucket = require('../lib/services/subscription/bucket.js');
 
@@ -504,11 +542,11 @@ describe('f7_subscription_service', function () {
 
             if (e) return done(e);
 
-            instance.processGetRecipients(getRecipientsMessage, function(e) {
+            instance.processGetRecipients(getRecipientsMessage, function(e, afteClearedResult) {
 
               if (e) return done(e);
 
-              expect(result.recipients.length).to.be(0);
+              expect(afteClearedResult.recipients.length).to.be(0);
 
               done();
 
