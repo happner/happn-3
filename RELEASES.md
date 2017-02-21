@@ -188,4 +188,8 @@
 ----------------
   - fixed issue where the options where getting attached to request options in dataprovider
   - updates to tests
+  
+1.4.2 2017-02-21
+----------------
+  - refactored this.STATE to this.state in client
 
