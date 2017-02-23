@@ -22,7 +22,8 @@ describe('f7_subscription_service', function () {
 
     var testBucket = new SubscriptionBucket({
       type:1,
-      name:'testBucket'
+      name:'testBucket',
+      channel:'SET'
     });
 
     testBucket.initialize(function(e) {
@@ -53,7 +54,8 @@ describe('f7_subscription_service', function () {
 
     var testBucket = new SubscriptionBucket({
       type:1,
-      name:'testBucket'
+      name:'testBucket',
+      channel:'SET'
     });
 
     testBucket.initialize(function(e){
@@ -99,7 +101,8 @@ describe('f7_subscription_service', function () {
 
     var testBucket = new SubscriptionBucket({
       type:1,
-      name:'testBucket'
+      name:'testBucket',
+      channel:'SET'
     });
 
     testBucket.initialize(function(e){
@@ -140,7 +143,8 @@ describe('f7_subscription_service', function () {
 
     var testBucket = new SubscriptionBucket({
       type:1,
-      name:'testBucket'
+      name:'testBucket',
+      channel:'SET'
     });
 
     testBucket.initialize(function(e){
@@ -177,7 +181,7 @@ describe('f7_subscription_service', function () {
     });
   });
 
-  var RANDOM_COUNT = 1000;
+  var RANDOM_COUNT = 100;
 
   it('starts up the subscription service, adds ' + RANDOM_COUNT + ' subscriptions, checks we are able to retrieve recipients', function (done) {
 
@@ -187,7 +191,8 @@ describe('f7_subscription_service', function () {
 
     var testBucket = new SubscriptionBucket({
       type:1,
-      name:'testBucket'
+      name:'testBucket',
+      channel:'SET'
     });
 
     var pathCounts = {};
@@ -293,6 +298,7 @@ describe('f7_subscription_service', function () {
       var subscribeMessage = {
         request:{
           path:'/SET@test/path/*',
+          key:'test/path/*',
           options:{
             other:'data'
           }
@@ -342,6 +348,7 @@ describe('f7_subscription_service', function () {
       var subscribeMessage = {
         request:{
           path:'/SET@test/path/*',
+          key:'test/path/*',
           options:{
             other:'data'
           }
@@ -354,6 +361,7 @@ describe('f7_subscription_service', function () {
       var unsubscribeMessage = {
         request:{
           path:'/SET@test/path/*',
+          key:'test/path/*',
           options:{
             other:'data'
           }
@@ -372,7 +380,8 @@ describe('f7_subscription_service', function () {
         var getRecipientsMessage = {
           request:{
             action:'SET',
-            path:'test/path/1'
+            path:'test/path/1',
+            key:'test/path/1'
           }
         };
 
@@ -419,6 +428,7 @@ describe('f7_subscription_service', function () {
       var subscribeMessage = {
         request:{
           path:'/SET@test/path/*',
+          key:'test/path/*',
           options:{
             other:'data',
             initialCallback:true
@@ -460,6 +470,7 @@ describe('f7_subscription_service', function () {
       var subscribeMessage = {
         request:{
           path:'/SET@test/path/*',
+          key:'test/path/*',
           options:{
             other:'data',
             initialEmit:true
@@ -498,6 +509,7 @@ describe('f7_subscription_service', function () {
       var subscribeMessage = {
         request:{
           path:'/SET@test/path/*',
+          key:'test/path/*',
           options:{
             other:'data'
           }

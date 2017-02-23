@@ -25,7 +25,8 @@ describe(filename, function () {
       'session',
       'protocol',
       'security',
-      'pubsub',
+      'subscription',
+      'publisher',
       'queue',
       'layer',
       'stats'

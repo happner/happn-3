@@ -160,6 +160,40 @@ describe('1_eventemitter_embedded_sanity', function () {
     }
   });
 
+  it('the listener should pick up a single wildcard event, event type not specified', function (callback) {
+
+    try {
+
+      //first listen for the change
+      listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*', function (message) {
+
+        callback();
+
+      }, function (e) {
+
+        if (!e) {
+
+          expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
+
+          console.log('ok setting:::');
+
+          //then make the change
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/blah', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          }, null, function (e, result) {
+
+          });
+
+        } else callback(e);
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
   it('the publisher should get null for unfound data, exact path', function (callback) {
 
 

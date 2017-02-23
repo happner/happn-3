@@ -95,25 +95,20 @@ describe('a2_eventemitter_embedded_paths', function () {
 
       }, function (e) {
 
-        //////////////////console.log('ON HAS HAPPENED: ' + e);
+        if (e) return callback(e);
 
-        if (!e) {
+        expect(listenerclient.events['/SET@/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
+        //////////////////console.log('on subscribed, about to publish');
 
-          expect(listenerclient.events['/SET@/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
-          //////////////////console.log('on subscribed, about to publish');
+        //then make the change
+        publisherclient.set('/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/event/blah', {
+          property1: 'property1',
+          property2: 'property2',
+          property3: 'property3'
+        }, null, function (e, result) {
+          //console.log('put happened - listening for result:::');
+        });
 
-
-          //then make the change
-          publisherclient.set('/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/event/blah', {
-            property1: 'property1',
-            property2: 'property2',
-            property3: 'property3'
-          }, null, function (e, result) {
-            //console.log('put happened - listening for result');
-          });
-        }
-        else
-          callback(e);
       });
 
     } catch (e) {
