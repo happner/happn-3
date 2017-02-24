@@ -138,6 +138,7 @@ describe('f8_publisher_service', function () {
         "path": "/set/some/data",
         "action": "/SET@/set/some/data",
         "type": "data",
+        "channel":"/SET@/set/some/data",
         "sessionId":"1",
         "consistency":2
       },
@@ -209,6 +210,7 @@ describe('f8_publisher_service', function () {
         "path": "/set/some/data",
         "action": "/SET@/set/some/data",
         "type": "data",
+        "channel":"/SET@/set/some/data",
         "sessionId":"1",
         "consistency":1
       },
@@ -708,11 +710,11 @@ describe('f8_publisher_service', function () {
     var queueItems = [];
 
     var queuePushedHandler = function(item){
-      console.log('queue pushed:::', item);
+      //console.log('queue pushed:::', item);
     };
 
     var publicationPushedHandler = function(item){
-      console.log('pub pushed:::', item);
+      //console.log('pub pushed:::', item);
     };
 
     mockPublisherService(config, queueItems, queuePushedHandler, [], publicationPushedHandler, function(e, mockPublisher){
@@ -790,11 +792,11 @@ describe('f8_publisher_service', function () {
     var pubService;
 
     var queuePushedHandler = function(item){
-      console.log('queue pushed:::', item);
+      //console.log('queue pushed:::', item);
     };
 
     var publicationPushedHandler = function(item){
-      console.log('pub pushed:::', item);
+      //console.log('pub pushed:::', item);
 
       pubService.performPublication(item, function(e){
 

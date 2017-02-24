@@ -45,6 +45,8 @@ describe('f9_publish_middleware', function () {
 
     var ran1 = false, ran2 = false;
 
+    var eventId1, eventId2;
+
     service.create(config)
       .then(function (instance) {
         serviceInstance = instance;
@@ -54,11 +56,14 @@ describe('f9_publish_middleware', function () {
         clientInstance = client;
 
         return new Promise(function (resolve, reject) {
-          clientInstance.on('/test/path/*', {meta: {publish: true}}, function () {
+          clientInstance.on('/test/path/*', {meta: {publish: true}}, function (e) {
             console.log('/test/path/1:::');
+
             ran1 = true;
-          }, function (e) {
+          }, function (e, eventId) {
+
             if (e) return reject(e);
+            eventId1 = eventId;
             resolve();
           });
         });
@@ -69,8 +74,10 @@ describe('f9_publish_middleware', function () {
           clientInstance.on('/test/path/*', {meta: {publish: false}}, function () {
             console.log('/test/path/2:::');
             ran2 = true;
-          }, function (e) {
+          }, function (e, eventId) {
+
             if (e) return reject(e);
+            eventId2 = eventId;
             resolve();
           });
         });
@@ -84,10 +91,30 @@ describe('f9_publish_middleware', function () {
 
         return Promise.delay(200);
       })
+      // .then(function () {
+      //
+      //   expect(ran1).to.be(true);
+      //   expect(ran2).to.be(false);
+      //
+      // })
       .then(function () {
 
-        expect(ran1).to.be(true);
-        expect(ran2).to.be(false);
+        console.log('unsubscribing using:::', eventId1);
+
+        console.log('BEFORE BUCKETS:::');
+
+        console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[2].__subscribers.array, null, 2));
+
+        return clientInstance.off(eventId1, function(e){
+
+          console.log('BUCKETS:::');
+
+          console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[0].__subscribers.array, null, 2));
+          console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[1].__subscribers.array, null, 2));
+          console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[2].__subscribers.array, null, 2));
+
+        });
+
       })
       .then(done)
       .catch(done)

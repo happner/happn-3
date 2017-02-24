@@ -30,11 +30,11 @@ describe('f7_subscription_service', function () {
 
       if (e) return done(e);
 
-      testBucket.addSubscription('/test/path/*', sessionId1);
+      testBucket.addSubscription('/test/path/*', sessionId1, {options:{refCount:1}});
 
       expect(testBucket.allSubscriptions().length).to.be(1);
 
-      testBucket.addSubscription('/test/path/*', sessionId1);
+      testBucket.addSubscription('/test/path/*', sessionId1, {options:{refCount:1}});
 
       expect(testBucket.allSubscriptions().length).to.be(1);
 
@@ -58,19 +58,21 @@ describe('f7_subscription_service', function () {
       channel:'SET'
     });
 
+    var data = {options:{refCount:1}};
+
     testBucket.initialize(function(e){
 
       if (e) return done(e);
 
-      testBucket.addSubscription('/test/path/*', sessionId1);
+      testBucket.addSubscription('/test/path/*', sessionId1, data);
 
-      testBucket.addSubscription('/test/path/*', sessionId2);
+      testBucket.addSubscription('/test/path/*', sessionId2, data);
 
-      testBucket.addSubscription('/test/path/*', sessionId3);
+      testBucket.addSubscription('/test/path/*', sessionId3, data);
 
-      testBucket.addSubscription('/test/path/*', sessionId4);
+      testBucket.addSubscription('/test/path/*', sessionId4, data);
 
-      testBucket.addSubscription('/test/path/*', sessionId4);
+      testBucket.addSubscription('/test/path/*', sessionId4, data);
 
       expect(testBucket.allSubscriptions().length).to.be(4);
 
@@ -105,13 +107,15 @@ describe('f7_subscription_service', function () {
       channel:'SET'
     });
 
+    var data = {options:{refCount:1}};
+
     testBucket.initialize(function(e){
 
       if (e) return done(e);
 
-      testBucket.addSubscription('*', sessionId1);
+      testBucket.addSubscription('*', sessionId1, data);
 
-      testBucket.addSubscription('*', sessionId2);
+      testBucket.addSubscription('*', sessionId2, data);
 
       expect(testBucket.allSubscriptions().length).to.be(2);
 
@@ -119,14 +123,19 @@ describe('f7_subscription_service', function () {
 
         expect(subscriptions.length).to.be(2);
 
-        testBucket.removeSubscription('*', sessionId2);
+        console.log('removing:::');
 
-        expect(testBucket.allSubscriptions().length).to.be(1);
+        testBucket.removeSubscription('*', sessionId2, function(e){
 
-        expect(testBucket.__segments.array.length).to.be(0);//all subscriptions do not have segments
+          if (e) return done(e);
 
-        done();
+          expect(testBucket.allSubscriptions().length).to.be(1);
 
+          expect(testBucket.__segments.array.length).to.be(0);//all subscriptions do not have segments
+
+          done();
+
+        });
       });
     });
   });
@@ -147,25 +156,27 @@ describe('f7_subscription_service', function () {
       channel:'SET'
     });
 
+    var data = {options:{refCount:1}};
+
     testBucket.initialize(function(e){
 
       if (e) return done(e);
 
-      testBucket.addSubscription('/test/path/*', sessionId1);
+      testBucket.addSubscription('/test/path/*', sessionId1, data);
 
-      testBucket.addSubscription('/test/path/*', sessionId2);
+      testBucket.addSubscription('/test/path/*', sessionId2, data);
 
-      testBucket.addSubscription('/test/path/*', sessionId3);
+      testBucket.addSubscription('/test/path/*', sessionId3, data);
 
-      testBucket.addSubscription('/test/path/*', sessionId4);
+      testBucket.addSubscription('/test/path/*', sessionId4, data);
 
-      testBucket.addSubscription('/test/path/*', sessionId4);
+      testBucket.addSubscription('/test/path/*', sessionId4, data);
 
-      testBucket.addSubscription('/test/other/path/*', sessionId5);
+      testBucket.addSubscription('/test/other/path/*', sessionId5, data);
 
-      testBucket.addSubscription('/test/other/path/*', sessionId5);
+      testBucket.addSubscription('/test/other/path/*', sessionId5, data);
 
-      testBucket.addSubscription('/test/other/path/*', sessionId5);
+      testBucket.addSubscription('/test/other/path/*', sessionId5, data);
 
       expect(testBucket.allSubscriptions().length).to.be(5);
 
@@ -211,7 +222,7 @@ describe('f7_subscription_service', function () {
 
           pathCounts[randomPath]++;
 
-          testBucket.addSubscription('/test/path/' + randomPath, shortid.generate(), {rand:randomPath}, timeCB);
+          testBucket.addSubscription('/test/path/' + randomPath, shortid.generate(), {rand:randomPath, options:{refCount:1}}, timeCB);
         },
 
         function(e){
