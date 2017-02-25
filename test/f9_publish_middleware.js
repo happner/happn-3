@@ -24,10 +24,11 @@ describe('f9_publish_middleware', function () {
   it('should instantiate a service with a piece of middleware', function (done) {
 
     var recipientFilterFunction = function (messsage, recipients, callback) {
+
       //filter recipients by message and recipient meta
       callback(null, recipients.filter(function (recipient) {
-        console.log('recipient to filter:::', recipient);
-        return true;
+
+        return recipient.subscription.data.options.meta.publish;
       }));
     };
 
@@ -56,14 +57,17 @@ describe('f9_publish_middleware', function () {
         clientInstance = client;
 
         return new Promise(function (resolve, reject) {
-          clientInstance.on('/test/path/*', {meta: {publish: true}}, function (e) {
-            console.log('/test/path/1:::');
+
+          clientInstance.on('/test/path/*', {meta: {publish: true}}, function (data) {
 
             ran1 = true;
+
           }, function (e, eventId) {
 
             if (e) return reject(e);
+
             eventId1 = eventId;
+
             resolve();
           });
         });
@@ -71,51 +75,55 @@ describe('f9_publish_middleware', function () {
       .then(function () {
 
         return new Promise(function (resolve, reject) {
-          clientInstance.on('/test/path/*', {meta: {publish: false}}, function () {
-            console.log('/test/path/2:::');
+
+          clientInstance.on('/test/path/1/*', {meta: {publish: false}}, function (data) {
+
             ran2 = true;
+
           }, function (e, eventId) {
 
             if (e) return reject(e);
+
             eventId2 = eventId;
+
             resolve();
           });
         });
       })
       .then(function () {
 
-        return clientInstance.set('/test/path/1', {test: 'data'}, {meta: {filter: true}})
+        return clientInstance.set('/test/path/1/1', {test: 'data'}, {meta: {filter: true}})
 
       })
       .then(function () {
 
-        return Promise.delay(200);
+        return Promise.delay(300);
+      })
+      .then(function () {
+
+        expect(ran1).to.be(true);
+        expect(ran2).to.be(false);
+
       })
       // .then(function () {
       //
-      //   expect(ran1).to.be(true);
-      //   expect(ran2).to.be(false);
+      //   console.log('unsubscribing using:::', eventId1);
+      //
+      //   console.log('BEFORE BUCKETS:::');
+      //
+      //   console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[2].__subscribers.array, null, 2));
+      //
+      //   return clientInstance.off(eventId1, function(e){
+      //
+      //     console.log('BUCKETS:::');
+      //
+      //     console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[0].__subscribers.array, null, 2));
+      //     console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[1].__subscribers.array, null, 2));
+      //     console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[2].__subscribers.array, null, 2));
+      //
+      //   });
       //
       // })
-      .then(function () {
-
-        console.log('unsubscribing using:::', eventId1);
-
-        console.log('BEFORE BUCKETS:::');
-
-        console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[2].__subscribers.array, null, 2));
-
-        return clientInstance.off(eventId1, function(e){
-
-          console.log('BUCKETS:::');
-
-          console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[0].__subscribers.array, null, 2));
-          console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[1].__subscribers.array, null, 2));
-          console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[2].__subscribers.array, null, 2));
-
-        });
-
-      })
       .then(done)
       .catch(done)
 

@@ -3,7 +3,7 @@
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "version": "1.4.1",
   "main": "./lib/index",
-  "protocol": "1.2.0",
+  "protocol": "1.3.0",
   "scripts": {
     "test": "mocha silence.js test",
     "test-cover": "istanbul cover _mocha -- silence.js test",
