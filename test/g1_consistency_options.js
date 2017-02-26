@@ -357,4 +357,81 @@ describe('g1_consistency_options', function () {
       .catch(done)
 
   });
+
+  it.only('does a set with a publish, acknowledged consistency publishResults:true, picks up publication log the set results meta', function (done) {
+
+    var clientConfig = {};
+
+    var config = {
+      services: {
+        subscription: {
+          config: {}
+        }
+      }
+    };
+
+    var ran1 = false, ran2 = false;
+
+    var subscription1, subscription2;
+
+    service.create(config)
+      .then(function (instance) {
+        serviceInstance = instance;
+        return Happn.client.create(clientConfig);
+      })
+      .then(function (client) {
+
+        clientInstance1 = client;
+        return Happn.client.create(clientConfig);
+      })
+      .then(function (client) {
+
+        clientInstance2 = client;
+
+        return clientInstance1.on('/test/path/transactional/*', {
+          meta: {publish: true},
+          onPublished:function (data) {
+            ran1 = true;
+          }
+        });
+      })
+      .then(function (subscription) {
+
+        subscription1 = subscription;
+
+        return clientInstance2.on('/test/path/transactional/*', {
+          meta: {publish: true},
+          onPublished:function (data) {
+            ran2 = true;
+          }
+        });
+      })
+      .then(function (subscription) {
+
+        subscription2 = subscription;
+
+        return new Promise(function (resolve, reject) {
+
+          clientInstance1.set('/test/path/transactional/1', {test: 'data'}, {
+            consistency:CONSISTENCY.ACKNOWLEDGED,
+            publishResults:true
+          }, function(e, response){
+            if (e) return reject(e);
+            else resolve(response);
+          })
+        });
+      })
+      .then(function (results) {
+
+        expect(results._meta.publishResults.queued).to.be(2);
+        expect(results._meta.publishResults.successful).to.be(2);
+
+        //TODO: test unsubscribe
+
+        done();
+      })
+      .catch(done)
+
+  });
+
 });
