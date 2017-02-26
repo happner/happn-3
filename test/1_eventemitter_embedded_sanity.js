@@ -160,6 +160,34 @@ describe('1_eventemitter_embedded_sanity', function () {
     }
   });
 
+  it('the uses the onPublished event handler', function (callback) {
+
+      listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/*', {
+        onPublished:function(message, meta){
+
+          expect(message.property1).to.be('property1');
+
+          expect(meta.created <= Date.now()).to.be(true);
+
+          callback();
+        }
+      }).then(function(eventId){
+
+        expect(eventId >= 0).to.be(true);
+
+        expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/*'].length).to.be(1);
+
+        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/blah', {
+          property1: 'property1',
+          property2: 'property2',
+          property3: 'property3'
+        }, null, function (e) {
+          if (e) return callback (e);
+        });
+
+      }).catch(callback);
+  });
+
   it('the listener should pick up a single wildcard event, event type not specified', function (callback) {
 
     try {
