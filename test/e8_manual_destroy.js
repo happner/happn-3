@@ -42,13 +42,14 @@ describe('e8_manual_destroy', function () {
 
   var clientCount = 10;
 
-  function Tester(){}
+  function Tester() {
+  }
 
   it('create, then manually destroy ' + clientCount + ' clients', function (callback) {
 
     this.timeout(clientCount * 10000);
 
-    async.times(clientCount, function(counter, clientCB){
+    async.times(clientCount, function (counter, clientCB) {
 
       var tester = new Tester();
 
@@ -58,7 +59,7 @@ describe('e8_manual_destroy', function () {
 
         tester.client = instance;
 
-        tester.client.socket.on('destroy', function(){
+        tester.client.socket.on('destroy', function () {
           clientCB();
         });
 

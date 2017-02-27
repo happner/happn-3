@@ -11,7 +11,7 @@ describe('f2_login_digest', function () {
 
   before('starts the services', function (done) {
 
-    Happn.service.create({secure:true})
+    Happn.service.create({secure: true})
       .then(function (server) {
         server1 = server;
         service1Name = server.name;
@@ -79,15 +79,15 @@ describe('f2_login_digest', function () {
               privateKey: keyPair.privateKey,
               loginType: 'digest'
             }
-          )
+            )
 
-          .then(function (clientInstance){
-            done();
-          })
+            .then(function (clientInstance) {
+              done();
+            })
 
-          .catch(function (e) {
-            done(e);
-          });
+            .catch(function (e) {
+              done(e);
+            });
         });
       });
     });

@@ -11,12 +11,12 @@ describe('f9_publish_middleware', function () {
   var serviceInstance;
   var clientInstance;
 
-  afterEach('stop the client', function(done){
+  afterEach('stop the client', function (done) {
     if (clientInstance) clientInstance.disconnect(done);
     else done();
   });
 
-  afterEach('stop the server', function(done){
+  afterEach('stop the server', function (done) {
     if (serviceInstance) serviceInstance.stop(done);
     else done();
   });

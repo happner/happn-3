@@ -13,10 +13,10 @@ describe('g1_consistency_options', function () {
   var clientInstance2;
 
   var CONSISTENCY = {
-    DEFERRED:0,//get a consistency report back after the subscribes have been notified
-    QUEUED:1,//queues the publication, then calls back
-    TRANSACTIONAL:2,//waits until all recipients have been written to
-    ACKNOWLEDGED:3//waits until all recipients have acknowledged
+    DEFERRED: 0,//get a consistency report back after the subscribes have been notified
+    QUEUED: 1,//queues the publication, then calls back
+    TRANSACTIONAL: 2,//waits until all recipients have been written to
+    ACKNOWLEDGED: 3//waits until all recipients have acknowledged
   };
 
   afterEach('stop the client 1', function (done) {
@@ -66,7 +66,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance1.on('/test/path/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran1 = true;
           }
         });
@@ -77,7 +77,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance2.on('/test/path/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran2 = true;
           }
         });
@@ -89,15 +89,15 @@ describe('g1_consistency_options', function () {
         return new Promise(function (resolve, reject) {
 
           clientInstance1.set('/test/path/1', {test: 'data'}, {
-            consistency:CONSISTENCY.DEFERRED,
-            onPublished:function(e, results){
+            consistency: CONSISTENCY.DEFERRED,
+            onPublished: function (e, results) {
 
               expect(Object.keys(clientInstance2.__ackHandlers).length == 0).to.be(true);
 
               if (e) return reject(e);
               resolve(results);
             }
-          }, function(e){
+          }, function (e) {
             if (e) return reject(e);
           })
         });
@@ -147,7 +147,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance1.on('/test/path/transactional/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran1 = true;
           }
         });
@@ -158,7 +158,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance2.on('/test/path/transactional/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran2 = true;
           }
         });
@@ -170,9 +170,9 @@ describe('g1_consistency_options', function () {
         return new Promise(function (resolve, reject) {
 
           clientInstance1.set('/test/path/transactional/1', {test: 'data'}, {
-            consistency:CONSISTENCY.TRANSACTIONAL,
-            publishResults:true
-          }, function(e, response){
+            consistency: CONSISTENCY.TRANSACTIONAL,
+            publishResults: true
+          }, function (e, response) {
             if (e) return reject(e);
             else resolve(response);
           })
@@ -223,7 +223,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance1.on('/test/path/transactional/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran1 = true;
           }
         });
@@ -234,7 +234,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance2.on('/test/path/transactional/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran2 = true;
           }
         });
@@ -246,9 +246,9 @@ describe('g1_consistency_options', function () {
         return new Promise(function (resolve, reject) {
 
           clientInstance1.set('/test/path/transactional/1', {test: 'data'}, {
-            consistency:CONSISTENCY.QUEUED,
-            publishResults:true
-          }, function(e, response){
+            consistency: CONSISTENCY.QUEUED,
+            publishResults: true
+          }, function (e, response) {
             if (e) return reject(e);
             else resolve(response);
           })
@@ -291,7 +291,7 @@ describe('g1_consistency_options', function () {
         serviceInstance = instance;
 
         //we overwrite this function - so publish never happens
-        serviceInstance.services.publisher.performPublication = function(publication, callback){
+        serviceInstance.services.publisher.performPublication = function (publication, callback) {
 
           return callback(null, publication.message);
         };
@@ -311,7 +311,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance1.on('/test/path/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran1 = true;
           }
         });
@@ -322,7 +322,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance2.on('/test/path/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran2 = true;
           }
         });
@@ -334,11 +334,11 @@ describe('g1_consistency_options', function () {
 
         clientInstance1.set('/test/path/1', {test: 'data'}, {
 
-          consistency:CONSISTENCY.DEFERRED,
+          consistency: CONSISTENCY.DEFERRED,
 
-          onPublishedTimeout:5000,
+          onPublishedTimeout: 5000,
 
-          onPublished:function(e, results){
+          onPublished: function (e, results) {
 
             if (!e) return done(new Error('should have failed'));
 
@@ -348,7 +348,7 @@ describe('g1_consistency_options', function () {
 
             done();
           }
-        }, function(e){
+        }, function (e) {
 
           if (e) return done(e);
           setHappened = true;
@@ -397,7 +397,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance1.on('/test/path/acknowledged/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran1 = true;
           }
         });
@@ -409,7 +409,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance2.on('/test/path/acknowledged/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran2 = true;
           }
         });
@@ -423,15 +423,15 @@ describe('g1_consistency_options', function () {
 
           clientInstance1.set('/test/path/acknowledged/1', {test: 'data'}, {
 
-            consistency:CONSISTENCY.ACKNOWLEDGED,
+            consistency: CONSISTENCY.ACKNOWLEDGED,
 
-            onPublished:function(e, results){
+            onPublished: function (e, results) {
 
               if (e) return reject(e);
 
               resolve(results);
             }
-          }, function(e){
+          }, function (e) {
 
             if (e) return reject(e);
           })
@@ -461,14 +461,12 @@ describe('g1_consistency_options', function () {
     var config = {
       services: {
         subscription: {
-          config: {
-
-          }
+          config: {}
         },
         publisher: {
-          config:{
-            publicationOptions:{
-              acknowledgeTimeout:2000
+          config: {
+            publicationOptions: {
+              acknowledgeTimeout: 2000
             }
           }
         }
@@ -496,14 +494,14 @@ describe('g1_consistency_options', function () {
 
         clientInstance2 = client;
 
-        clientInstance2.__acknowledge = function(message, callback){
+        clientInstance2.__acknowledge = function (message, callback) {
           //so no ack reached the server
           callback(message);
         };
 
         return clientInstance1.on('/test/path/acknowledged_timed_out/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran1 = true;
           }
         });
@@ -514,7 +512,7 @@ describe('g1_consistency_options', function () {
 
         return clientInstance2.on('/test/path/acknowledged_timed_out/*', {
           meta: {publish: true},
-          onPublished:function (data) {
+          onPublished: function (data) {
             ran2 = true;
           }
         });
@@ -525,11 +523,11 @@ describe('g1_consistency_options', function () {
 
         clientInstance1.set('/test/path/acknowledged_timed_out/1', {test: 'data'}, {
 
-          consistency:CONSISTENCY.ACKNOWLEDGED,
+          consistency: CONSISTENCY.ACKNOWLEDGED,
 
-          onPublishedTimeout:5000,
+          onPublishedTimeout: 5000,
 
-          onPublished:function(e, results){
+          onPublished: function (e, results) {
 
             if (!e) return done(new Error('should have failed'));
 
@@ -537,7 +535,7 @@ describe('g1_consistency_options', function () {
 
             done();
           }
-        }, function(e){
+        }, function (e) {
           if (e) return done(e);
         })
 

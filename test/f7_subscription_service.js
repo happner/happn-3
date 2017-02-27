@@ -6,11 +6,11 @@ var Happn = require('..')
 
 describe('f7_subscription_service', function () {
 
-  before('', function(){
+  before('', function () {
 
   });
 
-  after('', function(){
+  after('', function () {
 
   });
 
@@ -21,20 +21,20 @@ describe('f7_subscription_service', function () {
     var sessionId1 = '1';
 
     var testBucket = new SubscriptionBucket({
-      type:1,
-      name:'testBucket',
-      channel:'SET'
+      type: 1,
+      name: 'testBucket',
+      channel: 'SET'
     });
 
-    testBucket.initialize(function(e) {
+    testBucket.initialize(function (e) {
 
       if (e) return done(e);
 
-      testBucket.addSubscription('/test/path/*', sessionId1, {options:{refCount:1}});
+      testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
 
       expect(testBucket.allSubscriptions().length).to.be(1);
 
-      testBucket.addSubscription('/test/path/*', sessionId1, {options:{refCount:1}});
+      testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
 
       expect(testBucket.allSubscriptions().length).to.be(1);
 
@@ -53,14 +53,14 @@ describe('f7_subscription_service', function () {
     var sessionId4 = '4';
 
     var testBucket = new SubscriptionBucket({
-      type:1,
-      name:'testBucket',
-      channel:'SET'
+      type: 1,
+      name: 'testBucket',
+      channel: 'SET'
     });
 
-    var data = {options:{refCount:1}};
+    var data = {options: {refCount: 1}};
 
-    testBucket.initialize(function(e){
+    testBucket.initialize(function (e) {
 
       if (e) return done(e);
 
@@ -102,14 +102,14 @@ describe('f7_subscription_service', function () {
     var sessionId2 = '2';
 
     var testBucket = new SubscriptionBucket({
-      type:1,
-      name:'testBucket',
-      channel:'SET'
+      type: 1,
+      name: 'testBucket',
+      channel: 'SET'
     });
 
-    var data = {options:{refCount:1}};
+    var data = {options: {refCount: 1}};
 
-    testBucket.initialize(function(e){
+    testBucket.initialize(function (e) {
 
       if (e) return done(e);
 
@@ -119,13 +119,13 @@ describe('f7_subscription_service', function () {
 
       expect(testBucket.allSubscriptions().length).to.be(2);
 
-      testBucket.getSubscriptions('/test/path/1', function(e, subscriptions){
+      testBucket.getSubscriptions('/test/path/1', function (e, subscriptions) {
 
         expect(subscriptions.length).to.be(2);
 
         console.log('removing:::');
 
-        testBucket.removeSubscription('*', sessionId2, function(e){
+        testBucket.removeSubscription('*', sessionId2, function (e) {
 
           if (e) return done(e);
 
@@ -151,14 +151,14 @@ describe('f7_subscription_service', function () {
     var sessionId5 = '5';
 
     var testBucket = new SubscriptionBucket({
-      type:1,
-      name:'testBucket',
-      channel:'SET'
+      type: 1,
+      name: 'testBucket',
+      channel: 'SET'
     });
 
-    var data = {options:{refCount:1}};
+    var data = {options: {refCount: 1}};
 
-    testBucket.initialize(function(e){
+    testBucket.initialize(function (e) {
 
       if (e) return done(e);
 
@@ -180,7 +180,7 @@ describe('f7_subscription_service', function () {
 
       expect(testBucket.allSubscriptions().length).to.be(5);
 
-      testBucket.getSubscriptions('/test/path/1', function(e, subscriptions){
+      testBucket.getSubscriptions('/test/path/1', function (e, subscriptions) {
 
         expect(e).to.be(null);
 
@@ -201,20 +201,20 @@ describe('f7_subscription_service', function () {
     var SubscriptionBucket = require('../lib/services/subscription/bucket.js');
 
     var testBucket = new SubscriptionBucket({
-      type:1,
-      name:'testBucket',
-      channel:'SET'
+      type: 1,
+      name: 'testBucket',
+      channel: 'SET'
     });
 
     var pathCounts = {};
 
-    testBucket.initialize(function(e) {
+    testBucket.initialize(function (e) {
 
       if (e) return done(e);
 
       async.times(RANDOM_COUNT,
 
-        function(time, timeCB){
+        function (time, timeCB) {
 
           var randomPath = Math.floor(Math.random() * 10) + 1;
 
@@ -222,16 +222,19 @@ describe('f7_subscription_service', function () {
 
           pathCounts[randomPath]++;
 
-          testBucket.addSubscription('/test/path/' + randomPath, shortid.generate(), {rand:randomPath, options:{refCount:1}}, timeCB);
+          testBucket.addSubscription('/test/path/' + randomPath, shortid.generate(), {
+            rand: randomPath,
+            options: {refCount: 1}
+          }, timeCB);
         },
 
-        function(e){
+        function (e) {
 
           if (e) return done(e);
 
-          async.eachSeries(Object.keys(pathCounts), function(key, keyCB){
+          async.eachSeries(Object.keys(pathCounts), function (key, keyCB) {
 
-            testBucket.getSubscriptions('/test/path/' + key, function(e, recipients){
+            testBucket.getSubscriptions('/test/path/' + key, function (e, recipients) {
 
               expect(recipients.length).to.be(pathCounts[key]);
               keyCB();
@@ -244,7 +247,7 @@ describe('f7_subscription_service', function () {
     });
   });
 
-  function mockSubscriptionService(config, testItems, callback){
+  function mockSubscriptionService(config, testItems, callback) {
 
     var UtilsService = require('../lib/services/utils/service');
 
@@ -252,40 +255,42 @@ describe('f7_subscription_service', function () {
 
     var SubscriptionService = require('../lib/services/subscription/service');
 
-    var subscriptionService = new SubscriptionService({logger:{
-      createLogger:function(key){
-        return {
-          warn:function(message){
-            console.log(message);
-          },
-          info:function(message){
-            console.log(message);
-          },
-          success:function(message){
-            console.log(message);
-          },
-          error:function(message){
-            console.log(message);
-          },
-          $$TRACE:function(message){
-            console.log(message);
+    var subscriptionService = new SubscriptionService({
+      logger: {
+        createLogger: function (key) {
+          return {
+            warn: function (message) {
+              console.log(message);
+            },
+            info: function (message) {
+              console.log(message);
+            },
+            success: function (message) {
+              console.log(message);
+            },
+            error: function (message) {
+              console.log(message);
+            },
+            $$TRACE: function (message) {
+              console.log(message);
+            }
           }
         }
       }
-    }});
+    });
 
     subscriptionService.happn = {
-      services:{
-        data:{
-          get: function(path, criteria, callback){
+      services: {
+        data: {
+          get: function (path, criteria, callback) {
             return callback(null, testItems);
           }
         },
-        utils:utilsService
+        utils: utilsService
       }
     };
 
-    subscriptionService.initialize(config, function(e){
+    subscriptionService.initialize(config, function (e) {
 
       if (e) return callback(e);
 
@@ -296,43 +301,41 @@ describe('f7_subscription_service', function () {
 
   it('starts up the subscription service, does processSubscribe - then getRecipients', function (done) {
 
-    var config = {
-
-    };
+    var config = {};
 
     var testItems = [];
 
-    mockSubscriptionService(config, testItems, function(e, instance){
+    mockSubscriptionService(config, testItems, function (e, instance) {
 
       if (e) return done(e);
 
       var subscribeMessage = {
-        request:{
-          path:'/SET@test/path/*',
-          key:'test/path/*',
-          options:{
-            other:'data'
+        request: {
+          path: '/SET@test/path/*',
+          key: 'test/path/*',
+          options: {
+            other: 'data'
           }
         },
-        session:{
-          id:'1'
+        session: {
+          id: '1'
         }
       };
 
-      instance.processSubscribe(subscribeMessage, function(e, result){
+      instance.processSubscribe(subscribeMessage, function (e, result) {
 
         if (e) return done(e);
 
         expect(result.response._meta.status).to.be('ok');
 
         var getRecipientsMessage = {
-          request:{
-            action:'SET',
-            path:'test/path/1'
+          request: {
+            action: 'SET',
+            path: 'test/path/1'
           }
         };
 
-        instance.processGetRecipients(getRecipientsMessage, function(e, result){
+        instance.processGetRecipients(getRecipientsMessage, function (e, result) {
 
           if (e) return done(e);
 
@@ -346,67 +349,65 @@ describe('f7_subscription_service', function () {
 
   it('starts up the subscription service, does processSubscribe - then getRecipients, then unsubscribe and get no recipients', function (done) {
 
-    var config = {
-
-    };
+    var config = {};
 
     var testItems = [];
 
-    mockSubscriptionService(config, testItems, function(e, instance){
+    mockSubscriptionService(config, testItems, function (e, instance) {
 
       if (e) return done(e);
 
       var subscribeMessage = {
-        request:{
-          path:'/SET@test/path/*',
-          key:'test/path/*',
-          options:{
-            other:'data'
+        request: {
+          path: '/SET@test/path/*',
+          key: 'test/path/*',
+          options: {
+            other: 'data'
           }
         },
-        session:{
-          id:'1'
+        session: {
+          id: '1'
         }
       };
 
       var unsubscribeMessage = {
-        request:{
-          path:'/SET@test/path/*',
-          key:'test/path/*',
-          options:{
-            other:'data'
+        request: {
+          path: '/SET@test/path/*',
+          key: 'test/path/*',
+          options: {
+            other: 'data'
           }
         },
-        session:{
-          id:'1'
+        session: {
+          id: '1'
         }
       };
 
-      instance.processSubscribe(subscribeMessage, function(e, result){
+      instance.processSubscribe(subscribeMessage, function (e, result) {
 
         if (e) return done(e);
 
         expect(result.response._meta.status).to.be('ok');
 
         var getRecipientsMessage = {
-          request:{
-            action:'SET',
-            path:'test/path/1',
-            key:'test/path/1'
+          request: {
+            action: 'SET',
+            path: 'test/path/1',
+            key: 'test/path/1'
           }
         };
 
-        instance.processGetRecipients(getRecipientsMessage, function(e, result){
+        instance.processGetRecipients(getRecipientsMessage, function (e, result) {
 
           if (e) return done(e);
 
           expect(result.recipients.length).to.be(1);
 
-          instance.processUnsubscribe(unsubscribeMessage, function(e){
+          instance.processUnsubscribe(unsubscribeMessage, function (e) {
 
             if (e) return done(e);
 
-            instance.processGetRecipients(getRecipientsMessage, function(e) {
+            instance.processGetRecipients(getRecipientsMessage, function (e) {
 
               if (e) return done(e);
 
@@ -423,34 +424,32 @@ describe('f7_subscription_service', function () {
 
   it('starts up the subscription service, does processSubscribe - with initialCallback', function (done) {
 
-    var config = {
-
-    };
+    var config = {};
 
     var testItems = [
-      {path:'test/path/1', data:{}},
-      {path:'test/path/2', data:{}}
+      {path: 'test/path/1', data: {}},
+      {path: 'test/path/2', data: {}}
     ];
 
-    mockSubscriptionService(config, testItems, function(e, instance){
+    mockSubscriptionService(config, testItems, function (e, instance) {
 
       if (e) return done(e);
 
       var subscribeMessage = {
-        request:{
-          path:'/SET@test/path/*',
-          key:'test/path/*',
-          options:{
-            other:'data',
-            initialCallback:true
+        request: {
+          path: '/SET@test/path/*',
+          key: 'test/path/*',
+          options: {
+            other: 'data',
+            initialCallback: true
           }
         },
-        session:{
-          id:'1'
+        session: {
+          id: '1'
         }
       };
 
-      instance.processSubscribe(subscribeMessage, function(e, result){
+      instance.processSubscribe(subscribeMessage, function (e, result) {
 
         if (e) return done(e);
 
@@ -465,34 +464,32 @@ describe('f7_subscription_service', function () {
 
   it('starts up the subscription service, does processSubscribe - with initialEmit', function (done) {
 
-    var config = {
-
-    };
+    var config = {};
 
     var testItems = [
-      {path:'test/path/1', data:{}},
-      {path:'test/path/2', data:{}}
+      {path: 'test/path/1', data: {}},
+      {path: 'test/path/2', data: {}}
     ];
 
-    mockSubscriptionService(config, testItems, function(e, instance){
+    mockSubscriptionService(config, testItems, function (e, instance) {
 
       if (e) return done(e);
 
       var subscribeMessage = {
-        request:{
-          path:'/SET@test/path/*',
-          key:'test/path/*',
-          options:{
-            other:'data',
-            initialEmit:true
+        request: {
+          path: '/SET@test/path/*',
+          key: 'test/path/*',
+          options: {
+            other: 'data',
+            initialEmit: true
           }
         },
-        session:{
-          id:'1'
+        session: {
+          id: '1'
         }
       };
 
-      instance.processSubscribe(subscribeMessage, function(e, result){
+      instance.processSubscribe(subscribeMessage, function (e, result) {
 
         if (e) return done(e);
 
@@ -507,65 +504,63 @@ describe('f7_subscription_service', function () {
 
   it('does a clearSubscriptions for a specific session', function (done) {
 
-    var config = {
-
-    };
+    var config = {};
 
     var testItems = [];
 
-    mockSubscriptionService(config, testItems, function(e, instance){
+    mockSubscriptionService(config, testItems, function (e, instance) {
 
       if (e) return done(e);
 
       var subscribeMessage = {
-        request:{
-          path:'/SET@test/path/*',
-          key:'test/path/*',
-          options:{
-            other:'data'
+        request: {
+          path: '/SET@test/path/*',
+          key: 'test/path/*',
+          options: {
+            other: 'data'
           }
         },
-        session:{
-          id:'1'
+        session: {
+          id: '1'
         }
       };
 
       var unsubscribeMessage = {
-        request:{
-          path:'/SET@test/path/*',
-          options:{
-            other:'data'
+        request: {
+          path: '/SET@test/path/*',
+          options: {
+            other: 'data'
           }
         },
-        session:{
-          id:'1'
+        session: {
+          id: '1'
         }
       };
 
-      instance.processSubscribe(subscribeMessage, function(e, result){
+      instance.processSubscribe(subscribeMessage, function (e, result) {
 
         if (e) return done(e);
 
         expect(result.response._meta.status).to.be('ok');
 
         var getRecipientsMessage = {
-          request:{
-            action:'SET',
-            path:'test/path/1'
+          request: {
+            action: 'SET',
+            path: 'test/path/1'
           }
         };
 
-        instance.processGetRecipients(getRecipientsMessage, function(e, result){
+        instance.processGetRecipients(getRecipientsMessage, function (e, result) {
 
           if (e) return done(e);
 
           expect(result.recipients.length).to.be(1);
 
-          instance.clearSubscriptions('1', function(e){
+          instance.clearSubscriptions('1', function (e) {
 
             if (e) return done(e);
 
-            instance.processGetRecipients(getRecipientsMessage, function(e, afteClearedResult) {
+            instance.processGetRecipients(getRecipientsMessage, function (e, afteClearedResult) {
 
               if (e) return done(e);
 

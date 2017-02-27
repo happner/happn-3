@@ -10,22 +10,22 @@ describe('f8_publisher_service', function () {
 
   var utilsService = new UtilsService();
 
-  before('', function(){
+  before('', function () {
 
   });
 
-  after('', function(){
+  after('', function () {
 
   });
 
-  function mockQueueService(items, itemPushedHandler, publications, publicationPushedHandler){
+  function mockQueueService(items, itemPushedHandler, publications, publicationPushedHandler) {
 
     if (!publications) publications = [];
 
     return {
-      itemPushedHandler:itemPushedHandler,
-      publicationPushedHandler:publicationPushedHandler,
-      pushOutbound:function(message, callback){
+      itemPushedHandler: itemPushedHandler,
+      publicationPushedHandler: publicationPushedHandler,
+      pushOutbound: function (message, callback) {
 
         this.items.push(message);
 
@@ -33,9 +33,9 @@ describe('f8_publisher_service', function () {
 
         if (this.itemPushedHandler) this.itemPushedHandler(message);
       },
-      items:items,
-      publications:publications,
-      pushPublication:function(publication, callback){
+      items: items,
+      publications: publications,
+      pushPublication: function (publication, callback) {
 
         var _this = this;
 
@@ -48,40 +48,42 @@ describe('f8_publisher_service', function () {
     }
   }
 
-  function mockPublisherService(config, queueItems, queuePushedHandler, publications, publicationPushedHandler, callback){
+  function mockPublisherService(config, queueItems, queuePushedHandler, publications, publicationPushedHandler, callback) {
 
     var PublisherService = require('../lib/services/publisher/service');
 
-    var publisherService = new PublisherService({logger:{
-      createLogger:function(key){
-        return {
-          warn:function(message){
-            console.log(message);
-          },
-          info:function(message){
-            console.log(message);
-          },
-          success:function(message){
-            console.log(message);
-          },
-          error:function(message){
-            console.log(message);
-          },
-          $$TRACE:function(message){
-            console.log(message);
+    var publisherService = new PublisherService({
+      logger: {
+        createLogger: function (key) {
+          return {
+            warn: function (message) {
+              console.log(message);
+            },
+            info: function (message) {
+              console.log(message);
+            },
+            success: function (message) {
+              console.log(message);
+            },
+            error: function (message) {
+              console.log(message);
+            },
+            $$TRACE: function (message) {
+              console.log(message);
+            }
           }
         }
       }
-    }});
+    });
 
     publisherService.happn = {
-      services:{
-        utils:utilsService,
-        queue:mockQueueService(queueItems, queuePushedHandler, publications, publicationPushedHandler)
+      services: {
+        utils: utilsService,
+        queue: mockQueueService(queueItems, queuePushedHandler, publications, publicationPushedHandler)
       }
     };
 
-    publisherService.initialize(config, function(e){
+    publisherService.initialize(config, function (e) {
 
       if (e) return callback(e);
 
@@ -96,25 +98,23 @@ describe('f8_publisher_service', function () {
     var Publication = require('../lib/services/publisher/publication');
 
     var message = {
-      request:{
-        action:'set',
-        eventId:10,
-        path:'/set/some/data',
-        data:{
-          test:'data'
+      request: {
+        action: 'set',
+        eventId: 10,
+        path: '/set/some/data',
+        data: {
+          test: 'data'
         },
-        options:{
-          other:'data'
+        options: {
+          other: 'data'
         }
       },
-      session:{
-        id:'1'
+      session: {
+        id: '1'
       },
-      protocol:'happn-1.0.0',
-      recipients:[
-
-      ],
-      response:{
+      protocol: 'happn-1.0.0',
+      recipients: [],
+      response: {
         "data": {
           "data": {
             "was": "set"
@@ -138,13 +138,13 @@ describe('f8_publisher_service', function () {
         "path": "/set/some/data",
         "action": "/SET@/set/some/data",
         "type": "data",
-        "channel":"/SET@/set/some/data",
-        "sessionId":"1",
-        "consistency":2,
-        "publicationId":"1-10"
+        "channel": "/SET@/set/some/data",
+        "sessionId": "1",
+        "consistency": 2,
+        "publicationId": "1-10"
       },
-      "protocol":"happn-1.0.0",
-      __outbound:true
+      "protocol": "happn-1.0.0",
+      __outbound: true
     };
 
     var publication = new Publication(message);
@@ -168,26 +168,24 @@ describe('f8_publisher_service', function () {
     var Publication = require('../lib/services/publisher/publication');
 
     var message = {
-      request:{
-        action:'set',
-        eventId:10,
-        path:'/set/some/data',
-        data:{
-          test:'data'
+      request: {
+        action: 'set',
+        eventId: 10,
+        path: '/set/some/data',
+        data: {
+          test: 'data'
         },
-        options:{
-          other:'data',
-          consistency:1
+        options: {
+          other: 'data',
+          consistency: 1
         }
       },
-      session:{
-        id:'1'
+      session: {
+        id: '1'
       },
-      protocol:'happn-1.0.0',
-      recipients:[
-
-      ],
-      response:{
+      protocol: 'happn-1.0.0',
+      recipients: [],
+      response: {
         "data": {
           "data": {
             "was": "set"
@@ -211,13 +209,13 @@ describe('f8_publisher_service', function () {
         "path": "/set/some/data",
         "action": "/SET@/set/some/data",
         "type": "data",
-        "channel":"/SET@/set/some/data",
-        "sessionId":"1",
-        "consistency":1,
-        "publicationId":"1-10"
+        "channel": "/SET@/set/some/data",
+        "sessionId": "1",
+        "consistency": 1,
+        "publicationId": "1-10"
       },
-      "protocol":"happn-1.0.0",
-      __outbound:true
+      "protocol": "happn-1.0.0",
+      __outbound: true
     };
 
     var publication = new Publication(message);
@@ -241,24 +239,24 @@ describe('f8_publisher_service', function () {
     var Publication = require('../lib/services/publisher/publication');
 
     var message = {
-      request:{
-        action:'set',
-        eventId:10,
-        path:'/set/some/data',
-        data:{
-          test:'data'
+      request: {
+        action: 'set',
+        eventId: 10,
+        path: '/set/some/data',
+        data: {
+          test: 'data'
         },
-        options:{
-          other:'data',
-          consistency:1
+        options: {
+          other: 'data',
+          consistency: 1
         }
       },
-      session:{
-        id:'1'
+      session: {
+        id: '1'
       },
-      protocol:'happn-1.0.0',
-      recipients:[],
-      response:{
+      protocol: 'happn-1.0.0',
+      recipients: [],
+      response: {
         "data": {
           "data": {
             "was": "set"
@@ -283,7 +281,7 @@ describe('f8_publisher_service', function () {
         "action": "/SET@/set/some/data",
         "type": "data"
       },
-      "protocol":"happn-1.0.0"
+      "protocol": "happn-1.0.0"
     };
 
     var publication = new Publication(message);
@@ -294,7 +292,7 @@ describe('f8_publisher_service', function () {
 
     var mockQueue = mockQueueService(myArray);
 
-    publication.publish(mockQueue, function(e, results){
+    publication.publish(mockQueue, function (e, results) {
 
       if (e) return done(e);
 
@@ -309,38 +307,38 @@ describe('f8_publisher_service', function () {
     var Publication = require('../lib/services/publisher/publication');
 
     var message = {
-      request:{
-        action:'set',
-        eventId:10,
-        path:'/set/some/data',
-        data:{
-          test:'data'
+      request: {
+        action: 'set',
+        eventId: 10,
+        path: '/set/some/data',
+        data: {
+          test: 'data'
         },
-        options:{
-          other:'data',
-          consistency:2
+        options: {
+          other: 'data',
+          consistency: 2
         }
       },
-      session:{
-        id:'1'
+      session: {
+        id: '1'
       },
-      protocol:'happn-1.0.0',
-      recipients:[
+      protocol: 'happn-1.0.0',
+      recipients: [
         {
-          subscription:{
-            data:{
-              session:{id:'1'}
+          subscription: {
+            data: {
+              session: {id: '1'}
             }
           }
-        },{
-          subscription:{
-            data:{
-              session:{id:'2'}
+        }, {
+          subscription: {
+            data: {
+              session: {id: '2'}
             }
           }
         }
       ],
-      response:{
+      response: {
         "data": {
           "data": {
             "was": "set"
@@ -365,7 +363,7 @@ describe('f8_publisher_service', function () {
         "action": "/SET@/set/some/data",
         "type": "data"
       },
-      "protocol":"happn-1.0.0"
+      "protocol": "happn-1.0.0"
     };
 
     var publication = new Publication(message);
@@ -376,7 +374,7 @@ describe('f8_publisher_service', function () {
 
     var mockQueue = mockQueueService(myArray);
 
-    publication.publish(mockQueue, function(e, results){
+    publication.publish(mockQueue, function (e, results) {
 
       if (e) return done(e);
 
@@ -391,38 +389,38 @@ describe('f8_publisher_service', function () {
     var Publication = require('../lib/services/publisher/publication');
 
     var message = {
-      request:{
-        action:'set',
-        eventId:10,
-        path:'/set/some/data',
-        data:{
-          test:'data'
+      request: {
+        action: 'set',
+        eventId: 10,
+        path: '/set/some/data',
+        data: {
+          test: 'data'
         },
-        options:{
-          other:'data',
-          consistency:3
+        options: {
+          other: 'data',
+          consistency: 3
         }
       },
-      session:{
-        id:'1'
+      session: {
+        id: '1'
       },
-      protocol:'happn-1.0.0',
-      recipients:[
+      protocol: 'happn-1.0.0',
+      recipients: [
         {
-          subscription:{
-            data:{
-              session:{id:'1'}
+          subscription: {
+            data: {
+              session: {id: '1'}
             }
           }
-        },{
-          subscription:{
-            data:{
-              session:{id:'2'}
+        }, {
+          subscription: {
+            data: {
+              session: {id: '2'}
             }
           }
         }
       ],
-      response:{
+      response: {
         "data": {
           "data": {
             "was": "set"
@@ -442,14 +440,14 @@ describe('f8_publisher_service', function () {
 
     var myArray = [];
 
-    var mockQueue = mockQueueService(myArray, function(processedMessage){
+    var mockQueue = mockQueueService(myArray, function (processedMessage) {
 
-      publication.acknowledge(processedMessage, function(e){
+      publication.acknowledge(processedMessage, function (e) {
         if (e) return done(e);
       });
     });
 
-    publication.publish(mockQueue, function(e, results){
+    publication.publish(mockQueue, function (e, results) {
 
       if (e) return done(e);
 
@@ -462,38 +460,38 @@ describe('f8_publisher_service', function () {
     var Publication = require('../lib/services/publisher/publication');
 
     var message = {
-      request:{
-        action:'set',
-        eventId:10,
-        path:'/set/some/data',
-        data:{
-          test:'data'
+      request: {
+        action: 'set',
+        eventId: 10,
+        path: '/set/some/data',
+        data: {
+          test: 'data'
         },
-        options:{
-          other:'data',
-          consistency:1
+        options: {
+          other: 'data',
+          consistency: 1
         }
       },
-      session:{
-        id:'1'
+      session: {
+        id: '1'
       },
-      protocol:'happn-1.0.0',
-      recipients:[
+      protocol: 'happn-1.0.0',
+      recipients: [
         {
-          subscription:{
-            data:{
-              session:{id:'1'}
+          subscription: {
+            data: {
+              session: {id: '1'}
             }
           }
-        },{
-          subscription:{
-            data:{
-              session:{id:'2'}
+        }, {
+          subscription: {
+            data: {
+              session: {id: '2'}
             }
           }
         }
       ],
-      response:{
+      response: {
         "data": {
           "data": {
             "was": "set"
@@ -515,7 +513,7 @@ describe('f8_publisher_service', function () {
 
     var processed = 0;
 
-    var mockQueue = mockQueueService(myArray, function(processedMessage){
+    var mockQueue = mockQueueService(myArray, function (processedMessage) {
 
       processed++;
 
@@ -525,7 +523,7 @@ describe('f8_publisher_service', function () {
       }
     });
 
-    publication.publish(mockQueue, function(e, results){
+    publication.publish(mockQueue, function (e, results) {
 
       if (e) return done(e);
 
@@ -540,45 +538,45 @@ describe('f8_publisher_service', function () {
     var Publication = require('../lib/services/publisher/publication');
 
     var message = {
-      request:{
-        action:'set',
-        eventId:10,
-        path:'/set/some/data',
-        data:{
-          test:'data'
+      request: {
+        action: 'set',
+        eventId: 10,
+        path: '/set/some/data',
+        data: {
+          test: 'data'
         },
-        options:{
-          other:'data',
-          consistency:2
+        options: {
+          other: 'data',
+          consistency: 2
         }
       },
-      session:{
-        id:'1'
+      session: {
+        id: '1'
       },
-      protocol:'happn-1.0.0',
-      recipients:[
+      protocol: 'happn-1.0.0',
+      recipients: [
         {
-          subscription:{
-            data:{
-              session:{id:'1'}
+          subscription: {
+            data: {
+              session: {id: '1'}
             }
           }
-        },{
-          subscription:{
-            data:{
-              session:{id:'2'}
+        }, {
+          subscription: {
+            data: {
+              session: {id: '2'}
             }
           }
         },
         {
-          subscription:{
-            data:{
-              session:{id:'3'}
+          subscription: {
+            data: {
+              session: {id: '3'}
             }
           }
         }
       ],
-      response:{
+      response: {
         "data": {
           "data": {
             "was": "set"
@@ -600,7 +598,7 @@ describe('f8_publisher_service', function () {
 
     var processed = 0;
 
-    var mockQueue = mockQueueService(myArray, function(processedMessage){
+    var mockQueue = mockQueueService(myArray, function (processedMessage) {
 
       processed++;
 
@@ -610,7 +608,7 @@ describe('f8_publisher_service', function () {
       }
     });
 
-    publication.publish(mockQueue, function(e, results){
+    publication.publish(mockQueue, function (e, results) {
 
       if (e) return done(e);
 
@@ -625,45 +623,45 @@ describe('f8_publisher_service', function () {
     var Publication = require('../lib/services/publisher/publication');
 
     var message = {
-      request:{
-        action:'set',
-        eventId:10,
-        path:'/set/some/data',
-        data:{
-          test:'data'
+      request: {
+        action: 'set',
+        eventId: 10,
+        path: '/set/some/data',
+        data: {
+          test: 'data'
         },
-        options:{
-          other:'data',
-          consistency:0
+        options: {
+          other: 'data',
+          consistency: 0
         }
       },
-      session:{
-        id:'1'
+      session: {
+        id: '1'
       },
-      protocol:'happn-1.0.0',
-      recipients:[
+      protocol: 'happn-1.0.0',
+      recipients: [
         {
-          subscription:{
-            data:{
-              session:{id:'1'}
+          subscription: {
+            data: {
+              session: {id: '1'}
             }
           }
-        },{
-          subscription:{
-            data:{
-              session:{id:'2'}
+        }, {
+          subscription: {
+            data: {
+              session: {id: '2'}
             }
           }
         },
         {
-          subscription:{
-            data:{
-              session:{id:'3'}
+          subscription: {
+            data: {
+              session: {id: '3'}
             }
           }
         }
       ],
-      response:{
+      response: {
         "data": {
           "data": {
             "was": "set"
@@ -685,7 +683,7 @@ describe('f8_publisher_service', function () {
 
     var processed = 0;
 
-    var mockQueue = mockQueueService(myArray, function(processedMessage){
+    var mockQueue = mockQueueService(myArray, function (processedMessage) {
 
       processed++;
 
@@ -695,7 +693,7 @@ describe('f8_publisher_service', function () {
       }
     });
 
-    publication.publish(mockQueue, function(e, results){
+    publication.publish(mockQueue, function (e, results) {
 
       if (e) return done(e);
 
@@ -711,58 +709,58 @@ describe('f8_publisher_service', function () {
 
     var queueItems = [];
 
-    var queuePushedHandler = function(item){
+    var queuePushedHandler = function (item) {
       //console.log('queue pushed:::', item);
     };
 
-    var publicationPushedHandler = function(item){
+    var publicationPushedHandler = function (item) {
       //console.log('pub pushed:::', item);
     };
 
-    mockPublisherService(config, queueItems, queuePushedHandler, [], publicationPushedHandler, function(e, mockPublisher){
+    mockPublisherService(config, queueItems, queuePushedHandler, [], publicationPushedHandler, function (e, mockPublisher) {
 
       if (e) return callback(e);
 
       var message = {
-        request:{
-          action:'set',
-          eventId:10,
-          path:'/set/some/data',
-          data:{
-            test:'data'
+        request: {
+          action: 'set',
+          eventId: 10,
+          path: '/set/some/data',
+          data: {
+            test: 'data'
           },
-          options:{
-            other:'data',
-            consistency:0
+          options: {
+            other: 'data',
+            consistency: 0
           }
         },
-        session:{
-          id:'1'
+        session: {
+          id: '1'
         },
-        protocol:'happn-1.0.0',
-        recipients:[
+        protocol: 'happn-1.0.0',
+        recipients: [
           {
-           subscription:{
-             data:{
-               session:{id:'1'}
-             }
-           }
-          },{
-            subscription:{
-              data:{
-                session:{id:'2'}
+            subscription: {
+              data: {
+                session: {id: '1'}
+              }
+            }
+          }, {
+            subscription: {
+              data: {
+                session: {id: '2'}
               }
             }
           },
           {
-            subscription:{
-              data:{
-                session:{id:'3'}
+            subscription: {
+              data: {
+                session: {id: '3'}
               }
             }
           }
         ],
-        response:{
+        response: {
           "data": {
             "data": {
               "was": "set"
@@ -776,7 +774,7 @@ describe('f8_publisher_service', function () {
         }
       };
 
-      mockPublisher.processPublish(message, function(e, response){
+      mockPublisher.processPublish(message, function (e, response) {
 
         if (e) return done(e);
         done();
@@ -793,66 +791,66 @@ describe('f8_publisher_service', function () {
 
     var pubService;
 
-    var queuePushedHandler = function(item){
+    var queuePushedHandler = function (item) {
       //console.log('queue pushed:::', item);
     };
 
-    var publicationPushedHandler = function(item){
+    var publicationPushedHandler = function (item) {
       //console.log('pub pushed:::', item);
 
-      pubService.performPublication(item, function(e){
+      pubService.performPublication(item, function (e) {
 
         if (e) return done(e);
 
       });
     };
 
-    mockPublisherService(config, queueItems, queuePushedHandler, [], publicationPushedHandler, function(e, mockPublisher){
+    mockPublisherService(config, queueItems, queuePushedHandler, [], publicationPushedHandler, function (e, mockPublisher) {
 
       if (e) return callback(e);
 
       pubService = mockPublisher;
 
       var message = {
-        request:{
-          action:'set',
-          eventId:10,
-          path:'/set/some/data',
-          data:{
-            test:'data'
+        request: {
+          action: 'set',
+          eventId: 10,
+          path: '/set/some/data',
+          data: {
+            test: 'data'
           },
-          options:{
-            other:'data',
-            consistency:0
+          options: {
+            other: 'data',
+            consistency: 0
           }
         },
-        session:{
-          id:'1'
+        session: {
+          id: '1'
         },
-        protocol:'happn-1.0.0',
-        recipients:[
+        protocol: 'happn-1.0.0',
+        recipients: [
           {
-            subscription:{
-              data:{
-                session:{id:'1'}
+            subscription: {
+              data: {
+                session: {id: '1'}
               }
             }
-          },{
-            subscription:{
-              data:{
-                session:{id:'2'}
+          }, {
+            subscription: {
+              data: {
+                session: {id: '2'}
               }
             }
           },
           {
-            subscription:{
-              data:{
-                session:{id:'3'}
+            subscription: {
+              data: {
+                session: {id: '3'}
               }
             }
           }
         ],
-        response:{
+        response: {
           "data": {
             "data": {
               "was": "set"
@@ -866,7 +864,7 @@ describe('f8_publisher_service', function () {
         }
       };
 
-      mockPublisher.processPublish(message, function(e, response){
+      mockPublisher.processPublish(message, function (e, response) {
 
         if (e) return done(e);
         done();
