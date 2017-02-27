@@ -140,7 +140,8 @@ describe('f8_publisher_service', function () {
         "type": "data",
         "channel":"/SET@/set/some/data",
         "sessionId":"1",
-        "consistency":2
+        "consistency":2,
+        "publicationId":"1-10"
       },
       "protocol":"happn-1.0.0",
       __outbound:true
@@ -212,7 +213,8 @@ describe('f8_publisher_service', function () {
         "type": "data",
         "channel":"/SET@/set/some/data",
         "sessionId":"1",
-        "consistency":1
+        "consistency":1,
+        "publicationId":"1-10"
       },
       "protocol":"happn-1.0.0",
       __outbound:true

@@ -203,8 +203,6 @@ describe('1_eventemitter_embedded_sanity', function () {
 
           expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
 
-          console.log('ok setting:::');
-
           //then make the change
           publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/blah', {
             property1: 'property1',

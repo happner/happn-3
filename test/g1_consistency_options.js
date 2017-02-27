@@ -349,6 +349,7 @@ describe('g1_consistency_options', function () {
             done();
           }
         }, function(e){
+
           if (e) return done(e);
           setHappened = true;
         })
@@ -358,7 +359,9 @@ describe('g1_consistency_options', function () {
 
   });
 
-  it.only('does a set with a publish, acknowledged consistency, picks up publication log in the onPublished event handler', function (done) {
+  it('does a set with a publish, acknowledged consistency, picks up publication log in the onPublished event handler', function (done) {
+
+    this.timeout(10000);
 
     var clientConfig = {};
 
@@ -428,21 +431,18 @@ describe('g1_consistency_options', function () {
 
               resolve(results);
             }
-          }, function(e, response){
+          }, function(e){
 
             if (e) return reject(e);
-
-            else resolve(response);
           })
         });
       })
 
       .then(function (results) {
 
-        console.log('RESULTS ARE:::', results);
-
-        expect(results._meta.publishResults.queued).to.be(2);
-        expect(results._meta.publishResults.successful).to.be(2);
+        expect(results.queued).to.be(2);
+        expect(results.successful).to.be(2);
+        expect(results.acknowledged).to.be(2);
 
         //TODO: test unsubscribe
 
@@ -461,7 +461,16 @@ describe('g1_consistency_options', function () {
     var config = {
       services: {
         subscription: {
-          config: {}
+          config: {
+
+          }
+        },
+        publisher: {
+          config:{
+            publicationOptions:{
+              acknowledgeTimeout:2000
+            }
+          }
         }
       }
     };
@@ -470,21 +479,11 @@ describe('g1_consistency_options', function () {
 
     var subscription1, subscription2;
 
-    var oldPerformPublication;
-
     service.create(config)
 
       .then(function (instance) {
 
         serviceInstance = instance;
-
-        //we overwrite this function - so publish never happens
-        serviceInstance.services.publisher.performPublication = function(publication, callback){
-
-          return callback(null, publication.message);
-        };
-
-        serviceInstance.services.queue.__publicationQueue = async.queue(serviceInstance.services.publisher.performPublication.bind(serviceInstance.services.publisher), 10);
 
         return Happn.client.create(clientConfig);
       })
@@ -496,6 +495,11 @@ describe('g1_consistency_options', function () {
       .then(function (client) {
 
         clientInstance2 = client;
+
+        clientInstance2.__acknowledge = function(message, callback){
+          //so no ack reached the server
+          callback(message);
+        };
 
         return clientInstance1.on('/test/path/acknowledged_timed_out/*', {
           meta: {publish: true},
@@ -518,11 +522,10 @@ describe('g1_consistency_options', function () {
       .then(function (subscription) {
 
         subscription2 = subscription;
-        setHappened = false;
 
         clientInstance1.set('/test/path/acknowledged_timed_out/1', {test: 'data'}, {
 
-          consistency:CONSISTENCY.DEFERRED,
+          consistency:CONSISTENCY.ACKNOWLEDGED,
 
           onPublishedTimeout:5000,
 
@@ -530,15 +533,12 @@ describe('g1_consistency_options', function () {
 
             if (!e) return done(new Error('should have failed'));
 
-            expect(e.toString()).to.be('Error: publication unacknowledged');
-
-            expect(setHappened).to.be(true);
+            expect(e.toString()).to.be('Error: unacknowledged publication');
 
             done();
           }
         }, function(e){
           if (e) return done(e);
-          setHappened = true;
         })
 
       })

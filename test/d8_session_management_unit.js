@@ -20,8 +20,8 @@ describe('d8_session_management', function () {
   Services.DataService = require('../lib/services/data/service');
   Services.CryptoService = require('../lib/services/crypto/service');
   Services.ProtocolService = require('../lib/services/protocol/service');
-  Services.PublisherService = require('../lib/services/publisher/service');
   Services.SubscriptionService = require('../lib/services/subscription/service');
+  Services.PublisherService = require('../lib/services/publisher/service');
   Services.UtilsService = require('../lib/services/utils/service');
   Services.SessionService = require('../lib/services/session/service');
   Services.SystemService = require('../lib/services/system/service');
@@ -50,8 +50,10 @@ describe('d8_session_management', function () {
       happn.services[serviceName.toLowerCase()] = serviceInstance;
 
       if (typeof serviceInstance.initialize != 'function' || config === false) return callback();
-
+      
       serviceInstance.initialize(config, callback);
+
+      //performPublication
 
     }catch(e){
       callback(e);
@@ -73,11 +75,11 @@ describe('d8_session_management', function () {
       .then(mockService(happn, 'Log'))
       .then(mockService(happn, 'Error'))
       .then(mockService(happn, 'Protocol'))
+      .then(mockService(happn, 'Subscription'))
+      .then(mockService(happn, 'Publisher'))
       .then(mockService(happn, 'Queue'))
       .then(mockService(happn, 'Data'))
       .then(mockService(happn, 'Cache'))
-      .then(mockService(happn, 'Subscription'))
-      .then(mockService(happn, 'Publisher'))
       .then(mockService(happn, 'System'))
       .then(mockService(happn, 'Session', false))
       .then(mockService(happn, 'Security', {
@@ -86,7 +88,6 @@ describe('d8_session_management', function () {
         sessionActivityTTL:3000,
         secure:true
       }))
-      .then(mockService(happn, 'PubSub', {secure:true}))
       .then(mockService(happn, 'Layer'))
       .then(function(){
         setTimeout(function(){
