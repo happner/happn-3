@@ -12,12 +12,7 @@ describe('g1_consistency_options_remove', function () {
   var clientInstance1;
   var clientInstance2;
 
-  var CONSISTENCY = {
-    QUEUED: 0,//queues the publication, then calls back
-    DEFERRED: 1,//get a consistency report back after the subscribes have been notified
-    TRANSACTIONAL: 2,//waits until all recipients have been written to
-    ACKNOWLEDGED: 3//waits until all recipients have acknowledged
-  };
+  var CONSISTENCY = Happn.constants.CONSISTENCY;
 
   afterEach('stop the client 1', function (done) {
     if (clientInstance1) clientInstance1.disconnect(done);

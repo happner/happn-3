@@ -2,12 +2,18 @@ var gulp = require('gulp');
 var Server = require('karma').Server;
 var happn = require('../../lib/index');
 var service = happn.service;
+var fs = require('fs');
+var path = require('path');
 var happnInstance;
 
 /**
  * Run test once and exit
  */
 gulp.task('default', function (done) {
+
+  var client_code = happn.getBrowserClient();
+
+  fs.writeFileSync(__dirname + path.sep + 'browser_client.js', client_code, 'utf8');
 
   service.create({
       secure: true,
@@ -31,7 +37,7 @@ gulp.task('default', function (done) {
       happnInstance = happnInst;
 
       new Server({
-        configFile: __dirname + '/01.karma.conf.js',
+        configFile: __dirname + path.sep + '01.karma.conf.js',
         singleRun: true
       }, done).start();
 

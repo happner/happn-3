@@ -14,7 +14,7 @@ module.exports = function (config) {
 
     files: [
 
-      '../../lib/client.js',
+      'browser_client.js',
       '01_websockets_embedded_sanity_encryptedpayloads.js'
     ],
 
