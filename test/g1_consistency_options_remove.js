@@ -6,15 +6,15 @@ var Happn = require('..')
   , Promise = require('bluebird')
   ;
 
-describe('g1_consistency_options', function () {
+describe('g1_consistency_options_remove', function () {
 
   var serviceInstance;
   var clientInstance1;
   var clientInstance2;
 
   var CONSISTENCY = {
-    DEFERRED: 0,//get a consistency report back after the subscribes have been notified
-    QUEUED: 1,//queues the publication, then calls back
+    QUEUED: 0,//queues the publication, then calls back
+    DEFERRED: 1,//get a consistency report back after the subscribes have been notified
     TRANSACTIONAL: 2,//waits until all recipients have been written to
     ACKNOWLEDGED: 3//waits until all recipients have acknowledged
   };
@@ -34,7 +34,7 @@ describe('g1_consistency_options', function () {
     else done();
   });
 
-  it('does a set with a publish, deferred consistency, picks up publication log from the onPublished event handler', function (done) {
+  it('does a set and remove with a publish, deferred consistency, picks up publication log from the onPublished event handler', function (done) {
 
     var clientConfig = {};
 
@@ -88,18 +88,26 @@ describe('g1_consistency_options', function () {
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance1.set('/test/path/1', {test: 'data'}, {
-            consistency: CONSISTENCY.DEFERRED,
-            onPublished: function (e, results) {
+          clientInstance1.set('/test/path/1', {test: 'data'}, {}, function (e) {
 
-              expect(Object.keys(clientInstance2.__ackHandlers).length == 0).to.be(true);
-
-              if (e) return reject(e);
-              resolve(results);
-            }
-          }, function (e) {
             if (e) return reject(e);
-          })
+
+            clientInstance1.remove('/test/path/1', {
+
+              consistency: CONSISTENCY.DEFERRED,
+
+              onPublished: function (e, results) {
+
+                expect(Object.keys(clientInstance2.__ackHandlers).length == 0).to.be(true);
+
+                if (e) return reject(e);
+
+                resolve(results);
+              }
+            }, function (e) {
+              if (e) return reject(e);
+            });
+          });
         });
       })
       .then(function (results) {
@@ -115,7 +123,7 @@ describe('g1_consistency_options', function () {
 
   });
 
-  it('does a set with a publish, transactional (default) consistency publishResults:true, picks up publication log the set results meta', function (done) {
+  it('does a set and remove with a publish, transactional (default) consistency publishResults:true, picks up publication log the set results meta', function (done) {
 
     var clientConfig = {};
 
@@ -169,13 +177,20 @@ describe('g1_consistency_options', function () {
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance1.set('/test/path/transactional/1', {test: 'data'}, {
-            consistency: CONSISTENCY.TRANSACTIONAL,
-            publishResults: true
-          }, function (e, response) {
+          clientInstance1.set('/test/path/transactional/1', {test: 'data'}, {}, function (e) {
+
             if (e) return reject(e);
-            else resolve(response);
-          })
+
+            clientInstance1.remove('/test/path/transactional/1', {
+
+              consistency: CONSISTENCY.TRANSACTIONAL,
+              publishResults: true
+
+            }, function (e, response) {
+              if (e) return reject(e);
+              else resolve(response);
+            });
+          });
         });
       })
       .then(function (results) {
@@ -191,7 +206,7 @@ describe('g1_consistency_options', function () {
 
   });
 
-  it('does a set with a publish, queued consistency publishResults:true, should be no publication log', function (done) {
+  it('does a set and remove with a publish, queued consistency publishResults:true, should be no publication log', function (done) {
 
     var clientConfig = {};
 
@@ -221,7 +236,7 @@ describe('g1_consistency_options', function () {
 
         clientInstance2 = client;
 
-        return clientInstance1.on('/test/path/transactional/*', {
+        return clientInstance1.on('/test/path/queued/*', {
           meta: {publish: true},
           onPublished: function (data) {
             ran1 = true;
@@ -232,7 +247,7 @@ describe('g1_consistency_options', function () {
 
         subscription1 = subscription;
 
-        return clientInstance2.on('/test/path/transactional/*', {
+        return clientInstance2.on('/test/path/queued/*', {
           meta: {publish: true},
           onPublished: function (data) {
             ran2 = true;
@@ -245,13 +260,23 @@ describe('g1_consistency_options', function () {
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance1.set('/test/path/transactional/1', {test: 'data'}, {
-            consistency: CONSISTENCY.QUEUED,
-            publishResults: true
-          }, function (e, response) {
+          clientInstance1.set('/test/path/queued/1', {test: 'data'}, {}, function (e) {
+
             if (e) return reject(e);
-            else resolve(response);
-          })
+
+            clientInstance1.remove('/test/path/queued/1', {
+
+              consistency: CONSISTENCY.QUEUED,
+
+              publishResults: true
+
+            }, function (e, response) {
+
+              if (e) return reject(e);
+
+              else resolve(response);
+            });
+          });
         });
       })
       .then(function (results) {
@@ -264,7 +289,7 @@ describe('g1_consistency_options', function () {
 
   });
 
-  it('does a set with a publish, deferred consistency, times the publication out', function (done) {
+  it('does a set and remove with a publish, deferred consistency, times the publication out', function (done) {
 
     this.timeout(10000);
 
@@ -309,7 +334,7 @@ describe('g1_consistency_options', function () {
 
         clientInstance2 = client;
 
-        return clientInstance1.on('/test/path/*', {
+        return clientInstance1.on('/test/deferred/*', {
           meta: {publish: true},
           onPublished: function (data) {
             ran1 = true;
@@ -320,7 +345,7 @@ describe('g1_consistency_options', function () {
 
         subscription1 = subscription;
 
-        return clientInstance2.on('/test/path/*', {
+        return clientInstance2.on('/test/deferred/*', {
           meta: {publish: true},
           onPublished: function (data) {
             ran2 = true;
@@ -332,34 +357,39 @@ describe('g1_consistency_options', function () {
         subscription2 = subscription;
         setHappened = false;
 
-        clientInstance1.set('/test/path/1', {test: 'data'}, {
+        clientInstance1.set('/test/path/deferred/1', {test: 'data'}, {}, function (e) {
 
-          consistency: CONSISTENCY.DEFERRED,
+          if (e) return reject(e);
 
-          onPublishedTimeout: 5000,
+          clientInstance1.remove('/test/path/deferred/1', {
 
-          onPublished: function (e, results) {
+            consistency: CONSISTENCY.DEFERRED,
 
-            if (!e) return done(new Error('should have failed'));
+            onPublishedTimeout: 5000,
 
-            expect(e.toString()).to.be('Error: publish timed out');
+            onPublished: function (e, results) {
 
-            expect(setHappened).to.be(true);
+              if (!e) return done(new Error('should have failed'));
 
-            done();
-          }
-        }, function (e) {
+              expect(e.toString()).to.be('Error: publish timed out');
 
-          if (e) return done(e);
-          setHappened = true;
-        })
+              expect(setHappened).to.be(true);
+
+              done();
+            }
+          }, function (e) {
+
+            if (e) return done(e);
+            setHappened = true;
+          });
+        });
 
       })
       .catch(done)
 
   });
 
-  it('does a set with a publish, acknowledged consistency, picks up publication log in the onPublished event handler', function (done) {
+  it('does a set and remove with a publish, acknowledged consistency, picks up publication log in the onPublished event handler', function (done) {
 
     this.timeout(10000);
 
@@ -452,7 +482,7 @@ describe('g1_consistency_options', function () {
 
   });
 
-  it('does a set with a publish, acknowledged consistency, times one of the acknowledgements out', function (done) {
+  it('does a set and remove with a publish, acknowledged consistency, times one of the acknowledgements out', function (done) {
 
     this.timeout(10000);
 
@@ -521,23 +551,30 @@ describe('g1_consistency_options', function () {
 
         subscription2 = subscription;
 
-        clientInstance1.set('/test/path/acknowledged_timed_out/1', {test: 'data'}, {
+        clientInstance1.set('/test/path/acknowledged_timed_out/1', {test: 'data'}, {}, function (e) {
 
-          consistency: CONSISTENCY.ACKNOWLEDGED,
+          if (e) return reject(e);
 
-          onPublishedTimeout: 5000,
+          clientInstance1.remove('/test/path/acknowledged_timed_out/1', {
 
-          onPublished: function (e, results) {
+            consistency: CONSISTENCY.ACKNOWLEDGED,
 
-            if (!e) return done(new Error('should have failed'));
+            onPublishedTimeout: 5000,
 
-            expect(e.toString()).to.be('Error: unacknowledged publication');
+            onPublished: function (e, results) {
 
-            done();
-          }
-        }, function (e) {
-          if (e) return done(e);
-        })
+              if (!e) return done(new Error('should have failed'));
+
+              expect(e.toString()).to.be('Error: unacknowledged publication');
+
+              done();
+            }
+          }, function (e) {
+
+            if (e) return done(e);
+            setHappened = true;
+          });
+        });
 
       })
       .catch(done)

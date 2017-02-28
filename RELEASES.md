@@ -192,4 +192,9 @@
 1.4.2 2017-02-21
 ----------------
   - refactored this.STATE to this.state in client
+  
+1.5.0 2017-02-27
+----------------
+  - publisher/subscription services
+  - consistency ACKNOWLEDGED/TRANSACTIONAL/DEFERRED
 
