@@ -34,7 +34,7 @@ describe('f5_client_disconnection', function () {
 
     try {
 
-      service.create({port:55002}, function (e, happnInst) {
+      service.create({port: 55002}, function (e, happnInst) {
 
         if (e) return callback(e);
 
@@ -42,7 +42,7 @@ describe('f5_client_disconnection', function () {
 
         console.log('created unsecured instance:::');
 
-        service.create({secure:true, port:55003},function (e, happnInst) {
+        service.create({secure: true, port: 55003}, function (e, happnInst) {
 
           if (e) return callback(e);
 

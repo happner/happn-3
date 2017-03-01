@@ -151,8 +151,68 @@ describe('1_eventemitter_embedded_sanity', function () {
           }, null, function (e, result) {
 
           });
-        } else
-          callback(e);
+
+        } else callback(e);
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('the uses the onPublished event handler', function (callback) {
+
+      listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/*', {
+        onPublished:function(message, meta){
+
+          expect(message.property1).to.be('property1');
+
+          expect(meta.created <= Date.now()).to.be(true);
+
+          callback();
+        }
+      }).then(function(eventId){
+
+        expect(eventId >= 0).to.be(true);
+
+        expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/*'].length).to.be(1);
+
+        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/blah', {
+          property1: 'property1',
+          property2: 'property2',
+          property3: 'property3'
+        }, null, function (e) {
+          if (e) return callback (e);
+        });
+
+      }).catch(callback);
+  });
+
+  it('the listener should pick up a single wildcard event, event type not specified', function (callback) {
+
+    try {
+
+      //first listen for the change
+      listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*', function (message) {
+
+        callback();
+
+      }, function (e) {
+
+        if (!e) {
+
+          expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
+
+          //then make the change
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/blah', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          }, null, function (e, result) {
+
+          });
+
+        } else callback(e);
       });
 
     } catch (e) {
@@ -237,7 +297,6 @@ describe('1_eventemitter_embedded_sanity', function () {
     }
   });
 
-
   it('should set data, and then merge a new document into the data without overwriting old fields', function (callback) {
 
     try {
@@ -250,8 +309,7 @@ describe('1_eventemitter_embedded_sanity', function () {
         property3: 'property3'
       }, null, function (e, result) {
 
-        if (e)
-          return callback(e);
+        if (e) return callback(e);
 
         publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/merge/' + test_path_end, {
           property4: 'property4'
@@ -1047,6 +1105,7 @@ describe('1_eventemitter_embedded_sanity', function () {
     var caught = {};
 
     this.timeout(10000);
+
     var caughtCount = 0;
 
     listenerclient.onAll(function (eventData, meta) {
@@ -1080,6 +1139,7 @@ describe('1_eventemitter_embedded_sanity', function () {
   });
 
   it('should unsubscribe from all events', function (callback) {
+
     this.timeout(10000);
 
     var onHappened = false;

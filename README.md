@@ -933,6 +933,46 @@ service.create(serviceConfig,
 
 ```
 
+CONSISTENCY (Quality of service)
+--------------------------------
+*set and remove operations can be done with an optional parameter called consistency, which changes the behaviour of the resulting publish, consistency values are numeric and follow:*
+
+0 - QUEUED (spray and pray) - the publication is queued and the callback happens, when you are optimistic about the publish happening
+
+1 - DEFERRED (asynchronous notification) - the publication is queued and the callback happens, but you are required to pass in the onPublish handler and will thus get a notification on how the publish went later
+
+2 - TRANSACTIONAL (default) - the set callback only happens once all subscribers have been notified of the data change
+
+3 - ACKNOWLEDGED - the publication is queued and the set/remove callback happens, each subscriber will receive the publication message and will answer with an ack message, the publication results come back with a new metric 'acknowledged'
+
+*an optional handler in the set/remove options, called onPublished will return with a log of how the resulting publication went*
+
+```javascript
+
+var CONSISTENCY = {
+  0:QUEUED,
+  1:DEFERRED,
+  2:TRANSACTIONAL,
+  3:ACKNOWLEDGED
+}
+
+clientInstance1.set('/test/path/acknowledged/1', {test: 'data'}, {
+
+  consistency: CONSISTENCY.ACKNOWLEDGED,
+
+  onPublished: function (e, results) {
+
+    if (e) return reject(e);
+
+    resolve(results);
+  }
+}, function (e) {
+
+  if (e) return reject(e);
+})
+
+```
+
 TESTING WITH KARMA
 ------------------
 

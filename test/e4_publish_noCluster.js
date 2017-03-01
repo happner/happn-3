@@ -124,10 +124,11 @@ describe(filename, function() {
         })
 
         .then(function() {
-          return Promise.delay(200);
+          return Promise.delay(500);
         })
 
         .then(function() {
+
           expect(emitted).to.eql({
             'normalClient /some/path/to/set/on': {some: 'data'},
             'normalClient /*/to/set/on': {some: 'data'},
@@ -142,6 +143,7 @@ describe(filename, function() {
 
   });
 
+  //ISSUE HERE:::
   context('on remove', function() {
 
     it('does not emit to clusterPeer if noCluster set', function(done) {
@@ -199,19 +201,20 @@ describe(filename, function() {
         })
 
         .then(function() {
+
           expect(emitted).to.eql({
-            'normalClient /some/path/to/remove/on': {
-              removed: 1
-            },
-            'normalClient /*/to/remove/on': {
-              removed: 1
-            },
             'intraProcessClient /some/path/to/remove/on': {
               removed: 1
             },
             'intraProcessClient /*/to/remove/on': {
               removed: 1
             },
+            'normalClient /some/path/to/remove/on': {
+              removed: 1
+            },
+            'normalClient /*/to/remove/on': {
+              removed: 1
+            }
           });
         })
 
@@ -311,6 +314,7 @@ describe(filename, function() {
         })
 
         .then(function() {
+
           expect(emitted).to.eql({
             'normalClient /some/data/to/merge': {
               some1: 'data1',
