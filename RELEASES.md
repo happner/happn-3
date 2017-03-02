@@ -197,4 +197,10 @@
 ----------------
   - publisher/subscription services
   - consistency ACKNOWLEDGED/TRANSACTIONAL/DEFERRED
+  
+1.6.0 2017-03-02
+----------------
+  - packager, with browser client caching
+  - added homedir and fs-extra dependancies
+  - updates to utilities
 
