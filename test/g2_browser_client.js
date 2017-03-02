@@ -112,4 +112,89 @@ describe('g2_browser_client', function () {
 
   });
 
+  it('tests the minify option', function (done) {
+
+    process.env.NODE_ENV = 'production';
+
+    Happn.packager.__cachedBrowserClient = null;
+
+    try{
+      fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+    }catch(e){
+
+    }
+
+    var clientCode = Happn.packager.browserClient({contentsOnly:true, id:'TEST_UNIQUE_ID'});
+
+    expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
+
+    var clientCodeAgain = Happn.packager.browserClient({contentsOnly:true});
+
+    expect(clientCodeAgain.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
+
+    process.env.NODE_ENV = 'test';
+
+    Happn.packager.__cachedBrowserClient = null;
+
+    try{
+      fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+    }catch(e){
+
+    }
+
+    var clientCode = Happn.packager.browserClient({contentsOnly:true, min:true});
+
+    expect(clientCodeAgain.length > clientCode.length).to.be(true);
+
+    done();
+
+  });
+
+  it('tests the client middleware is able to fetch the minified contents', function (done) {
+
+    Happn.packager.__cachedBrowserClient = null;
+
+    try{
+      fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+    }catch(e){
+
+    }
+
+    process.env.NODE_ENV = 'test';
+
+    var clientCode = Happn.packager.browserClient({contentsOnly:true});
+
+    process.env.NODE_ENV = 'production';
+
+    Happn.packager.__cachedBrowserClient = null;
+
+    try{
+      fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+    }catch(e){
+
+    }
+
+    var middleware = require('../lib/services/connect/middleware/client');
+
+    var req = {
+      url:'/browser_client'
+    };
+
+    var res = {
+      setHeader:function(key, val){
+
+      },
+      end:function(content){
+
+        expect(clientCode.length > content.length).to.be(true);
+        done();
+      }
+    };
+
+    middleware.process(req, res, function(e){
+      if (e) return done(e);
+    });
+
+  });
+
 });
