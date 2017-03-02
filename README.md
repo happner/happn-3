@@ -86,7 +86,6 @@ function (e, happn) {
 });
 
 ```
-
 In your console, go to your application folder and run*node main*your server should start up and be listening on your port of choice.
 
 Connecting to Happn
@@ -146,6 +145,9 @@ service.create(function (e, happnInst) {
   });
 
 ```
+
+##NB: NODE_ENV environment variable
+*Set your NODE_ENV variable to "production" when running happn in a production environment, otherwise your browser client file will be regenerated every time the happn server is restarted.*
 
 SET
 -------------------------
