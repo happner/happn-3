@@ -23,9 +23,6 @@
 
 describe('1_eventemitter_embedded_benchmarks', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
-
   var expect = require('expect.js');
   var happn = require('../../lib/index');
   var service = happn.service;
@@ -706,9 +703,46 @@ describe('1_eventemitter_embedded_benchmarks', function () {
         });
 
       });
-
   });
 
-  require('benchmarket').stop();
+  it('does 1000 deferred SETS', function (callback) {
+
+    this.timeout(default_timeout);
+
+    var Happn = require('../../lib');
+
+    happnInstance.services.session.localClient(function(e, stressTestClient){
+
+      if (e) return callback(e);
+
+      testClients.push(stressTestClient);
+
+      var count = 0;
+      var expected = 1000;
+      var receivedCount = 0;
+      var timerName = 'CSV.colm 10 ' + expected + 'Events - no wait';
+
+      console.time(timerName);
+
+      var writeData = function () {
+
+        if (count == expected) {
+          console.timeEnd(timerName);
+          callback();
+        }
+
+        stressTestClient.set('/e2e_test1/testsubscribe/sequence6', {
+          property1: count++
+        }, {
+          consistency:Happn.constants.CONSISTENCY.QUEUED
+        }, function (e, result) {
+          writeData();
+        });
+      };
+
+      writeData();
+
+    });
+  });
 
 });

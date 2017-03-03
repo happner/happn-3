@@ -23,9 +23,6 @@
 
 describe('1_eventemitter_embedded_benchmarks - without queueing, direct mode', function () {
 
-  require('benchmarket').start();
-  after(require('benchmarket').store());
-
   var expect = require('expect.js');
   var happn = require('../../lib/index');
   var service = happn.service;
@@ -714,6 +711,49 @@ describe('1_eventemitter_embedded_benchmarks - without queueing, direct mode', f
 
   });
 
-  require('benchmarket').stop();
+  it.only('does 1000 deferred SETS', function (callback) {
+
+    this.timeout(default_timeout);
+
+    var Happn = require('../../lib');
+
+    happnInstance.services.session.localClient(function(e, stressTestClient){
+
+      if (e) return callback(e);
+
+      console.log('STATE:::',stressTestClient.state);
+
+      testClients.push(stressTestClient);
+
+      var count = 0;
+      var expected = 1000;
+      var receivedCount = 0;
+      var timerName = 'CSV.colm 10 ' + expected + 'Events - no wait';
+
+      console.time(timerName);
+
+      var writeData = function () {
+
+        if (count == expected) {
+          console.log('ended call:::', count);
+          console.timeEnd(timerName);
+          callback();
+        }
+
+        stressTestClient.set('/e2e_test1/testsubscribe/sequence6', {
+          property1: count++
+        }, {
+          consistency:Happn.constants.CONSISTENCY.QUEUED
+        }, function (e, result) {
+
+          if (!e) writeData();
+
+        });
+      };
+
+      writeData();
+
+    });
+  });
 
 });
