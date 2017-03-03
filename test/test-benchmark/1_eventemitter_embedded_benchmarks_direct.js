@@ -711,7 +711,7 @@ describe('1_eventemitter_embedded_benchmarks - without queueing, direct mode', f
 
   });
 
-  it.only('does 1000 deferred SETS', function (callback) {
+  it('does 1000 deferred SETS', function (callback) {
 
     this.timeout(default_timeout);
 
