@@ -204,3 +204,6 @@
   - added homedir and fs-extra dependancies
   - updates to utilities
 
+1.6.2 2017-03-07
+----------------
+  - client.disconnect() supports server offline
