@@ -6,18 +6,29 @@ var Happn = require('../../lib/index')
   , Promise = require('bluebird')
   ;
 
-describe('a1_multiple_subscriptions_events', function () {
+describe('subscriptions direct', function () {
 
   var serviceInstance;
   var clientInstancePublisher;
   var clientInstanceListener;
+
+  var SUBSCRIPTION_COUNT = 17500;
+  var EVENT_COUNT = 3000;
 
   beforeEach('start the service and connect the clients', function (done) {
 
     var clientListenerConfig = {};
     var clientPublisherConfig = {};
 
-    var config = {};
+    var config = {
+      services:{
+        queue:{
+          config:{
+            mode:'direct'
+          }
+        }
+      }
+    };
 
     service.create(config)
 
@@ -44,6 +55,8 @@ describe('a1_multiple_subscriptions_events', function () {
 
   afterEach('stop the clients', function (done) {
 
+    this.timeout(SUBSCRIPTION_COUNT * 100);
+
     if (clientInstanceListener) clientInstanceListener.disconnect();
     if (clientInstancePublisher) clientInstancePublisher.disconnect();
 
@@ -53,15 +66,15 @@ describe('a1_multiple_subscriptions_events', function () {
 
   afterEach('stop the server', function (done) {
 
+    this.timeout(SUBSCRIPTION_COUNT * 100);
+
     if (serviceInstance) serviceInstance.stop(done);
 
     else done();
+
   });
 
-  var SUBSCRIPTION_COUNT = 1000;
-  var EVENT_COUNT = 1000;
-
-  it('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times', function (done) {
+  it('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in parallel', function (done) {
 
     this.timeout(SUBSCRIPTION_COUNT * 100);
 
@@ -73,7 +86,7 @@ describe('a1_multiple_subscriptions_events', function () {
 
     var started = Date.now();
 
-    async.timesSeries(SUBSCRIPTION_COUNT, function(time, timeCB){
+    async.times(SUBSCRIPTION_COUNT, function(time, timeCB){
 
       var sub = require('shortid').generate();
 
@@ -83,7 +96,7 @@ describe('a1_multiple_subscriptions_events', function () {
 
         matched++;
 
-        if (matched % 500 == 0) console.log('events handled', subscreated);
+        if (matched % 500 == 0) console.log('events handled', matched);
 
       }, function(e){
 
@@ -122,13 +135,9 @@ describe('a1_multiple_subscriptions_events', function () {
     });
   });
 
-  var SUBSCRIPTION_COUNT1 = 1000;
+  it('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in series', function (done) {
 
-  var EVENT_COUNT1 = 1000;
-
-  it('should create ' + SUBSCRIPTION_COUNT1 + ' subscriptions and publish ' + EVENT_COUNT + ' times', function (done) {
-
-    this.timeout(SUBSCRIPTION_COUNT1 * 100);
+    this.timeout(SUBSCRIPTION_COUNT * 100);
 
     var testSubs = [];
 
@@ -138,17 +147,17 @@ describe('a1_multiple_subscriptions_events', function () {
 
     var started = Date.now();
 
-    async.times(SUBSCRIPTION_COUNT1, function(time, timeCB){
+    async.times(SUBSCRIPTION_COUNT, function(time, timeCB){
 
       var sub = require('shortid').generate();
 
-      if (testSubs.length < EVENT_COUNT1) testSubs.push(sub + '/test');
+      if (testSubs.length < EVENT_COUNT) testSubs.push(sub + '/test');
 
       clientInstanceListener.on(sub.substring(0, 10) + '*', function(data){
 
         matched++;
 
-        if (matched % 500 == 0) console.log('events handled', subscreated);
+        if (matched % 500 == 0) console.log('events handled', matched);
 
       }, function(e){
 
@@ -186,5 +195,4 @@ describe('a1_multiple_subscriptions_events', function () {
       });
     });
   });
-
 });

@@ -49,6 +49,7 @@
     "sorted-object-array": "1.0.0",
     "tcp-port-used": "0.1.2",
     "traverse": "0.6.6",
+    "trie-search": "^1.0.0",
     "uglify-js": "2.6.1",
     "underscore.string": "3.3.4",
     "user-home": "2.0.0",
