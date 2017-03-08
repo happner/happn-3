@@ -4,13 +4,15 @@ describe('g4_client_offline_disconnect', function () {
   var Happn = require('../lib/index');
   var server, client;
 
-  before('start server', function (done) {
+  var startServer = function (done) {
     Happn.service.create()
       .then(function (_server) {
         server = _server;
       })
       .then(done).catch(done);
-  });
+  };
+
+  before('start server', startServer);
 
   before('start client', function (done) {
     Happn.client.create()
@@ -47,15 +49,37 @@ describe('g4_client_offline_disconnect', function () {
 
         disconnectCalled = true;
 
+        var reconnected = false;
+
+        client.socket.on('reconnected', function () {
+
+          reconnected = true;
+
+        });
+
         client.disconnect(function (e) {
 
           if (e) return done(e);
 
           setTimeout(function () {
 
+            // should only have first reconnect
             expect(reconnectCount).to.eql(1);
 
-            done();
+            // start server to confirm no reconnect happens
+            startServer(function (e) {
+
+              if (e) return done(e);
+
+              setTimeout(function () {
+
+                expect(reconnected).to.eql(false);
+
+                done();
+
+              }, 2000);
+
+            });
 
           }, 1000);
 
