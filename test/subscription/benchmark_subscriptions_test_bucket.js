@@ -6,14 +6,16 @@ var Happn = require('../../lib/index')
   , Promise = require('bluebird')
   ;
 
-describe('subscriptions direct', function () {
+describe('subscriptions', function () {
 
   var serviceInstance;
   var clientInstancePublisher;
   var clientInstanceListener;
 
-  var SUBSCRIPTION_COUNT = 17500;
-  var EVENT_COUNT = 3000;
+  var testBucketImplementation = require('../../lib/services/subscription/bucket-test');
+
+  var SUBSCRIPTION_COUNT = 20000;
+  var EVENT_COUNT = 10000;
 
   beforeEach('start the service and connect the clients', function (done) {
 
@@ -22,9 +24,9 @@ describe('subscriptions direct', function () {
 
     var config = {
       services:{
-        queue:{
+        subscription:{
           config:{
-            mode:'direct'
+            bucketImplementation:testBucketImplementation
           }
         }
       }
@@ -36,13 +38,13 @@ describe('subscriptions direct', function () {
 
         serviceInstance = instance;
 
-        return Happn.client.create(clientListenerConfig);
+        return serviceInstance.services.session.localClient(clientListenerConfig);
       })
       .then(function (client) {
 
         clientInstanceListener = client;
 
-        return Happn.client.create(clientPublisherConfig);
+        return serviceInstance.services.session.localClient(clientPublisherConfig);
       })
       .then(function (client) {
 
@@ -74,6 +76,24 @@ describe('subscriptions direct', function () {
 
   });
 
+  it('test the trie lib', function (done) {
+
+    var TrieSearch = require('trie-search');
+
+    var tSearch =  new TrieSearch('path', {indexField: 'path'});
+
+    tSearch.add({path:'test'});
+
+    tSearch.add({path:'test'});
+
+    tSearch.add({path:'test'});
+
+    console.log(tSearch.get('test'));
+
+    done();
+
+  });
+
   it('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in parallel', function (done) {
 
     this.timeout(SUBSCRIPTION_COUNT * 100);
@@ -92,7 +112,7 @@ describe('subscriptions direct', function () {
 
       if (testSubs.length < EVENT_COUNT) testSubs.push(sub + '/test');
 
-      clientInstanceListener.on(sub.substring(0, 10) + '*', function(data){
+      clientInstanceListener.on(sub + '/*', function(data){
 
         matched++;
 
@@ -113,6 +133,16 @@ describe('subscriptions direct', function () {
 
       if (e) return done(e);
 
+      var subscriptionsTime = (Date.now() - started);
+
+      var subscriptionsPerSecond = (SUBSCRIPTION_COUNT / subscriptionsTime) * 1000;
+
+      console.log('SUBSCRIPTIONS ENDED IN ' + subscriptionsTime + ' milliseconds');
+
+      console.log('SUBSCRIPTIONS PER SECOND ' + subscriptionsPerSecond);
+
+      var eventsStarted = Date.now();
+
       async.each(testSubs, function(path, pathCB){
 
         clientInstancePublisher.set(path, {data:path}, pathCB);
@@ -121,7 +151,15 @@ describe('subscriptions direct', function () {
 
         if (e) return done(e);
 
-        console.log('ENDED IN ' + (Date.now() - started) + ' milliseconds');
+        var eventsTime = (Date.now() - eventsStarted);
+
+        var eventsPerSecond = (matched / eventsTime) * 1000;
+
+        console.log('EVENTS ENDED IN ' + eventsTime + ' milliseconds');
+
+        console.log('EVENTS PER SECOND ' + eventsPerSecond);
+
+        console.log('TEST ENDED IN ' + (Date.now() - started) + ' milliseconds');
 
         console.log('subs created:::', subscreated);
 
@@ -135,7 +173,7 @@ describe('subscriptions direct', function () {
     });
   });
 
-  it('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in series', function (done) {
+  it.only('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in series', function (done) {
 
     this.timeout(SUBSCRIPTION_COUNT * 100);
 
@@ -147,13 +185,13 @@ describe('subscriptions direct', function () {
 
     var started = Date.now();
 
-    async.times(SUBSCRIPTION_COUNT, function(time, timeCB){
+    async.timesSeries(SUBSCRIPTION_COUNT, function(time, timeCB){
 
       var sub = require('shortid').generate();
 
       if (testSubs.length < EVENT_COUNT) testSubs.push(sub + '/test');
 
-      clientInstanceListener.on(sub.substring(0, 10) + '*', function(data){
+      clientInstanceListener.on(sub + '*', function(data){
 
         matched++;
 
@@ -174,6 +212,16 @@ describe('subscriptions direct', function () {
 
       if (e) return done(e);
 
+      var subscriptionsTime = (Date.now() - started);
+
+      var subscriptionsPerSecond = (SUBSCRIPTION_COUNT / subscriptionsTime) * 1000;
+
+      console.log('SUBSCRIPTIONS ENDED IN ' + subscriptionsTime + ' milliseconds');
+
+      console.log('SUBSCRIPTIONS PER SECOND ' + subscriptionsPerSecond);
+
+      var eventsStarted = Date.now();
+
       async.each(testSubs, function(path, pathCB){
 
         clientInstancePublisher.set(path, {data:path}, pathCB);
@@ -182,17 +230,24 @@ describe('subscriptions direct', function () {
 
         if (e) return done(e);
 
-        console.log('ENDED IN ' + (Date.now() - started) + ' milliseconds');
+        var eventsTime = (Date.now() - eventsStarted);
+
+        var eventsPerSecond = (matched / eventsTime) * 1000;
+
+        console.log('EVENTS ENDED IN ' + eventsTime + ' milliseconds');
+
+        console.log('EVENTS PER SECOND ' + eventsPerSecond);
+
+        console.log('TEST ENDED IN ' + (Date.now() - started) + ' milliseconds');
 
         console.log('subs created:::', subscreated);
 
         console.log('events handled:::', matched);
-
-        //console.log(listenerclient.events);
 
         done();
 
       });
     });
   });
+
 });

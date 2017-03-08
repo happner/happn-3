@@ -6,13 +6,11 @@ var Happn = require('../../lib/index')
   , Promise = require('bluebird')
   ;
 
-describe('subscriptions', function () {
+describe('subscriptions direct', function () {
 
   var serviceInstance;
   var clientInstancePublisher;
   var clientInstanceListener;
-
-  var testBucketImplementation = require('../../lib/services/subscription/bucket-test');
 
   var SUBSCRIPTION_COUNT = 17500;
   var EVENT_COUNT = 5000;
@@ -24,9 +22,9 @@ describe('subscriptions', function () {
 
     var config = {
       services:{
-        subscription:{
+        queue:{
           config:{
-            bucketImplementation:testBucketImplementation
+            mode:'direct'
           }
         }
       }
@@ -76,25 +74,7 @@ describe('subscriptions', function () {
 
   });
 
-  it('test the trie lib', function (done) {
-
-    var TrieSearch = require('trie-search');
-
-    var tSearch =  new TrieSearch('path', {indexField: 'path'});
-
-    tSearch.add({path:'test'});
-
-    tSearch.add({path:'test'});
-
-    tSearch.add({path:'test'});
-
-    console.log(tSearch.get('test'));
-
-    done();
-
-  });
-
-  it.only('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in parallel', function (done) {
+  it('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in parallel', function (done) {
 
     this.timeout(SUBSCRIPTION_COUNT * 100);
 
@@ -133,6 +113,16 @@ describe('subscriptions', function () {
 
       if (e) return done(e);
 
+      var subscriptionsTime = (Date.now() - started);
+
+      var subscriptionsPerSecond = (SUBSCRIPTION_COUNT / subscriptionsTime) * 1000;
+
+      console.log('SUBSCRIPTIONS ENDED IN ' + subscriptionsTime + ' milliseconds');
+
+      console.log('SUBSCRIPTIONS PER SECOND ' + subscriptionsPerSecond);
+
+      var eventsStarted = Date.now();
+
       async.each(testSubs, function(path, pathCB){
 
         clientInstancePublisher.set(path, {data:path}, pathCB);
@@ -141,7 +131,15 @@ describe('subscriptions', function () {
 
         if (e) return done(e);
 
-        console.log('ENDED IN ' + (Date.now() - started) + ' milliseconds');
+        var eventsTime = (Date.now() - eventsStarted);
+
+        var eventsPerSecond = (matched / eventsTime) * 1000;
+
+        console.log('EVENTS ENDED IN ' + eventsTime + ' milliseconds');
+
+        console.log('EVENTS PER SECOND ' + eventsPerSecond);
+
+        console.log('TEST ENDED IN ' + (Date.now() - started) + ' milliseconds');
 
         console.log('subs created:::', subscreated);
 
@@ -155,7 +153,7 @@ describe('subscriptions', function () {
     });
   });
 
-  it('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in series', function (done) {
+  it.only('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in series', function (done) {
 
     this.timeout(SUBSCRIPTION_COUNT * 100);
 
@@ -167,7 +165,7 @@ describe('subscriptions', function () {
 
     var started = Date.now();
 
-    async.times(SUBSCRIPTION_COUNT, function(time, timeCB){
+    async.timesSeries(SUBSCRIPTION_COUNT, function(time, timeCB){
 
       var sub = require('shortid').generate();
 
@@ -194,6 +192,16 @@ describe('subscriptions', function () {
 
       if (e) return done(e);
 
+      var subscriptionsTime = (Date.now() - started);
+
+      var subscriptionsPerSecond = (SUBSCRIPTION_COUNT / subscriptionsTime) * 1000;
+
+      console.log('SUBSCRIPTIONS ENDED IN ' + subscriptionsTime + ' milliseconds');
+
+      console.log('SUBSCRIPTIONS PER SECOND ' + subscriptionsPerSecond);
+
+      var eventsStarted = Date.now();
+
       async.each(testSubs, function(path, pathCB){
 
         clientInstancePublisher.set(path, {data:path}, pathCB);
@@ -202,9 +210,15 @@ describe('subscriptions', function () {
 
         if (e) return done(e);
 
-        //console.log(listenerclient.events);
+        var eventsTime = (Date.now() - eventsStarted);
 
-        console.log('ENDED IN ' + (Date.now() - started) + ' milliseconds');
+        var eventsPerSecond = (matched / eventsTime) * 1000;
+
+        console.log('EVENTS ENDED IN ' + eventsTime + ' milliseconds');
+
+        console.log('EVENTS PER SECOND ' + eventsPerSecond);
+
+        console.log('TEST ENDED IN ' + (Date.now() - started) + ' milliseconds');
 
         console.log('subs created:::', subscreated);
 
