@@ -211,3 +211,7 @@
 1.7.0 2017-03-08
 ----------------
   - forked primus
+  
+1.7.1 2017-03-09
+----------------
+  - bucket optimisations, trie segmentation
