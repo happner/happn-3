@@ -27,7 +27,7 @@ describe('f9_publish_middleware', function () {
 
       //filter recipients by message and recipient meta
       callback(null, recipients.filter(function (recipient) {
-
+        
         return recipient.subscription.data.options.meta.publish;
       }));
     };

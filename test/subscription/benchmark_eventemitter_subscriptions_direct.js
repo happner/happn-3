@@ -12,7 +12,7 @@ describe('subscriptions direct', function () {
   var clientInstancePublisher;
   var clientInstanceListener;
 
-  var SUBSCRIPTION_COUNT = 17500;
+  var SUBSCRIPTION_COUNT = 5000;
   var EVENT_COUNT = 5000;
 
   beforeEach('start the service and connect the clients', function (done) {
@@ -153,7 +153,7 @@ describe('subscriptions direct', function () {
     });
   });
 
-  it.only('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in series', function (done) {
+  it('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in series', function (done) {
 
     this.timeout(SUBSCRIPTION_COUNT * 100);
 

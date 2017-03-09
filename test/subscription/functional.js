@@ -16,6 +16,44 @@ describe('functional subscription', function () {
 
   var SubscriptionBucket = require('../../lib/services/subscription/bucket.js');
 
+  it('test the trie lib, remove functionality', function (done) {
+
+    var testBucket = new SubscriptionBucket({
+      type: 1,
+      name: 'testBucket',
+      channel: 'SET'
+    });
+
+    var tSearch =  testBucket.__removableNodeTrie('path');
+
+    tSearch.add({path:'test1'});
+
+    tSearch.add({path:'test2'});
+
+    tSearch.add({path:'test3'});
+
+    expect(tSearch.get('test').length).to.be(3);
+
+    tSearch.remove('test2');
+
+    expect(tSearch.get('test').length).to.be(2);
+
+    tSearch.add({path:'test'});
+
+    tSearch.add({path:'test'});
+
+    tSearch.add({path:'test'});
+
+    expect(tSearch.get('test').length).to.be(5);
+
+    tSearch.remove('test');
+
+    expect(tSearch.get('test').length).to.be(0);
+
+    done();
+
+  });
+
   it('tests the subscription bucket adding, allSubscriptions', function (done) {
 
     var sessionId1 = '1';
@@ -40,7 +78,6 @@ describe('functional subscription', function () {
 
       done();
     })
-
   });
 
   it('tests the subscription bucket adding and removing, allSubscriptions', function (done) {
@@ -119,8 +156,6 @@ describe('functional subscription', function () {
 
         expect(subscriptions.length).to.be(2);
 
-        //console.log('removing:::');
-
         testBucket.removeSubscription('*', sessionId2, function (e) {
 
           if (e) return done(e);
@@ -173,8 +208,6 @@ describe('functional subscription', function () {
       testBucket.addSubscription('/test/other/path/*', sessionId5, data);
 
       expect(testBucket.allSubscriptions().length).to.be(5);
-
-      //console.log('NOW GETTING:::');
 
       testBucket.getSubscriptions('/test/path/1', function (e, subscriptions) {
 
@@ -232,9 +265,17 @@ describe('functional subscription', function () {
 
             testBucket.getSubscriptions('/test/path/' + key, function (e, recipients) {
 
-              expect(recipients.length).to.be(pathCounts[key]);
-              keyCB();
+              if (recipients.length != pathCounts[key]){
 
+                console.log(':::', testBucket.__explicit_subscriptions.get(''));
+
+                console.log('amount expected:::', pathCounts[key]);
+                console.log('for path:::', '/test/path/' + key);
+              }
+
+              expect(recipients.length).to.be(pathCounts[key]);
+
+              keyCB();
             });
 
           }, done);

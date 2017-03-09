@@ -14,8 +14,8 @@ describe('subscriptions', function () {
 
   var testBucketImplementation = require('../../lib/services/subscription/bucket-test');
 
-  var SUBSCRIPTION_COUNT = 20000;
-  var EVENT_COUNT = 10000;
+  var SUBSCRIPTION_COUNT = 5000;
+  var EVENT_COUNT = 5000;
 
   beforeEach('start the service and connect the clients', function (done) {
 
@@ -81,23 +81,23 @@ describe('subscriptions', function () {
 
   });
 
-  it('test the trie lib', function (done) {
-
-    var TrieSearch = require('trie-search');
-
-    var tSearch =  new TrieSearch('path', {indexField: 'path'});
-
-    tSearch.add({path:'test'});
-
-    tSearch.add({path:'test'});
-
-    tSearch.add({path:'test'});
-
-    console.log(tSearch.get('test'));
-
-    done();
-
-  });
+  // it('test the trie lib', function (done) {
+  //
+  //   var TrieSearch = require('trie-search');
+  //
+  //   var tSearch =  new TrieSearch('path', {indexField: 'path'});
+  //
+  //   tSearch.add({path:'test'});
+  //
+  //   tSearch.add({path:'test'});
+  //
+  //   tSearch.add({path:'test'});
+  //
+  //   console.log(tSearch.get('test'));
+  //
+  //   done();
+  //
+  // });
 
   it('should create ' + SUBSCRIPTION_COUNT + ' subscriptions and publish ' + EVENT_COUNT + ' times in parallel', function (done) {
 
