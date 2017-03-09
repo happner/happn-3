@@ -215,3 +215,7 @@
 1.7.1 2017-03-09
 ----------------
   - bucket optimisations, trie segmentation
+  
+1.7.2 2017-03-09
+----------------
+  - happn-tcp-port-used
