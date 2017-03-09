@@ -61,7 +61,8 @@ describe('f1_client_call_timeout', function () {
     happn.client.create(function (e, instance) {
 
       if (e) return callback(e);
-      expect(instance.options.callTimeout).to.be(30000);
+
+      expect(instance.options.callTimeout).to.be(60000);
 
       instance.disconnect(callback);
 
@@ -87,17 +88,18 @@ describe('f1_client_call_timeout', function () {
     happn.client.create({callTimeout: 40000}, function (e, instance) {
 
       if (e) return callback(e);
+
       expect(instance.options.callTimeout).to.be(40000);
 
       instance.set('/test/path', {test: 'data'}, {timeout: 1}, function (e) {
 
         expect(e.toString()).to.be('Error: api request timed out path: /test/path action: set');
+
         instance.disconnect(callback);
 
       });
     });
   });
-
 });
 
 //require('benchmarket').stop();

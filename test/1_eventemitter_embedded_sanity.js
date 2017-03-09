@@ -364,6 +364,7 @@ describe('1_eventemitter_embedded_sanity', function () {
         done();
       }
     }, function (err) {
+
       expect(err).to.not.exist;
       publisherclient.set('setTest/nonMergeConsecutive', object, {}, function (err) {
         expect(err).to.not.be.ok();
@@ -375,6 +376,7 @@ describe('1_eventemitter_embedded_sanity', function () {
   });
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
+
     var object = {param1: 10, param2: 20};
     var firstTime = true;
 
@@ -1131,11 +1133,8 @@ describe('1_eventemitter_embedded_sanity', function () {
 
 
         });
-
       });
-
     });
-
   });
 
   it('should unsubscribe from all events', function (callback) {

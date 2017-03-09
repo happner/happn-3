@@ -21,38 +21,37 @@
  */
 
 
-describe('1_eventemitter_embedded_benchmarks - without queueing, direct mode', function () {
-
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+describe('1_eventemitter_embedded_benchmarks', function () {
 
   var expect = require('expect.js');
   var happn = require('../../lib/index');
   var service = happn.service;
+  var happn_client = happn.client;
   var async = require('async');
 
+  var testport = 8000;
   var test_secret = 'test_secret';
+  var mode = "embedded";
   var default_timeout = 100000;
   var happnInstance = null;
 
   var testClients = [];
 
-  before('should initialize the service', function (callback) {
+  before('should initialize the service, benchmarking switched on', function (callback) {
 
     this.timeout(20000);
 
     try {
       service.create({
         services:{
-          queue:{
+          protocol:{
             config:{
-              mode:'direct'
+              benchMarkEnabled:true
             }
           }
         }
       },function (e, happnInst) {
-          if (e)
-            return callback(e);
+          if (e) return callback(e);
 
           happnInstance = happnInst;
           callback();
@@ -70,6 +69,8 @@ describe('1_eventemitter_embedded_benchmarks - without queueing, direct mode', f
 
       if (err)
         console.warn('failed closing test clients:::');
+
+      console.log('stats:::', JSON.stringify(happnInstance.services.stats.fetch(), null, 2));
 
       happnInstance.stop(done);
 
@@ -117,6 +118,7 @@ describe('1_eventemitter_embedded_benchmarks - without queueing, direct mode', f
       if (e) return callback(e);
 
         if (e) return callback(e);
+
         testClients.push(stressTestClient);
 
         var count = 0;
@@ -713,7 +715,5 @@ describe('1_eventemitter_embedded_benchmarks - without queueing, direct mode', f
       });
 
   });
-
-  require('benchmarket').stop();
 
 });

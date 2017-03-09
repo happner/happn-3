@@ -21,40 +21,35 @@
  */
 
 
-describe('1_eventemitter_embedded_benchmarks', function () {
-
-  require('benchmarket').start();
-  after(require('benchmarket').store());
+describe('1_eventemitter_embedded_benchmarks - without queueing, direct mode', function () {
 
   var expect = require('expect.js');
   var happn = require('../../lib/index');
   var service = happn.service;
-  var happn_client = happn.client;
   var async = require('async');
 
-  var testport = 8000;
   var test_secret = 'test_secret';
-  var mode = "embedded";
   var default_timeout = 100000;
   var happnInstance = null;
 
   var testClients = [];
 
-  before('should initialize the service, benchmarking switched on', function (callback) {
+  before('should initialize the service', function (callback) {
 
     this.timeout(20000);
 
     try {
       service.create({
         services:{
-          protocol:{
+          queue:{
             config:{
-              benchMarkEnabled:true
+              mode:'direct'
             }
           }
         }
       },function (e, happnInst) {
-          if (e) return callback(e);
+          if (e)
+            return callback(e);
 
           happnInstance = happnInst;
           callback();
@@ -72,8 +67,6 @@ describe('1_eventemitter_embedded_benchmarks', function () {
 
       if (err)
         console.warn('failed closing test clients:::');
-
-      console.log('stats:::', JSON.stringify(happnInstance.services.stats.fetch(), null, 2));
 
       happnInstance.stop(done);
 
@@ -121,7 +114,6 @@ describe('1_eventemitter_embedded_benchmarks', function () {
       if (e) return callback(e);
 
         if (e) return callback(e);
-
         testClients.push(stressTestClient);
 
         var count = 0;
@@ -719,6 +711,49 @@ describe('1_eventemitter_embedded_benchmarks', function () {
 
   });
 
-  require('benchmarket').stop();
+  it('does 1000 deferred SETS', function (callback) {
+
+    this.timeout(default_timeout);
+
+    var Happn = require('../../lib');
+
+    happnInstance.services.session.localClient(function(e, stressTestClient){
+
+      if (e) return callback(e);
+
+      console.log('STATE:::',stressTestClient.state);
+
+      testClients.push(stressTestClient);
+
+      var count = 0;
+      var expected = 1000;
+      var receivedCount = 0;
+      var timerName = 'CSV.colm 10 ' + expected + 'Events - no wait';
+
+      console.time(timerName);
+
+      var writeData = function () {
+
+        if (count == expected) {
+          console.log('ended call:::', count);
+          console.timeEnd(timerName);
+          callback();
+        }
+
+        stressTestClient.set('/e2e_test1/testsubscribe/sequence6', {
+          property1: count++
+        }, {
+          consistency:Happn.constants.CONSISTENCY.QUEUED
+        }, function (e, result) {
+
+          if (!e) writeData();
+
+        });
+      };
+
+      writeData();
+
+    });
+  });
 
 });
