@@ -964,13 +964,20 @@ clientInstance1.set('/test/path/acknowledged/1', {test: 'data'}, {
 
   onPublished: function (e, results) {
 
-    if (e) return reject(e);
-
-    resolve(results);
+    //results look like this:
+    expect(results).to.eql(
+      {
+        successful: 1,
+        acknowledged:1,
+        failed: 0, 
+        skipped: 0, 
+        queued:1
+      }
+    )
   }
 }, function (e) {
 
-  if (e) return reject(e);
+  //handle error here
 })
 
 ```
