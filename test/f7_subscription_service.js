@@ -2,6 +2,7 @@ var Happn = require('..')
   , expect = require('expect.js')
   , async = require('async')
   , shortid = require('shortid')
+  , Promise = require('bluebird')
   ;
 
 describe('f7_subscription_service', function () {
@@ -122,8 +123,6 @@ describe('f7_subscription_service', function () {
       testBucket.getSubscriptions('/test/path/1', function (e, subscriptions) {
 
         expect(subscriptions.length).to.be(2);
-
-        console.log('removing:::');
 
         testBucket.removeSubscription('*', sessionId2, function (e) {
 
@@ -573,6 +572,126 @@ describe('f7_subscription_service', function () {
         });
       });
     });
+  });
+
+  it('starts up an actual happn-3 instance, does a bunch of ons and sets', function (done) {
+
+    var happnInstance;
+
+    var happnClient;
+
+    var service = require('../').service;
+
+    var setFinished = false;
+
+    this.timeout(10000);
+
+    service.create()
+
+      .then(function(happnInst){
+
+        happnInstance = happnInst;
+
+        return new Promise(function(resolve, reject){
+
+          happnInstance.services.session.localClient(function(e, instance) {
+
+            if (e) return reject(e);
+
+            resolve(instance);
+
+          });
+        });
+
+    }).then(function(client){
+
+      happnClient = client;
+
+      return new Promise(function(resolve, reject){
+
+        happnClient.on('/*/that', function(data){
+
+          if (!setFinished) done(new Error('should not have happened:::'));
+
+        }, function(e){
+
+          happnClient.set('/something/like/this', {test:'data'}, function(e){
+
+            if (e) return reject(e);
+
+            setTimeout(function(){
+              setFinished = true;
+              resolve();
+            }, 300);
+          });
+        });
+      });
+    }).then(function(){
+
+      return new Promise(function(resolve, reject){
+
+        happnClient.on('/*/that', function(data){
+
+          resolve();
+
+        }, function(e){
+
+          happnClient.set('/something/like/that', {test:'data'}, function(e){
+
+            if (e) return reject(e);
+          });
+        });
+      });
+    }).then(function(){
+
+      return new Promise(function(resolve, reject){
+
+        happnClient.on('/*/*/that', function(data){
+
+          resolve();
+
+        }, function(e){
+
+          happnClient.set('/something/like/that', {test:'data'}, function(e){
+
+            if (e) return reject(e);
+          });
+        });
+      });
+    }).then(function(){
+
+      return new Promise(function(resolve, reject){
+
+        happnClient.on('*that', function(data){
+
+          resolve();
+
+        }, function(e){
+
+          happnClient.set('/something/like/that', {test:'data'}, function(e){
+
+            if (e) return reject(e);
+          });
+        });
+      });
+    }).then(function(){
+
+      return new Promise(function(resolve, reject){
+
+        happnClient.on('*something*', function(data){
+
+          resolve();
+
+        }, function(e){
+
+          happnClient.set('/something/like/that', {test:'data'}, function(e){
+
+            if (e) return reject(e);
+          });
+        });
+      });
+    }).then(done)
+      .catch(done);
   });
 
 });
