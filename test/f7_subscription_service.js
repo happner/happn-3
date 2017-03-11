@@ -1,19 +1,10 @@
-var Happn = require('..')
-  , expect = require('expect.js')
-  , async = require('async')
-  , shortid = require('shortid')
-  , Promise = require('bluebird')
-  ;
-
 describe('f7_subscription_service', function () {
 
-  before('', function () {
-
-  });
-
-  after('', function () {
-
-  });
+  var expect = require('expect.js')
+    , async = require('async')
+    , shortid = require('shortid')
+    , Promise = require('bluebird')
+    ;
 
   it('tests the subscription bucket adding, allSubscriptions', function (done) {
 
@@ -690,7 +681,12 @@ describe('f7_subscription_service', function () {
           });
         });
       });
-    }).then(done)
+    }).then(function(){
+
+        happnClient.disconnect(function(){
+          happnInstance.stop(done);
+        })
+    })
       .catch(done);
   });
 
