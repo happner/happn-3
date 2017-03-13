@@ -219,3 +219,8 @@
 1.7.2 2017-03-09
 ----------------
   - happn-tcp-port-used
+
+1.7.3 2017-03-13
+----------------
+  - fixed collisions on multiple servers in same process deleting the cached-to-disk browserclient
+
