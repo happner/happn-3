@@ -2,6 +2,7 @@ var SortedObjectArray = require("sorted-object-array")
   , LRU = require("lru-cache")
   , async = require('async')
   , TrieSearch = require('trie-search')
+  , PathTrie = require('./path-trie')
   ;
 
 function Bucket(options) {
@@ -31,7 +32,7 @@ Bucket.prototype.initialize = function (callback) {
 
   Object.defineProperty(this, '__explicit_subscriptions', {value: this.__removableNodeTrie('pathAndSession')});
 
-  Object.defineProperty(this, '__subscriptions', {value: new SortedObjectArray('segment')});
+  Object.defineProperty(this, '__wildcard_subscriptions', {value: new PathTrie({delimiter:'/', wildcardSingle:'*', wildcardMultiple:'**'})});
 
   callback();
 };

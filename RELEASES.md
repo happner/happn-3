@@ -219,8 +219,11 @@
 1.7.2 2017-03-09
 ----------------
   - happn-tcp-port-used
+  
+1.7.4 2017-03-10
+----------------
+  - fixed bucket to use the wildcardMatch on subscriptions, updated f7 test
 
-1.7.3 2017-03-13
+1.7.5 2017-03-13
 ----------------
   - fixed collisions on multiple servers in same process deleting the cached-to-disk browserclient
-
