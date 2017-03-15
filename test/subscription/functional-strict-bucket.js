@@ -81,13 +81,8 @@ describe('functional strict bucket', function () {
 
       expect(testBucket.allSubscriptions().length).to.be(3);
 
-      expect(testBucket.__segments.array.length).to.be(1);
-
-      expect(testBucket.__segments.array[0].refCount).to.be(3);
-
       done();
     });
-
   });
 
   it('tests the catchall segment, allSubscriptions', function (done) {
@@ -122,8 +117,6 @@ describe('functional strict bucket', function () {
           if (e) return done(e);
 
           expect(testBucket.allSubscriptions().length).to.be(1);
-
-          expect(testBucket.__segments.array.length).to.be(0);//all subscriptions do not have segments
 
           done();
 
@@ -215,7 +208,13 @@ describe('functional strict bucket', function () {
           testBucket.addSubscription('/test/path/' + randomPath, subId, {
             rand: randomPath,
             options: {refCount: 1}
-          }, timeCB);
+          }, function(e){
+
+            if (e) return timeCB(e);
+
+            else timeCB();
+
+          });
         },
 
         function (e) {

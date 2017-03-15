@@ -97,8 +97,8 @@ describe('functional subscription tree', function () {
     var subscribers = subscriptionTree.search('/2/test/path/3');
 
     expect(subscribers.length).to.be(2);
-
-    subscriptionTree.removeSubscription('/2/*/*/3', 3, 1, {test:3});
+    
+    subscriptionTree.removeSubscription('/2/*/*/3', 3, {dataId:3});
 
     subscribers = subscriptionTree.search('/2/test/path/3');
 
@@ -120,7 +120,7 @@ describe('functional subscription tree', function () {
 
     expect(subscribers.length).to.be(2);
 
-    subscriptionTree.removeSubscription('/4/1/1/3', 3, 1, {test:3});
+    subscriptionTree.removeSubscription('/4/1/1/3', 3, 1);
 
     subscribers = subscriptionTree.search('/2/test/path/3');
 
