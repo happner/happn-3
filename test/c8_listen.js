@@ -59,25 +59,22 @@ describe('c8_deferred_listen', function () {
       expect(body).to.be('TEST OUTPUT');
       callback();
     });
-
   });
 
   var happnInstance;
 
-  it('should initialize the service without listening', function (callback) {
+  before('should initialize the service without listening', function (callback) {
 
     service.create({
-        deferListen: true
-      })
+      deferListen: true
+    })
 
-      .then(function (happnInst) {
-        happnInstance = happnInst;
-        callback();
-      })
+    .then(function (happnInst) {
+      happnInstance = happnInst;
+      callback();
+    })
 
-      .catch(callback)
-
-    ;
+    .catch(callback);
 
   });
 
@@ -88,6 +85,7 @@ describe('c8_deferred_listen', function () {
     happnInstance.services.session.localClient(function (e, instance) {
 
       if (e) return callback(e);
+
       intraProcClientInstance = instance;
 
       intraProcClientInstance.set('/test/', {"test": "data"}, function (e, response) {

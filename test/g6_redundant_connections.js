@@ -34,6 +34,7 @@ describe('g6_redundant_connections', function () {
         if (e) return callback(e);
 
         instances.push(instance);
+
         callback();
       }
     );
@@ -45,8 +46,11 @@ describe('g6_redundant_connections', function () {
 
       if (!client) resolve();
 
-      return client.disconnect(function(){
+      return client.disconnect(function(e){
 
+        if (e) return reject(e);
+
+        client = null;
         resolve();
       });
     });
@@ -58,33 +62,33 @@ describe('g6_redundant_connections', function () {
 
     disconnectClient(service1Client)
 
-      .then(function(){
-        return disconnectClient(service2Client);
-      })
+    .then(function(){
+      return disconnectClient(service2Client);
+    })
 
-      .then(function(){
-        return disconnectClient(service3Client);
-      })
+    .then(function(){
+      return disconnectClient(service3Client);
+    })
 
-      .then(function(){
-        return disconnectClient(redundantClient);
-      })
+    .then(function(){
+      return disconnectClient(redundantClient);
+    })
 
-      .then(function(){
+    .then(function(){
 
-        async.eachSeries(instances, function (instance, eachCallback) {
-            instance.stop(eachCallback);
-          },
-          function(e){
+      async.eachSeries(instances, function (instance, eachCallback) {
+          instance.stop(eachCallback);
+        },
+        function(e){
 
-            if (e) return callback(e);
+          if (e) return callback(e);
 
-            callback();
-          }
-        );
-      })
+          callback();
+        }
+      );
+    })
 
-      .catch(callback);
+    .catch(callback);
   });
 
   beforeEach('should initialize the services', function (callback) {
@@ -92,6 +96,8 @@ describe('g6_redundant_connections', function () {
     this.timeout(20000);
 
     try {
+
+      instances = [];
 
       initializeService(service1, service1Port, function (e) {
 
@@ -165,6 +171,9 @@ describe('g6_redundant_connections', function () {
     });
   });
 
+  var test1Complete = false;
+  var test2Complete = false;
+
   it('random connections, should connect to the first service, then service to be switched off - fallback to second service', function (done) {
 
     this.timeout(5000);
@@ -197,10 +206,12 @@ describe('g6_redundant_connections', function () {
 
       redundantClient.onEvent('reconnect-successful', function (data) {
 
+        if (test1Complete) return;
+
         reconnections++;
 
         if (reconnections >= 2) {
-
+          test1Complete = true;
           return done();
         }
 
@@ -213,6 +224,16 @@ describe('g6_redundant_connections', function () {
           expect(response.id != serverId).to.be(true);
 
           serverId = response.id;
+
+          // console.log('stopping service:::', instances[serverId - 1].config.services.system.config.name);
+          //
+          // console.log('redundant client service:::', redundantClient.session.happn.name);
+          //
+          // console.log('service1 name:::', instances[0].config.services.system.config.name);
+          //
+          // console.log('service2 name:::', instances[1].config.services.system.config.name);
+          //
+          // console.log('service3 name:::', instances[2].config.services.system.config.name);
 
           instances[serverId - 1].stop(function (e) {
 
@@ -259,44 +280,166 @@ describe('g6_redundant_connections', function () {
 
       redundantClient = instance;
 
-      console.log('redundant client exists ok:::');
+      //console.log('redundant client exists ok:::', redundantClient.session.happn.name, redundantClient.uniqueId);
 
       expect(redundantClient.session.info.data).to.be('redundant_ordered');
 
       redundantClient.onEvent('reconnect-successful', function (data) {
 
+        if (test2Complete) return;
+
         expect(redundantClient.session.info.data).to.be('redundant_ordered');
 
-        console.log('reconnected:::');
+        //console.log('reconnected:::');
 
         redundantClient.get('/test/data', function (e, response) {
 
           if (e) return done(e);
 
-          console.log('did get:::', response.id);
+          //console.log('did get:::', response.id);
 
           expect(response.id).to.be(2);
+
+          test2Complete = true;
 
           redundantClient.disconnect(done);
         });
       });
 
-      console.log('redundant client attached event:::');
+      //console.log('redundant client attached event:::');
 
       redundantClient.get('/test/data', function (e, response) {
 
         if (e) return done(e);
 
-        console.log('redundant client did get:::', response.id);
+        //console.log('redundant client did get:::', response.id);
 
         expect(response.id).to.be(1);
 
+        // console.log('redundant client service:::', redundantClient.session.happn.name);
+        //
+        // console.log('stopping service:::', instances[0].config.services.system.config.name);
+
         instances[0].stop(function (e) {
 
-          console.log('stopped service:::');
+          // console.log('service1 name:::', instances[0].config.services.system.config.name);
+          //
+          // console.log('service2 name:::', instances[1].config.services.system.config.name);
+          //
+          // console.log('service3 name:::', instances[2].config.services.system.config.name);
+
           if (e) return done(e);
         });
       });
     });
   });
+
+  it('invalid connections, should fail to connect', function (done) {
+
+    this.timeout(5000);
+
+    happn_client.create([
+      {config: {port: 55045}},
+      {config: {port: 55046}},
+      {config: {port: 55047}}
+    ], {
+      info: 'redundant_ordered',//info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+      poolReconnectAttempts: 3, //how many switches to perform until a connection is made
+      socket: {
+        reconnect: {
+          retries: 1,//one retry
+          timeout: 100
+        }
+      }
+    }, function (e, instance) {
+
+      expect(e.toString()).to.be('Error: pool reconnection attempts exceeded');
+
+      done();
+    });
+  });
+
+  it('initial invalid connections, should fall back to the last available connection', function (done) {
+
+    this.timeout(5000);
+
+    happn_client.create([
+      {config: {port: 55045}},
+      {config: {port: 55046}},
+      {config: {port: service3Port}}
+    ], {
+      info: 'redundant_ordered',//info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+      poolReconnectAttempts: 3, //how many switches to perform until a connection is made
+      socket: {
+        reconnect: {
+          retries: 1,//one retry
+          timeout: 100
+        }
+      }
+    }, function (e, instance) {
+
+      if (e) return done(e);
+
+      instance.get('/test/data', function(e, data){
+
+        expect(data.id).to.be(3);
+        done();
+      });
+    });
+  });
+
+  it('port range', function (done) {
+
+    this.timeout(5000);
+
+    happn_client.create(
+      {config: {port: {range:[8001,8005]}}}
+    , {
+      info: 'redundant_ordered',//info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+      poolReconnectAttempts: 3, //how many switches to perform until a connection is made
+      socket: {
+        reconnect: {
+          retries: 1,//one retry
+          timeout: 100
+        }
+      }
+    }, function (e, instance) {
+
+        if (e) return done(e);
+
+        instance.get('/test/data', function(e, data){
+
+          expect(data.id).to.be(1);
+          done();
+        });
+    });
+  });
+
+  it('ip range', function (done) {
+
+    this.timeout(5000);
+
+    happn_client.create(
+      {config: {host: {range:['127.0.0.1','127.0.0.5']}}}
+      , {
+        info: 'redundant_ordered',//info is appended to each connection
+        poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+        poolReconnectAttempts: 3, //how many switches to perform until a connection is made
+        socket: {
+          reconnect: {
+            retries: 1,//one retry
+            timeout: 100
+          }
+        }
+      }, function (e, instance) {
+
+        expect(e.toString()).to.be('Error: pool reconnection attempts exceeded');
+
+        done();
+      });
+  });
+
 });
