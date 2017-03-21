@@ -1087,6 +1087,37 @@ clientInstance1.set('/test/path/acknowledged/1', {test: 'data'}, {
 
 ```
 
+BUCKETS AND OPTIMISATION
+------------------------
+
+The subscription service stores subscriptions in structures called buckets, there are 2 buckets currently:
+1. the default bucket is backward compatible with happn 1. This bucket considers the wildcard to be a placeholder for any number of segments.
+2. the strict bucket - this bucket uses * as a placeholder for a single segment, segments are divided between the / character, ie: /segment1/segment2/*. The strict bucket will only match subscriptions that are explicitly segmented this means that for the following set path "/test/path/22/test" will only go to subscribers that explcitly match the segment length, so "/test/*/22/*" will get it but unlike the default bucket "/test/*" will not receive a message. The strict bucket uses ** to define a multi-segment wildcard, so "/test/**" will receive a message.
+
+The strict bucket is about 25% faster than the default bucket. It can be configured for use by setting up the subscription service's bucketImplementation option
+
+```javascript
+ var happn = require('happn-3');
+ 
+ var config = {
+      services:{
+        subscription:{
+          config:{
+            bucketImplementation:happn.bucketStrict
+          }
+        }
+      }
+    };
+
+    service.create(config)
+
+    .then(function (instance) {
+      //you have an instance that uses the stict bucket now
+    })
+```
+
+####*NB: the strict bucket is not backwards compatible with happn-1*
+
 TESTING WITH KARMA
 ------------------
 
