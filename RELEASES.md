@@ -231,3 +231,8 @@
 1.7.6 2017-03-20
 ----------------
   - updated forked primus to only dodge missing options on destroy if configured to do so
+
+1.8.0 2017-03-21
+----------------
+  - strict bucket
+  - redundant connections
