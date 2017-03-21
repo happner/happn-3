@@ -231,3 +231,7 @@
 1.7.6 2017-03-20
 ----------------
   - updated forked primus to only dodge missing options on destroy if configured to do so
+
+1.7.7 2017-03-21
+----------------
+  - forked primus losing process.env, switched to global
