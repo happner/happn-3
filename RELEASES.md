@@ -227,3 +227,7 @@
 1.7.5 2017-03-13
 ----------------
   - fixed collisions on multiple servers in same process deleting the cached-to-disk browserclient
+
+1.7.6 2017-03-20
+----------------
+  - updated forked primus to only dodge missing options on destroy if configured to do so
