@@ -1138,7 +1138,33 @@ The strict bucket is about 25% faster than the default bucket. It can be configu
     
 //subscriptions using the strict bucket:
 
+client.on('/strict/*', function(data){
+  //event will fire on anything that matches 
+  //the correct segment count (2)
+  //ie /strict/1 /strict/2 /strict/blah etc.
+  //items with a different segment count will NOT match
+  //ie /strict/1/2 or /strict/1/blah/blah etc.
+}, function(e){
+  
+});
 
+client.on('/strict/**', function(data){
+  //event will fire on anything that matches 
+  //any segment count after the **
+  //ie /strict/1/yes /strict/2/blah/blah /strict/blah/bleh etc.
+}, function(e){
+  
+});
+
+//subscriptions using the default bucket, have a far greedier wildcard:
+
+client.on('/npt-strict/*', function(data){
+  //event will fire on anything that matches 
+  //the wildcard
+  //ie /npt-strict/1 /npt-strict/2/test/bla etc.
+}, function(e){
+  
+});
 
 ```
 
