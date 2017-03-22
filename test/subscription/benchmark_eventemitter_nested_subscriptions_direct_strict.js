@@ -157,7 +157,12 @@ describe('subscriptions direct', function () {
 
       async.each(testSubs, function(path, pathCB){
 
-        clientInstancePublisher.set(path, {data:path}, pathCB);
+        clientInstancePublisher.set(path, {data:path}, function(e, response){
+
+          if (e) return pathCB(e);
+
+          pathCB();
+        });
 
       }, function(e){
 

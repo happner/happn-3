@@ -1108,12 +1108,38 @@ The strict bucket is about 25% faster than the default bucket. It can be configu
         }
       }
     };
+    
+ //mixed buckets - buckets are matches according to the order they appear in
+ var alternativeConfig = {
+      services:{
+        subscription:{
+          config:{
+            buckets:[
+              {
+                name: 'strict',
+                channel:'*@/strict/*',//any messages (SET or REMOVE) with path starting with /strict/
+                implementation: happn.bucketStrict
+              },
+              {
+                name: 'default',//using the default implementation (backwards compatible)
+                channel:'*'//any messages, that were not strict
+              }
+            ]
+          }
+        }
+      }
+    };
 
     service.create(config)
 
     .then(function (instance) {
       //you have an instance that uses the stict bucket now
     })
+    
+//subscriptions using the strict bucket:
+
+
+
 ```
 
 ####*NB: the strict bucket is not backwards compatible with happn-1*

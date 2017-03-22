@@ -8,6 +8,38 @@ describe('g5_subscription_buckets', function () {
 
   context('functional subscription tree', function () {
 
+    it('subscription tree, wildcardMatching', function (done) {
+
+      var SubscriptionTree = require('../lib/services/subscription/subscription-tree');
+
+      var subscriptionTree = new SubscriptionTree();
+
+      expect(subscriptionTree.wildcardMatch('','')).to.be(true);
+
+      expect(subscriptionTree.wildcardMatch('/**/blah','/test/pattern/blah')).to.be(true);
+
+      expect(subscriptionTree.wildcardMatch('/*/blah','/test/pattern/blah')).to.be(true);
+
+      expect(subscriptionTree.wildcardMatch('/*/bleh','/test/pattern/blah')).to.be(false);
+
+      expect(subscriptionTree.wildcardMatch('/*/*/*','/test/pattern/blah')).to.be(true);
+
+      expect(subscriptionTree.wildcardMatch('/**','/test/pattern/blah')).to.be(true);
+
+      expect(subscriptionTree.wildcardMatch('**','/test/pattern/blah')).to.be(true);
+
+      expect(subscriptionTree.wildcardMatch('*','/test/pattern/blah')).to.be(true);
+
+      expect(subscriptionTree.wildcardMatch('/not/matching','/test/pattern/blah')).to.be(false);
+
+      expect(subscriptionTree.wildcardMatch('/test/pattern/blah','/test/pattern/blah')).to.be(true);
+
+      expect(subscriptionTree.wildcardMatch('/test/pattern/bleh','/test/pattern/*')).to.be(false);
+
+      done();
+
+    });
+
     it('subscription tree, single record subscribe', function (done) {
 
       var SubscriptionTree = require('../lib/services/subscription/subscription-tree');
@@ -119,6 +151,33 @@ describe('g5_subscription_buckets', function () {
       subscribers = subscriptionTree.search('/2/test/path/3');
 
       expect(subscribers.length).to.be(2);
+
+      done();
+    });
+
+    it('subscription tree, multiple wildcard **', function (done) {
+
+      var SubscriptionTree = require('../lib/services/subscription/subscription-tree');
+
+      var subscriptionTree = new SubscriptionTree();
+
+      //path, id, dataId, data, depth, originalPath
+      subscriptionTree.addSubscription('/2/test/**', 1, 1, {test:1});
+      subscriptionTree.addSubscription('/2/**', 1, 2, {test:2});
+
+      subscriptionTree.addSubscription('/2/**/2', 2, 1, {test:1});
+      subscriptionTree.addSubscription('**/test/path/2', 2, 2, {test:2});
+      subscriptionTree.addSubscription('/2/**/3', 2, 1, {test:1});
+
+      var subscriptions = subscriptionTree.search('/2/test/path/2');
+
+      expect(subscriptions.length).to.be(4);
+
+      subscriptionTree.removeSubscription('/2/**/2', 2, 1);
+
+      subscriptions = subscriptionTree.search('/2/test/path/2');
+
+      expect(subscriptions.length).to.be(3);
 
       done();
     });
@@ -373,14 +432,6 @@ describe('g5_subscription_buckets', function () {
             async.eachSeries(Object.keys(pathCounts), function (key, keyCB) {
 
               testBucket.getSubscriptions('/test/path/' + key, function (e, recipients) {
-
-                if (recipients.length != pathCounts[key]){
-
-                  console.log(':::', testBucket.__explicit_subscriptions.get(''));
-
-                  console.log('amount expected:::', pathCounts[key]);
-                  console.log('for path:::', '/test/path/' + key);
-                }
 
                 expect(recipients.length).to.be(pathCounts[key]);
 
@@ -974,15 +1025,7 @@ describe('g5_subscription_buckets', function () {
             async.eachSeries(Object.keys(pathCounts), function (key, keyCB) {
 
               testBucket.getSubscriptions('/test/path/' + key, function (e, recipients) {
-
-                if (recipients.length != pathCounts[key]){
-
-                  console.log(':::', testBucket.__explicit_subscriptions.get(''));
-
-                  console.log('amount expected:::', pathCounts[key]);
-                  console.log('for path:::', '/test/path/' + key);
-                }
-
+                
                 expect(recipients.length).to.be(pathCounts[key]);
 
                 keyCB();

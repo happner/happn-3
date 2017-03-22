@@ -194,7 +194,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
         var found = false;
 
         stream.on('data', function (line) {
-
+          
           if (found) return;
 
           var record = JSON.parse(line);
@@ -209,12 +209,11 @@ describe('a3_eventemitter_multiple_datasource', function () {
 
         stream.on('end', function () {
 
-          if (!found)
-            callback(null, null);
+          if (!found) callback(null, null);
 
         });
 
-      }, 1000)
+      }, 1000);
 
     } catch (e) {
       callback(e);
@@ -288,8 +287,6 @@ describe('a3_eventemitter_multiple_datasource', function () {
 
               if (e) return callback(e);
 
-              //console.log('rec: ', record);
-
               if (record) callback();
               else callback(new Error('record not found in persisted file'));
 
@@ -359,6 +356,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
       }, {}, function (e, result) {
 
         if (!e) {
+
           multipleClient.get(test_path, null, function (e, results) {
 
             expect(results.property1 == 'property1').to.be(true);
