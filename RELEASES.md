@@ -235,3 +235,8 @@
 1.7.7 2017-03-21
 ----------------
   - forked primus losing process.env, switched to global
+
+1.8.0 2017-03-21
+----------------
+  - strict bucket
+  - redundant connections
