@@ -5,7 +5,7 @@ var happn = require('..')
   , Promise = require('bluebird')
   ;
 
-describe('g5_subscription_buckets', function () {
+describe('g5a_subscription_mixed_buckets', function () {
 
   var serviceInstance;
 

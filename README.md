@@ -1092,7 +1092,8 @@ BUCKETS AND OPTIMISATION
 
 The subscription service stores subscriptions in structures called buckets, there are 2 buckets currently:
 1. the default bucket is backward compatible with happn 1. This bucket considers the wildcard to be a placeholder for any number of segments.
-2. the strict bucket - this bucket uses * as a placeholder for a single segment, segments are divided between the / character, ie: /segment1/segment2/*. The strict bucket will only match subscriptions that are explicitly segmented this means that for the following set path "/test/path/22/test" will only go to subscribers that explcitly match the segment length, so "/test/*/22/*" will get it but unlike the default bucket "/test/*" will not receive a message. The strict bucket uses ** to define a multi-segment wildcard, so "/test/**" will receive a message.
+
+2. the strict bucket - this bucket uses * as a placeholder for a single segment, segments are divided between the / character, ie: /segment1/segment2/*. The strict bucket will only match subscriptions that are explicitly segmented this means that for the following set path "/test/path/22/test" will only go to subscribers that explcitly match the segment length, so "/test/*/22/*" will get it but unlike the default bucket "/test/*" will not receive a message. The strict bucket uses ** to define a multi-segment wildcard, so "/test/**" will receive messages from multi-segmented sets and removes like "/test/segment1/segment2/segmentN".
 
 The strict bucket is about 25% faster than the default bucket. It can be configured for use by setting up the subscription service's bucketImplementation option
 
@@ -1158,10 +1159,10 @@ client.on('/strict/**', function(data){
 
 //subscriptions using the default bucket, have a far greedier wildcard:
 
-client.on('/npt-strict/*', function(data){
+client.on('/not-strict/*', function(data){
   //event will fire on anything that matches 
   //the wildcard
-  //ie /npt-strict/1 /npt-strict/2/test/bla etc.
+  //ie /not-strict/1 /not-strict/2/test/bla etc.
 }, function(e){
   
 });
