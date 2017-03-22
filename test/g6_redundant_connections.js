@@ -2,6 +2,7 @@ describe('g6_redundant_connections', function () {
 
   var expect = require('expect.js');
   var happn = require('../lib/index');
+  var Promise = require('bluebird');
 
   var service1 = happn.service;
   var service2 = happn.service;
