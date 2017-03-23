@@ -1087,15 +1087,18 @@ clientInstance1.set('/test/path/acknowledged/1', {test: 'data'}, {
 
 ```
 
-BUCKETS AND OPTIMISATION
-------------------------
+BUCKETS AND SUBSCRIPTIONS OPTIMISATION
+---------------------------------------
 
 The subscription service stores subscriptions in structures called buckets, there are 2 buckets currently:
+
 1. the default bucket is backward compatible with happn 1. This bucket considers the wildcard to be a placeholder for any number of segments.
 
 2. the strict bucket - this bucket uses * as a placeholder for a single segment, segments are divided between the / character, ie: /segment1/segment2/*. The strict bucket will only match subscriptions that are explicitly segmented this means that for the following set path "/test/path/22/test" will only go to subscribers that explcitly match the segment length, so "/test/*/22/*" will get it but unlike the default bucket "/test/*" will not receive a message. The strict bucket uses ** to define a multi-segment wildcard, so "/test/**" will receive messages from multi-segmented sets and removes like "/test/segment1/segment2/segmentN".
 
-The strict bucket is about 25% faster than the default bucket. It can be configured for use by setting up the subscription service's bucketImplementation option
+The strict bucket is about 25% faster than the default bucket. It can be configured for use by setting up the subscription service's bucketImplementation option.
+
+NB NB - for a given path, buckets must be configured in triplicate, one for SET, the next for REMOVE and the last for ALL subscriptions - also in that order, this is because the ALL bucket does not publish with the original subscription action (SET/REMOVE etc.)
 
 ```javascript
  var happn = require('happn-3');
@@ -1110,20 +1113,39 @@ The strict bucket is about 25% faster than the default bucket. It can be configu
       }
     };
     
- //mixed buckets - buckets are matches according to the order they appear in
+ // mixed buckets - buckets are matches according to the order they appear in
+ // here is a set of 3 buckets for any data matching the path /strict/*
  var alternativeConfig = {
       services:{
         subscription:{
           config:{
             buckets:[
-              {
-                name: 'strict',
-                channel:'*@/strict/*',//any messages (SET or REMOVE) with path starting with /strict/
+              { 
+                name: 'strict-set',
+                channel:'/SET@/strict/*',//undefined action messages (neither SET nor REMOVE) with path starting with /strict/
+                implementation: happn.bucketStrict
+              },
+              { 
+                name: 'strict-remove',
+                channel:'/REMOVE@/strict/*',//undefined action messages (neither SET nor REMOVE) with path starting with /strict/
                 implementation: happn.bucketStrict
               },
               {
-                name: 'default',//using the default implementation (backwards compatible)
-                channel:'*'//any messages, that were not strict
+                name: 'strict-all',
+                channel:'*@/strict/*',//undefined action messages (neither SET nor REMOVE) with path starting with /strict/
+                implementation: happn.bucketStrict
+              },
+              //these are the default buckets appended automatically by happn:
+              {
+                name: '__listeners_SET',
+                channel: '/SET@*' //all SET requests
+              },
+              {
+                name: '__listeners_REMOVE',
+                channel: '/REMOVE@*' //all SET requests
+              },{
+                name: '__listeners_ONALL',
+                channel: '*' //all SET requests
               }
             ]
           }
