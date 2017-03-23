@@ -234,9 +234,17 @@
 
 1.7.7 2017-03-21
 ----------------
-  - forked primus losing process.env, switched to global
+  - forked primus closing process.env, switched to global
 
 1.8.0 2017-03-21
 ----------------
   - strict bucket
   - redundant connections
+  
+1.8.1 2017-03-23
+----------------
+  - updated README (subscription service)
+  - socketCleanup method on client
+  - socket connect timeout is 30 seconds
+  - socket pool reconnect interval
+  - getBuckets optimisation, also bucket fix * = ALL
