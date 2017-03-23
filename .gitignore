@@ -20,6 +20,8 @@ pids
 logs
 results
 
+dump.rdb
+
 
 npm-debug.log
 node_modules
