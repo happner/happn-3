@@ -145,8 +145,10 @@ service.create(function (e, happnInst) {
   });
 
 ```
-#Redundant cluster connections
-*the happn client can also be configured to connect to a range of happn servers, the following code is an example:*
+
+##Connection pool
+*the happn client can also be configured to connect to a range of happn servers - this is useful when you are connecting directly to a cluster without a load-balancer, or you have a fail-over service, the following code contains to examples of either laod-balancing randomly, or using an ordered list of fail-over services:*
+
 
 ```javascript
 //
@@ -154,9 +156,9 @@ service.create(function (e, happnInst) {
 //
 
 happn_client.create([
-  {config: {port: 55001}},
-  {config: {port: 55002}},
-  {config: {port: 55003}}
+  {port: 55001},
+  {port: 55002},
+  {port: 55003}
 ], {
   info: 'test_random',//info is appended to each connection
   poolType: happn.constants.CONNECTION_POOL_TYPE.RANDOM,//default is 0 RANDOM
@@ -182,9 +184,9 @@ happn_client.create([
 //
 
 happn_client.create([
-  {config: {port: service1Port}},
-  {config: {port: service2Port}},
-  {config: {port: service3Port}}
+  {port: service1Port},
+  {port: service2Port},
+  {port: service3Port}
 ], {
   info: 'redundant_ordered',//info is appended to each connection
   poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
@@ -210,7 +212,7 @@ happn_client.create([
 //
 
  happn_client.create(
-  {config: {port: {range:[8000, 8005]}}}
+  {port: {range:[8000, 8005]}}
 , {
   info: 'redundant_ordered',//info is appended to each connection
   poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
@@ -230,7 +232,7 @@ happn_client.create([
 //
 
  happn_client.create(
-   {config: {host: {range:['127.0.0.1','127.0.0.5']}, port:8001}}
+   {host: {range:['127.0.0.1','127.0.0.5']}, port:8001}
  , {
    info: 'redundant_ordered',//info is appended to each connection
    poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
@@ -622,7 +624,7 @@ SECURITY CLIENT
 //logging in with the _ADMIN user
 
 var happn = require('happn');
-happn.client.create({config:{username:'_ADMIN', password:'testPWD'}, secure:true},function(e, instance) {
+happn.client.create({username:'_ADMIN', password:'testPWD', secure:true},function(e, instance) {
 
 
 ```
