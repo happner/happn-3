@@ -248,3 +248,8 @@
   - socket connect timeout is 30 seconds
   - socket pool reconnect interval
   - getBuckets optimisation, also bucket fix * = ALL
+
+1.8.2 2017-03-23
+----------------
+  - socket pool reconnect delay, 0 by default
+  - socket pool secure service tests

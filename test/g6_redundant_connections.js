@@ -173,7 +173,12 @@ describe('g6_redundant_connections', function () {
   });
 
   var setData = function (client, id, callback) {
-    return client.set('/test/data', {id: id}, callback);
+    return client.set('/test/data', {id: id}, function(e, result){
+
+      if (e) console.log('SET DATA ERROR HAPPENED:::', e);
+
+      callback(e);
+    });
   };
 
   beforeEach('should set up the test data', function (callback) {
@@ -476,6 +481,73 @@ describe('g6_redundant_connections', function () {
 
         done();
       });
+    });
+  });
+
+  it('infinite poolReconnectAttempts failing, then service started after random period', function (done) {
+
+    var randomMilliSeconds = (Math.floor(Math.random() * 10) + 1) * 1000;
+
+    this.timeout(randomMilliSeconds + 60000);
+
+    var stopped = Date.now();
+
+    stopInstance(instances[2], function(e){
+
+      if (e) return done(e);
+
+      instances.splice(2, 1);//remove the instance
+
+      console.log('STOPPED INSTANCE:::', randomMilliSeconds);
+
+      happn_client.create([
+        {config: {port: 55045}},
+        {config: {port: 55046}},
+        {config: {port: service3Port}}
+      ], {
+        info: 'redundant_ordered',//info is appended to each connection
+        poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+        poolReconnectAttempts: 0, //how many switches to perform until a connection is made
+        socket: {
+          reconnect: {
+            retries: 1,//one retry
+            timeout: 100
+          }
+        }
+      }, function (e, instance) {
+
+        if (e) return done(e);
+
+        console.log('connected after ' + parseInt(Date.now() - stopped) + 'ms:::');
+
+        instance.get('/test/data', function(e, data){
+
+          console.log('GOT DATA:::', e, data);
+
+          expect(data.id).to.be(3);
+
+          done();
+        });
+      });
+
+      setTimeout(function(){
+
+        initializeService(service3, service3Port, function(e){
+
+          instances[2].services.session.localClient(function(e, cli){
+            if (e) return done(e);
+            console.log('CONNECTED UP SERVICE:::');
+            cli.set('/test/data', {id:3}, function(e){
+              if (e) return done(e);
+              console.log('SET DATA:::');
+            });
+          });
+
+          if (e) return done(e);
+        });
+
+      }, randomMilliSeconds)
+
     });
   });
 
