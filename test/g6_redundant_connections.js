@@ -74,7 +74,7 @@ describe('g6_redundant_connections', function () {
 
   beforeEach('should stop all the clients and services', function (callback) {
 
-    this.timeout(16000);
+    this.timeout(60000);
 
     disconnectClient(service1Client)
 
@@ -109,7 +109,7 @@ describe('g6_redundant_connections', function () {
 
   beforeEach('should initialize the services', function (callback) {
 
-    this.timeout(20000);
+    this.timeout(60000);
 
     try {
 
@@ -183,7 +183,7 @@ describe('g6_redundant_connections', function () {
 
   beforeEach('should set up the test data', function (callback) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     setData(service1Client, 1, function (e) {
 
@@ -209,7 +209,7 @@ describe('g6_redundant_connections', function () {
 
   it('random connections, should connect to the first service, then service to be switched off - fallback to second service', function (done) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     happn_client.create([
       {config: {port: service1Port}},
@@ -291,7 +291,7 @@ describe('g6_redundant_connections', function () {
 
   it('random connections, should connect to the first service, then service to be switched off - fallback to second service', function (done) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     happn_client.create([
       {config: {port: service1Port}}
@@ -319,7 +319,7 @@ describe('g6_redundant_connections', function () {
 
   it('ordered connections, should connect to the first service, then service to be switched off - fallback to second service', function (done) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     happn_client.create([
       {config: {port: service1Port}},
@@ -397,7 +397,7 @@ describe('g6_redundant_connections', function () {
 
   it('invalid connections, should fail to connect', function (done) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     happn_client.create([
       {config: {port: 55045}},
@@ -453,7 +453,7 @@ describe('g6_redundant_connections', function () {
 
   it('infinite poolReconnectAttempts', function (done) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     happn_client.create([
       {config: {port: 55045}},
@@ -553,7 +553,7 @@ describe('g6_redundant_connections', function () {
 
   it('port range', function (done) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     happn_client.create(
       {config: {port: {range:[8000, 8005]}}}
@@ -581,7 +581,7 @@ describe('g6_redundant_connections', function () {
 
   it('ip range', function (done) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     happn_client.create(
       {config: {host: {range:['127.0.0.1','127.0.0.5']}, port:8001}}
@@ -615,7 +615,7 @@ describe('g6_redundant_connections', function () {
 
   it('invalid ip range', function (done) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     happn_client.create(
       {config: {host: {range:['127.0.0.1']}}}
@@ -639,7 +639,7 @@ describe('g6_redundant_connections', function () {
 
   it('invalid port range', function (done) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     happn_client.create(
       {config: {port: {range:[500]}}}
@@ -663,7 +663,7 @@ describe('g6_redundant_connections', function () {
 
   it('invalid ip and port range', function (done) {
 
-    this.timeout(16000);
+    this.timeout(30000);
 
     happn_client.create(
       {config: {port: {range:[500, 600]}, host:{range:['127.0.0.1','127.0.0.5']}}}

@@ -146,8 +146,8 @@ service.create(function (e, happnInst) {
 
 ```
 
-##Redundant cluster connections
-*the happn client can also be configured to connect to a range of happn servers, the following code is an example:*
+##Connection pool
+*the happn client can also be configured to connect to a range of happn servers - this is useful when you are connecting directly to a cluster without a load-balancer, or you have a fail-over service, the following code contains to examples of either laod-balancing randomly, or using an ordered list of fail-over services:*
 
 
 ```javascript
