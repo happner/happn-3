@@ -46,8 +46,6 @@ var serverConfig = {
 
     data: {
       config: {
-        compactInterval: 5000,//compact every 5 seconds
-        filename: filename,//where you want your data persisted to
         datastores: [//you can choose where you want the data persisted depending on the key
           {
             name: 'memory',
@@ -60,7 +58,8 @@ var serverConfig = {
           {
             name: 'persisted',
             settings: {
-              filename: tempFile1
+               compactInterval: 5000,//compact every 5 seconds
+               filename: [testfilePath],//where you want your data persisted to
             },
             patterns: [
               '/a3_eventemitter_multiple_datasource/' + test_id + '/persistedtest/*',
