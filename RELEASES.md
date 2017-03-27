@@ -253,3 +253,8 @@
 ----------------
   - socket pool reconnect delay, 0 by default
   - socket pool secure service tests
+  
+1.8.3 2017-03-27
+----------------
+  - moved transform and transformAll to dataProvider
+  - updated documentation
