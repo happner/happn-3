@@ -258,3 +258,11 @@
 ----------------
   - moved transform and transformAll to dataProvider
   - updated documentation
+  
+1.8.4 2017-03-28
+----------------
+  - happn-util-crypto 0.2.2
+  
+1.8.5 2017-03-28
+----------------
+  - happn-util-crypto 0.2.3
