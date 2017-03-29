@@ -270,3 +270,8 @@
 1.8.6 2017-03-29
 ----------------
   - __ensureCryptoLibrary only happens if encryptPayloads || loginType === 'digest'
+
+1.8.7 2017-03-30
+----------------
+  - removed var Primus from lib/client because Primus is in window in browser client
+
