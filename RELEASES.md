@@ -266,3 +266,7 @@
 1.8.5 2017-03-28
 ----------------
   - happn-util-crypto 0.2.3
+  
+1.8.6 2017-03-29
+----------------
+  - __ensureCryptoLibrary only happens if encryptPayloads || loginType === 'digest'
