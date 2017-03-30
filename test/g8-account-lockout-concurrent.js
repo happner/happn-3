@@ -96,126 +96,7 @@ describe(require('path').basename(__filename), function () {
     });
   }
 
-  it('does 2 unsuccessful logins out of 3, we wait the ttl and we no longer have a lock record', function (done) {
-
-    this.timeout(10000);
-
-    activeClient = null;
-
-    async.series([
-      function(itemCB){
-        createService(
-          {
-            services:{
-              security:{
-                config:{
-                  accountLockout:{
-                    enabled:true,
-                    attempts:3,
-                    retryInterval:3000
-                  }
-                }
-              }
-            }
-          }
-        )
-          .then(function(){
-            console.log('created service:::');
-            itemCB();
-          })
-          .catch(function(e){
-            itemCB(e);
-          })
-      },
-      function(itemCB){
-
-        console.log('trying login 1:::');
-
-        Happn.client.create(
-          {
-            config: {
-              username: testUser2.username,
-              password: 'BAD...',
-              port: testPort
-            }
-          })
-          .catch(function(e){
-            expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-            console.log('got expected error 1:::');
-            itemCB();
-          });
-      },
-      function(itemCB){
-
-        console.log('trying login 2:::');
-
-        Happn.client.create(
-          {
-            config: {
-              username: testUser2.username,
-              password: 'BAD...',
-              port: testPort
-            }
-          })
-          .catch(function(e){
-
-            expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-
-            console.log('got expected error 2:::');
-
-            server1.services.security.__locks.get(testUser2.username, function(e, lock){
-
-              expect(lock.attempts).to.be(2);
-              setTimeout(itemCB, 3000);
-            });
-          });
-      },
-      function(itemCB){
-
-        server1.services.security.__locks.get(testUser2.username, function(e, lock){
-
-          expect(e).to.be(null);
-
-          expect(lock).to.be(null);
-
-          itemCB();
-        });
-      },
-      function(itemCB){
-
-        console.log('trying login 3:::');
-
-        Happn.client.create(
-          {
-            config: {
-              username: testUser2.username,
-              password: testUser2.password,
-              port: testPort
-            }
-          })
-          .then(function(client){
-            activeClient = client;
-            console.log('succeeded login 3:::');
-            itemCB();
-          })
-          .catch(function(e){
-            itemCB(e);
-          });
-      },
-      function(itemCB){
-        stopService()
-          .then(function(){
-            itemCB();
-          })
-          .catch(function(e){
-            itemCB(e);
-          })
-      }
-    ], done);
-
-  });
-
-  it('fails to login twice, we then get an account locked out, then login successfully after 3 seconds', function (done) {
+  xit('fails to login twice, we then get an account locked out, then login successfully after 3 seconds', function (done) {
 
     this.timeout(10000);
 
@@ -333,7 +214,7 @@ describe(require('path').basename(__filename), function () {
     ], done);
   });
 
-  it('fails to login thrice, we then get an account locked out twice, then login successfully after 5 seconds', function (done) {
+  xit('does 2 unsuccessful logins out of 3, we wait the ttl and we no longer have a lock record', function (done) {
 
     this.timeout(10000);
 
@@ -349,7 +230,7 @@ describe(require('path').basename(__filename), function () {
                   accountLockout:{
                     enabled:true,
                     attempts:3,
-                    retryInterval:5000
+                    retryInterval:3000
                   }
                 }
               }
@@ -395,68 +276,32 @@ describe(require('path').basename(__filename), function () {
             }
           })
           .catch(function(e){
+
             expect(e.toString()).to.be('AccessDenied: Invalid credentials');
+
             console.log('got expected error 2:::');
-            itemCB();
+
+            server1.services.security.__locks.get(testUser2.username, function(e, lock){
+
+              expect(lock.attempts).to.be(2);
+              setTimeout(itemCB, 3000);
+            });
           });
+      },
+      function(itemCB){
+
+        server1.services.security.__locks.get(testUser2.username, function(e, lock){
+
+          expect(e).to.be(null);
+
+          expect(lock).to.be(null);
+
+          itemCB();
+        });
       },
       function(itemCB){
 
         console.log('trying login 3:::');
-
-        Happn.client.create(
-          {
-            config: {
-              username: testUser2.username,
-              password: 'BAD...',
-              port: testPort
-            }
-          })
-          .catch(function(e){
-            expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-            console.log('got expected error 2:::');
-            itemCB();
-          });
-      },
-      function(itemCB){
-
-        console.log('trying login 4:::');
-
-        Happn.client.create(
-          {
-            config: {
-              username: testUser2.username,
-              password: 'BAD...',
-              port: testPort
-            }
-          })
-          .catch(function(e){
-            expect(e.toString()).to.be('AccessDenied: Account locked out');
-            console.log('got expected error 4:::');
-            setTimeout(itemCB, 3000);//wait 3 seconds
-          });
-      },
-      function(itemCB){
-
-        console.log('trying login 5:::');
-
-        Happn.client.create(
-          {
-            config: {
-              username: testUser2.username,
-              password: 'BAD...',
-              port: testPort
-            }
-          })
-          .catch(function(e){
-            expect(e.toString()).to.be('AccessDenied: Account locked out');
-            console.log('got expected error 5:::');
-            setTimeout(itemCB, 2000);//wait 2 seconds
-          });
-      },
-      function(itemCB){
-
-        console.log('trying login 6:::');
 
         Happn.client.create(
           {
@@ -468,7 +313,7 @@ describe(require('path').basename(__filename), function () {
           })
           .then(function(client){
             activeClient = client;
-            console.log('succeeded login 6:::');
+            console.log('succeeded login 3:::');
             itemCB();
           })
           .catch(function(e){
@@ -486,45 +331,5 @@ describe(require('path').basename(__filename), function () {
       }
     ], done);
 
-  });
-
-  it('starts up the service ensures we have the correct defaults for the security config', function (done) {
-
-    this.timeout(10000);
-
-    activeClient = null;
-
-    async.series([
-      function(itemCB){
-        createService(
-          {
-            services:{
-              security:{
-                config:{}
-              }
-            }
-          }
-        )
-          .then(function(){
-            console.log('created service:::');
-            expect(server1.services.security.config.accountLockout.enabled).to.be(true);
-            expect(server1.services.security.config.accountLockout.attempts).to.be(4);
-            expect(server1.services.security.config.accountLockout.retryInterval).to.be(10 * 60 * 1000);
-            itemCB();
-          })
-          .catch(function(e){
-            itemCB(e);
-          })
-      },
-      function(itemCB){
-        stopService()
-          .then(function(){
-            itemCB();
-          })
-          .catch(function(e){
-            itemCB(e);
-          })
-      }
-    ], done);
   });
 });

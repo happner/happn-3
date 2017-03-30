@@ -275,3 +275,6 @@
 ----------------
   - removed var Primus from lib/client because Primus is in window in browser client
 
+1.9.0 2017-03-31
+----------------
+  - account lockout
