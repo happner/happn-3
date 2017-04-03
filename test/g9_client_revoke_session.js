@@ -97,22 +97,24 @@ describe('e9_client_disconnect', function () {
 
   before('creates a group and a user, adds the group to the user, logs in with test user', function (done) {
 
-    serviceInstance.services.security.upsertGroup(testGroup, {overwrite: false}, function (e, result) {
+    serviceInstance.services.security.users.upsertGroup(testGroup, {overwrite: false}, function (e, result) {
 
       if (e) return done(e);
       addedTestGroup = result;
 
-      serviceInstance.services.security.upsertUser(testUser, {overwrite: false}, function (e, result) {
+      serviceInstance.services.security.users.upsertUser(testUser, {overwrite: false}, function (e, result) {
 
         if (e) return done(e);
         addedTestuser = result;
 
-        serviceInstance.services.security.linkGroup(addedTestGroup, addedTestuser, done);
+        serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, done);
       });
     });
   });
 
-  it('logs in with the eventemitter user - we then test a call to a web-method, then disconnects with the revokeToken flag set to true, we try and reuse the token and ensure that it fails', function (done) {
+  it('logs in with the ws user - we then test a call to a web-method, then disconnects with the revokeToken flag set to true, we try and reuse the token and ensure that it fails', function (done) {
+
+    this.timeout(4000);
 
     happn.client.create({
         config: {username: testUser.username, password: 'TEST PWD'},
@@ -133,14 +135,15 @@ describe('e9_client_disconnect', function () {
 
             if (e) return done(e);
 
-            doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
+            setTimeout(function(){
 
-              expect(response.statusCode).to.equal(403);
+              doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
 
-              console.log(response.body);
+                expect(response.statusCode).to.equal(403);
 
-              done();
-            });
+                done();
+              });
+            }, 2000);
           });
         });
       })
@@ -151,7 +154,7 @@ describe('e9_client_disconnect', function () {
 
   });
 
-  it('logs in with the eventemitter user - we then test a call to a web-method, then disconnects with the revokeToken flag set to false, we try and reuse the token and ensure that it succeeds', function (done) {
+  it('logs in with the ws user - we then test a call to a web-method, then disconnects with the revokeToken flag set to false, we try and reuse the token and ensure that it succeeds', function (done) {
 
     happn.client.create({
         config: {username: testUser.username, password: 'TEST PWD'},
@@ -187,7 +190,7 @@ describe('e9_client_disconnect', function () {
       });
   });
 
-  it('logs in with the eventemitter user - we then test a call to a web-method, then disconnects with the revokeToken flag set to true, we try and reuse the token and ensure that it fails, then wait longer and ensure even after the token is revoked it still fails', function (done) {
+  it('logs in with the ws user - we then test a call to a web-method, then disconnects with the revokeToken flag set to true, we try and reuse the token and ensure that it fails, then wait longer and ensure even after the token is revoked it still fails', function (done) {
 
     this.timeout(10000);
 
@@ -211,28 +214,66 @@ describe('e9_client_disconnect', function () {
 
             if (e) return done(e);
 
-            var cachedToken = serviceInstance.services.security.__cache_revoked_sessions.get(sessionId);
+            setTimeout(function(){
 
-            expect(cachedToken.reason).to.equal('CLIENT');
+              serviceInstance.services.security.__cache_revoked_sessions.get(sessionId, function(e, cachedToken){
+
+                expect(cachedToken.reason).to.equal('CLIENT');
+
+                setTimeout(function(){
+
+                  serviceInstance.services.security.__cache_revoked_sessions.get(sessionId, function(e, cachedToken){
+
+                    expect(cachedToken).to.be(undefined);
+
+                    doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
+
+                      expect(response.statusCode).to.equal(403);
+
+                      done();
+                    });
+                  }, 4010);
+                });
+              });
+            }, 2000);
+          });
+        });
+      })
+
+      .catch(function (e) {
+        done(e);
+      });
+  });
+
+  it('logs in with the ws user - we then test a call to a web-method, we revoke the session explicitly via a client call, test it has the desired effect', function (done) {
+
+    this.timeout(10000);
+
+    happn.client.create({
+        username: testUser.username,
+        password: 'TEST PWD',
+        secure: true
+      })
+
+      .then(function (clientInstance) {
+
+        testClient = clientInstance;
+
+        var sessionToken = testClient.session.token;
+
+        doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
+
+          expect(response.statusCode).to.equal(200);
+
+          testClient.revokeSession(function(e){
+
+            if (e) return done(e);
 
             doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
 
               expect(response.statusCode).to.equal(403);
 
-              setTimeout(function(){
-
-                doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
-
-                  expect(response.statusCode).to.equal(403);
-
-                  cachedToken = serviceInstance.services.security.__cache_revoked_sessions.get(sessionId);
-
-                  expect(cachedToken).to.equal(null);
-
-                  done();
-                });
-
-              }, 4010);
+              done();
             });
           });
         });
