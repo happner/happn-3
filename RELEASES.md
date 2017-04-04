@@ -278,3 +278,8 @@
 1.9.0 2017-03-31
 ----------------
   - account lockout
+  
+1.10.0 2017-04-01
+----------------
+  - revoke session 
+  - revoke-session backward compatible with happn 2 clients
