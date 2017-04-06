@@ -139,12 +139,15 @@ describe('c5_client_events', function () {
     var client = (new happn.client()).client({
         username: '_ADMIN',
         password: 'bad password',
-        port: 55002
+        port: 55555
     });
 
     client.initialize(function (e) {
+
       if (e && e.code == 'ECONNREFUSED') return;
+
       eventsFired['reconnect-scheduled'] = false;
+
       setTimeout(function () {
         expect(eventsFired['reconnect-scheduled']).to.eql(false);
         callback();
