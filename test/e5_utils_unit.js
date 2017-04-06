@@ -43,4 +43,53 @@ describe(filename, function () {
 
   });
 
+  it('tests whilst', function (done) {
+
+    var sharedUtils = require('../lib/services/utils/shared');
+
+    var keepGoing = true;
+
+    sharedUtils.whilst(function(){
+      return keepGoing;
+    }, function(attempt, next){
+      if (attempt == 5) keepGoing = false;
+      next();
+    }, function(e){
+
+      expect(e).to.be(null);
+
+      var keepGoing = true;
+
+      sharedUtils.whilst(function(){
+        return keepGoing;
+      }, function(attempt, next){
+        if (attempt == 5) return next(new Error('TEST ERROR'));
+        next();
+      }, function(e){
+        expect(e).to.not.be(null);
+        done();
+      })
+    })
+  });
+
+  it('tests async', function (done) {
+
+    var sharedUtils = require('../lib/services/utils/shared');
+
+    sharedUtils.async([1,2,3], function (number, index, next) {
+      expect(number == index + 1).to.be(true);
+      next();
+    }, function(e){
+      expect(e).to.be(undefined);
+
+      sharedUtils.async([1,2,3], function (number, index, next) {
+        expect(number == index + 1).to.be(true);
+        if (number == 2) return next(new Error('TEST ERROR'));
+        next();
+      }, function(e){
+        expect(e).to.not.be(null);
+        done();
+      });
+    });
+  });
 });

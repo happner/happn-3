@@ -7,7 +7,8 @@
   "scripts": {
     "test": "mocha silence.js test",
     "test-cover": "istanbul cover _mocha -- silence.js test",
-    "test-memory": "mocha --expose-gc test/test-memory"
+    "test-memory": "mocha --expose-gc test/test-memory",
+    "test-browser": "gulp --gulpfile test/test-browser/gulp-01.js"
   },
   "author": "Tenacious and NSOFT",
   "license": "MIT",
