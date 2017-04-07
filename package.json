@@ -8,7 +8,9 @@
     "test": "mocha silence.js test",
     "test-cover": "istanbul cover _mocha -- silence.js test",
     "test-memory": "mocha --expose-gc test/test-memory",
-    "test-browser": "gulp --gulpfile test/test-browser/gulp-01.js"
+    "test-browser": "gulp --gulpfile test/test-browser/gulp-01.js",
+    "test-longrunning": "mocha silence.js test/test-longrunning",
+    "test-sanity":"mocha silence.js test/*sanity.js"
   },
   "author": "Tenacious and NSOFT",
   "license": "MIT",

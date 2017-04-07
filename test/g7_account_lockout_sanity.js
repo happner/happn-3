@@ -73,6 +73,7 @@ describe(require('path').basename(__filename), function () {
   }
 
   function stopService() {
+
     return new Promise(function (resolve) {
 
       if (!server1) resolve();
@@ -95,6 +96,15 @@ describe(require('path').basename(__filename), function () {
       else stopService();
     });
   }
+
+  after('stops the service if it exists', function(done){
+
+    stopService()
+      .then(done)
+      .catch(function(e){
+        done();
+      });
+  });
 
   it('does 2 unsuccessful logins out of 3, we wait the ttl and we no longer have a lock record', function (done) {
 

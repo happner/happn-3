@@ -1,4 +1,4 @@
-var Happn = require('../');
+var Happn = require('../../lib/index');
 var expect = require('expect.js');
 var Promise = require('bluebird');
 
@@ -382,6 +382,8 @@ describe(require('path').basename(__filename), function () {
 
   it('kills a client that is started with "create" and fails to login', function (done) {
 
+    this.timeout(60000);
+
     var reconnectionAttempts = 0;
 
     Happn.client.create(
@@ -397,18 +399,29 @@ describe(require('path').basename(__filename), function () {
         return done(new Error('Should not get a client'));
       })
       .catch(function (e) {
-        console.log(e.toString());
+
+        console.log('login error:::');
+
         expect(e).to.not.be(null);
+
         stopService()
+
           .then(function () {
+
+            console.log('stopped Service:::');
+
             return createService(true);
           })
           .then(function () {
+
+            console.log('created again:::');
+
             server1.services.session.on('connectionAttempt', function waitForAttempt() {
-              console.log('tried:::');
               reconnectionAttempts++;
             });
+
             setTimeout(function () {
+              console.log('removing listeners:::');
               server1.services.session.removeAllListeners('connectionAttempt');
               expect(reconnectionAttempts == 0).to.be(true);
               done();

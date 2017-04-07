@@ -1,8 +1,4 @@
-describe('d9_session_management_sanity', function () {
-
-  require('benchmarket').start();
-
-  after(require('benchmarket').store());
+describe('longrunning/002_session_management_sanity', function () {
 
   var expect = require('expect.js');
   var happn = require('../../lib/index')
@@ -249,9 +245,6 @@ describe('d9_session_management_sanity', function () {
         }, 10000);
       });
     }, 55557);
-
   });
-
-  require('benchmarket').stop();
 
 });

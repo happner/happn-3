@@ -1,4 +1,4 @@
-describe('c7a_db_compaction', function () {
+describe('longrunning/001_db_compaction', function () {
 
   var expect = require('expect.js');
   var happn = require('../../lib/index')
@@ -237,6 +237,7 @@ describe('c7a_db_compaction', function () {
           expect(fileSizeAfterActivity1 > fileSizeInitial).to.be(true);
 
           serviceInstance1.services.data.compact(function (e) {
+
             var fileSizeAfterCompact = getFileSize(test_file1);
 
             expect(fileSizeAfterCompact > fileSizeInitial).to.be(true);
