@@ -1,7 +1,7 @@
 describe('longrunning/001_db_compaction', function () {
 
   var expect = require('expect.js');
-  var happn = require('../../lib/index')
+  var happn = require('../../lib/index');
   var service = happn.service;
   var happn_client = happn.client;
   var async = require('async');
@@ -32,7 +32,8 @@ describe('longrunning/001_db_compaction', function () {
         }
       }
     }
-  }
+  };
+
   var serviceConfig2 = {
     secure: true,
     port: 4445,
@@ -43,7 +44,7 @@ describe('longrunning/001_db_compaction', function () {
         }
       }
     }
-  }
+  };
 
   var serviceConfig3 = {
     secure: true,
@@ -56,7 +57,7 @@ describe('longrunning/001_db_compaction', function () {
         }
       }
     }
-  }
+  };
 
   var serviceConfig4 = {
     secure: true,
@@ -87,7 +88,7 @@ describe('longrunning/001_db_compaction', function () {
         }
       }
     }
-  }
+  };
 
   var clientConfig1 = {
     config: {
@@ -96,7 +97,7 @@ describe('longrunning/001_db_compaction', function () {
       username: '_ADMIN',
       password: 'happn'
     }
-  }
+  };
 
   var clientConfig2 = {
     config: {
@@ -105,7 +106,7 @@ describe('longrunning/001_db_compaction', function () {
       username: '_ADMIN',
       password: 'happn'
     }
-  }
+  };
 
   var clientConfig3 = {
     config: {
@@ -114,7 +115,7 @@ describe('longrunning/001_db_compaction', function () {
       username: '_ADMIN',
       password: 'happn'
     }
-  }
+  };
 
   var clientConfig4 = {
     config: {
@@ -123,7 +124,7 @@ describe('longrunning/001_db_compaction', function () {
       username: '_ADMIN',
       password: 'happn'
     }
-  }
+  };
 
   var serviceInstance1;
   var serviceInstance2;
@@ -148,11 +149,11 @@ describe('longrunning/001_db_compaction', function () {
         callback(null, service);
       }
     );
-  }
+  };
 
   var getClient = function (config, callback) {
     happn_client.create(config, callback);
-  }
+  };
 
   before('it creates 2 test dbs', function (callback) {
     getService(serviceConfig1, function (e, serviceInstance) {
@@ -234,15 +235,26 @@ describe('longrunning/001_db_compaction', function () {
           testFiles.push(test_file1);
 
           fileSizeAfterActivity1 = getFileSize(test_file1);
+
           expect(fileSizeAfterActivity1 > fileSizeInitial).to.be(true);
 
-          serviceInstance1.services.data.compact(function (e) {
+          serviceInstance1.services.data.on('provider-event', function(data){
+
+            expect(data.eventName).to.be('compaction-successful');
+
+            expect(data.provider).to.be('default');
 
             var fileSizeAfterCompact = getFileSize(test_file1);
 
             expect(fileSizeAfterCompact > fileSizeInitial).to.be(true);
+
             expect(fileSizeAfterCompact < fileSizeAfterActivity1).to.be(true);
+
             callback();
+          });
+
+          serviceInstance1.services.data.compact(function (e) {
+            if (e) return callback(e);
           });
         });
 
@@ -252,6 +264,7 @@ describe('longrunning/001_db_compaction', function () {
   });
 
   it('starts a db configured to compact, does a replay of random activity1, then verifies the data is smaller than the initial size of the uncompacted file', function (callback) {
+
     getService(serviceConfig3, function (e, serviceInstance) {
 
       if (e) return callback(e);
