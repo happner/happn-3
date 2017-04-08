@@ -19,6 +19,7 @@ test/test-temp/*
 pids
 logs
 results
+test-resources/c7a/test/*
 
 dump.rdb
 
