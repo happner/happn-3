@@ -1,4 +1,4 @@
-describe('g9_client_disconnect', function () {
+describe('h2_system_health_error_handling_sanity', function () {
 
   var happn = require('../lib/index');
   var serviceInstance;
@@ -75,4 +75,38 @@ describe('g9_client_disconnect', function () {
 
     done();
   });
+
+  it('tests failures in the data service', function (done) {
+
+    var testProvider = serviceInstance.services.data.db('/test/path');
+
+    testProvider.__oldFindOne = testProvider.findOne;
+
+    testProvider.findOne = function(criteria, fields, callback){
+      return callback(new Error('test error'));
+    };
+
+    serviceInstance.services.data.getOneByPath('/test/path', null, function(e){
+
+      expect(e.toString()).to.be('SystemError: test error');
+
+      testProvider.findOne = testProvider.__oldFindOne;
+
+      done();
+    });
+
+  });
+
+  xit('tests failures in the protocol service', function (done) {
+
+  });
+
+  xit('tests failures in the subscription service', function (done) {
+
+  });
+
+  xit('tests failures in the publisher service', function (done) {
+
+  });
+
 });

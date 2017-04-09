@@ -23,7 +23,8 @@ describe('g3_error_service', function () {
     expect(system).to.eql({
       "code": 500,
       "message": "test system",
-      "name": "SystemError"
+      "name": "SystemError",
+      "severity":0
     });
 
     var resourceNotFound = errorService.ResourceNotFoundError('test resource not found');
