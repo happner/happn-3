@@ -334,7 +334,7 @@ describe(require('path').basename(__filename), function () {
       });
   });
 
-  it('will not reconnect after shutdown', function () {
+  it('will not reconnect after shutdown', function (done) {
 
     this.timeout(30000);
 
@@ -359,9 +359,11 @@ describe(require('path').basename(__filename), function () {
         return createService(false);
       })
       .then(function () {
+
         return new Promise(function (resolve) {
           {
             var eventCalled = 0;
+
             var subHandle = client.onEvent('reconnect',
               function waitForReconnect() {
                 eventCalled++;
@@ -376,13 +378,15 @@ describe(require('path').basename(__filename), function () {
         });
       })
       .then(function () {
-        return client.disconnect();
+        return client.disconnect(done);
       })
   });
 
   it('kills a client that is started with "create" and fails to login', function (done) {
 
     this.timeout(60000);
+
+    var started = Date.now();
 
     var reconnectionAttempts = 0;
 
@@ -392,7 +396,8 @@ describe(require('path').basename(__filename), function () {
           username: testUser2.username,
           password: 'bad_password',
           port: testPort,
-          loginRetry:0
+          loginRetry:0,
+          loginTimeout:4000
         }
       })
       .then(function () {
@@ -400,31 +405,28 @@ describe(require('path').basename(__filename), function () {
       })
       .catch(function (e) {
 
-        console.log('login error:::');
-
         expect(e).to.not.be(null);
 
         stopService()
 
           .then(function () {
-
-            console.log('stopped Service:::');
-
             return createService(true);
           })
-          .then(function () {
 
-            console.log('created again:::');
+          .then(function () {
 
             server1.services.session.on('connectionAttempt', function waitForAttempt() {
               reconnectionAttempts++;
             });
 
             setTimeout(function () {
-              console.log('removing listeners:::');
+
               server1.services.session.removeAllListeners('connectionAttempt');
+
               expect(reconnectionAttempts == 0).to.be(true);
+
               done();
+
             }, 10000);
           });
       });
@@ -436,6 +438,7 @@ describe(require('path').basename(__filename), function () {
     this.timeout(60000);
 
     var callbackCalled = 0;
+
     Happn.client.create(
       {
         username: testUser2.username,
