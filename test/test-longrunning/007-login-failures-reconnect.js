@@ -193,7 +193,7 @@ describe(require('path').basename(__filename), function () {
       })
   });
 
-  it('can login again if a login attempt failed on reconnect', function () {
+  it.only('can login again if a login attempt failed on reconnect', function () {
 
     var client;
 
