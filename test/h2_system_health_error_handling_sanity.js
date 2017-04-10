@@ -39,17 +39,17 @@ describe('h2_system_health_error_handling_sanity', function () {
 
     expect(serviceInstance.services.system.__stats.HEALTH.STATUS).to.be(constants.SYSTEM_HEALTH.FAIR);
 
-    expect(serviceInstance.services.system.__stats.HEALTH[constants.ERROR_SEVERITY.LOW]).to.be(1);
+    expect(serviceInstance.services.system.__stats.HEALTH.BY_SEVERITY[constants.ERROR_SEVERITY.LOW]).to.be(1);
 
     serviceInstance.services.error.handleSystem(e, 'test', constants.ERROR_SEVERITY.LOW);
 
-    expect(serviceInstance.services.system.__stats.HEALTH[constants.ERROR_SEVERITY.LOW]).to.be(2);
+    expect(serviceInstance.services.system.__stats.HEALTH.BY_SEVERITY[constants.ERROR_SEVERITY.LOW]).to.be(2);
 
     serviceInstance.services.error.handleSystem(e, 'test', constants.ERROR_SEVERITY.MEDIUM);
 
     expect(serviceInstance.services.system.__stats.HEALTH.STATUS).to.be(constants.SYSTEM_HEALTH.TAKING_STRAIN);
 
-    expect(serviceInstance.services.system.__stats.HEALTH[constants.ERROR_SEVERITY.MEDIUM]).to.be(1);
+    expect(serviceInstance.services.system.__stats.HEALTH.BY_SEVERITY[constants.ERROR_SEVERITY.MEDIUM]).to.be(1);
 
     serviceInstance.services.error.handleSystem(e, 'test', constants.ERROR_SEVERITY.LOW);
 
@@ -97,15 +97,137 @@ describe('h2_system_health_error_handling_sanity', function () {
 
   });
 
-  xit('tests failures in the protocol service', function (done) {
+  it('tests failures in the subscription service', function (done) {
+
+    serviceInstance.services.session.localClient({username: '_ADMIN', password: 'happn'})
+
+      .then(function (client) {
+
+        serviceInstance.services.subscription.__oldAddListener = serviceInstance.services.subscription.addListener.bind(serviceInstance.services.subscription);
+
+        serviceInstance.services.subscription.addListener = function(channel, key, sessionId, parameters, callback){
+
+          return callback(new Error('test subscribe error'));
+
+        }.bind(serviceInstance.services.subscription);
+
+        client.on('/test/on', function(data){
+          //do nothing
+        }, function(e){
+
+          expect(e.toString()).to.be('SystemError: subscribe failed');
+
+          var stats = serviceInstance.services.system.stats();
+
+          expect(stats.HEALTH.lastError.message).to.be('Error: subscribe failed');
+          expect(stats.HEALTH.lastError.area).to.be('SubscriptionService');
+          expect(stats.HEALTH.lastError.severity).to.be(1);
+
+          serviceInstance.services.subscription.addListener = serviceInstance.services.subscription.__oldAddListener;
+
+          done();
+        });
+      })
+
+      .catch(function (e) {
+        if (e) return done(e);
+      });
 
   });
 
-  xit('tests failures in the subscription service', function (done) {
+  it('tests failures in the publisher service', function (done) {
+
+    serviceInstance.services.session.localClient({username: '_ADMIN', password: 'happn'})
+
+      .then(function (client) {
+
+        serviceInstance.services.publisher.__oldPublishMessage = serviceInstance.services.publisher.publishMessage.bind(serviceInstance.services.publisher);
+
+        serviceInstance.services.publisher.publishMessage = function(message, callback){
+
+          return callback(new Error('a test publication error'), message);
+        };
+
+        client.on('/test/publication', function(data){
+          //do nothing
+        }, function(e){
+
+          if (e) return done(e);
+
+          client.set('/test/publication', {test:'data'}, {consistency:constants.CONSISTENCY.TRANSACTIONAL}, function(e){
+
+            var stats = serviceInstance.services.system.stats();
+
+            expect(stats.HEALTH.lastError.message).to.be('Error: processPublish failed');
+            expect(stats.HEALTH.lastError.area).to.be('PublisherService');
+            expect(stats.HEALTH.lastError.severity).to.be(1);
+
+            serviceInstance.services.publisher.publishMessage = serviceInstance.services.publisher.__oldPublishMessage;
+
+            done();
+          });
+        });
+      })
+
+      .catch(function (e) {
+        if (e) return done(e);
+      });
 
   });
 
-  xit('tests failures in the publisher service', function (done) {
+  xit('tests failures in the security service', function (done) {
+
+  });
+
+  it('tests failures in the protocol service', function (done) {
+
+    serviceInstance.services.session.localClient({username: '_ADMIN', password: 'happn'})
+
+      .then(function (client) {
+
+        serviceInstance.services.protocol.__oldRespondMessageIn = serviceInstance.services.protocol.__respondMessageIn;
+
+        serviceInstance.services.protocol.__respondMessageIn = function(protocol, message, respond, e){
+
+          serviceInstance.services.protocol.__latest.__oldFail = serviceInstance.services.protocol.__latest.fail;
+
+          serviceInstance.services.protocol.__latest.fail = function(){
+            throw new Error('test protocol fail error');
+          };
+
+          serviceInstance.services.protocol.__oldRespondMessageIn(protocol, message, respond, new Error('test protocol error'));
+
+          setTimeout(function(){
+
+            var stats = serviceInstance.services.system.stats();
+
+            console.log(stats);
+
+            expect(stats.HEALTH.lastError.message).to.be('Error: test protocol fail error');
+            expect(stats.HEALTH.lastError.area).to.be('ProtocolService');
+            expect(stats.HEALTH.lastError.severity).to.be(1);
+
+            expect(stats.HEALTH.STATUS).to.be(constants.SYSTEM_HEALTH.POOR);
+
+            serviceInstance.services.protocol.__respondMessageIn = serviceInstance.services.protocol.__oldRespondMessageIn.bind(serviceInstance.services.protocol);
+
+            client.get('/test/get', function(e, items){
+              expect(e).to.be(null);
+              done();
+            });
+
+          }, 1000);
+
+        }.bind(serviceInstance.services.protocol);
+
+        client.get('/test/get', function(e, items){
+          //do nothing
+        });
+      })
+
+      .catch(function (e) {
+        if (e) return done(e);
+      });
 
   });
 
