@@ -287,3 +287,7 @@
 1.10.1 2017-04-04
 -----------------
   - fixed issue with services, where initializeServices was a global variable
+
+1.11.0 2017-04-11
+-----------------
+  - updated with happn-2 changes
