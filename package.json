@@ -9,8 +9,8 @@
     "test-cover": "istanbul cover _mocha -- silence.js test",
     "test-memory": "mocha --expose-gc test/test-memory",
     "test-browser": "gulp --gulpfile test/test-browser/gulp-01.js",
-    "test-longrunning": "mocha silence.js test/test-longrunning",
-    "test-sanity":"mocha silence.js test/*sanity.js"
+    "test-longrunning": "node test/test-longrunning/serial-run.js",
+    "test-sanity": "mocha silence.js test/*sanity.js"
   },
   "author": "Tenacious and NSOFT",
   "license": "MIT",
@@ -68,6 +68,7 @@
     "expect.js": "*",
     "gulp": "^3.9.1",
     "happn-random-activity-generator": "^0.2.0",
+    "happner-serial-mocha": "^1.5.1",
     "istanbul": "^0.4.1",
     "karma": "^0.13.15",
     "karma-chai": "^0.1.0",
