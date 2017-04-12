@@ -1,19 +1,16 @@
 var path = require('path');
 var filename = path.basename(__filename);
 
-var benchmarket = require('benchmarket');
 var Promise = require('bluebird');
 var expect = require('expect.js');
 var net = require('net');
-var Happn = require('../');
+var Happn = require('../..');
 
 describe(filename, function () {
 
   var server;
 
   this.timeout(60000);
-
-  benchmarket.start();
 
   before('start server', function (done) {
     Happn.service.create({
@@ -189,10 +186,5 @@ describe(filename, function () {
         .then(done).catch(done);
 
     });
-
   });
-
-  after(benchmarket.store());
-  benchmarket.stop();
-
 });

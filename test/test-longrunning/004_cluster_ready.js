@@ -1,10 +1,7 @@
-describe('e9_cluster_ready', function () {
-
-  //require('benchmarket').start();
-  //after(//require('benchmarket').store());
+describe('longrunning/004_cluster_ready', function () {
 
   var expect = require('expect.js');
-  var happn = require('../lib/index');
+  var happn = require('../../lib/index');
 
   var service = happn.service;
   var happn_client = happn.client;
@@ -327,7 +324,4 @@ describe('e9_cluster_ready', function () {
       });
     })
   });
-
-  //require('benchmarket').stop();
-
 });

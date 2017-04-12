@@ -940,6 +940,7 @@ describe('b8_security_https_websockets_sanity', function () {
   });
 
   it('should unsubscribe from all events', function (callback) {
+
     this.timeout(10000);
 
     var onHappened = false;
@@ -983,6 +984,18 @@ describe('b8_security_https_websockets_sanity', function () {
           });
         }
       );
+    });
+  });
+
+  it('fails to connect on http and the client is destroyed', function (done) {
+
+    happn_client.create({config: {protocol: 'http'}, testMode: true, connectTimeout:1000}, function (e) {
+
+      expect(e).to.be.an('object');
+      expect(happn_client.lastClient).to.be.an('object');
+      expect(happn_client.lastClient).to.have.property('options');
+      expect(happn_client.lastClient).to.not.have.property('socket');
+      done();
     });
   });
 

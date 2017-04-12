@@ -14,11 +14,12 @@ test/test-browser/browser_client.js
 test/test-temp/*
 !test/test-temp/.tests.use.this
 *.db
-*test/test-resources/c7a/test/*
-*test/test-resources/c7/test/*
+*test/test-resources/c7a/test/**
+*test/test-resources/c7/test/**
 pids
 logs
 results
+test-resources/c7a/test/*
 
 dump.rdb
 

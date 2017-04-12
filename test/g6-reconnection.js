@@ -34,19 +34,13 @@ describe(filename, function() {
 
     var eventId = shortid.generate();
 
-    console.log('generated eventId:::', eventId);
-
     webSocketsClient.set('test/event/' + eventId, {id:eventId}, function(e){
 
       if (e) return callback(e);
 
-      console.log('did set:::', 'test/event/' + eventId);
-
       setTimeout(function(){
 
         var eventData = events[events.length - 1];
-
-        console.log('last event data:::', eventData);
 
         if (eventData.data.id != eventId) return callback(new Error('no event data found for id: ' + eventId));
 
@@ -57,17 +51,13 @@ describe(filename, function() {
   };
 
   var startServer = function(callback){
-    console.log('STARTING SERVER:::');
 
     remote = spawn('node', [path.join(libFolder, 'service.js')]);
 
     remote.stdout.on('data', function (data) {
 
-      console.log(data.toString());
-
       if (data.toString().match(/READY/)) {
 
-        console.log('STARTED SERVER:::');
         callback();
       }
 

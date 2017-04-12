@@ -63,8 +63,6 @@ describe('d7_test_cache_service_persisted', function() {
 
     serviceInstance.set(key, {"dkey":key}, function(e, result){
 
-      console.log('error is:::', e);
-
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
