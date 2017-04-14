@@ -107,7 +107,9 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
     context(bucketType, function () {
 
       if (bucketType == 'strict_bucket') {
-        return;
+        return; // dont test strict bucket, unsubscribing there does not seem to work at all...
+
+        // TODO: move all this (testing) into c9_unsubscribe_changes_websocket too...
       }
 
       it('should unsubscribe from an event', function (callback) {
