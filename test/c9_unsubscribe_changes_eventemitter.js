@@ -4,6 +4,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
   //after(//require('benchmarket').store());
 
   var expect = require('expect.js');
+  var Promise = require('bluebird');
   var happn = require('../lib/index');
   var service = happn.service;
   var async = require('async');
@@ -63,6 +64,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
 
           if (e) return callback(e);
           listenerclient = instance;
+          listenerclient.onAsync = Promise.promisify(listenerclient.on);
           callback();
 
         });
@@ -274,6 +276,178 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
         }
       );
     });
+  });
+
+  it('should unsubscribe from only specific events with wildcard', function (callback) {
+    this.timeout(10000);
+
+    var results = {};
+
+    Promise.all([
+      listenerclient.onAsync('/with/wildcard/unsubscribe/from/only/*', {event_type: 'set'}, function (data, meta) {
+        results[1] = true
+      }),
+      listenerclient.onAsync('/with/wildcard/unsubscribe/from/only/*', {event_type: 'set'}, function (data, meta) {
+        results[2] = true
+      }),
+      listenerclient.onAsync('/with/wildcard/unsubscribe/from/only/*', {event_type: 'set'}, function (data, meta) {
+        results[3] = true
+      })
+    ])
+
+      .spread(function (result1, result2, result3) {
+        // unsubscribe from 2nd subscription only
+        return listenerclient.off(result2[0]);
+      })
+
+      .then(function () {
+        return publisherclient.set('/with/wildcard/unsubscribe/from/only/1', {});
+      })
+
+      .then(function () {
+        return Promise.delay(500);
+      })
+
+      .then(function () {
+        expect(results).to.eql({
+          1: true,
+          3: true
+        });
+      })
+
+      .then(callback).catch(callback);
+
+  });
+
+  it('should unsubscribe from only specific events without wildcard', function (callback) {
+    this.timeout(10000);
+
+    var results = {};
+
+    Promise.all([
+      listenerclient.onAsync('/without/wildcard/unsubscribe/from/only', {event_type: 'set'}, function (data, meta) {
+        results[1] = true
+      }),
+      listenerclient.onAsync('/without/wildcard/unsubscribe/from/only', {event_type: 'set'}, function (data, meta) {
+        results[2] = true
+      }),
+      listenerclient.onAsync('/without/wildcard/unsubscribe/from/only', {event_type: 'set'}, function (data, meta) {
+        results[3] = true
+      })
+    ])
+
+      .spread(function (result1, result2, result3) {
+        // unsubscribe from 2nd subscription only
+        return listenerclient.off(result2[0]);
+      })
+
+      .then(function () {
+        return publisherclient.set('/without/wildcard/unsubscribe/from/only', {});
+      })
+
+      .then(function () {
+        return Promise.delay(500);
+      })
+
+      .then(function () {
+        expect(results).to.eql({
+          1: true,
+          3: true
+        });
+      })
+
+      .then(callback).catch(callback);
+
+  });
+
+  it('should remove only the correct subscriptionData entry with wildcard', function (callback) {
+    this.timeout(10000);
+
+    Promise.all([
+      listenerclient.onAsync('/with/wildcard/remove/correct/subscriptionData/*', {event_type: 'set', meta: {x: 1}}, function (data, meta) {
+        results[1] = true
+      }),
+      listenerclient.onAsync('/with/wildcard/remove/correct/subscriptionData/*', {event_type: 'set', meta: {x: 2}}, function (data, meta) {
+        results[2] = true
+      }),
+      listenerclient.onAsync('/with/wildcard/remove/correct/subscriptionData/*', {event_type: 'set', meta: {x: 3}}, function (data, meta) {
+        results[3] = true
+      })
+    ])
+
+      .spread(function (result1, result2, result3) {
+        // unsubscribe from 2nd subscription only
+        return listenerclient.off(result2[0]);
+      })
+
+      .then(function () {
+        var bucket = happnInstance.services.subscription.__buckets.filter(function (bucket) {
+          return bucket.options.name == '__listeners_SET';
+        })[0];
+
+        var segment = bucket.__subscriptions.array.filter(function (segment) {
+          return segment.fullPath == '/with/wildcard/remove/correct/subscriptionData/*';
+        })[0];
+
+        var metaArray = Object.keys(segment.subscriptionData).map(function (listenerId) {
+          return segment.subscriptionData[listenerId].options.meta;
+        });
+
+        expect(metaArray).to.eql([
+          { x: 1 },
+          { x: 3 }
+        ]);
+      })
+
+      .then(callback).catch(callback);
+
+  });
+
+  it.only('should remove only the correct subscriptionData entry without wildcard', function (callback) {
+    this.timeout(10000);
+
+    Promise.all([
+      listenerclient.onAsync('/without/wildcard/remove/correct/subscriptionData', {event_type: 'set', meta: {x: 1}}, function (data, meta) {
+        results[1] = true
+      }),
+      listenerclient.onAsync('/without/wildcard/remove/correct/subscriptionData', {event_type: 'set', meta: {x: 2}}, function (data, meta) {
+        results[2] = true
+      }),
+      listenerclient.onAsync('/without/wildcard/remove/correct/subscriptionData', {event_type: 'set', meta: {x: 3}}, function (data, meta) {
+        results[3] = true
+      })
+    ])
+
+      .spread(function (result1, result2, result3) {
+        // unsubscribe from 2nd subscription only
+        return listenerclient.off(result2[0]);
+      })
+
+      .then(function () {
+
+        var bucket = happnInstance.services.subscription.__buckets.filter(function (bucket) {
+          return bucket.options.name == '__listeners_SET';
+        })[0];
+
+        console.log(JSON.stringify(bucket.__explicit_subscriptions.getCache._map, null, 2));
+
+        //
+        // var segment = bucket.__subscriptions.array.filter(function (segment) {
+        //   return segment.fullPath == '/with/wildcard/remove/correct/subscriptionData/*';
+        // })[0];
+        //
+        // var metaArray = Object.keys(segment.subscriptionData).map(function (listenerId) {
+        //   return segment.subscriptionData[listenerId].options.meta;
+        // });
+        //
+        // expect(metaArray).to.eql([
+        //   { x: 1 },
+        //   { x: 3 }
+        // ]);
+      })
+
+      .then(callback).catch(callback);
+
   });
 
   //require('benchmarket').stop();
