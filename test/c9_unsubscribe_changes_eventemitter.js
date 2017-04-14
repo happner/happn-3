@@ -29,12 +29,12 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
     try {
 
       service.create(function (e, happnInst) {
-          if (e)
-            return callback(e);
+        if (e)
+          return callback(e);
 
-          happnInstance = happnInst;
-          callback();
-        });
+        happnInstance = happnInst;
+        callback();
+      });
     } catch (e) {
       callback(e);
     }
@@ -43,6 +43,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
 
   var publisherclient;
   var listenerclient;
+  var originalHandleData;
 
   /*
    We are initializing 2 clients to test saving data against the database, one client will push data into the
@@ -73,6 +74,14 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
     } catch (e) {
       callback(e);
     }
+  });
+
+  beforeEach(function () {
+    originalHandleData = listenerclient.handle_data;
+  });
+
+  afterEach(function () {
+    listenerclient.handle_data = originalHandleData;
   });
 
   it('should unsubscribe from an event', function (callback) {
@@ -107,7 +116,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
                   property3: 'property3'
                 }, {}, function (e, setresult) {
                   if (e) return callback(new Error(e));
-                  setTimeout(callback, 2000);
+                  setTimeout(callback, 1000);
                 });
               });
             }
@@ -187,14 +196,17 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
     var onRan = false;
     var pathOnRan = false;
 
-    listenerclient.on('/e2e_test1/testsubscribe/data/wildcard_path_off_test/*', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/data/wildcard_path_off_test/*', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
       return callback(new Error('not meant to happen'));
     }, function (e) {
       if (e) return callback(new Error(e));
 
-      listenerclient.on('/e2e_test1/testsubscribe/data/wildcard_path_off_test/data/*', function(data){
+      listenerclient.on('/e2e_test1/testsubscribe/data/wildcard_path_off_test/data/*', function (data) {
         return callback(new Error('not meant to happen'));
-      }, function(e){
+      }, function (e) {
 
         if (e) return callback(new Error(e));
 
@@ -270,7 +282,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
                 if (!onHappened)
                   callback();
 
-              }, 3000);
+              }, 1000);
             });
           });
         }
@@ -323,6 +335,8 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
     this.timeout(10000);
 
     var results = {};
+    var listenerId1, listenerId2, litenerId3;
+    var emittedPath;
 
     Promise.all([
       listenerclient.onAsync('/without/wildcard/unsubscribe/from/only', {event_type: 'set'}, function (data, meta) {
@@ -337,8 +351,12 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
     ])
 
       .spread(function (result1, result2, result3) {
+        listenerId1 = result1[0];
+        listenerId2 = result2[0];
+        listenerId3 = result3[0];
+
         // unsubscribe from 2nd subscription only
-        return listenerclient.off(result2[0]);
+        return listenerclient.off(listenerId2);
       })
 
       .then(function () {
@@ -356,6 +374,41 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
         });
       })
 
+      .then(function () {
+        return listenerclient.off(listenerId1);
+      })
+
+      .then(function () {
+        return listenerclient.off(listenerId3);
+      })
+
+      .then(function () {
+        // no longer subscribed to any, ensure the publication does not erroneously get sent to
+        // listenerclient anyway... and be filtered out clientside
+
+        listenerclient.handle_data = function (path) {
+          emittedPath = path;
+          originalHandleData.apply(this, arguments);
+        }
+      })
+
+      .then(function () {
+        results = {};
+        return publisherclient.set('/without/wildcard/unsubscribe/from/only', {});
+      })
+
+      .then(function () {
+        return Promise.delay(500);
+      })
+
+      .then(function () {
+        expect(results).to.eql({});
+      })
+
+      .then(function () {
+        expect(emittedPath).to.equal(undefined);
+      })
+
       .then(callback).catch(callback);
 
   });
@@ -364,13 +417,22 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
     this.timeout(10000);
 
     Promise.all([
-      listenerclient.onAsync('/with/wildcard/remove/correct/subscriptionData/*', {event_type: 'set', meta: {x: 1}}, function (data, meta) {
+      listenerclient.onAsync('/with/wildcard/remove/correct/subscriptionData/*', {
+        event_type: 'set',
+        meta: {x: 1}
+      }, function (data, meta) {
         results[1] = true
       }),
-      listenerclient.onAsync('/with/wildcard/remove/correct/subscriptionData/*', {event_type: 'set', meta: {x: 2}}, function (data, meta) {
+      listenerclient.onAsync('/with/wildcard/remove/correct/subscriptionData/*', {
+        event_type: 'set',
+        meta: {x: 2}
+      }, function (data, meta) {
         results[2] = true
       }),
-      listenerclient.onAsync('/with/wildcard/remove/correct/subscriptionData/*', {event_type: 'set', meta: {x: 3}}, function (data, meta) {
+      listenerclient.onAsync('/with/wildcard/remove/correct/subscriptionData/*', {
+        event_type: 'set',
+        meta: {x: 3}
+      }, function (data, meta) {
         results[3] = true
       })
     ])
@@ -394,8 +456,8 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
         });
 
         expect(metaArray).to.eql([
-          { x: 1 },
-          { x: 3 }
+          {x: 1},
+          {x: 3}
         ]);
       })
 
@@ -403,17 +465,26 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
 
   });
 
-  it.only('should remove only the correct subscriptionData entry without wildcard', function (callback) {
+  it('should remove only the correct subscriptionData entry without wildcard', function (callback) {
     this.timeout(10000);
 
     Promise.all([
-      listenerclient.onAsync('/without/wildcard/remove/correct/subscriptionData', {event_type: 'set', meta: {x: 1}}, function (data, meta) {
+      listenerclient.onAsync('/without/wildcard/remove/correct/subscriptionData', {
+        event_type: 'set',
+        meta: {x: 1}
+      }, function (data, meta) {
         results[1] = true
       }),
-      listenerclient.onAsync('/without/wildcard/remove/correct/subscriptionData', {event_type: 'set', meta: {x: 2}}, function (data, meta) {
+      listenerclient.onAsync('/without/wildcard/remove/correct/subscriptionData', {
+        event_type: 'set',
+        meta: {x: 2}
+      }, function (data, meta) {
         results[2] = true
       }),
-      listenerclient.onAsync('/without/wildcard/remove/correct/subscriptionData', {event_type: 'set', meta: {x: 3}}, function (data, meta) {
+      listenerclient.onAsync('/without/wildcard/remove/correct/subscriptionData', {
+        event_type: 'set',
+        meta: {x: 3}
+      }, function (data, meta) {
         results[3] = true
       })
     ])
@@ -429,25 +500,77 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
           return bucket.options.name == '__listeners_SET';
         })[0];
 
-        console.log(JSON.stringify(bucket.__explicit_subscriptions.getCache._map, null, 2));
+        var pathAndSession = '/without/wildcard/remove/correct/subscriptionData' +
+          bucket.options.pathSessionDelimiter +
+          listenerclient.session.id;
 
-        //
-        // var segment = bucket.__subscriptions.array.filter(function (segment) {
-        //   return segment.fullPath == '/with/wildcard/remove/correct/subscriptionData/*';
-        // })[0];
-        //
-        // var metaArray = Object.keys(segment.subscriptionData).map(function (listenerId) {
-        //   return segment.subscriptionData[listenerId].options.meta;
-        // });
-        //
-        // expect(metaArray).to.eql([
-        //   { x: 1 },
-        //   { x: 3 }
-        // ]);
+        var subscription = bucket.__explicit_subscriptions.get(pathAndSession)[0];
+
+        var metaArray = Object.keys(subscription.subscriptionData).map(function (listenerId) {
+          return subscription.subscriptionData[listenerId].options.meta;
+        });
+
+        expect(metaArray).to.eql([
+          {x: 1},
+          {x: 3}
+        ]);
+
       })
 
       .then(callback).catch(callback);
 
+  });
+
+  it('should remove all subscriptions on offPath without wildcard', function (callback) {
+    this.timeout(10000);
+
+    var results = {};
+    var emittedPath;
+
+    Promise.all([
+      listenerclient.onAsync('/without/wildcard/off/path', {event_type: 'set'}, function (data, meta) {
+        results[1] = true
+      }),
+      listenerclient.onAsync('/without/wildcard/off/path', {event_type: 'set'}, function (data, meta) {
+        results[2] = true
+      }),
+      listenerclient.onAsync('/without/wildcard/off/path', {event_type: 'set'}, function (data, meta) {
+        results[3] = true
+      })
+    ])
+
+      .then(function () {
+        return listenerclient.offPath('/without/wildcard/off/path');
+      })
+
+      .then(function () {
+        // no longer subscribed to any, ensure the publication does not erroneously get sent to
+        // listenerclient anyway... and be filtered out clientside
+
+        listenerclient.handle_data = function (path) {
+          emittedPath = path;
+          originalHandleData.apply(this, arguments);
+        }
+      })
+
+      .then(function () {
+        results = {};
+        return publisherclient.set('/without/wildcard/off/path', {});
+      })
+
+      .then(function () {
+        return Promise.delay(500);
+      })
+
+      .then(function () {
+        expect(results).to.eql({});
+      })
+
+      .then(function () {
+        expect(emittedPath).to.equal(undefined);
+      })
+
+      .then(callback).catch(callback);
   });
 
   //require('benchmarket').stop();
