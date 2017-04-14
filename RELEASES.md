@@ -291,3 +291,8 @@
 1.11.0 2017-04-11
 -----------------
   - updated with happn-2 changes
+
+1.11.2 2017-04-14
+-----------------
+  - fix: .off(listenerIdNumber) failing for explicit (no wildcard) paths
+
