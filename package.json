@@ -68,7 +68,7 @@
     "expect.js": "*",
     "gulp": "^3.9.1",
     "happn-random-activity-generator": "^0.2.0",
-    "happner-serial-mocha": "^1.5.1",
+    "happner-serial-mocha": "1.5.2",
     "istanbul": "^0.4.1",
     "karma": "^0.13.15",
     "karma-chai": "^0.1.0",
