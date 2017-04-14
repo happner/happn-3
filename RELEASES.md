@@ -291,8 +291,10 @@
 1.11.0 2017-04-11
 -----------------
   - updated with happn-2 changes
-
-1.11.2 2017-04-14
+  
+1.11.1 2017-04-14
 -----------------
+  - fix: event subscriptions don't resume with subscriptionId causing server-side .subscriptionData to be empty 
+  - fix: resumed event subscriptions no longer contain meta
   - fix: .off(listenerIdNumber) failing for explicit (no wildcard) paths
 
