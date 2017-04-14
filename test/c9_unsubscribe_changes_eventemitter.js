@@ -12,7 +12,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
   var default_timeout = 10000;
   var happnInstance = null;
 
-  this.timeout(20000);
+  this.timeout(default_timeout);
 
   /*
    This test demonstrates starting up the happn service -
@@ -28,7 +28,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
 
     try {
 
-      service.create(function (e, happnInst) {
+      service.create({}, function (e, happnInst) {
         if (e)
           return callback(e);
 
@@ -50,8 +50,6 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
    database whilst another listens for changes.
    */
   before('should initialize the clients', function (callback) {
-
-    this.timeout(default_timeout);
 
     try {
 
@@ -116,7 +114,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
                   property3: 'property3'
                 }, {}, function (e, setresult) {
                   if (e) return callback(new Error(e));
-                  setTimeout(callback, 1000);
+                  setTimeout(callback, 500);
                 });
               });
             }
@@ -171,7 +169,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
           property3: 'property3'
         }, {}, function (e) {
           if (e) return callback(new Error(e));
-          setTimeout(callback, 1000);
+          setTimeout(callback, 500);
         });
 
       });
@@ -220,7 +218,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
             property3: 'property3'
           }, {}, function (e) {
             if (e) return callback(new Error(e));
-            setTimeout(callback, 1000);
+            setTimeout(callback, 500);
           });
 
         });
@@ -246,7 +244,6 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
   });
 
   it('should unsubscribe from all events', function (callback) {
-    this.timeout(10000);
 
     var onHappened = false;
 
@@ -282,7 +279,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
                 if (!onHappened)
                   callback();
 
-              }, 1000);
+              }, 500);
             });
           });
         }
@@ -291,7 +288,6 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
   });
 
   it('should unsubscribe from only specific events with wildcard', function (callback) {
-    this.timeout(10000);
 
     var results = {};
 
@@ -332,7 +328,6 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
   });
 
   it('should unsubscribe from only specific events without wildcard', function (callback) {
-    this.timeout(10000);
 
     var results = {};
     var listenerId1, listenerId2, litenerId3;
@@ -414,7 +409,6 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
   });
 
   it('should remove only the correct subscriptionData entry with wildcard', function (callback) {
-    this.timeout(10000);
 
     Promise.all([
       listenerclient.onAsync('/with/wildcard/remove/correct/subscriptionData/*', {
@@ -466,7 +460,6 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
   });
 
   it('should remove only the correct subscriptionData entry without wildcard', function (callback) {
-    this.timeout(10000);
 
     Promise.all([
       listenerclient.onAsync('/without/wildcard/remove/correct/subscriptionData', {
@@ -522,7 +515,6 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
   });
 
   it('should remove all subscriptions on offPath without wildcard', function (callback) {
-    this.timeout(10000);
 
     var results = {};
     var emittedPath;
