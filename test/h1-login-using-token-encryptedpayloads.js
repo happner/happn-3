@@ -218,7 +218,6 @@ describe('h1_login_using_token', function () {
     happn.client.create(config)
 
       .then(function (clientInstance) {
-
         callback(null, clientInstance);
       })
 
@@ -305,9 +304,7 @@ describe('h1_login_using_token', function () {
         if (e) return done(e);
 
         var token = instance.session.token;
-
-        console.log('have token:::', token);
-
+        
         instance.disconnect(function(e){
 
           if (e) return done(e);
@@ -331,7 +328,7 @@ describe('h1_login_using_token', function () {
     });
   });
 
-  xit('logs in with the test client, supplying a public key, we perform a bunch of operations - we remember the token and logout revoking the token - we then ensure we are unable to login with the revoked token', function (done) {
+  it('logs in with the test client, supplying a public key, we perform a bunch of operations - we remember the token and logout revoking the token - we then ensure we are unable to login with the revoked token', function (done) {
 
     getClient({
       config: {
@@ -358,10 +355,11 @@ describe('h1_login_using_token', function () {
           if (e) return done(e);
 
           getClient({
-            token:token
+            token:token,
+            port:10000
           }, function(e) {
 
-            expect(e.toString()).to.be('AccessDenied: token was revoked');
+            expect(e.toString()).to.be('AccessDenied: session with id ' + instance.session.id + ' has been revoked');
             done();
           });
         });
