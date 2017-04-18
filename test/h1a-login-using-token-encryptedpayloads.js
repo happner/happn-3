@@ -11,16 +11,10 @@ describe('h1_login_using_token', function () {
 
   var happnInstance2 = null;
 
-  var encryptedPayloadInstance = null;
-
   var http = require('http');
-
-  var admClient;
 
   var Crypto = require('happn-util-crypto');
   var crypto = new Crypto();
-
-  var serverKeyPair = crypto.createKeyPair();
 
   var serviceConfig1 = {
     port:10000,
