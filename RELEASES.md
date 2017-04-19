@@ -298,3 +298,8 @@
   - fix: resumed event subscriptions no longer contain meta
   - fix: .off(listenerIdNumber) failing for explicit (no wildcard) paths
 
+1.12.0 2017-04-18
+-----------------
+  - fix: options passed into the client with a null or empty options, but a connection default to 127.0.0.1:55000
+  - enhancement: login with a token is now possible
+  - test: default profiles, client options, login using tokens
