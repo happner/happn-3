@@ -1,4 +1,4 @@
-describe('h2_system_health_error_handling_sanity', function () {
+describe(require('path').basename(__filename), function () {
 
   var happn = require('../lib/index');
   var serviceInstance;

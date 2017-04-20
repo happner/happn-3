@@ -1,4 +1,4 @@
-describe('h1_login_using_token', function () {
+describe(require('path').basename(__filename), function () {
 
   this.timeout(30000);
 

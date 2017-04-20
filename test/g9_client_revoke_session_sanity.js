@@ -1,4 +1,4 @@
-describe('g9_client_disconnect', function () {
+describe(require('path').basename(__filename), function () {
 
   var happn = require('../lib/index');
   var serviceInstance;
