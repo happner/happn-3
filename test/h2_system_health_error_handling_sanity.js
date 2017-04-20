@@ -1,4 +1,4 @@
-describe('h2_system_health_error_handling_sanity', function () {
+describe(require('path').basename(__filename), function () {
 
   var happn = require('../lib/index');
   var serviceInstance;
@@ -204,7 +204,7 @@ describe('h2_system_health_error_handling_sanity', function () {
             console.log(stats);
 
             expect(stats.HEALTH.lastError.message).to.be('Error: test protocol fail error');
-            expect(stats.HEALTH.lastError.area).to.be('ProtocolService');
+            expect(stats.HEALTH.lastError.area).to.be('ProtocolService.__respondMessageIn');
             expect(stats.HEALTH.lastError.severity).to.be(1);
 
             expect(stats.HEALTH.STATUS).to.be(constants.SYSTEM_HEALTH.POOR);
