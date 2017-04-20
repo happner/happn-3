@@ -765,7 +765,7 @@ describe('3_eventemitter_websockets_embedded_sanity', function () {
     });
   });
 
-  xit('unsubscribe from the right event', function (callback) {
+  it('unsubscribes from the right event', function (callback) {
     this.timeout(10000);
 
     var path1 = '/this/is/the/first/path';
@@ -805,9 +805,9 @@ describe('3_eventemitter_websockets_embedded_sanity', function () {
           resolve();
         })
       }
-    }
+    };
 
-    return utils.subscribeToPath(path1)
+    utils.subscribeToPath(path1)
       .then(utils.storeHandle1)
       .then(function () {
         return utils.subscribeToPath(path2);
