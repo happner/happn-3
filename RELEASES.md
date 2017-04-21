@@ -303,3 +303,7 @@
   - fix: options passed into the client with a null or empty options, but a connection default to 127.0.0.1:55000
   - enhancement: login with a token is now possible
   - test: default profiles, client options, login using tokens
+
+1.12.1 2017-04-21
+-----------------
+  - fix: issue #49 strict bucket events dont work
