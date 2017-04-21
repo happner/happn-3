@@ -4,7 +4,7 @@ var Happn = require('..')
   , shortid = require('shortid')
   ;
 
-describe('g5_subscription_buckets', function () {
+describe(require('path').basename(__filename), function () {
 
   context('functional subscription tree', function () {
 
@@ -1025,7 +1025,7 @@ describe('g5_subscription_buckets', function () {
             async.eachSeries(Object.keys(pathCounts), function (key, keyCB) {
 
               testBucket.getSubscriptions('/test/path/' + key, function (e, recipients) {
-                
+
                 expect(recipients.length).to.be(pathCounts[key]);
 
                 keyCB();

@@ -1,7 +1,4 @@
-describe('c9_unsubscribe_changes_eventemitter', function () {
-
-  //require('benchmarket').start();
-  //after(//require('benchmarket').store());
+describe(require('path').basename(__filename), function () {
 
   var expect = require('expect.js');
   var Promise = require('bluebird');
@@ -37,9 +34,7 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
                 channel: '*@/strict_bucket/*', // any messages (SET or REMOVE) with path starting with /strict/
                 implementation: happn.bucketStrict
               }
-
               // SubscriptionService.prototype.initializeBuckets still adds default "unstrict" buckets
-
             ]
           }
         }
@@ -106,11 +101,11 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
 
     context(bucketType, function () {
 
-      if (bucketType == 'strict_bucket') {
-        return; // dont test strict bucket, unsubscribing there does not seem to work at all...
-
-        // TODO: move all this (testing) into c9_unsubscribe_changes_websocket too...
-      }
+      // if (bucketType == 'strict_bucket') {
+      //   return; // dont test strict bucket, unsubscribing there does not seem to work at all...
+      //
+      //   // TODO: move all this (testing) into c9_unsubscribe_changes_websocket too...
+      // }
 
       it('should unsubscribe from an event', function (callback) {
 
@@ -128,17 +123,17 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
           //off path is deprecated - but should still function
           listenerclient.off(path, function (e) {
 
-            if (e)
-              return callback(new Error(e));
+            if (e) return callback(new Error(e));
 
             listenerclient.on(path, {event_type: 'set', count: 0},
               function (message) {
                 if (onRan) return callback(new Error('subscription was not removed'));
                 else {
+
                   onRan = true;
                   listenerclient.off(currentListenerId, function (e) {
-                    if (e)
-                      return callback(new Error(e));
+
+                    if (e) return callback(new Error(e));
 
                     publisherclient.set(path, {
                       property1: 'property1',
@@ -455,6 +450,8 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
 
       it('should remove only the correct subscriptionData entry with wildcard', function (callback) {
 
+        if (bucketType == 'strict_bucket') return callback();
+
         var path = '/' + bucketType + '/with/wildcard/remove/correct/subscriptionData/*';
 
         Promise.all([
@@ -507,6 +504,8 @@ describe('c9_unsubscribe_changes_eventemitter', function () {
       });
 
       it('should remove only the correct subscriptionData entry without wildcard', function (callback) {
+
+        if (bucketType == 'strict_bucket') return callback();
 
         var path = '/' + bucketType + '/without/wildcard/remove/correct/subscriptionData';
 
