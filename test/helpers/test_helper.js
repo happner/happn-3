@@ -7,9 +7,6 @@ var Promise = require('bluebird')
   , uuid = require('uuid')
   ;
 
-var happn = require('../lib/index');
-
-
 function TestHelper(){
 
 }
@@ -60,7 +57,7 @@ TestHelper.prototype.getClient = Promise.promisify(function(config, callback){
 
   if (!config.__testOptions) config.__testOptions = {};
 
-  if (!config.__testOptions.clientKey) config.__testOptions.clientKey = uuid.v4();
+  config.__testOptions.clientKey = uuid.v4() + '@' + config.name;//[client id]@[server key]
 
   var _this = this;
 
@@ -76,7 +73,7 @@ TestHelper.prototype.getClient = Promise.promisify(function(config, callback){
 
       if (_this.__activeServices[config.name].clients) _this.__activeServices[config.name].clients = [];
 
-      _this.__activeServices[config.name].clients.push(instance);
+      _this.__activeServices[config.name].clients.push({instance:instance, id:config.__testOptions.clientKey});
 
       callback(null, instance);
     });
@@ -96,7 +93,7 @@ TestHelper.prototype.getClient = Promise.promisify(function(config, callback){
 
     if (_this.__activeServices[config.name].clients) _this.__activeServices[config.name].clients = [];
 
-    _this.__activeServices[config.name].clients.push(instance);
+    _this.__activeServices[config.name].clients.push({instance:instance, id:config.__testOptions.clientKey, config:clientConfig});
 
     callback(null, instance);
   });
@@ -135,7 +132,7 @@ TestHelper.prototype.getService = Promise.promisify(function(config, callback){
     callback({config:config, instance:process});
   });
 
-  Happner.create(config, function(e, instance){
+  HappnService.create(config, function(e, instance){
 
     if (e) return callback(e);
 
@@ -150,6 +147,36 @@ TestHelper.prototype.getService = Promise.promisify(function(config, callback){
 
     callback({config:config, instance:instance});
   });
+});
+
+TestHelper.prototype.disconnectClient = Promise.promisify(function(id, callback){
+
+  var serviceId = idParts.split('@')[1];
+
+  var service = this.getService(serviceId);
+
+  if (!service) return callback(new Error('no service with id: ' + serviceId));
+
+  if (service.clients && service.clients.length > 0){
+
+    service.clients.forEach(function(client, clientIndex){
+
+      if (client.id == id){
+
+        client.disconnect(function(e){
+
+          if (e) return callback(e);
+
+          service.clients.splice(clientIndex, 1);
+
+          return callback();
+        })
+      }
+    });
+
+  } else callback(new Error('no clients for service with id: ' + serviceId));
+
+  callback(new Error('client with id: ' + id + ', not found.'))
 });
 
 TestHelper.prototype.stopService = Promise.promisify(function(id, callback){
@@ -169,7 +196,9 @@ TestHelper.prototype.stopService = Promise.promisify(function(id, callback){
       var completeStopService = function(){
 
         if (activeService.config.__testOptions.isRemote) {
+
           activeService.instance.kill();
+
           return callback();
         }
 
@@ -179,7 +208,7 @@ TestHelper.prototype.stopService = Promise.promisify(function(id, callback){
       if (activeService.clients && activeService.clients.length > 0){
 
         async.eachSeries(activeService.clients, function(activeServiceClient, activeServiceClientCB){
-          activeServiceClient.disconnect(activeServiceClientCB);
+          _this.disconnectClient(activeServiceClient.id, activeServiceClientCB);
         }, function(e){
 
           if (e) {
@@ -195,6 +224,102 @@ TestHelper.prototype.stopService = Promise.promisify(function(id, callback){
   }
 
   return callback(new Error('service with id ' + id + ' not found.'));
+});
+
+TestHelper.prototype.testService = Promise.promisify(function(id, callback){
+
+  var _this = this;
+
+  if (!callback) throw new Error('callback cannot be null');
+
+  if (typeof id != 'string' && typeof id != 'number'){
+    return callback(new Error('id is necessary to test a service.'));
+  }
+
+  var service = _this.__activeServices[id];
+
+  if (!service) return callback(new Error('unable to find service with id: ' + id));
+
+  var runTests = function(clientInstance, callback){
+
+    var calledBack = false;
+
+    var timeout = setTimeout(function(){
+      raiseError('operations timed out');
+    }, 2000);
+
+    var raiseError = function(message){
+      if (!calledBack){
+        calledBack = true;
+        return callback(new Error(message));
+      }
+    };
+
+    var operations = '';
+
+    clientInstance.on('/test/operations',
+
+      function(data, meta){
+
+        operations += meta.action.toUpperCase().split('@')[0].replace(/\//g, '');
+
+        if (operations === 'SETREMOVE'){
+
+          clearTimeout(timeout);
+
+          callback();
+        }
+
+      }, function(e){
+
+        if (e) return raiseError(e.toString());
+
+        clientInstance.set('/test/operations', {test:'data'}, function(e){
+
+          if (e) return raiseError(e.toString());
+
+          clientInstance.remove('/test/operations', function(e){
+
+            if (e) return raiseError(e.toString());
+          });
+        });
+      });
+  };
+
+  var localClientConfig = JSON.parse(JSON.stringify(service.config));
+
+  localClientConfig.__testOptions.isLocal = true;
+
+  var clientConfig = JSON.parse(JSON.stringify(service.config));
+
+  clientConfig.__testOptions.isLocal = false;
+
+  _this.getClient(localClientConfig, function(e, localClient){
+
+    if (e) return callback(e);
+
+    runTests(localClient.instance, function(e){
+
+      if (e) return callback(e);
+
+      _this.disconnectClient(localClient.id, function(e){
+
+        if (e) return callback(e);
+
+        _this.getClient(clientConfig, function(e, client){
+
+          if (e) return callback(e);
+
+          runTests(client.instance, function(e){
+
+            if (e) return callback(e);
+
+            _this.disconnectClient(client.id, callback);
+          });
+        });
+      });
+    });
+  });
 });
 
 TestHelper.prototype.tearDown = Promise.promisify(function(options, callback){
@@ -232,7 +357,6 @@ TestHelper.prototype.tearDown = Promise.promisify(function(options, callback){
 
     callback(e);
   });
-
 });
 
 module.exports = TestHelper;
