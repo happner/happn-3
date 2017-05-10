@@ -1,6 +1,6 @@
 describe(require('path').basename(__filename), function () {
 
-  this.timeout(30000);
+  this.timeout(60000);
 
   var expect = require('expect.js');
 
@@ -11,9 +11,9 @@ describe(require('path').basename(__filename), function () {
   before('should initialize the helper with services', function (done) {
 
     helper.startUp([
-      {port:55001, name:'test_service1', secure:true},
-      {port:55002, name:'test_service2', secure:true},
-      {port:55003, name:'test_service3'}
+      {port:55008, name:'test_service1', secure:true},
+      {port:55009, name:'test_service2', secure:true},
+      {port:55010, name:'test_service3'}
     ], done);
   });
 
@@ -50,8 +50,6 @@ describe(require('path').basename(__filename), function () {
     var testFile = helper.newTestFile();
 
     expect(testFile).to.not.be(null);
-
-    console.log('testFile:::',testFile);
 
     done();
 
