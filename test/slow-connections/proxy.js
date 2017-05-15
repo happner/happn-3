@@ -10,14 +10,29 @@ var happn_client = happn.client;
 var happnInstance;
 var clientInstance;
 
-var latency = 10;
+var latency = 5000;
+
+var events = {"heartBeatSkipped":[], "heartBeat":[]};
+
+var heartBeatSkippedHandler = function(data){
+  events["heartBeatSkipped"].push(data);
+};
+
+var heartBeatHandler = function(){
+  events["heartBeat"].push(Date.now());
+};
 
 service.create({
   services:{
     session:{
       config:{
         primusOpts:{
-          timeout:4000
+          timeout:4000,
+          allowSkippedHeartBeats:2
+        },
+        primusEvents:{
+          "heartbeat-skipped":heartBeatSkippedHandler,
+          "heartbeat":heartBeatHandler
         }
       }
     }
