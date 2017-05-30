@@ -307,3 +307,8 @@
 1.12.1 2017-04-21
 -----------------
   - fix: issue #49 strict bucket events dont work
+
+1.12.2 2017-05-30
+-----------------
+  - update to forked sillyname (removed objectionable words)
+
