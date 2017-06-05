@@ -1,147 +1,155 @@
-xdescribe(require('path').basename(__filename), function () {
+// network-simulator uses [socket].cork() to mimic large payload - not implemented in node v0.10
 
-  this.timeout(40000);
+if (!process.version.match(/^v0\.10/)) {
 
+  var filename = require('path').basename(__filename);
   var expect = require('expect.js');
-
-  var httpProxy = require('http-proxy');
-  var http = require('http');
-
+  var NetworkSimulator = require('./lib/network-simulator');
   var happn = require('..');
-  var service = happn.service;
-  var happn_client = happn.client;
+  var HappnServer = happn.service;
+  var HappnClient = happn.client;
 
-  var happnInstance;
-  var clientInstance;
+  describe(filename, function () {
 
-  var latency = 10;
+    this.timeout(40000);
 
-  var events = {
-    "skipped":[],
-    "flatline":[],
-    "reconnect-scheduled":[]
-  };
+    var happnPort = 55000;
+    var relayPort = 8080;
 
-  var heartBeatSkippedHandler = function(data){
+    var events = [];
 
-    console.log('skipped:::', data);
+    before('start network relay', function (done) {
 
-    events["skipped"].push(data);
-  };
+      this.network = new NetworkSimulator({
 
-  var flatLineHandler = function(data){
+        log: false,
 
-    console.log('flatline:::', data);
+        forwardToPort: happnPort,
+        listenPort: relayPort,
+        latency: 250 // actual network latency, not faux large payload transmission-time, see .startLargePayload()
+      });
 
-    events["flatline"].push(data);
+      this.network.start().then(done).catch(done);
 
-    //bring down latency so our reconnect scheduled/successful events fire
-    latency = 10;
-  };
+    });
 
-  before('starts up servers and proxy', function(callback){
+    before('start happn server', function (done) {
 
-    service.create({
-      services:{
-        session:{
-          config:{
-            primusOpts:{
-              timeout:4000,
-              allowSkippedHeartBeats:1
-            },
-            primusEvents:{
-              "heartbeat-skipped":heartBeatSkippedHandler,
-              "flatline":flatLineHandler
+      var _this = this;
+
+      function heartBeatSkippedHandler(data) {
+        events.push('SKIPPED ' + data);
+      }
+
+      function flatLineHandler(data) {
+        events.push('FLATLINED ' + data);
+      }
+
+      HappnServer.create({
+        services:{
+          session:{
+            config:{
+              primusOpts:{
+                // timeout:4000,  // No longer valid, learns heartbeat from client-side ping/pong values,
+                                  // or defaults according to older client-side defaults
+                allowSkippedHeartBeats: 1, // gets reset to 2 minimum in happn-primus server
+                pongSkipTime: 1000 // de-duplicate per-client pongs sent within this time
+              },
+              primusEvents:{
+                'heartbeat-skipped': heartBeatSkippedHandler,
+                'flatline': flatLineHandler
+              }
             }
           }
         }
-      }
-    }, function (e, happnInst) {
+      })
 
-        if (e) return callback(e);
+        .then(function (server) {
+          _this.server = server;
+          done();
+        })
 
-        happnInstance = happnInst;
+        .catch(done);
 
-        //
-    // Setup our server to proxy standard HTTP requests
-    //
-        var proxy = new httpProxy.createProxyServer({
-          target: {
-            host: 'localhost',
-            port: 55000
-          }
-        });
-
-        var proxyServer = http.createServer(function (req, res) {
-          proxy.web(req, res);
-        });
-
-        //
-        // Listen to the `upgrade` event and proxy the
-        // WebSocket requests as well.
-        //
-        proxyServer.on('upgrade', function (req, socket, head) {
-
-          socket.__oldWrite = socket.write;
-
-          socket.write = function(chunk, encoding, cb){
-            var started = Date.now();
-            setTimeout(function(){
-              console.log('delay ms: ' + (Date.now() - started).toString());
-              socket.__oldWrite(chunk, encoding, cb);
-            }, latency);
-          };
-
-          proxy.ws(req, socket, head);
-
-        });
-
-        proxyServer.listen(55001);
-
-        callback();
     });
-  });
 
-  it('connects a client up - client eventually times out - we check to see the right events fired', function(callback){
+    after('stop happn server', function (done) {
 
-    console.log('testing client:::');
+      if (!this.server) return done();
+      this.server.stop({reconnect: false}, done);
 
-    var eventsPassed = false;
+    });
 
-    happn_client.create({port:55001, ping:2000}, function (e, instance) {
+    after('stop network relay', function (done) {
 
-      if (e) return console.log('client create broke:::', e);
+      this.network.stop().then(done).catch(done);
 
-      //up the latency - heartbeats slower
-      latency = 10000;
+    });
 
-      console.log('client connected and proxied:::');
+    context('the client', function () {
 
-      clientInstance = instance;
+      before('start happn client', function (done) {
 
-      clientInstance.onEvent('reconnect-scheduled', function(){
+        var _this = this;
 
-        events["reconnect-scheduled"].push(Date.now());
+        HappnClient.create({
+          port: relayPort,
+          ping: 2000,
+          pong: 1000
+        })
 
-        console.log('RECONNECT SCHEDULED:::');
+          .then(function (client) {
+            _this.client = client;
 
-        expect(events["skipped"].length).to.be(1);
-        expect(events["flatline"].length).to.be(1);
-        expect(events["reconnect-scheduled"].length).to.be(1);
+            client.socket.on('outgoing::ping', function () {
+              events.push('SENT PING');
+            });
 
-        expect(events["skipped"][0] < events["flatline"][0]).to.be(true);
-        expect(events["flatline"][0] < events["reconnect-scheduled"][0]).to.be(true);
+            client.socket.on('incoming::pong', function () {
+              events.push('RECEIVED PONG');
+            });
 
-        eventsPassed = true;
+            done();
+          })
+
+          .catch(done);
 
       });
 
-      clientInstance.onEvent('reconnect-successful', function(){
+      it('receives expected event pattern', function (done) {
 
-        if (!eventsPassed) return callback(new Error('events did not pass'));
+        var _this = this;
 
-        callback();
+        this.network.startLargePayload();
+
+        this.client.onEvent('reconnect-successful', function () {
+
+          events.push('RECONNECTED');
+
+          _this.client.disconnect();
+
+          _this.network.stopLargePayload();
+
+          expect(events).to.eql([
+            'SENT PING',
+            'SKIPPED 1',
+            'RECEIVED PONG',
+            'SENT PING',
+            'SKIPPED 2',
+            'RECEIVED PONG',
+            'SENT PING',
+            'FLATLINED 3',
+            'RECONNECTED'
+          ]);
+
+          done();
+
+        });
+
       });
+
     });
+
   });
-});
+
+}
