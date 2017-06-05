@@ -10,7 +10,8 @@
     "test-memory": "mocha --expose-gc test/test-memory",
     "test-browser": "gulp --gulpfile test/test-browser/gulp-01.js",
     "test-longrunning": "node test/test-longrunning/serial-run.js",
-    "test-sanity": "mocha silence.js test/*sanity.js"
+    "test-sanity": "mocha silence.js test/*sanity.js",
+    "beautify": "js-beautify --replace --indent-size=2 --space-after-anon-function --end-with-newline `find . | grep -v node_modules | grep .js$`"
   },
   "author": "Tenacious and NSOFT",
   "license": "MIT",
@@ -71,6 +72,7 @@
     "happner-serial-mocha": "1.5.2",
     "http-proxy": "^1.16.2",
     "istanbul": "^0.4.1",
+    "js-beautify": "^1.6.14",
     "karma": "^0.13.15",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.1",
