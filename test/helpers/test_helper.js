@@ -3,13 +3,13 @@ var Promise = require('bluebird')
   , Happn = require('../..')
   , HappnService = Happn.service
   , HappnClient = Happn.client
-  , sillyname = require('sillyname')
+  , sillyname = require('happn-sillyname')
   , uuid = require('uuid')
   , path = require('path')
   , fs = require('fs-extra')
   ;
 
-function TestHelper(){
+  function TestHelper(){
 
   this.__activeServices = {};
 

@@ -1,4 +1,4 @@
-describe(require('path').basename(__filename), function () {
+xdescribe(require('path').basename(__filename), function () {
 
   this.timeout(40000);
 
@@ -145,5 +145,3 @@ describe(require('path').basename(__filename), function () {
     });
   });
 });
-
-
