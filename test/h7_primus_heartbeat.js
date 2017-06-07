@@ -13,16 +13,20 @@ if (!process.version.match(/^v0\.10/)) {
 
     this.timeout(40000);
 
+    var log = false; // show tested events
+
     var happnPort = 55000;
     var relayPort = 8080;
 
-    var events = [];
+    var events;
+    var data;
+    var dataCount;
 
     before('start network relay', function (done) {
 
       this.network = new NetworkSimulator({
 
-        log: false,
+        log: false, // show network traffic
 
         forwardToPort: happnPort,
         listenPort: relayPort,
@@ -38,31 +42,33 @@ if (!process.version.match(/^v0\.10/)) {
       var _this = this;
 
       function heartBeatSkippedHandler(data) {
+        if (log) console.log('SKIPPED', data);
         events.push('SKIPPED ' + data);
       }
 
       function flatLineHandler(data) {
+        if (log) console.log('FLATLINED', data);
         events.push('FLATLINED ' + data);
       }
 
       HappnServer.create({
-        services:{
-          session:{
-            config:{
-              primusOpts:{
-                // timeout:4000,  // No longer valid, learns heartbeat from client-side ping/pong values,
-                                  // or defaults according to older client-side defaults
-                allowSkippedHeartBeats: 1, // gets reset to 2 minimum in happn-primus server
-                pongSkipTime: 1000 // de-duplicate per-client pongs sent within this time
-              },
-              primusEvents:{
-                'heartbeat-skipped': heartBeatSkippedHandler,
-                'flatline': flatLineHandler
+          services: {
+            session: {
+              config: {
+                primusOpts: {
+                  // timeout:4000,  // No longer valid, learns heartbeat from client-side ping/pong values,
+                  // or defaults according to older client-side defaults
+                  allowSkippedHeartBeats: 1, // gets reset to 2 minimum in happn-primus server
+                  pongSkipTime: 1000 // de-duplicate per-client pongs sent within this time
+                },
+                primusEvents: {
+                  'heartbeat-skipped': heartBeatSkippedHandler,
+                  'flatline': flatLineHandler
+                }
               }
             }
           }
-        }
-      })
+        })
 
         .then(function (server) {
           _this.server = server;
@@ -73,10 +79,42 @@ if (!process.version.match(/^v0\.10/)) {
 
     });
 
+    before('start control client', function (done) {
+
+      var _this = this;
+
+      HappnClient.create()
+
+        .then(function (client) {
+          _this.controlClient = client;
+
+          client.interval = setInterval(function () {
+            client.set('/some/data', {
+              count: dataCount++
+            });
+          }, 1000);
+
+          done();
+        })
+
+        .catch(done);
+
+    })
+
+    after('stop control client', function (done) {
+
+      if (!this.controlClient) return done();
+      clearInterval(this.controlClient.interval);
+      this.controlClient.disconnect(done);
+
+    });
+
     after('stop happn server', function (done) {
 
       if (!this.server) return done();
-      this.server.stop({reconnect: false}, done);
+      this.server.stop({
+        reconnect: false
+      }, done);
 
     });
 
@@ -86,67 +124,218 @@ if (!process.version.match(/^v0\.10/)) {
 
     });
 
-    context('the client', function () {
+    context('with large payload', function () {
 
-      before('start happn client', function (done) {
+      // Ensure the socket stays alive despite the heartbeat skip at
+      // the server and that when the heartbeat skip is exceeded the
+      // socket is closed.
+
+      before('start happn client 1', function (done) {
 
         var _this = this;
 
+        events = [];
+        data = [];
+
         HappnClient.create({
-          port: relayPort,
-          ping: 2000,
-          pong: 1000
-        })
+            port: relayPort,
+            ping: 2000,
+            pong: 1000
+          })
 
           .then(function (client) {
-            _this.client = client;
+            _this.testClient1 = client;
 
             client.socket.on('outgoing::ping', function () {
+              if (log) console.log('SENT PING');
               events.push('SENT PING');
             });
 
             client.socket.on('incoming::pong', function () {
+              if (log) console.log('RECEIVED PONG');
               events.push('RECEIVED PONG');
             });
 
-            done();
+            client.on('/some/data',
+              function (_data) {
+                if (log) console.log('RECEIVED DATA', _data.count);
+                data.push('RECEIVED DATA ' + _data.count);
+              },
+              function (e) {
+                if (e) return done(e);
+                done();
+              });
+
           })
 
           .catch(done);
 
       });
 
-      it('receives expected event pattern', function (done) {
+      it('client receives expected event pattern', function (done) {
 
         var _this = this;
 
-        this.network.startLargePayload();
+        dataCount = 1;
 
-        this.client.onEvent('reconnect-successful', function () {
+        this.network.startLargePayload(); // <-------------
 
+        this.testClient1.onEvent('reconnect-successful', function () {
+
+          if (log) console.log('RECONNECTED');
           events.push('RECONNECTED');
 
-          _this.client.disconnect();
+          _this.testClient1.disconnect();
 
           _this.network.stopLargePayload();
 
           expect(events).to.eql([
             'SENT PING',
-            'SKIPPED 1',
-            'RECEIVED PONG',
+            'SKIPPED 1', // heartbeat skips at server
+            'RECEIVED PONG', // server sent unsolicited pong to keep client alive
             'SENT PING',
             'SKIPPED 2',
             'RECEIVED PONG',
             'SENT PING',
-            'FLATLINED 3',
-            'RECONNECTED'
+            'FLATLINED 3', // server exceeded allowed missing pings from client
+            'SENT PING', // client still had queued (on timeout) ping
+            'RECONNECTED' // server closed the socket, so client reconnected
           ]);
+
+          expect(data).to.eql([
+            'RECEIVED DATA 1',
+            'RECEIVED DATA 2',
+            'RECEIVED DATA 3',
+            'RECEIVED DATA 4',
+            'RECEIVED DATA 5'
+          ])
 
           done();
 
         });
 
       });
+
+    });
+
+    context('with short network segmentation', function () {
+
+      // Ensure there's no catastrophy when on an actual network outage
+      // occurs that does not exceed allowed heartbeat skips at server.
+      //
+      // 1. client receives no pong from server
+      // 2. client closes socket
+      // 3. socket FIN does not reach server
+      // 4. server thinks it still has a socket
+      // 5. network resumes before server closes the socket (allowed
+      //    skipped heartbeats not exceeded)
+      // 6. server starts attempting to use the original socket
+      // 7. client creates a new socket
+      //
+
+      before('start happn client 1', function (done) {
+
+        var _this = this;
+
+        events = [];
+        data = [];
+
+        debugger;
+
+        HappnClient.create({
+            port: relayPort,
+            ping: 2000,
+            pong: 1000
+          })
+
+          .then(function (client) {
+            _this.testClient2 = client;
+
+            client.socket.on('outgoing::ping', function () {
+              if (log) console.log('SENT PING');
+              events.push('SENT PING');
+            });
+
+            client.socket.on('incoming::pong', function () {
+              if (log) console.log('RECEIVED PONG');
+              events.push('RECEIVED PONG');
+            });
+
+            client.on('/some/data',
+              function (_data) {
+                if (log) console.log('RECEIVED DATA', _data.count);
+                data.push('RECEIVED DATA ' + _data.count);
+              },
+              function (e) {
+                if (e) return done(e);
+                done();
+              });
+
+          })
+
+          .catch(done);
+
+      });
+
+      it('client receives expected data pattern', function (done) {
+
+        var _this = this;
+
+        this.network.startNetworkSegmentation(); // <-------------
+
+        this.testClient2.onEvent('reconnect-scheduled', function () {
+
+          if (log) console.log('RECONNECT SCHEDULED');
+          events.push('RECONNECT SCHEDULED');
+
+          setTimeout(function () {
+            _this.network.stopNetworkSegmentation();
+          }, 200);
+
+        });
+
+        this.testClient2.onEvent('reconnect-successful', function () {
+
+          if (log) console.log('RECONNECTED');
+          events.push('RECONNECTED');
+
+          data = [];
+          dataCount = 1;
+
+          var interval = setInterval(function () {
+
+            if (data.length < 5) return;
+
+            clearInterval(interval);
+
+            data.shift(); // late arriving data
+
+            // No error/crash at server because of sending
+            // to unconnected socket.
+
+            // Data is not doubling up.
+            expect(data).to.eql([
+              'RECEIVED DATA 1',
+              'RECEIVED DATA 2',
+              'RECEIVED DATA 3',
+              'RECEIVED DATA 4'
+            ]);
+
+            done();
+
+          }, 50);
+
+        });
+
+      });
+
+    });
+
+    context('with long network segmentstion', function () {
+
+      // There are no concerns on long network segmentation that exceeds
+      // the allowed skip at the server because both sides will have
+      // closed the socket.
 
     });
 

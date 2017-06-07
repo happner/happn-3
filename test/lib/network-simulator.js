@@ -1,8 +1,9 @@
 /*
- * Proxy that mimics a network with real latency and
- * large payload transmission-time simulation
+ * Proxy that mimics a network with:
+ * 1. real latency and
+ * 2. large payload transmission-time simulation
+ * 3. network outage simulation
  */
-
 
 module.exports = NetworkSimulator;
 
@@ -10,12 +11,12 @@ var net = require('net');
 var Promise = require('bluebird');
 
 function NetworkSimulator(opts) {
+  this.log = opts.log;
+  this.latency = opts.latency;
   this.forwardToPort = opts.forwardToPort;
   this.listenPort = opts.listenPort;
-  this.inSockets = [];
-  this.outSockets = [];
-  this.latency = opts.latency;
-  this.log = opts.log;
+  this.sockets = [];
+  this.networkSegmentation = false;
 }
 
 NetworkSimulator.prototype.start = function () {
@@ -44,16 +45,12 @@ NetworkSimulator.prototype.start = function () {
 NetworkSimulator.prototype.stop = function () {
   var _this = this;
   return new Promise(function (resolve) {
-    _this.inSockets.forEach(function (socket) {
-      socket.destroy();
+    _this.sockets.forEach(function (pair) {
+      if (pair.in) pair.in.destroy();
+      if (pair.out) pair.out.destroy();
     });
 
-    _this.outSockets.forEach(function (socket) {
-      socket.destroy();
-    });
-
-    _this.outSockets.length = 0;
-    _this.inSockets.length = 0;
+    _this.sockets.length = 0;
 
     _this.server.close(function () {
       delete _this.server;
@@ -63,7 +60,6 @@ NetworkSimulator.prototype.stop = function () {
 };
 
 NetworkSimulator.prototype.startLargePayload = function () {
-
   if (this.log) console.log('START LARGE PAYLOAD');
 
   // Cork the outbound socket (to server) so that buffer accumulates.
@@ -71,55 +67,109 @@ NetworkSimulator.prototype.startLargePayload = function () {
 
   // Only corking the most recently added socket.
 
-  var outSocket = this.outSockets[this.outSockets.length - 1];
-  outSocket.cork();
-
+  var pair = this.sockets[this.sockets.length - 1];
+  pair.corked = true;
+  pair.out.cork();
 };
 
 NetworkSimulator.prototype.stopLargePayload = function () {
-
   if (this.log) console.log('STOP LARGE PAYLOAD');
 
-  // Uncork all sockets because a new (reconnected one) may have been
-  // added at the array's tail.
+  // Uncork
 
-  this.outSockets.forEach(function (outSocket) {
-    outSocket.uncork();
+  this.sockets.forEach(function (pair) {
+    if (!pair.corked) return;
+    pair.out.uncork();
   });
-
 };
 
-NetworkSimulator.prototype._handleConnection = function (inSocket) {
+NetworkSimulator.prototype.startNetworkSegmentation = function () {
+  if (this.log) console.log('START NETWORK SEGMENTATION');
+
+  // Completely disconnect the in/out sockets bindings.
+
+  this.networkSegmentation = true;
+
+  this.sockets.forEach(function (pair) {
+    pair.in.removeListener('close', pair.in.onClose);
+    pair.in.removeListener('data', pair.in.onData);
+    pair.out.removeListener('close', pair.out.onClose);
+    pair.out.removeListener('data', pair.out.onData);
+  });
+
+  this.server.close();
+};
+
+NetworkSimulator.prototype.stopNetworkSegmentation = function () {
+  if (this.log) console.log('STOP NETWORK SEGMENTATION');
+
+  this.networkSegmentation = false;
+
+  this.sockets.forEach(function (pair) {
+    pair.in.on('close', pair.in.onClose);
+    pair.in.on('data', pair.in.onData);
+    pair.out.on('close', pair.out.onClose);
+    pair.out.on('data', pair.out.onData);
+  });
+
+  this.server.listen(this.listenPort);
+};
+
+NetworkSimulator.prototype._handleConnection = function (socket) {
   var _this = this;
 
-  this.inSockets.push(inSocket);
+  var pair = {
+    in: socket,
+    out: null
+  }
 
-  var outSocket = net.connect(this.forwardToPort);
-  this.outSockets.push(outSocket);
+  this.sockets.push(pair);
 
-  inSocket.on('close', function () {
-    inSocket.__closed = true;
-    _this.inSockets.splice(_this.inSockets.indexOf(inSocket), 1);
-    outSocket.destroy(); // relay close
-  });
+  if (this.log) console.log('CONNECTED IN');
 
-  inSocket.on('data', function (buf) {
+  pair.out = net.connect(this.forwardToPort);
+
+  // relay close
+  pair.in.onClose = function () {
+    if (_this.log) console.log('CLOSED IN');
+    pair.in = null;
+    if (pair.out) {
+      pair.out.destroy();
+      return;
+    }
+    _this.sockets.splice(_this.sockets.indexOf(pair), 1);
+  }
+
+  // delay relay data per latency
+  pair.in.onData = function (buf) {
     if (_this.log) console.log('DATA IN:\n', buf.toString());
-    setTimeout(function () { // delay relay data
-      if (!outSocket.__closed) outSocket.write(buf);
+    setTimeout(function () {
+      if (pair.out) pair.out.write(buf);
     }, _this.latency);
-  });
+  }
 
-  outSocket.on('close', function () {
-    outSocket.__closed = true;
-    _this.outSockets.splice(_this.outSockets.indexOf(outSocket), 1);
-    inSocket.destroy(); // relay close
-  });
+  // relay close
+  pair.out.onClose = function () {
+    if (_this.log) console.log('CLOSED OUT');
+    pair.out = null;
+    if (pair.in) {
+      pair.in.destroy();
+      return;
+    }
+    _this.sockets.splice(_this.sockets.indexOf(pair), 1);
+  }
 
-  outSocket.on('data', function (buf) {
+  // delay relay data per latency
+  pair.out.onData = function (buf) {
     if (_this.log) console.log('DATA OUT:\n', buf.toString());
-    setTimeout(function () { // delay relay data
-      if (!inSocket.__closed) inSocket.write(buf);
+    setTimeout(function () {
+      if (pair.in) pair.in.write(buf);
     }, _this.latency);
-  });
+  }
+
+  // bind
+  pair.in.on('close', pair.in.onClose);
+  pair.in.on('data', pair.in.onData);
+  pair.out.on('close', pair.out.onClose);
+  pair.out.on('data', pair.out.onData);
 };
