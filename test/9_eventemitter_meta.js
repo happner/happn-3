@@ -292,8 +292,6 @@ describe('9_eventemitter_meta.js', function () {
           expect(result._meta.modified).to.not.be(null);
           expect(result._meta.modified).to.not.be(undefined);
 
-          console.log('result:::', result);
-
           expect(result._meta.path).to.not.be(null);
           expect(result._meta.path).to.not.be(undefined);
 

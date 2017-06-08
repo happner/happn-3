@@ -35,7 +35,7 @@ describe(filename, function () {
 
     var stats = happnInstance.services.stats.fetch();
 
-    console.log(JSON.stringify(stats, null, 2));
+    //console.log(JSON.stringify(stats, null, 2));
 
     done();
 
