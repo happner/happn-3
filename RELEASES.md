@@ -312,8 +312,9 @@
 -----------------
   - update to forked sillyname (removed objectionable words)
 
-2.0.0 2017-06-06
+2.0.0 2017-06-08
 ----------------
   - update happn-primus to 6.0.0 (intelligent pingpong)
   - allow happn-primus to default ping and pong
   - removed serverside heartbeat timeout setting, now learns from client per primus 6.0.0
+  - added server allowSkippedHeartBeats and pongSkipTime configs
