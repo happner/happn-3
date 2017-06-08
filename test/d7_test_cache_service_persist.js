@@ -715,9 +715,7 @@ describe('d7_test_cache_service_persisted', function() {
         expect(specific.__synced).to.be(true);
 
         specific.on('item-timed-out', function(data){
-
-          console.log('ITEM TIMED OUT:::', data);
-
+          //console.log('ITEM TIMED OUT:::', data);
         });
 
         setTimeout(function(){

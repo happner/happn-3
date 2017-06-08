@@ -13,6 +13,7 @@ test/test-browser/browser_client.js
 *test/test-tmp*
 test/test-temp/*
 !test/test-temp/.tests.use.this
+!test/fixtures/old_db.nedb
 *.db
 *test/test-resources/c7a/test/**
 *test/test-resources/c7/test/**
