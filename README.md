@@ -25,11 +25,11 @@ Happn v2 can be found [here](https://github.com/happner/happn)
 
 changes are:
 
-(1) more modular layout, services are broken up into logical modules
-(2) introduction of a queue service
-(3) introduction of a protocol service, this allows for the creation of protocol plugins that take messages of the inbound and outbound queues and convert them into happn messages, essentially means we are able to use different protocols to talk to happn (ie. MQTT)
-(4) simplified intra process client instantiation
-(5) intra process client shares the same code as the websockets client, using a special intra-proc socket, instead of a primus spark
+1. more modular layout, services are broken up into logical modules
+2. introduction of a queue service
+3. introduction of a protocol service, this allows for the creation of protocol plugins that take messages of the inbound and outbound queues and convert them into happn messages, essentially means we are able to use different protocols to talk to happn (ie. MQTT)
+4. simplified intra process client instantiation
+5. intra process client shares the same code as the websockets client, using a special intra-proc socket, instead of a primus spark
 
 [Migration plan from happn 2 to happn-3](https://github.com/happner/happn-3/blob/master/docs/migration-plan.md)
 --------------------------------------
@@ -1192,6 +1192,13 @@ client.on('/not-strict/*', function(data){
 });
 
 ```
+
+STANDARDS COMPLIANCE
+--------------------
+password hashes - pkdbf2, SHA512 (SHA1 previously or on node v0.*)
+asynchronous encryption (session secret teleportation) - ECIES (bitcore)
+synchronous encryption - AES-256
+signing and verifying - ECDSA (bitcore)
 
 ####*NB: the strict bucket is not backwards compatible with happn-1*
 

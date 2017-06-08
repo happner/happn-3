@@ -315,3 +315,5 @@
 1.13.0 2017-06-08
 -----------------
   - updated password-salt-and-hash to happn-password-salt-and-hash
+  - updates to travis node 8
+  - updates to .gitignore
