@@ -317,3 +317,7 @@
   - updated password-salt-and-hash to happn-password-salt-and-hash
   - updates to travis node 8
   - updates to .gitignore
+  
+1.13.1 2017-06-15
+-----------------
+  - fixed issue with protocol 1.1.0, protocol field missing
