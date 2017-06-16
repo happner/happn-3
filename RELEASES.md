@@ -321,3 +321,7 @@
 1.13.1 2017-06-15
 -----------------
   - fixed issue with protocol 1.1.0, protocol field missing
+  
+1.13.2 2017-06-15
+-----------------
+  - fixed issue with protocols, protocol field "harded coded in emit and response on all plugins"
