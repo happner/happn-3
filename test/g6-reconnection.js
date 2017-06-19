@@ -26,6 +26,8 @@ describe(filename, function() {
 
   var events = [];
 
+  this.timeout(15000);
+
   var clientEventHandler = function(data, meta){
     events.push({data:data, meta:meta});
   };
@@ -131,8 +133,6 @@ describe(filename, function() {
   after('disconnect client and stop server', tearDown);
 
   it('kills the server, then restarts it, then tests the subscriptions still exist and work', function(done){
-
-    this.timeout(5000);
 
     webSocketsClient.onEvent('reconnect-successful', function(data){
 
