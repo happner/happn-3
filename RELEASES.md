@@ -325,3 +325,7 @@
 1.13.2 2017-06-15
 -----------------
   - fixed issue with protocols, protocol field "harded coded in emit and response on all plugins"
+
+1.13.3 2017-06-19
+-----------------
+  - updated g6 test, timeout
