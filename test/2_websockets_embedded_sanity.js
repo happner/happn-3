@@ -1166,6 +1166,147 @@ describe('2_websockets_embedded_sanity', function () {
     });
   });
 
-  //require('benchmarket').stop();
+  it('should search for a complex object with a data property', function (callback) {
+
+    var test_path_end = require('shortid').generate();
+
+    var complex_obj = {
+      data: {
+        regions: ['North', 'South'],
+        towns: ['North.Cape Town'],
+        categories: ['Action', 'History'],
+        subcategories: ['Action.angling', 'History.art'],
+        keywords: ['bass', 'Penny Siopis'],
+        field1: 'field1',
+        timestamp:Date.now()
+      }
+    };
+
+    var from = Date.now();
+    var to;
+
+    publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
+
+      expect(e == null).to.be(true);
+
+      setTimeout(function(){
+
+        to = Date.now();
+
+        var criteria = {
+          "data.data.timestamp": {
+            $gte: from,
+            $lte: to
+          }
+        };
+
+        var options = {
+          fields:null,
+          sort: {
+            "data.data.field1": 1
+          },
+          limit: 2
+        };
+
+        ////////////console.log('searching');
+        publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*', {
+          criteria: criteria,
+          options: options
+        }, function (e, search_result) {
+
+          if (e) return callback(e);
+
+          if (search_result.length == 0){
+
+            callback(new Error('no items found in the date range'));
+
+          } else callback();
+
+        });
+      }, 300);
+    });
+  });
+
+  it('subscribes with a count - we ensure the event only gets kicked off for the correct amounts', function (callback) {
+
+    var hits = 0;
+    //first listen for the change
+    listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/*', {
+      event_type: 'set',
+      count: 2
+    }, function (message) {
+      hits++;
+    }, function (e) {
+
+      if (e) return callback(e);
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/1', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/2', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/2', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      setTimeout(function(){
+
+        if (hits != 2) return callback(new Error('hits were over the agreed on 2'));
+
+        callback();
+
+      }, 1500);
+    });
+  });
+
+  it('subscribes with a count - we ensure the event only gets kicked off for the correct amounts - negative test', function (callback) {
+
+    var hits = 0;
+    //first listen for the change
+    listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/*', {
+      event_type: 'set',
+      count: 3
+    }, function (message) {
+      hits++;
+    }, function (e) {
+
+      if (e) return callback(e);
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/1', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/2', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/2', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      setTimeout(function(){
+
+        if (hits != 3) return callback(new Error('hits were over the agreed on 2'));
+
+        callback();
+
+      }, 1500);
+    });
+  });
 
 });

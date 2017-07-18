@@ -1377,6 +1377,4 @@ describe('1_eventemitter_embedded_sanity', function () {
     });
   });
 
-  //require('benchmarket').stop();
-
 });
