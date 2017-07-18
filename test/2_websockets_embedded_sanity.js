@@ -1227,6 +1227,67 @@ describe('2_websockets_embedded_sanity', function () {
     });
   });
 
+  it('should search for a complex object with a data property, using _data', function (callback) {
+
+    var test_path_end = require('shortid').generate();
+
+    var complex_obj = {
+      data: {
+        regions: ['North', 'South'],
+        towns: ['North.Cape Town'],
+        categories: ['Action', 'History'],
+        subcategories: ['Action.angling', 'History.art'],
+        keywords: ['bass', 'Penny Siopis'],
+        field1: 'field1',
+        timestamp:Date.now()
+      }
+    };
+
+    var from = Date.now();
+    var to;
+
+    publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
+
+      expect(e == null).to.be(true);
+
+      setTimeout(function(){
+
+        to = Date.now();
+
+        var criteria = {
+          "_data.data.timestamp": {
+            $gte: from,
+            $lte: to
+          }
+        };
+
+        var options = {
+          fields:null,
+          sort: {
+            "_data.data.field1": 1
+          },
+          limit: 2
+        };
+
+        ////////////console.log('searching');
+        publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*', {
+          criteria: criteria,
+          options: options
+        }, function (e, search_result) {
+
+          if (e) return callback(e);
+
+          if (search_result.length == 0){
+
+            callback(new Error('no items found in the date range'));
+
+          } else callback();
+
+        });
+      }, 300);
+    });
+  });
+
   it('subscribes with a count - we ensure the event only gets kicked off for the correct amounts', function (callback) {
 
     var hits = 0;
