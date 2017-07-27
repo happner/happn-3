@@ -329,3 +329,12 @@
 1.13.3 2017-06-19
 -----------------
   - updated g6 test, timeout
+  
+1.13.4 2017-07-07
+-----------------
+  - updated parseFields in dataprovider to not append data.data
+
+2.0.1 2017-07-18
+-----------------
+  - fixed delegate.runCount issue
+  - updated data.
