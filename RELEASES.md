@@ -338,3 +338,11 @@
 -----------------
   - fixed delegate.runCount issue
   - updated data.
+  
+2.1.0 2017-07-29
+----------------
+  - released changes _data.
+
+2.2.0 2017-07-30
+----------------
+  - updated wildcard, fixed bug where db path was stripping / unintentionally
