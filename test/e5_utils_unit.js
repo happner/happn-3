@@ -92,4 +92,26 @@ describe(filename, function () {
       });
     });
   });
+
+  it('tests wildcard stuff', function (done) {
+
+    var sharedUtils = require('../lib/services/utils/shared');
+
+    expect(sharedUtils.prepareWildPath("/a/***/***/****/**/path/***/*/*")).to.be("/a/*/*/*/*/path/*/*/*");
+    expect(sharedUtils.wildcardMatch('/test/complex/*/short','/test/complex/and/short')).to.be(true);
+    expect(sharedUtils.wildcardMatch('/test/complex/*','/test/complex/and/short')).to.be(true);
+    expect(sharedUtils.wildcardMatch('/test/*/*/short','/test/complex/and/short')).to.be(true);
+    expect(sharedUtils.wildcardMatch('/test*','/test/complex/and/short')).to.be(true);
+    expect(sharedUtils.wildcardMatch('*/short','/test/complex/and/short')).to.be(true);
+    expect(sharedUtils.wildcardMatch('/test*/short','/test/complex/and/short')).to.be(true);
+
+    expect(sharedUtils.wildcardMatch('/test/complex/*/short','/test/complex/and/long')).to.be(false);
+    expect(sharedUtils.wildcardMatch('/test/complex/*','/blah/complex/and/short')).to.be(false);
+    expect(sharedUtils.wildcardMatch('/test/*/*/short','/test/complex/and/long')).to.be(false);
+    expect(sharedUtils.wildcardMatch('/test*','/tes/complex/and/short')).to.be(false);
+    expect(sharedUtils.wildcardMatch('*/short','/test/complex/and/long')).to.be(false);
+    expect(sharedUtils.wildcardMatch('/test*/short','/test/complex/and/short/')).to.be(false);
+
+    done();
+  })
 });
