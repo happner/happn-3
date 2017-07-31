@@ -162,7 +162,7 @@ describe('g2_browser_client', function () {
 
     process.env.NODE_ENV = 'test';
 
-    var clientCode = Happn.packager.browserClient({contentsOnly:true});
+    var clientCode = Happn.packager.browserClient({contentsOnly:true, overwrite:true});
 
     process.env.NODE_ENV = 'production';
 

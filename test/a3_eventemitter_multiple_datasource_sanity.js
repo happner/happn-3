@@ -194,7 +194,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
         var found = false;
 
         stream.on('data', function (line) {
-          
+
           if (found) return;
 
           var record = JSON.parse(line);

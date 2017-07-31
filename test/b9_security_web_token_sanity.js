@@ -51,7 +51,6 @@ describe('b9_security_web_token', function () {
   before('should initialize the service', function (callback) {
 
     this.timeout(20000);
-
     try {
       service.create({
         secure: true,
@@ -62,7 +61,7 @@ describe('b9_security_web_token', function () {
                 security: {
                   exclusions: [
                     '/test/excluded/specific',
-                    '/test/excluded/wildcard/*',
+                    '/test/excluded/wildcard/*'
                   ]
                 }
               }
