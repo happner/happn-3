@@ -125,14 +125,14 @@ describe('a8_eventemitter_security_audit', function () {
     });
 
     it('checks auditing on', function (done) {
-
+                  // /TEST/a7_eventemitter_security_audit/
       testClient.on('/TEST/a7_eventemitter_security_audit/' + test_id + '/on', {}, function (message) {
 
       }, function (e, response) {
 
         if (e) return done(e);
 
-        adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/on/on/*', function(e, auditData){
+        adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/*', function(e, auditData){
 
           if (e) return done(e);
 
