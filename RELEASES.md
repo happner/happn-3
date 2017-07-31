@@ -343,6 +343,7 @@
 ----------------
   - released changes _data.
 
-2.2.0 2017-07-30
+3.0.0 2017-07-30
 ----------------
   - updated wildcard, fixed bug where db path was stripping / unintentionally
+  - wildcard fix may break existing systems that are inadvertantly making use of the bugs permissiveness
