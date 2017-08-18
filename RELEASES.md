@@ -347,3 +347,7 @@
 ----------------
   - updated wildcard, fixed bug where db path was stripping / unintentionally
   - wildcard fix may break existing systems that are inadvertantly making use of the bugs permissiveness
+
+3.1.0 2017-07-18
+----------------
+  - Bearer token authorization header
