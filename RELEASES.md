@@ -351,3 +351,5 @@
 3.1.0 2017-07-18
 ----------------
   - Bearer token authorization header
+  - moved getting session from req to security service
+  - added happn_session property to req, for repeated calls of the sessionFromRequest method in one request
