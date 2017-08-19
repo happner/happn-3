@@ -872,6 +872,31 @@ happn.client.create({username:'_ADMIN', password:'testPWD'},function(e, instance
 
 ```
 
+USING A BEARER TOKEN AUTHORIZATION HEADER
+-----------------------------------------
+
+*A Bearer authorization token can also be used to do http requests with, as follows: *
+
+```javascript
+
+var happn = require('happn');
+happn.client.create({username:'_ADMIN', password:'testPWD'},function(e, instance) {
+
+  var request = require('request');
+  
+  var options = {
+    url: 'http://127.0.0.1:55000/my/special/middleware',
+  };
+  
+  options.headers = {'Authorization': ['Bearer ' + instance.session.token]};
+  
+  request(options, function (error, response, body) {
+    
+    //response happens all should be ok if the token is correct and the account is able to access the middleware resource
+  });
+});
+
+```
 
 HTTPS SERVER
 -----------------------------
