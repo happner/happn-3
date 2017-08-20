@@ -37,6 +37,22 @@ describe('b9_security_web_token', function () {
 
   }
 
+  function doBearerTokenRequest(path, token, callback, excludeToken) {
+
+    var request = require('request');
+
+    var options = {
+      url: 'http://127.0.0.1:55000' + path,
+    };
+
+    if (!excludeToken) options.headers = {'Authorization': ['Bearer ' + token]};
+
+    request(options, function (error, response, body) {
+      callback(response, body);
+    });
+
+  }
+
   /*
    This test demonstrates starting up the happn service -
    the authentication service will use authTokenSecret to encrypt web tokens identifying
@@ -536,6 +552,36 @@ describe('b9_security_web_token', function () {
         });
       });
     });
+  });
+
+  it('the server should set up a secure route, the admin client should connect ok using a bearer token', function (callback) {
+
+    try {
+
+      doBearerTokenRequest('/secure/route', adminClient.session.token, function (response) {
+
+        expect(response.statusCode).to.equal(200);
+        callback();
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('the server should set up another secure route, the test client should fail to connect using a bad bearer token', function (callback) {
+
+    try {
+
+      doBearerTokenRequest('/secure/route/test', 'crap token', function (response) {
+
+        expect(response.statusCode).to.equal(403);
+        callback();
+      });
+
+    } catch (e) {
+      callback(e);
+    }
   });
 
   //require('benchmarket').stop();
