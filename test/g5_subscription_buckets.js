@@ -1,8 +1,7 @@
-var Happn = require('..')
-  , expect = require('expect.js')
-  , async = require('async')
-  , shortid = require('shortid')
-  ;
+var Happn = require('..'),
+  expect = require('expect.js'),
+  async = require('async'),
+  shortid = require('shortid');
 
 describe(require('path').basename(__filename), function () {
 
@@ -14,27 +13,27 @@ describe(require('path').basename(__filename), function () {
 
       var subscriptionTree = new SubscriptionTree();
 
-      expect(subscriptionTree.wildcardMatch('','')).to.be(true);
+      expect(subscriptionTree.wildcardMatch('', '')).to.be(true);
 
-      expect(subscriptionTree.wildcardMatch('/**/blah','/test/pattern/blah')).to.be(true);
+      expect(subscriptionTree.wildcardMatch('/**/blah', '/test/pattern/blah')).to.be(true);
 
-      expect(subscriptionTree.wildcardMatch('/*/blah','/test/pattern/blah')).to.be(true);
+      expect(subscriptionTree.wildcardMatch('/*/blah', '/test/pattern/blah')).to.be(true);
 
-      expect(subscriptionTree.wildcardMatch('/*/bleh','/test/pattern/blah')).to.be(false);
+      expect(subscriptionTree.wildcardMatch('/*/bleh', '/test/pattern/blah')).to.be(false);
 
-      expect(subscriptionTree.wildcardMatch('/*/*/*','/test/pattern/blah')).to.be(true);
+      expect(subscriptionTree.wildcardMatch('/*/*/*', '/test/pattern/blah')).to.be(true);
 
-      expect(subscriptionTree.wildcardMatch('/**','/test/pattern/blah')).to.be(true);
+      expect(subscriptionTree.wildcardMatch('/**', '/test/pattern/blah')).to.be(true);
 
-      expect(subscriptionTree.wildcardMatch('**','/test/pattern/blah')).to.be(true);
+      expect(subscriptionTree.wildcardMatch('**', '/test/pattern/blah')).to.be(true);
 
-      expect(subscriptionTree.wildcardMatch('*','/test/pattern/blah')).to.be(true);
+      expect(subscriptionTree.wildcardMatch('*', '/test/pattern/blah')).to.be(true);
 
-      expect(subscriptionTree.wildcardMatch('/not/matching','/test/pattern/blah')).to.be(false);
+      expect(subscriptionTree.wildcardMatch('/not/matching', '/test/pattern/blah')).to.be(false);
 
-      expect(subscriptionTree.wildcardMatch('/test/pattern/blah','/test/pattern/blah')).to.be(true);
+      expect(subscriptionTree.wildcardMatch('/test/pattern/blah', '/test/pattern/blah')).to.be(true);
 
-      expect(subscriptionTree.wildcardMatch('/test/pattern/bleh','/test/pattern/*')).to.be(false);
+      expect(subscriptionTree.wildcardMatch('/test/pattern/bleh', '/test/pattern/*')).to.be(false);
 
       done();
 
@@ -47,7 +46,9 @@ describe(require('path').basename(__filename), function () {
       var subscriptionTree = new SubscriptionTree();
 
       //path, id, dataId, data, depth, originalPath
-      subscriptionTree.addSubscription('/test/path/1', 1, 1, {test:1});
+      subscriptionTree.addSubscription('/test/path/1', 1, 1, {
+        test: 1
+      });
 
       var subscribers = subscriptionTree.search('/test/path/1');
 
@@ -63,17 +64,33 @@ describe(require('path').basename(__filename), function () {
       var subscriptionTree = new SubscriptionTree();
 
       //path, id, dataId, data, depth, originalPath
-      subscriptionTree.addSubscription('/test/path/1', 1, 1, {test:1});
-      subscriptionTree.addSubscription('/test/path/1', 1, 2, {test:2});
+      subscriptionTree.addSubscription('/test/path/1', 1, 1, {
+        test: 1
+      });
+      subscriptionTree.addSubscription('/test/path/1', 1, 2, {
+        test: 2
+      });
 
-      subscriptionTree.addSubscription('/test/path/2', 2, 1, {test:1});
-      subscriptionTree.addSubscription('/test/path/2', 2, 2, {test:2});
+      subscriptionTree.addSubscription('/test/path/2', 2, 1, {
+        test: 1
+      });
+      subscriptionTree.addSubscription('/test/path/2', 2, 2, {
+        test: 2
+      });
 
-      subscriptionTree.addSubscription('/test/path/3', 3, 1, {test:1});
-      subscriptionTree.addSubscription('/test/path/3', 3, 2, {test:2});
+      subscriptionTree.addSubscription('/test/path/3', 3, 1, {
+        test: 1
+      });
+      subscriptionTree.addSubscription('/test/path/3', 3, 2, {
+        test: 2
+      });
 
-      subscriptionTree.addSubscription('/test/path/*', 4, 1, {test:1});
-      subscriptionTree.addSubscription('/test/path/*', 4, 2, {test:2});
+      subscriptionTree.addSubscription('/test/path/*', 4, 1, {
+        test: 1
+      });
+      subscriptionTree.addSubscription('/test/path/*', 4, 2, {
+        test: 2
+      });
 
       var subscribers = subscriptionTree.search('/test/path/1');
 
@@ -90,19 +107,37 @@ describe(require('path').basename(__filename), function () {
       var subscriptionTree = new SubscriptionTree();
 
       //path, id, dataId, data, depth, originalPath
-      subscriptionTree.addSubscription('/2/test/path/1', 1, 1, {test:1});
-      subscriptionTree.addSubscription('/2/test/path/1', 1, 2, {test:2});
+      subscriptionTree.addSubscription('/2/test/path/1', 1, 1, {
+        test: 1
+      });
+      subscriptionTree.addSubscription('/2/test/path/1', 1, 2, {
+        test: 2
+      });
 
-      subscriptionTree.addSubscription('/2/test/path/2', 2, 1, {test:1});
-      subscriptionTree.addSubscription('/2/test/path/2', 2, 2, {test:2});
+      subscriptionTree.addSubscription('/2/test/path/2', 2, 1, {
+        test: 1
+      });
+      subscriptionTree.addSubscription('/2/test/path/2', 2, 2, {
+        test: 2
+      });
 
-      subscriptionTree.addSubscription('/2/test/path/3', 3, 1, {test:1});
-      subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {test:2});
+      subscriptionTree.addSubscription('/2/test/path/3', 3, 1, {
+        test: 1
+      });
+      subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {
+        test: 2
+      });
 
-      subscriptionTree.addSubscription('/2/test/path/*', 4, 1, {test:1});
-      subscriptionTree.addSubscription('/2/test/path/*', 4, 2, {test:2});
+      subscriptionTree.addSubscription('/2/test/path/*', 4, 1, {
+        test: 1
+      });
+      subscriptionTree.addSubscription('/2/test/path/*', 4, 2, {
+        test: 2
+      });
 
-      subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {test:3});
+      subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {
+        test: 3
+      });
 
       var subscribers = subscriptionTree.search('/2/test/path/3');
 
@@ -117,14 +152,20 @@ describe(require('path').basename(__filename), function () {
 
       var subscriptionTree = new SubscriptionTree();
 
-      subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {test:2});
-      subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {test:3});
+      subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {
+        test: 2
+      });
+      subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {
+        test: 3
+      });
 
       var subscribers = subscriptionTree.search('/2/test/path/3');
 
       expect(subscribers.length).to.be(2);
 
-      subscriptionTree.removeSubscription('/2/*/*/3', 3, {dataId:3});
+      subscriptionTree.removeSubscription('/2/*/*/3', 3, {
+        dataId: 3
+      });
 
       subscribers = subscriptionTree.search('/2/test/path/3');
 
@@ -139,8 +180,12 @@ describe(require('path').basename(__filename), function () {
 
       var subscriptionTree = new SubscriptionTree();
 
-      subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {test:2});
-      subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {test:3});
+      subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {
+        test: 2
+      });
+      subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {
+        test: 3
+      });
 
       var subscribers = subscriptionTree.search('/2/test/path/3');
 
@@ -162,12 +207,22 @@ describe(require('path').basename(__filename), function () {
       var subscriptionTree = new SubscriptionTree();
 
       //path, id, dataId, data, depth, originalPath
-      subscriptionTree.addSubscription('/2/test/**', 1, 1, {test:1});
-      subscriptionTree.addSubscription('/2/**', 1, 2, {test:2});
+      subscriptionTree.addSubscription('/2/test/**', 1, 1, {
+        test: 1
+      });
+      subscriptionTree.addSubscription('/2/**', 1, 2, {
+        test: 2
+      });
 
-      subscriptionTree.addSubscription('/2/**/2', 2, 1, {test:1});
-      subscriptionTree.addSubscription('**/test/path/2', 2, 2, {test:2});
-      subscriptionTree.addSubscription('/2/**/3', 2, 1, {test:1});
+      subscriptionTree.addSubscription('/2/**/2', 2, 1, {
+        test: 1
+      });
+      subscriptionTree.addSubscription('**/test/path/2', 2, 2, {
+        test: 2
+      });
+      subscriptionTree.addSubscription('/2/**/3', 2, 1, {
+        test: 1
+      });
 
       var subscriptions = subscriptionTree.search('/2/test/path/2');
 
@@ -188,11 +243,17 @@ describe(require('path').basename(__filename), function () {
 
       var subscriptionTree = new SubscriptionTree();
 
-      subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {test:2});
+      subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {
+        test: 2
+      });
 
-      subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {test:3});
+      subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {
+        test: 3
+      });
 
-      subscriptionTree.addSubscription('/2/test/*/4', 3, 1, {test:3});
+      subscriptionTree.addSubscription('/2/test/*/4', 3, 1, {
+        test: 3
+      });
 
       var subscribers1 = subscriptionTree.search('/2/test/path/3');
 
@@ -238,11 +299,19 @@ describe(require('path').basename(__filename), function () {
 
         if (e) return done(e);
 
-        testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
+        testBucket.addSubscription('/test/path/*', sessionId1, {
+          options: {
+            refCount: 1
+          }
+        });
 
         expect(testBucket.allSubscriptions().length).to.be(1);
 
-        testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
+        testBucket.addSubscription('/test/path/*', sessionId1, {
+          options: {
+            refCount: 1
+          }
+        });
 
         expect(testBucket.allSubscriptions().length).to.be(1);
 
@@ -263,7 +332,11 @@ describe(require('path').basename(__filename), function () {
         channel: 'SET'
       });
 
-      var data = {options: {refCount: 1}};
+      var data = {
+        options: {
+          refCount: 1
+        }
+      };
 
       testBucket.initialize(function (e) {
 
@@ -304,7 +377,11 @@ describe(require('path').basename(__filename), function () {
         channel: 'SET'
       });
 
-      var data = {options: {refCount: 1}};
+      var data = {
+        options: {
+          refCount: 1
+        }
+      };
 
       testBucket.initialize(function (e) {
 
@@ -347,7 +424,11 @@ describe(require('path').basename(__filename), function () {
         channel: 'SET'
       });
 
-      var data = {options: {refCount: 1}};
+      var data = {
+        options: {
+          refCount: 1
+        }
+      };
 
       testBucket.initialize(function (e) {
 
@@ -411,12 +492,14 @@ describe(require('path').basename(__filename), function () {
 
             pathCounts[randomPath]++;
 
-            var subId =  shortid.generate();
+            var subId = shortid.generate();
 
             testBucket.addSubscription('/test/path/' + randomPath, subId, {
               rand: randomPath,
-              options: {refCount: 1}
-            }, function(e){
+              options: {
+                refCount: 1
+              }
+            }, function (e) {
 
               if (e) return timeCB(e);
 
@@ -623,9 +706,14 @@ describe(require('path').basename(__filename), function () {
 
       var config = {};
 
-      var testItems = [
-        {path: 'test/path/1', data: {}},
-        {path: 'test/path/2', data: {}}
+      var testItems = [{
+          path: 'test/path/1',
+          data: {}
+        },
+        {
+          path: 'test/path/2',
+          data: {}
+        }
       ];
 
       mockSubscriptionService(config, testItems, function (e, instance) {
@@ -663,9 +751,14 @@ describe(require('path').basename(__filename), function () {
 
       var config = {};
 
-      var testItems = [
-        {path: 'test/path/1', data: {}},
-        {path: 'test/path/2', data: {}}
+      var testItems = [{
+          path: 'test/path/1',
+          data: {}
+        },
+        {
+          path: 'test/path/2',
+          data: {}
+        }
       ];
 
       mockSubscriptionService(config, testItems, function (e, instance) {
@@ -785,13 +878,19 @@ describe(require('path').basename(__filename), function () {
         channel: 'SET'
       });
 
-      var tSearch =  testBucket.__removableNodeTrie('path');
+      var tSearch = testBucket.__removableNodeTrie('path');
 
-      tSearch.add({path:'test1'});
+      tSearch.add({
+        path: 'test1'
+      });
 
-      tSearch.add({path:'test2'});
+      tSearch.add({
+        path: 'test2'
+      });
 
-      tSearch.add({path:'test3'});
+      tSearch.add({
+        path: 'test3'
+      });
 
       expect(tSearch.get('test').length).to.be(3);
 
@@ -799,11 +898,17 @@ describe(require('path').basename(__filename), function () {
 
       expect(tSearch.get('test').length).to.be(2);
 
-      tSearch.add({path:'test'});
+      tSearch.add({
+        path: 'test'
+      });
 
-      tSearch.add({path:'test'});
+      tSearch.add({
+        path: 'test'
+      });
 
-      tSearch.add({path:'test'});
+      tSearch.add({
+        path: 'test'
+      });
 
       expect(tSearch.get('test').length).to.be(5);
 
@@ -829,11 +934,19 @@ describe(require('path').basename(__filename), function () {
 
         if (e) return done(e);
 
-        testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
+        testBucket.addSubscription('/test/path/*', sessionId1, {
+          options: {
+            refCount: 1
+          }
+        });
 
         expect(testBucket.allSubscriptions().length).to.be(1);
 
-        testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
+        testBucket.addSubscription('/test/path/*', sessionId1, {
+          options: {
+            refCount: 1
+          }
+        });
 
         expect(testBucket.allSubscriptions().length).to.be(1);
 
@@ -854,7 +967,11 @@ describe(require('path').basename(__filename), function () {
         channel: 'SET'
       });
 
-      var data = {options: {refCount: 1}};
+      var data = {
+        options: {
+          refCount: 1
+        }
+      };
 
       testBucket.initialize(function (e) {
 
@@ -901,7 +1018,11 @@ describe(require('path').basename(__filename), function () {
         channel: 'SET'
       });
 
-      var data = {options: {refCount: 1}};
+      var data = {
+        options: {
+          refCount: 1
+        }
+      };
 
       testBucket.initialize(function (e) {
 
@@ -923,7 +1044,7 @@ describe(require('path').basename(__filename), function () {
 
             expect(testBucket.allSubscriptions().length).to.be(1);
 
-            expect(testBucket.__segments.array.length).to.be(0);//all subscriptions do not have segments
+            expect(testBucket.__segments.array.length).to.be(0); //all subscriptions do not have segments
 
             done();
 
@@ -946,7 +1067,11 @@ describe(require('path').basename(__filename), function () {
         channel: 'SET'
       });
 
-      var data = {options: {refCount: 1}};
+      var data = {
+        options: {
+          refCount: 1
+        }
+      };
 
       testBucket.initialize(function (e) {
 
@@ -1010,11 +1135,13 @@ describe(require('path').basename(__filename), function () {
 
             pathCounts[randomPath]++;
 
-            var subId =  shortid.generate();
+            var subId = shortid.generate();
 
             testBucket.addSubscription('/test/path/' + randomPath, subId, {
               rand: randomPath,
-              options: {refCount: 1}
+              options: {
+                refCount: 1
+              }
             }, timeCB);
           },
 
@@ -1216,9 +1343,14 @@ describe(require('path').basename(__filename), function () {
 
       var config = {};
 
-      var testItems = [
-        {path: 'test/path/1', data: {}},
-        {path: 'test/path/2', data: {}}
+      var testItems = [{
+          path: 'test/path/1',
+          data: {}
+        },
+        {
+          path: 'test/path/2',
+          data: {}
+        }
       ];
 
       mockSubscriptionService(config, testItems, function (e, instance) {
@@ -1256,9 +1388,14 @@ describe(require('path').basename(__filename), function () {
 
       var config = {};
 
-      var testItems = [
-        {path: 'test/path/1', data: {}},
-        {path: 'test/path/2', data: {}}
+      var testItems = [{
+          path: 'test/path/1',
+          data: {}
+        },
+        {
+          path: 'test/path/2',
+          data: {}
+        }
       ];
 
       mockSubscriptionService(config, testItems, function (e, instance) {

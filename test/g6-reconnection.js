@@ -12,7 +12,7 @@ var shortid = require('shortid');
 
 var Promise = require('bluebird');
 
-describe(filename, function() {
+describe(filename, function () {
 
   var remote;
 
@@ -28,19 +28,24 @@ describe(filename, function() {
 
   this.timeout(15000);
 
-  var clientEventHandler = function(data, meta){
-    events.push({data:data, meta:meta});
+  var clientEventHandler = function (data, meta) {
+    events.push({
+      data: data,
+      meta: meta
+    });
   };
 
-  var testEvent = function(callback){
+  var testEvent = function (callback) {
 
     var eventId = shortid.generate();
 
-    webSocketsClient.set('test/event/' + eventId, {id:eventId}, function(e){
+    webSocketsClient.set('test/event/' + eventId, {
+      id: eventId
+    }, function (e) {
 
       if (e) return callback(e);
 
-      setTimeout(function(){
+      setTimeout(function () {
 
         var eventData = events[events.length - 1];
 
@@ -52,7 +57,7 @@ describe(filename, function() {
     });
   };
 
-  var startServer = function(callback){
+  var startServer = function (callback) {
 
     remote = spawn('node', [path.join(libFolder, 'service.js')]);
 
@@ -67,9 +72,9 @@ describe(filename, function() {
     });
   };
 
-  var buildUp = function(callback) {
+  var buildUp = function (callback) {
 
-    startServer(function(e){
+    startServer(function (e) {
 
       if (e) return callback(e);
       connectClients(callback);
@@ -77,11 +82,15 @@ describe(filename, function() {
     });
   };
 
-  var connectClients = function(callback){
+  var connectClients = function (callback) {
 
     console.log('CONNECTING CLIENTS:::');
 
-    Happn.client.create({config:{port:55005}}, function(e, instance){
+    Happn.client.create({
+      config: {
+        port: 55005
+      }
+    }, function (e, instance) {
 
       if (e) return callback(e);
 
@@ -89,15 +98,15 @@ describe(filename, function() {
 
       webSocketsClient = instance;
 
-      webSocketsClient.on('test/event/*', clientEventHandler, function(e){
+      webSocketsClient.on('test/event/*', clientEventHandler, function (e) {
 
         if (e) return callback(e);
 
         console.log('SUBSCRIBED:::');
 
-        testEvent(function(e){
+        testEvent(function (e) {
 
-          if(e) return callback(e);
+          if (e) return callback(e);
 
           console.log('TESTED:::');
 
@@ -107,15 +116,15 @@ describe(filename, function() {
     });
   };
 
-  var killServer = function() {
+  var killServer = function () {
     remote.kill();
   };
 
-  var tearDown = function(callback){
+  var tearDown = function (callback) {
 
-    try{
+    try {
 
-      if (webSocketsClient) webSocketsClient.disconnect(function(){
+      if (webSocketsClient) webSocketsClient.disconnect(function () {
         killServer();
         callback();
       });
@@ -123,7 +132,7 @@ describe(filename, function() {
         killServer();
         callback();
       }
-    }catch(e){
+    } catch (e) {
       console.warn('teardown g6 failed:::', e);
     }
   };
@@ -132,9 +141,9 @@ describe(filename, function() {
 
   after('disconnect client and stop server', tearDown);
 
-  it('kills the server, then restarts it, then tests the subscriptions still exist and work', function(done){
+  it('kills the server, then restarts it, then tests the subscriptions still exist and work', function (done) {
 
-    webSocketsClient.onEvent('reconnect-successful', function(data){
+    webSocketsClient.onEvent('reconnect-successful', function (data) {
 
       console.log('RECONNECT HAPPENED');
       testEvent(done);
@@ -142,7 +151,7 @@ describe(filename, function() {
 
     killServer();
 
-    startServer(function(e){
+    startServer(function (e) {
       if (e) return done(e);
     });
   });

@@ -17,72 +17,108 @@ describe(require('path').basename(__filename), function () {
   var crypto = new Crypto();
 
   var serviceConfig1 = {
-    port:10000,
+    port: 10000,
     secure: true,
     encryptPayloads: true,
-    services:{
+    services: {
       security: {
         config: {
-          sessionTokenSecret:'h1_test-secret',
+          sessionTokenSecret: 'h1_test-secret',
           keyPair: {
             privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=',
             publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
           },
-          profiles:[ //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
+          profiles: [ //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
             {
-              name:"token-not-allowed",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{tokenNotAllowedForLogin:{$eq:true}}
+              name: "token-not-allowed",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    tokenNotAllowedForLogin: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
-                disallowTokenLogins:true
+              policy: {
+                disallowTokenLogins: true
               }
             }, {
-              name:"short-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{shortSession:{$eq:true}}
+              name: "short-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    shortSession: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
+              policy: {
                 ttl: '2 seconds'
               }
             }, {
-              name:"browser-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{_browser:{$eq:true}}
+              name: "browser-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    _browser: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
+              policy: {
                 ttl: '7 days'
               }
             }, {
-              name:"locked-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{tokenOriginLocked:{$eq:true}}
+              name: "locked-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    tokenOriginLocked: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
+              policy: {
                 ttl: 0, // no ttl
-                lockTokenToOrigin:true
+                lockTokenToOrigin: true
               }
             }, {
-              name:"node-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  _browser:false
+              name: "node-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  _browser: false
                 }]
               },
-              policy:{
+              policy: {
                 ttl: 0 // no ttl
               }
             }
@@ -93,72 +129,104 @@ describe(require('path').basename(__filename), function () {
   };
 
   var serviceConfig2 = {
-    port:10001,
+    port: 10001,
     secure: true,
     encryptPayloads: true,
-    services:{
+    services: {
       security: {
         config: {
-          sessionTokenSecret:'h1_test-secret',
+          sessionTokenSecret: 'h1_test-secret',
           keyPair: {
             privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=',
             publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
           },
-          profiles:[ //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
+          profiles: [ //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
             {
-              name:"token-not-allowed",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{tokenNotAllowedForLogin:{$eq:true}}
+              name: "token-not-allowed",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    tokenNotAllowedForLogin: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
-                disallowTokenLogins:true
+              policy: {
+                disallowTokenLogins: true
               }
             }, {
-              name:"short-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{shortSession:{$eq:true}}
+              name: "short-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    shortSession: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
+              policy: {
                 ttl: '2 seconds'
               }
             }, {
-              name:"browser-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  _browser:true
+              name: "browser-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  _browser: true
                 }]
               },
-              policy:{
+              policy: {
                 ttl: '7 days'
               }
             }, {
-              name:"locked-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{tokenOriginLocked:{$eq:true}}
+              name: "locked-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    tokenOriginLocked: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
+              policy: {
                 ttl: 0, // no ttl
-                lockTokenToOrigin:true
+                lockTokenToOrigin: true
               }
             }, {
-              name:"node-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  _browser:false
+              name: "node-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  _browser: false
                 }]
               },
-              policy:{
+              policy: {
                 ttl: 0 // no ttl
               }
             }
@@ -198,7 +266,7 @@ describe(require('path').basename(__filename), function () {
 
     if (happnInstance1) happnInstance1.stop()
 
-      .then(function(){
+      .then(function () {
 
         if (happnInstance2) happnInstance2.stop()
           .then(done)
@@ -211,7 +279,7 @@ describe(require('path').basename(__filename), function () {
     else done();
   });
 
-  var getClient = function(config, callback){
+  var getClient = function (config, callback) {
 
     happn.client.create(config)
 
@@ -224,27 +292,27 @@ describe(require('path').basename(__filename), function () {
       });
   };
 
-  var tryDisconnect = function(clientInstance, callback){
+  var tryDisconnect = function (clientInstance, callback) {
 
     if (!clientInstance) return callback();
 
-    try{
+    try {
       clientInstance.disconnect(callback);
-    }catch(e){
+    } catch (e) {
       callback();
     }
   };
 
-  var testOperations = function(clientInstance, callback){
+  var testOperations = function (clientInstance, callback) {
 
     var calledBack = false;
 
-    var timeout = setTimeout(function(){
+    var timeout = setTimeout(function () {
       raiseError('operations timed out');
     }, 2000);
 
-    var raiseError = function(message){
-      if (!calledBack){
+    var raiseError = function (message) {
+      if (!calledBack) {
         calledBack = true;
         return callback(new Error(message));
       }
@@ -254,26 +322,29 @@ describe(require('path').basename(__filename), function () {
 
     clientInstance.on('/test/operations',
 
-      function(data, meta){
+      function (data, meta) {
 
         operations += meta.action.toUpperCase().split('@')[0].replace(/\//g, '');
 
-        if (operations === 'SETREMOVE'){
+        if (operations === 'SETREMOVE') {
 
           clearTimeout(timeout);
 
           callback();
         }
 
-    }, function(e){
+      },
+      function (e) {
 
         if (e) return raiseError(e.toString());
 
-        clientInstance.set('/test/operations', {test:'data'}, function(e){
+        clientInstance.set('/test/operations', {
+          test: 'data'
+        }, function (e) {
 
           if (e) return raiseError(e.toString());
 
-          clientInstance.remove('/test/operations', function(e){
+          clientInstance.remove('/test/operations', function (e) {
 
             if (e) return raiseError(e.toString());
           });
@@ -287,36 +358,36 @@ describe(require('path').basename(__filename), function () {
       config: {
         username: '_ADMIN',
         password: 'happn',
-        port:10000,
+        port: 10000,
         keyPair: {
           publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
           privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
         }
       }
-    }, function(e, instance){
+    }, function (e, instance) {
 
       if (e) return done(e);
 
-      testOperations(instance, function(e){
+      testOperations(instance, function (e) {
 
         if (e) return done(e);
 
         var token = instance.session.token;
 
-        instance.disconnect(function(e){
+        instance.disconnect(function (e) {
 
           if (e) return done(e);
 
           getClient({
-            token:token,
-            port:10000
-          }, function(e, tokenInstance) {
+            token: token,
+            port: 10000
+          }, function (e, tokenInstance) {
 
             if (e) return done(e);
 
-            testOperations(tokenInstance, function(e){
+            testOperations(tokenInstance, function (e) {
 
-              tryDisconnect(tokenInstance, function(){
+              tryDisconnect(tokenInstance, function () {
                 done(e);
               });
             });
@@ -332,35 +403,35 @@ describe(require('path').basename(__filename), function () {
       config: {
         username: '_ADMIN',
         password: 'happn',
-        port:10000,
+        port: 10000,
         keyPair: {
           publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
           privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
         },
-        info:{
-          shortSession:true
+        info: {
+          shortSession: true
         }
       }
-    }, function(e, instance){
+    }, function (e, instance) {
 
       if (e) return done(e);
 
-      testOperations(instance, function(e){
+      testOperations(instance, function (e) {
 
         if (e) return done(e);
 
         var token = instance.session.token;
 
-        instance.disconnect(function(e){
+        instance.disconnect(function (e) {
 
           if (e) return done(e);
 
-          setTimeout(function(){
+          setTimeout(function () {
 
             getClient({
-              token:token,
-              port:10000
-            }, function(e) {
+              token: token,
+              port: 10000
+            }, function (e) {
               expect(e.toString()).to.be('AccessDenied: expired session token');
               done();
             });
@@ -377,31 +448,31 @@ describe(require('path').basename(__filename), function () {
       config: {
         username: '_ADMIN',
         password: 'happn',
-        port:10000,
+        port: 10000,
         keyPair: {
           publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
           privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
         }
       }
-    }, function(e, instance){
+    }, function (e, instance) {
 
       if (e) return done(e);
 
-      testOperations(instance, function(e){
+      testOperations(instance, function (e) {
 
         if (e) return done(e);
 
         var token = instance.session.token;
 
-        instance.disconnect(function(e){
+        instance.disconnect(function (e) {
 
           if (e) return done(e);
 
-          setTimeout(function(){
+          setTimeout(function () {
 
             getClient({
-              token:token,
-              port:10000
+              token: token,
+              port: 10000
             }, done);
 
           }, 2010);
@@ -416,32 +487,34 @@ describe(require('path').basename(__filename), function () {
       config: {
         username: '_ADMIN',
         password: 'happn',
-        port:10000,
+        port: 10000,
         keyPair: {
           publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
           privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
         }
       }
-    }, function(e, instance){
+    }, function (e, instance) {
 
       if (e) return done(e);
 
-      testOperations(instance, function(e){
+      testOperations(instance, function (e) {
 
         if (e) return done(e);
 
         var token = instance.session.token;
 
-        instance.disconnect({revokeSession:true}, function(e){
+        instance.disconnect({
+          revokeSession: true
+        }, function (e) {
 
           if (e) return done(e);
 
-          setTimeout(function(){
+          setTimeout(function () {
 
             getClient({
-              token:token,
-              port:10000
-            }, function(e){
+              token: token,
+              port: 10000
+            }, function (e) {
               expect(e.toString()).to.be('AccessDenied: session with id ' + instance.session.id + ' has been revoked');
               done();
             });
@@ -458,33 +531,33 @@ describe(require('path').basename(__filename), function () {
       config: {
         username: '_ADMIN',
         password: 'happn',
-        port:10000,
+        port: 10000,
         keyPair: {
           publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
           privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
         },
-        info:{
-          tokenOriginLocked:true
+        info: {
+          tokenOriginLocked: true
         }
       }
-    }, function(e, instance){
+    }, function (e, instance) {
 
       if (e) return done(e);
 
-      testOperations(instance, function(e){
+      testOperations(instance, function (e) {
 
         if (e) return done(e);
 
         var token = instance.session.token;
 
-        instance.disconnect(function(e){
+        instance.disconnect(function (e) {
 
           if (e) return done(e);
 
           getClient({
-            token:token,
-            port:10001
-          }, function(e){
+            token: token,
+            port: 10001
+          }, function (e) {
             expect(e.toString()).to.be('AccessDenied: invalid credentials: this token is locked to a different origin by policy');
             done();
           });
@@ -499,31 +572,31 @@ describe(require('path').basename(__filename), function () {
       config: {
         username: '_ADMIN',
         password: 'happn',
-        port:10000,
+        port: 10000,
         keyPair: {
           publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
           privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
         }
       }
-    }, function(e, instance){
+    }, function (e, instance) {
 
       if (e) return done(e);
 
-      testOperations(instance, function(e){
+      testOperations(instance, function (e) {
 
         if (e) return done(e);
 
         var token = instance.session.token;
 
-        instance.disconnect(function(e){
+        instance.disconnect(function (e) {
 
           if (e) return done(e);
 
-          setTimeout(function(){
+          setTimeout(function () {
 
             getClient({
-              token:token,
-              port:10001
+              token: token,
+              port: 10001
             }, done);
 
           }, 2010);
@@ -538,33 +611,33 @@ describe(require('path').basename(__filename), function () {
       config: {
         username: '_ADMIN',
         password: 'happn',
-        port:10000,
+        port: 10000,
         keyPair: {
           publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
           privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
         },
-        info:{
-          tokenNotAllowedForLogin:true
+        info: {
+          tokenNotAllowedForLogin: true
         }
       }
-    }, function(e, instance){
+    }, function (e, instance) {
 
       if (e) return done(e);
 
-      testOperations(instance, function(e){
+      testOperations(instance, function (e) {
 
         if (e) return done(e);
 
         var token = instance.session.token;
 
-        instance.disconnect(function(e){
+        instance.disconnect(function (e) {
 
           if (e) return done(e);
 
           getClient({
-            token:token,
-            port:10000
-          }, function(e){
+            token: token,
+            port: 10000
+          }, function (e) {
             expect(e.toString()).to.be('AccessDenied: invalid credentials: logins with this token are disallowed by policy');
             done();
           });

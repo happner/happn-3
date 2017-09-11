@@ -243,7 +243,8 @@ describe('a4_eventemitter_embedded_persisted_benchmarks', function () {
               callback();
             }
 
-          }, function (e) {
+          },
+          function (e) {
 
             if (!e) {
 
@@ -439,7 +440,10 @@ describe('a4_eventemitter_embedded_persisted_benchmarks', function () {
           sent[i] = require('shortid').generate();
         }
 
-        stressTestClient.on('/e2e_test1/testsubscribe/sequence_persist', {event_type: 'set', count: 0},
+        stressTestClient.on('/e2e_test1/testsubscribe/sequence_persist', {
+            event_type: 'set',
+            count: 0
+          },
           function (message) {
             receivedCount++;
 
@@ -463,7 +467,9 @@ describe('a4_eventemitter_embedded_persisted_benchmarks', function () {
 
             while (count < expected) {
 
-              publisherclient.set('/e2e_test1/testsubscribe/sequence_persist', {property1: sent[count]}, {
+              publisherclient.set('/e2e_test1/testsubscribe/sequence_persist', {
+                  property1: sent[count]
+                }, {
                   excludeId: true
                 },
                 function (e, result) {

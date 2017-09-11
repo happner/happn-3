@@ -1,4 +1,4 @@
-describe('d4_a_data_functional', function() {
+describe('d4_a_data_functional', function () {
 
   this.timeout(20000);
 
@@ -16,29 +16,31 @@ describe('d4_a_data_functional', function() {
 
   var empty_config = {};
 
-  before('should initialize the service', function(callback) {
+  before('should initialize the service', function (callback) {
 
     serviceInstance.happn = {
-      services:{
-        utils:utils
+      services: {
+        utils: utils
       }
     };
 
     serviceInstance.initialize(empty_config, callback);
   });
 
-  after(function(done) {
+  after(function (done) {
 
     serviceInstance.stop(done);
   });
 
-  it('sets data', function(callback) {
+  it('sets data', function (callback) {
 
     var beforeCreatedOrModified = Date.now();
 
-    setTimeout(function(){
+    setTimeout(function () {
 
-      serviceInstance.upsert('/set/' + testId, {"test":"data"}, {}, function(e, response){
+      serviceInstance.upsert('/set/' + testId, {
+        "test": "data"
+      }, {}, function (e, response) {
 
         if (e) return callback(e);
 
@@ -56,15 +58,17 @@ describe('d4_a_data_functional', function() {
 
   });
 
-  it('gets data', function(callback) {
+  it('gets data', function (callback) {
 
-    serviceInstance.upsert('/get/' + testId, {"test":"data"}, {}, function(e, response){
+    serviceInstance.upsert('/get/' + testId, {
+      "test": "data"
+    }, {}, function (e, response) {
 
       if (e) return callback(e);
 
       expect(response.data.test).to.equal("data");
 
-      serviceInstance.get('/get/' + testId, {}, function(e, response){
+      serviceInstance.get('/get/' + testId, {}, function (e, response) {
 
         if (e) return callback(e);
 
@@ -79,11 +83,11 @@ describe('d4_a_data_functional', function() {
 
   });
 
-  it('gets no data', function(callback) {
+  it('gets no data', function (callback) {
 
     var random = require('shortid').generate();
 
-    serviceInstance.get('/wontfind/' + random, {}, function(e, response){
+    serviceInstance.get('/wontfind/' + random, {}, function (e, response) {
 
       if (e) return callback(e);
 
@@ -95,27 +99,33 @@ describe('d4_a_data_functional', function() {
   });
 
 
-  it('merges data', function(callback) {
+  it('merges data', function (callback) {
 
     this.timeout(10000);
 
     var initialCreated;
 
-    serviceInstance.upsert('/merge/' + testId, {"test":"data"}, {}, function(e, response){
+    serviceInstance.upsert('/merge/' + testId, {
+      "test": "data"
+    }, {}, function (e, response) {
 
       if (e) return callback(e);
 
       initialCreated = response._meta.created;
 
-      setTimeout(function(){
+      setTimeout(function () {
 
-        serviceInstance.upsert('/merge/' + testId, {"test1":"data1"}, {merge:true}, function(e, response){
+        serviceInstance.upsert('/merge/' + testId, {
+          "test1": "data1"
+        }, {
+          merge: true
+        }, function (e, response) {
 
           if (e) return callback(e);
 
           expect(response._meta.modified >= initialCreated).to.equal(true);
 
-          serviceInstance.get('/merge/' + testId, {}, function(e, response){
+          serviceInstance.get('/merge/' + testId, {}, function (e, response) {
 
             if (e) return callback(e);
 
@@ -136,15 +146,19 @@ describe('d4_a_data_functional', function() {
 
   });
 
-  it('tags data', function(callback) {
+  it('tags data', function (callback) {
 
     var tag = require("shortid").generate();
 
-    serviceInstance.upsert('/tag/' + testId, {"test":"data"}, {}, function(e){
+    serviceInstance.upsert('/tag/' + testId, {
+      "test": "data"
+    }, {}, function (e) {
 
       if (e) return callback(e);
 
-      serviceInstance.upsert('/tag/' + testId, null, {"tag":tag}, function(e, response){
+      serviceInstance.upsert('/tag/' + testId, null, {
+        "tag": tag
+      }, function (e, response) {
 
         if (e) return callback(e);
 
@@ -162,13 +176,15 @@ describe('d4_a_data_functional', function() {
     });
   });
 
-  it('removes data', function(callback) {
+  it('removes data', function (callback) {
 
-    serviceInstance.upsert('/remove/' + testId, {"test":"data"}, {}, function(e, response){
+    serviceInstance.upsert('/remove/' + testId, {
+      "test": "data"
+    }, {}, function (e, response) {
 
       if (e) return callback(e);
 
-      serviceInstance.remove('/remove/' + testId, {}, function(e, response){
+      serviceInstance.remove('/remove/' + testId, {}, function (e, response) {
 
         if (e) return callback(e);
 
@@ -181,17 +197,21 @@ describe('d4_a_data_functional', function() {
     });
   });
 
-  it('removes multiple data', function(callback) {
+  it('removes multiple data', function (callback) {
 
-    serviceInstance.upsert('/remove/multiple/1/' + testId, {"test":"data"}, {}, function(e, response){
+    serviceInstance.upsert('/remove/multiple/1/' + testId, {
+      "test": "data"
+    }, {}, function (e, response) {
 
       if (e) return callback(e);
 
-      serviceInstance.upsert('/remove/multiple/2/' + testId, {"test":"data"}, {}, function(e, response){
+      serviceInstance.upsert('/remove/multiple/2/' + testId, {
+        "test": "data"
+      }, {}, function (e, response) {
 
         if (e) return callback(e);
 
-        serviceInstance.remove('/remove/multiple/*', {}, function(e, response){
+        serviceInstance.remove('/remove/multiple/*', {}, function (e, response) {
 
           if (e) return callback(e);
 
@@ -205,17 +225,21 @@ describe('d4_a_data_functional', function() {
     });
   });
 
-  it('gets data with wildcard', function(callback) {
+  it('gets data with wildcard', function (callback) {
 
-    serviceInstance.upsert('/get/multiple/1/' + testId, {"test":"data"}, {}, function(e, response){
+    serviceInstance.upsert('/get/multiple/1/' + testId, {
+      "test": "data"
+    }, {}, function (e, response) {
 
       if (e) return callback(e);
 
-      serviceInstance.upsert('/get/multiple/2/' + testId, {"test":"data"}, {}, function(e, response){
+      serviceInstance.upsert('/get/multiple/2/' + testId, {
+        "test": "data"
+      }, {}, function (e, response) {
 
         if (e) return callback(e);
 
-        serviceInstance.get('/get/multiple/*/' + testId, {}, function(e, response){
+        serviceInstance.get('/get/multiple/*/' + testId, {}, function (e, response) {
 
           expect(response.length).to.equal(2);
           expect(response[0].data.test).to.equal('data');
@@ -230,7 +254,7 @@ describe('d4_a_data_functional', function() {
     });
   });
 
-  it('gets data with complex search', function(callback) {
+  it('gets data with complex search', function (callback) {
 
     var test_path_end = require('shortid').generate();
 
@@ -245,14 +269,31 @@ describe('d4_a_data_functional', function() {
 
 
     var criteria1 = {
-      $or: [{"regions": {$in: ['North', 'South', 'East', 'West']}},
-        {"towns": {$in: ['North.Cape Town', 'South.East London']}},
-        {"categories": {$in: ["Action", "History"]}}],
-      "keywords": {$in: ["bass", "Penny Siopis"]}
+      $or: [{
+          "regions": {
+            $in: ['North', 'South', 'East', 'West']
+          }
+        },
+        {
+          "towns": {
+            $in: ['North.Cape Town', 'South.East London']
+          }
+        },
+        {
+          "categories": {
+            $in: ["Action", "History"]
+          }
+        }
+      ],
+      "keywords": {
+        $in: ["bass", "Penny Siopis"]
+      }
     };
 
     var options1 = {
-      sort: {"field1": 1},
+      sort: {
+        "field1": 1
+      },
       limit: 1
     };
 
@@ -260,7 +301,9 @@ describe('d4_a_data_functional', function() {
 
     var options2 = {
       fields: null,
-      sort: {"field1": 1},
+      sort: {
+        "field1": 1
+      },
       limit: 2
     };
 
@@ -297,25 +340,31 @@ describe('d4_a_data_functional', function() {
 
   });
 
-  it('gets data with $not', function(done) {
+  it('gets data with $not', function (done) {
 
     var test_obj = {
-      data:'ok'
+      data: 'ok'
     };
 
     var test_obj1 = {
-      data:'notok'
+      data: 'notok'
     };
 
     serviceInstance.upsert('/not_get/' + testId + '/ok/1', test_obj, null, function (e) {
       expect(e == null).to.be(true);
 
-      serviceInstance.upsert('/not_get/' + testId + '/_notok_/1' , test_obj1, null, function (e) {
+      serviceInstance.upsert('/not_get/' + testId + '/_notok_/1', test_obj1, null, function (e) {
         expect(e == null).to.be(true);
 
-        var listCriteria = {criteria: {$not:{}}};
+        var listCriteria = {
+          criteria: {
+            $not: {}
+          }
+        };
 
-        listCriteria.criteria.$not['_id'] = {$regex: new RegExp(".*_notok_.*")};
+        listCriteria.criteria.$not['_id'] = {
+          $regex: new RegExp(".*_notok_.*")
+        };
 
         serviceInstance.get('/not_get/' + testId + '/*', listCriteria, function (e, search_result) {
 
@@ -337,7 +386,9 @@ describe('d4_a_data_functional', function() {
       var test_string = require('shortid').generate();
       var test_base_url = '/a1_eventemitter_embedded_datatypes/' + testId + '/set/string/' + test_string;
 
-      serviceInstance.upsert(test_base_url, test_string, {noPublish: true}, function (e, result) {
+      serviceInstance.upsert(test_base_url, test_string, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -351,8 +402,7 @@ describe('d4_a_data_functional', function() {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -361,7 +411,7 @@ describe('d4_a_data_functional', function() {
     }
   });
 
-  it('does a sort and limit', function(done){
+  it('does a sort and limit', function (done) {
 
     var itemCount = 100;
 
@@ -373,10 +423,10 @@ describe('d4_a_data_functional', function() {
 
     var async = require('async');
 
-    for (var i = 0; i < itemCount; i++){
+    for (var i = 0; i < itemCount; i++) {
 
       var item = {
-        item_sort_id: i + (Math.floor( Math.random() * 1000000 ))
+        item_sort_id: i + (Math.floor(Math.random() * 1000000))
       };
 
       randomItems.push(item);
@@ -384,11 +434,13 @@ describe('d4_a_data_functional', function() {
 
     async.eachSeries(randomItems,
 
-      function(item, callback){
+      function (item, callback) {
 
         var testPath = base_path + item.item_sort_id;
 
-        serviceInstance.upsert(testPath, item, {noPublish: true}, function(e, upserted){
+        serviceInstance.upsert(testPath, item, {
+          noPublish: true
+        }, function (e, upserted) {
 
           if (e) return callback(e);
 
@@ -397,22 +449,29 @@ describe('d4_a_data_functional', function() {
         });
       },
 
-      function(e){
+      function (e) {
 
         if (e) return done(e);
 
         //ascending
-        randomItems.sort(function(a, b){
+        randomItems.sort(function (a, b) {
 
           return a.item_sort_id - b.item_sort_id;
 
         });
 
-        serviceInstance.get(base_path + '*', {options:{sort:{item_sort_id:1}, limit:50}}, function(e, items){
+        serviceInstance.get(base_path + '*', {
+          options: {
+            sort: {
+              item_sort_id: 1
+            },
+            limit: 50
+          }
+        }, function (e, items) {
 
           if (e) return done(e);
 
-          for (var itemIndex in items){
+          for (var itemIndex in items) {
 
             if (itemIndex >= 50) break;
 
@@ -424,17 +483,24 @@ describe('d4_a_data_functional', function() {
           }
 
           //descending
-          randomItems.sort(function(a, b){
+          randomItems.sort(function (a, b) {
 
             return b.item_sort_id - a.item_sort_id;
 
           });
 
-          serviceInstance.get(base_path + '/*', {options:{sort:{"item_sort_id":-1}, limit:50}}, function(e, items){
+          serviceInstance.get(base_path + '/*', {
+            options: {
+              sort: {
+                "item_sort_id": -1
+              },
+              limit: 50
+            }
+          }, function (e, items) {
 
             if (e) return done(e);
 
-            for (var itemIndex in items){
+            for (var itemIndex in items) {
 
               if (itemIndex >= 50) break;
 

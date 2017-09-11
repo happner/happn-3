@@ -1,8 +1,7 @@
-var Happn = require('../..')
-  , expect = require('expect.js')
-  , async = require('async')
-  , shortid = require('shortid')
-  ;
+var Happn = require('../..'),
+  expect = require('expect.js'),
+  async = require('async'),
+  shortid = require('shortid');
 
 describe('functional subscription', function () {
 
@@ -24,13 +23,19 @@ describe('functional subscription', function () {
       channel: 'SET'
     });
 
-    var tSearch =  testBucket.__removableNodeTrie('path');
+    var tSearch = testBucket.__removableNodeTrie('path');
 
-    tSearch.add({path:'test1'});
+    tSearch.add({
+      path: 'test1'
+    });
 
-    tSearch.add({path:'test2'});
+    tSearch.add({
+      path: 'test2'
+    });
 
-    tSearch.add({path:'test3'});
+    tSearch.add({
+      path: 'test3'
+    });
 
     expect(tSearch.get('test').length).to.be(3);
 
@@ -38,11 +43,17 @@ describe('functional subscription', function () {
 
     expect(tSearch.get('test').length).to.be(2);
 
-    tSearch.add({path:'test'});
+    tSearch.add({
+      path: 'test'
+    });
 
-    tSearch.add({path:'test'});
+    tSearch.add({
+      path: 'test'
+    });
 
-    tSearch.add({path:'test'});
+    tSearch.add({
+      path: 'test'
+    });
 
     expect(tSearch.get('test').length).to.be(5);
 
@@ -68,11 +79,19 @@ describe('functional subscription', function () {
 
       if (e) return done(e);
 
-      testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
+      testBucket.addSubscription('/test/path/*', sessionId1, {
+        options: {
+          refCount: 1
+        }
+      });
 
       expect(testBucket.allSubscriptions().length).to.be(1);
 
-      testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
+      testBucket.addSubscription('/test/path/*', sessionId1, {
+        options: {
+          refCount: 1
+        }
+      });
 
       expect(testBucket.allSubscriptions().length).to.be(1);
 
@@ -93,7 +112,11 @@ describe('functional subscription', function () {
       channel: 'SET'
     });
 
-    var data = {options: {refCount: 1}};
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
 
     testBucket.initialize(function (e) {
 
@@ -140,7 +163,11 @@ describe('functional subscription', function () {
       channel: 'SET'
     });
 
-    var data = {options: {refCount: 1}};
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
 
     testBucket.initialize(function (e) {
 
@@ -162,7 +189,7 @@ describe('functional subscription', function () {
 
           expect(testBucket.allSubscriptions().length).to.be(1);
 
-          expect(testBucket.__segments.array.length).to.be(0);//all subscriptions do not have segments
+          expect(testBucket.__segments.array.length).to.be(0); //all subscriptions do not have segments
 
           done();
 
@@ -185,7 +212,11 @@ describe('functional subscription', function () {
       channel: 'SET'
     });
 
-    var data = {options: {refCount: 1}};
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
 
     testBucket.initialize(function (e) {
 
@@ -249,11 +280,13 @@ describe('functional subscription', function () {
 
           pathCounts[randomPath]++;
 
-          var subId =  shortid.generate();
+          var subId = shortid.generate();
 
           testBucket.addSubscription('/test/path/' + randomPath, subId, {
             rand: randomPath,
-            options: {refCount: 1}
+            options: {
+              refCount: 1
+            }
           }, timeCB);
         },
 
@@ -265,7 +298,7 @@ describe('functional subscription', function () {
 
             testBucket.getSubscriptions('/test/path/' + key, function (e, recipients) {
 
-              if (recipients.length != pathCounts[key]){
+              if (recipients.length != pathCounts[key]) {
 
                 console.log(':::', testBucket.__explicit_subscriptions.get(''));
 
@@ -463,9 +496,14 @@ describe('functional subscription', function () {
 
     var config = {};
 
-    var testItems = [
-      {path: 'test/path/1', data: {}},
-      {path: 'test/path/2', data: {}}
+    var testItems = [{
+        path: 'test/path/1',
+        data: {}
+      },
+      {
+        path: 'test/path/2',
+        data: {}
+      }
     ];
 
     mockSubscriptionService(config, testItems, function (e, instance) {
@@ -503,9 +541,14 @@ describe('functional subscription', function () {
 
     var config = {};
 
-    var testItems = [
-      {path: 'test/path/1', data: {}},
-      {path: 'test/path/2', data: {}}
+    var testItems = [{
+        path: 'test/path/1',
+        data: {}
+      },
+      {
+        path: 'test/path/2',
+        data: {}
+      }
     ];
 
     mockSubscriptionService(config, testItems, function (e, instance) {

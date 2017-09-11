@@ -28,12 +28,12 @@ describe('a1_eventemitter_embedded_datatypes', function () {
     try {
       service.create(function (e, happnInst) {
 
-          if (e)
-            return callback(e);
+        if (e)
+          return callback(e);
 
-          happnInstance = happnInst;
-          callback();
-        });
+        happnInstance = happnInst;
+        callback();
+      });
 
     } catch (e) {
       callback(e);
@@ -58,12 +58,12 @@ describe('a1_eventemitter_embedded_datatypes', function () {
 
     try {
 
-      happnInstance.services.session.localClient(function(e, instance){
+      happnInstance.services.session.localClient(function (e, instance) {
 
         if (e) return callback(e);
         publisherclient = instance;
 
-        happnInstance.services.session.localClient(function(e, instance){
+        happnInstance.services.session.localClient(function (e, instance) {
 
           if (e) return callback(e);
           listenerclient = instance;
@@ -85,7 +85,9 @@ describe('a1_eventemitter_embedded_datatypes', function () {
       var test_string = require('shortid').generate();
       var test_base_url = '/a1_eventemitter_embedded_datatypes/' + test_id + '/set/string/' + test_string;
 
-      publisherclient.set(test_base_url, test_string, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_string, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -99,8 +101,7 @@ describe('a1_eventemitter_embedded_datatypes', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -118,7 +119,9 @@ describe('a1_eventemitter_embedded_datatypes', function () {
       var test_number = Math.random();
       var test_base_url = '/a1_eventemitter_embedded_datatypes/' + test_id + '/set/number/' + test_number.toString().replace('.', '');
 
-      publisherclient.set(test_base_url, test_number, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_number, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -132,8 +135,7 @@ describe('a1_eventemitter_embedded_datatypes', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -152,7 +154,9 @@ describe('a1_eventemitter_embedded_datatypes', function () {
       var test_bool = true;
       var test_base_url = '/a1_eventemitter_embedded_datatypes/' + test_id + '/set/boolean/' + test_bool.toString();
 
-      publisherclient.set(test_base_url, test_bool, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_bool, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -166,8 +170,7 @@ describe('a1_eventemitter_embedded_datatypes', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -185,7 +188,9 @@ describe('a1_eventemitter_embedded_datatypes', function () {
       var test_date = new Date();
       var test_base_url = '/a1_eventemitter_embedded_datatypes/' + test_id + '/set/date';
 
-      publisherclient.set(test_base_url, test_date, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_date, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -199,8 +204,7 @@ describe('a1_eventemitter_embedded_datatypes', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -218,7 +222,9 @@ describe('a1_eventemitter_embedded_datatypes', function () {
       var test_null = null;
       var test_base_url = '/a1_eventemitter_embedded_datatypes/' + test_id + '/set/null';
 
-      publisherclient.set(test_base_url, test_null, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_null, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -228,12 +234,11 @@ describe('a1_eventemitter_embedded_datatypes', function () {
 
             if (e) return callback(e);
 
-            expect(result.value).to.be(test_null);//YES. IT IS NOW UNDEFINED
+            expect(result.value).to.be(test_null); //YES. IT IS NOW UNDEFINED
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -250,7 +255,9 @@ describe('a1_eventemitter_embedded_datatypes', function () {
 
       var test_base_url = '/a1_eventemitter_embedded_datatypes/' + test_id + '/set/undefined';
 
-      publisherclient.set(test_base_url, undefined, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, undefined, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -264,8 +271,7 @@ describe('a1_eventemitter_embedded_datatypes', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -283,7 +289,9 @@ describe('a1_eventemitter_embedded_datatypes', function () {
       var test_array = [0, 1, 2, 3, 4, 5];
       var test_base_url = '/a1_eventemitter_embedded_datatypes/' + test_id + '/set/array';
 
-      publisherclient.set(test_base_url, test_array, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_array, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -300,8 +308,7 @@ describe('a1_eventemitter_embedded_datatypes', function () {
             callback(e);
 
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -320,7 +327,10 @@ describe('a1_eventemitter_embedded_datatypes', function () {
     try {
 
       //first listen for the change
-      listenerclient.on(test_base_url + '/*', {event_type: 'set', count: 1}, function (message) {
+      listenerclient.on(test_base_url + '/*', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(listenerclient.events['/SET@' + test_base_url + '/*'].length).to.be(0);
 
@@ -340,8 +350,7 @@ describe('a1_eventemitter_embedded_datatypes', function () {
 
 
           });
-        }
-        else
+        } else
           callback(e);
       });
 

@@ -1,10 +1,9 @@
-var Happn = require('../../lib/index')
-  , service = Happn.service
-  , expect = require('expect.js')
-  , async = require('async')
-  , shortid = require('shortid')
-  , Promise = require('bluebird')
-  ;
+var Happn = require('../../lib/index'),
+  service = Happn.service,
+  expect = require('expect.js'),
+  async = require('async'),
+  shortid = require('shortid'),
+  Promise = require('bluebird');
 
 describe('subscriptions', function () {
 
@@ -23,10 +22,10 @@ describe('subscriptions', function () {
     var clientPublisherConfig = {};
 
     var config = {
-      services:{
-        subscription:{
-          config:{
-            bucketImplementation:testBucketImplementation
+      services: {
+        subscription: {
+          config: {
+            bucketImplementation: testBucketImplementation
           }
         }
       }
@@ -80,13 +79,21 @@ describe('subscriptions', function () {
 
     var TrieSearch = require('trie-search');
 
-    var tSearch =  new TrieSearch('path', {indexField: 'path'});
+    var tSearch = new TrieSearch('path', {
+      indexField: 'path'
+    });
 
-    tSearch.add({path:'test'});
+    tSearch.add({
+      path: 'test'
+    });
 
-    tSearch.add({path:'test'});
+    tSearch.add({
+      path: 'test'
+    });
 
-    tSearch.add({path:'test'});
+    tSearch.add({
+      path: 'test'
+    });
 
     console.log(tSearch.get('test'));
 
@@ -106,19 +113,19 @@ describe('subscriptions', function () {
 
     var started = Date.now();
 
-    async.times(SUBSCRIPTION_COUNT, function(time, timeCB){
+    async.times(SUBSCRIPTION_COUNT, function (time, timeCB) {
 
       var sub = require('shortid').generate();
 
       if (testSubs.length < EVENT_COUNT) testSubs.push(sub + '/test');
 
-      clientInstanceListener.on(sub + '/*', function(data){
+      clientInstanceListener.on(sub + '/*', function (data) {
 
         matched++;
 
         if (matched % 500 == 0) console.log('events handled', matched);
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return timeCB(e);
 
@@ -129,7 +136,7 @@ describe('subscriptions', function () {
         timeCB();
       });
 
-    }, function(e){
+    }, function (e) {
 
       if (e) return done(e);
 
@@ -143,11 +150,13 @@ describe('subscriptions', function () {
 
       var eventsStarted = Date.now();
 
-      async.each(testSubs, function(path, pathCB){
+      async.each(testSubs, function (path, pathCB) {
 
-        clientInstancePublisher.set(path, {data:path}, pathCB);
+        clientInstancePublisher.set(path, {
+          data: path
+        }, pathCB);
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return done(e);
 
@@ -185,19 +194,19 @@ describe('subscriptions', function () {
 
     var started = Date.now();
 
-    async.timesSeries(SUBSCRIPTION_COUNT, function(time, timeCB){
+    async.timesSeries(SUBSCRIPTION_COUNT, function (time, timeCB) {
 
       var sub = require('shortid').generate();
 
       if (testSubs.length < EVENT_COUNT) testSubs.push(sub + '/test');
 
-      clientInstanceListener.on(sub + '*', function(data){
+      clientInstanceListener.on(sub + '*', function (data) {
 
         matched++;
 
         if (matched % 500 == 0) console.log('events handled', matched);
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return timeCB(e);
 
@@ -208,7 +217,7 @@ describe('subscriptions', function () {
         timeCB();
       });
 
-    }, function(e){
+    }, function (e) {
 
       if (e) return done(e);
 
@@ -222,11 +231,13 @@ describe('subscriptions', function () {
 
       var eventsStarted = Date.now();
 
-      async.each(testSubs, function(path, pathCB){
+      async.each(testSubs, function (path, pathCB) {
 
-        clientInstancePublisher.set(path, {data:path}, pathCB);
+        clientInstancePublisher.set(path, {
+          data: path
+        }, pathCB);
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return done(e);
 

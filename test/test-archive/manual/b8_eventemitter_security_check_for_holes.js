@@ -17,7 +17,9 @@ describe('b8_check_for_holes', function () {
 
   before('it starts completely defaulted service, created a websockets client and an eventemiiter client', function (done) {
 
-    getService({secure: true}, function (e, service) {
+    getService({
+      secure: true
+    }, function (e, service) {
 
       if (e) return done(e);
 
@@ -68,7 +70,10 @@ describe('b8_check_for_holes', function () {
   before('creates an event emitter client', function (done) {
 
     happn.client.create({
-        config: {username: '_ADMIN', password: 'happn'},
+        config: {
+          username: '_ADMIN',
+          password: 'happn'
+        },
         plugin: happn.client_plugins.intra_process,
         context: serviceInstance,
         secure: true

@@ -23,7 +23,10 @@ describe('b2_eventemitter_security_groups', function () {
 
     setTimeout(function () {
 
-      var happnMock = {services: {}, utils: require('../lib/utils')};
+      var happnMock = {
+        services: {},
+        utils: require('../lib/utils')
+      };
       testServices = {};
       testServices.data = require('../lib/services/data_embedded/service');
       testServices.security = require('../lib/services/security/service');
@@ -34,7 +37,7 @@ describe('b2_eventemitter_security_groups', function () {
         testServices[serviceName].happn = happnMock;
 
         testServices[serviceName].initialize(testConfigs[serviceName], function (e, instance) {
-          if (e)  return eachServiceCB(e);
+          if (e) return eachServiceCB(e);
 
           happnMock.services[serviceName] = testServices[serviceName];
 

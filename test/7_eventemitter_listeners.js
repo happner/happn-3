@@ -23,8 +23,12 @@ describe('7_eventemitter_listeners', function () {
 
     this.timeout(10000);
 
-    publisherclient.disconnect({timeout:2000})
-      .then(listenerclient.disconnect({timeout:2000}))
+    publisherclient.disconnect({
+        timeout: 2000
+      })
+      .then(listenerclient.disconnect({
+        timeout: 2000
+      }))
       .then(happnInstance.stop())
       .then(done)
       .catch(done);
@@ -36,12 +40,12 @@ describe('7_eventemitter_listeners', function () {
 
     try {
       service.create(function (e, happnInst) {
-          if (e)
-            return callback(e);
+        if (e)
+          return callback(e);
 
-          happnInstance = happnInst;
-          callback();
-        });
+        happnInstance = happnInst;
+        callback();
+      });
     } catch (e) {
       callback(e);
     }
@@ -56,12 +60,12 @@ describe('7_eventemitter_listeners', function () {
 
     try {
 
-      happnInstance.services.session.localClient(function(e, instance){
+      happnInstance.services.session.localClient(function (e, instance) {
 
         if (e) return callback(e);
         publisherclient = instance;
 
-        happnInstance.services.session.localClient(function(e, instance){
+        happnInstance.services.session.localClient(function (e, instance) {
 
           if (e) return callback(e);
           listenerclient = instance;
@@ -81,7 +85,10 @@ describe('7_eventemitter_listeners', function () {
 
     try {
       //first listen for the change
-      listenerclient.on('/e2e_test1/testsubscribe/data/event/*', {event_type: 'set', count: 1}, function (message) {
+      listenerclient.on('/e2e_test1/testsubscribe/data/event/*', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event/*'].length).to.be(0);
         callback();
@@ -100,8 +107,7 @@ describe('7_eventemitter_listeners', function () {
           }, null, function (e, result) {
             //console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -110,7 +116,7 @@ describe('7_eventemitter_listeners', function () {
     }
   });
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -119,7 +125,10 @@ describe('7_eventemitter_listeners', function () {
     try {
 
       //first listen for the change
-      listenerclient.on('/e2e_test1/testsubscribe/data/event', {event_type: 'set', count: 1}, function (message) {
+      listenerclient.on('/e2e_test1/testsubscribe/data/event', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
@@ -141,8 +150,7 @@ describe('7_eventemitter_listeners', function () {
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -151,7 +159,7 @@ describe('7_eventemitter_listeners', function () {
     }
   });
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -160,7 +168,10 @@ describe('7_eventemitter_listeners', function () {
     try {
 
       //first listen for the change
-      listenerclient.on('/e2e_test1/testsubscribe/data/event', {event_type: 'set', count: 1}, function (message) {
+      listenerclient.on('/e2e_test1/testsubscribe/data/event', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
@@ -181,8 +192,7 @@ describe('7_eventemitter_listeners', function () {
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -249,8 +259,7 @@ describe('7_eventemitter_listeners', function () {
 
               ////////////////////////////console.log('put happened - listening for result');
             });
-          }
-          else
+          } else
             callback(e);
         });
       });
@@ -265,7 +274,10 @@ describe('7_eventemitter_listeners', function () {
 
     var currentListenerId;
 
-    listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       //we detach all listeners from the path here
       ////console.log('ABOUT OFF PATH');
@@ -274,7 +286,10 @@ describe('7_eventemitter_listeners', function () {
         if (e)
           return callback(new Error(e));
 
-        listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0},
+        listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {
+            event_type: 'set',
+            count: 0
+          },
           function (message) {
 
             ////console.log('ON RAN');
@@ -327,7 +342,9 @@ describe('7_eventemitter_listeners', function () {
 
   it('should subscribe and get an initial value on the callback', function (callback) {
 
-    listenerclient.set('/e2e_test1/testsubscribe/data/value_on_callback_test', {"test": "data"}, function (e) {
+    listenerclient.set('/e2e_test1/testsubscribe/data/value_on_callback_test', {
+      "test": "data"
+    }, function (e) {
       if (e) return callback(e);
 
       listenerclient.on('/e2e_test1/testsubscribe/data/value_on_callback_test', {
@@ -361,10 +378,14 @@ describe('7_eventemitter_listeners', function () {
 
   it('should subscribe and get initial values on the callback', function (callback) {
 
-    listenerclient.set('/e2e_test1/testsubscribe/data/values_on_callback_test/1', {"test": "data"}, function (e) {
+    listenerclient.set('/e2e_test1/testsubscribe/data/values_on_callback_test/1', {
+      "test": "data"
+    }, function (e) {
       if (e) return callback(e);
 
-      listenerclient.set('/e2e_test1/testsubscribe/data/values_on_callback_test/2', {"test": "data1"}, function (e) {
+      listenerclient.set('/e2e_test1/testsubscribe/data/values_on_callback_test/2', {
+        "test": "data1"
+      }, function (e) {
         if (e) return callback(e);
 
         listenerclient.on('/e2e_test1/testsubscribe/data/values_on_callback_test/*', {
@@ -402,11 +423,15 @@ describe('7_eventemitter_listeners', function () {
 
     var caughtEmitted = 0;
 
-    listenerclient.set('/e2e_test1/testsubscribe/data/values_emitted_test/1', {"test": "data"}, function (e) {
+    listenerclient.set('/e2e_test1/testsubscribe/data/values_emitted_test/1', {
+      "test": "data"
+    }, function (e) {
 
       if (e) return callback(e);
 
-      listenerclient.set('/e2e_test1/testsubscribe/data/values_emitted_test/2', {"test": "data1"}, function (e) {
+      listenerclient.set('/e2e_test1/testsubscribe/data/values_emitted_test/2', {
+        "test": "data1"
+      }, function (e) {
 
         if (e) return callback(e);
 
@@ -482,7 +507,10 @@ describe('7_eventemitter_listeners', function () {
 
       if (e) return callback(e);
 
-      listenerclient.on('/e2e_test1/testsubscribe/data/off_all_test', {event_type: 'set', count: 0},
+      listenerclient.on('/e2e_test1/testsubscribe/data/off_all_test', {
+          event_type: 'set',
+          count: 0
+        },
         function (message) {
           onHappened = true;
           callback(new Error('this wasnt meant to happen'));

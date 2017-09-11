@@ -22,7 +22,9 @@ describe(filename, function () {
 
   after('stop server', function (done) {
     if (!server) return done();
-    server.stop({reconnect: false}, done);
+    server.stop({
+      reconnect: false
+    }, done);
   });
 
 
@@ -33,42 +35,44 @@ describe(filename, function () {
       var client;
       var countReceived = 0;
 
-      var received = function() {
+      var received = function () {
         countReceived++;
       };
 
       Happn.client.create()
 
-        .then(function(_client) {
+        .then(function (_client) {
           client = _client;
           client.onAsync = Promise.promisify(client.on);
         })
 
-        .then(function() {
+        .then(function () {
           return client.onAsync('/test/*', received);
         })
 
-        .then(function() {
+        .then(function () {
           return client.set('/test/x', {})
         })
 
-        .then(function() {
+        .then(function () {
           return Promise.delay(200);
         })
 
-        .then(function() {
+        .then(function () {
           expect(countReceived).to.equal(1); // pre-test (sanity)
         })
 
-        .then(function() {
-          return server.stop({reconnect: true});
+        .then(function () {
+          return server.stop({
+            reconnect: true
+          });
         })
 
         .then(function () {
           server = null;
           var reject;
 
-          var promise =  new Promise(function (resolve, _reject) {
+          var promise = new Promise(function (resolve, _reject) {
             reject = _reject;
             client.onEvent('reconnect-successful', resolve);
           });
@@ -80,15 +84,15 @@ describe(filename, function () {
           return promise;
         })
 
-        .then(function() {
+        .then(function () {
           return client.set('/test/x', {})
         })
 
-        .then(function() {
+        .then(function () {
           return Promise.delay(200);
         })
 
-        .then(function() {
+        .then(function () {
           expect(countReceived).to.equal(2); // re-subscribed automatically on connect
         })
 

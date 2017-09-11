@@ -23,11 +23,14 @@ describe('c4_session_events', function () {
 
     var checkAllEventsFired = function (cb) {
 
-      for (var eventName in eventsFired) if (!eventsFired[eventName]) return;
+      for (var eventName in eventsFired)
+        if (!eventsFired[eventName]) return;
 
       if (!stopped) {
         stopped = true;
-        serviceInstance.stop({reconnect: false}, callback);
+        serviceInstance.stop({
+          reconnect: false
+        }, callback);
       }
     };
 
@@ -73,22 +76,22 @@ describe('c4_session_events', function () {
 
           serviceInstance.services.session.localClient({
 
-            username: '_ADMIN',
-            password: 'happn'
+              username: '_ADMIN',
+              password: 'happn'
 
-          })
+            })
 
-          .then(function (clientInstance) {
+            .then(function (clientInstance) {
 
-            eventEmitterClient = clientInstance;
+              eventEmitterClient = clientInstance;
 
-            socketClient.disconnect();
-            eventEmitterClient.disconnect();
-          })
+              socketClient.disconnect();
+              eventEmitterClient.disconnect();
+            })
 
-          .catch(function (e) {
-            callback(e);
-          });
+            .catch(function (e) {
+              callback(e);
+            });
 
         });
 
@@ -104,7 +107,9 @@ describe('c4_session_events', function () {
 
   it('tests session events on a secure mesh', function (callback) {
 
-    sessionEventsTest({secure: true}, callback);
+    sessionEventsTest({
+      secure: true
+    }, callback);
 
   });
 

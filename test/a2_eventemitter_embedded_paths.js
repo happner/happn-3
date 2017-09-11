@@ -30,12 +30,12 @@ describe('a2_eventemitter_embedded_paths', function () {
 
     try {
       service.create(function (e, happnInst) {
-          if (e)
-            return callback(e);
+        if (e)
+          return callback(e);
 
-          happnInstance = happnInst;
-          callback();
-        });
+        happnInstance = happnInst;
+        callback();
+      });
     } catch (e) {
       callback(e);
     }
@@ -58,12 +58,12 @@ describe('a2_eventemitter_embedded_paths', function () {
 
     try {
 
-      happnInstance.services.session.localClient(function(e, instance){
+      happnInstance.services.session.localClient(function (e, instance) {
 
         if (e) return callback(e);
         publisherclient = instance;
 
-        happnInstance.services.session.localClient(function(e, instance){
+        happnInstance.services.session.localClient(function (e, instance) {
 
           if (e) return callback(e);
           listenerclient = instance;
@@ -128,7 +128,9 @@ describe('a2_eventemitter_embedded_paths', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
           publisherclient.get('a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/' + test_path_end, null, function (e, results) {
@@ -144,8 +146,7 @@ describe('a2_eventemitter_embedded_paths', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -165,7 +166,9 @@ describe('a2_eventemitter_embedded_paths', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
           publisherclient.get('*/' + test_id + '/testsubscribe/wildcards/*', null, function (e, results) {
@@ -177,8 +180,7 @@ describe('a2_eventemitter_embedded_paths', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -205,7 +207,9 @@ describe('a2_eventemitter_embedded_paths', function () {
             property1: 'property1',
             property2: 'property2',
             property3: 'property3'
-          }, {noPublish: true}, timesCallback);
+          }, {
+            noPublish: true
+          }, timesCallback);
 
         },
         function (e) {
@@ -270,7 +274,11 @@ describe('a2_eventemitter_embedded_paths', function () {
         //////////////console.log('set results');
         //////////////console.log(result);
 
-        publisherclient.set('/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/merge/' + test_path_end, {property4: 'property4'}, {merge: true}, function (e, result) {
+        publisherclient.set('/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/merge/' + test_path_end, {
+          property4: 'property4'
+        }, {
+          merge: true
+        }, function (e, result) {
 
           if (e)
             return callback(e);
@@ -303,10 +311,16 @@ describe('a2_eventemitter_embedded_paths', function () {
   });
 
   it('should contain the same payload between 2 non-merging consecutive stores', function (done) {
-    var object = {param1: 10, param2: 20};
+    var object = {
+      param1: 10,
+      param2: 20
+    };
     var firstTime;
 
-    listenerclient.on('setTest/object', {event_type: 'set', count: 2}, function (message) {
+    listenerclient.on('setTest/object', {
+      event_type: 'set',
+      count: 2
+    }, function (message) {
       if (firstTime === undefined) {
         firstTime = message;
         return;
@@ -326,10 +340,16 @@ describe('a2_eventemitter_embedded_paths', function () {
   });
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
-    var object = {param1: 10, param2: 20};
+    var object = {
+      param1: 10,
+      param2: 20
+    };
     var firstTime = true;
 
-    listenerclient.on('mergeTest/object', {event_type: 'set', count: 2}, function (message) {
+    listenerclient.on('mergeTest/object', {
+      event_type: 'set',
+      count: 2
+    }, function (message) {
       expect(message).to.eql(object);
       if (firstTime) {
         firstTime = false;
@@ -338,9 +358,13 @@ describe('a2_eventemitter_embedded_paths', function () {
       done();
     }, function (err) {
       expect(err).to.not.be.ok();
-      publisherclient.set('mergeTest/object', object, {merge: true}, function (err) {
+      publisherclient.set('mergeTest/object', object, {
+        merge: true
+      }, function (err) {
         expect(err).to.not.be.ok();
-        publisherclient.set('mergeTest/object', object, {merge: true}, function (err) {
+        publisherclient.set('mergeTest/object', object, {
+          merge: true
+        }, function (err) {
           expect(err).to.not.be.ok();
         });
       });
@@ -365,15 +389,34 @@ describe('a2_eventemitter_embedded_paths', function () {
 
 
     var criteria1 = {
-      $or: [{"regions": {$in: ['North', 'South', 'East', 'West']}},
-        {"towns": {$in: ['North.Cape Town', 'South.East London']}},
-        {"categories": {$in: ["Action", "History"]}}],
-      "keywords": {$in: ["bass", "Penny Siopis"]}
+      $or: [{
+          "regions": {
+            $in: ['North', 'South', 'East', 'West']
+          }
+        },
+        {
+          "towns": {
+            $in: ['North.Cape Town', 'South.East London']
+          }
+        },
+        {
+          "categories": {
+            $in: ["Action", "History"]
+          }
+        }
+      ],
+      "keywords": {
+        $in: ["bass", "Penny Siopis"]
+      }
     }
 
     var options1 = {
-      fields: {"data": 1},
-      sort: {"field1": 1},
+      fields: {
+        "data": 1
+      },
+      sort: {
+        "field1": 1
+      },
       limit: 1
     }
 
@@ -381,7 +424,9 @@ describe('a2_eventemitter_embedded_paths', function () {
 
     var options2 = {
       fields: null,
-      sort: {"field1": 1},
+      sort: {
+        "field1": 1
+      },
       limit: 2
     }
 
@@ -433,10 +478,14 @@ describe('a2_eventemitter_embedded_paths', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         //We perform the actual delete
-        publisherclient.remove('/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/delete_me', {noPublish: true}, function (e, result) {
+        publisherclient.remove('/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/delete_me', {
+          noPublish: true
+        }, function (e, result) {
 
           expect(e).to.be(null);
           expect(result._meta.status).to.be('ok');
@@ -466,7 +515,9 @@ describe('a2_eventemitter_embedded_paths', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, insertResult) {
+      }, {
+        noPublish: true
+      }, function (e, insertResult) {
 
         expect(e).to.be(null);
 
@@ -475,7 +526,9 @@ describe('a2_eventemitter_embedded_paths', function () {
           property2: 'property2',
           property3: 'property3',
           property4: 'property4'
-        }, {noPublish: true}, function (e, updateResult) {
+        }, {
+          noPublish: true
+        }, function (e, updateResult) {
 
           expect(e).to.be(null);
           expect(updateResult._meta.id == insertResult._meta.id).to.be(true);
@@ -499,7 +552,9 @@ describe('a2_eventemitter_embedded_paths', function () {
       property1: 'property1',
       property2: 'property2',
       property3: 'property3'
-    }, {noPublish: true}, function (e, result) {
+    }, {
+      noPublish: true
+    }, function (e, result) {
 
       ////////////////////console.log('did set');
       ////////////////////console.log([e, result]);
@@ -561,7 +616,7 @@ describe('a2_eventemitter_embedded_paths', function () {
   });
 
 
-//  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -595,8 +650,7 @@ describe('a2_eventemitter_embedded_paths', function () {
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -606,7 +660,7 @@ describe('a2_eventemitter_embedded_paths', function () {
   });
 
 
-//We are testing setting data at a specific path
+  //We are testing setting data at a specific path
 
   it('the publisher should set new data ', function (callback) {
 
@@ -632,8 +686,7 @@ describe('a2_eventemitter_embedded_paths', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -679,7 +732,7 @@ describe('a2_eventemitter_embedded_paths', function () {
   });
 
 
-//We are testing pushing a specific value to a path which will actually become an array in the database
+  //We are testing pushing a specific value to a path which will actually become an array in the database
 
   it('the publisher should push a sibling and get all siblings', function (callback) {
 
@@ -718,7 +771,7 @@ describe('a2_eventemitter_embedded_paths', function () {
   });
 
 
-//  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -751,8 +804,7 @@ describe('a2_eventemitter_embedded_paths', function () {
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 

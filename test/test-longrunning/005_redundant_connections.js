@@ -28,7 +28,9 @@ describe('longrunning/005_redundant_connections', function () {
 
   var initializeService = function (instance, port, callback) {
 
-    instance.create({port: port},
+    instance.create({
+        port: port
+      },
 
       function (e, created) {
 
@@ -41,13 +43,15 @@ describe('longrunning/005_redundant_connections', function () {
     );
   };
 
-  var disconnectClient = function(client){
+  var disconnectClient = function (client) {
 
-    return new Promise(function(resolve, reject){
+    return new Promise(function (resolve, reject) {
 
       if (!client) return resolve();
 
-      return client.disconnect({timeout:2000}, function(e){
+      return client.disconnect({
+        timeout: 2000
+      }, function (e) {
 
         if (e && e.toString() != 'Error: disconnect timed out') return reject(e);
 
@@ -58,11 +62,11 @@ describe('longrunning/005_redundant_connections', function () {
     });
   };
 
-  var stopInstance = function(instance, callback){
+  var stopInstance = function (instance, callback) {
 
     if (!instance) return callback();
 
-    return instance.stop(function(e){
+    return instance.stop(function (e) {
 
       if (e) return callback(e);
 
@@ -78,33 +82,33 @@ describe('longrunning/005_redundant_connections', function () {
 
     disconnectClient(service1Client)
 
-    .then(function(){
-      return disconnectClient(service2Client);
-    })
+      .then(function () {
+        return disconnectClient(service2Client);
+      })
 
-    .then(function(){
-      return disconnectClient(service3Client);
-    })
+      .then(function () {
+        return disconnectClient(service3Client);
+      })
 
-    .then(function(){
-      return disconnectClient(redundantClient);
-    })
+      .then(function () {
+        return disconnectClient(redundantClient);
+      })
 
-    .then(function(){
+      .then(function () {
 
-      async.eachSeries(instances, function (instance, eachCallback) {
-          stopInstance(instance, eachCallback);
-        },
-        function(e){
+        async.eachSeries(instances, function (instance, eachCallback) {
+            stopInstance(instance, eachCallback);
+          },
+          function (e) {
 
-          if (e) return callback(e);
+            if (e) return callback(e);
 
-          callback();
-        }
-      );
-    })
+            callback();
+          }
+        );
+      })
 
-    .catch(callback);
+      .catch(callback);
   });
 
   beforeEach('should initialize the services', function (callback) {
@@ -123,7 +127,7 @@ describe('longrunning/005_redundant_connections', function () {
 
           if (e) return callback(e);
 
-          initializeService(service3, service3Port, function(e){
+          initializeService(service3, service3Port, function (e) {
 
             if (e) return callback(e);
 
@@ -144,19 +148,31 @@ describe('longrunning/005_redundant_connections', function () {
     try {
       //plugin, config, context,
 
-      happn_client.create({config: {port: service1Port}}, function (e, instance) {
+      happn_client.create({
+        config: {
+          port: service1Port
+        }
+      }, function (e, instance) {
 
         if (e) return callback(e);
 
         service1Client = instance;
 
-        happn_client.create({config: {port: service2Port}}, function (e, instance) {
+        happn_client.create({
+          config: {
+            port: service2Port
+          }
+        }, function (e, instance) {
 
           if (e) return callback(e);
 
           service2Client = instance;
 
-          happn_client.create({config: {port: service3Port}}, function (e, instance) {
+          happn_client.create({
+            config: {
+              port: service3Port
+            }
+          }, function (e, instance) {
 
             if (e) return callback(e);
 
@@ -173,7 +189,9 @@ describe('longrunning/005_redundant_connections', function () {
   });
 
   var setData = function (client, id, callback) {
-    return client.set('/test/data', {id: id}, function(e, result){
+    return client.set('/test/data', {
+      id: id
+    }, function (e, result) {
 
       if (e) console.log('SET DATA ERROR HAPPENED:::', e);
 
@@ -193,7 +211,7 @@ describe('longrunning/005_redundant_connections', function () {
 
         if (e) return callback(e);
 
-        setData(service3Client, 3, function(e){
+        setData(service3Client, 3, function (e) {
 
           if (e) return callback(e);
 
@@ -211,17 +229,28 @@ describe('longrunning/005_redundant_connections', function () {
 
     this.timeout(30000);
 
-    happn_client.create([
-      {config: {port: service1Port}},
-      {config: {port: service2Port}},
-      {config: {port: service3Port}}
+    happn_client.create([{
+        config: {
+          port: service1Port
+        }
+      },
+      {
+        config: {
+          port: service2Port
+        }
+      },
+      {
+        config: {
+          port: service3Port
+        }
+      }
     ], {
-      info: 'test_random',//info is appended to each connection
-      poolType: happn.constants.CONNECTION_POOL_TYPE.RANDOM,//default is 0 RANDOM
+      info: 'test_random', //info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.RANDOM, //default is 0 RANDOM
       poolReconnectAttempts: 6, //how many switches to perform until a connection is made
       socket: {
         reconnect: {
-          retries: 1,//one retry
+          retries: 1, //one retry
           timeout: 100
         }
       }
@@ -293,10 +322,14 @@ describe('longrunning/005_redundant_connections', function () {
 
     this.timeout(30000);
 
-    happn_client.create([
-      {config: {port: service1Port}}
-    ], {
-      info: {data:'test_random'}//info is appended to each connection
+    happn_client.create([{
+      config: {
+        port: service1Port
+      }
+    }], {
+      info: {
+        data: 'test_random'
+      } //info is appended to each connection
       // poolType: happn.constants.CONNECTION_POOL_TYPE.RANDOM,//default is 0 RANDOM
       // poolReconnectAttempts: 6, //how many switches to perform until a connection is made
       // socket: {
@@ -304,16 +337,15 @@ describe('longrunning/005_redundant_connections', function () {
       //     retries: 1,//one retry
       //     timeout: 100
       //   }
-      }
-    , function(e, instance){
+    }, function (e, instance) {
 
-        if (e) return done(e);
+      if (e) return done(e);
 
-        console.log('HAVE INSTANCE:::', instance);
+      console.log('HAVE INSTANCE:::', instance);
 
-        done();
+      done();
 
-      });
+    });
   });
 
 
@@ -321,17 +353,28 @@ describe('longrunning/005_redundant_connections', function () {
 
     this.timeout(30000);
 
-    happn_client.create([
-      {config: {port: service1Port}},
-      {config: {port: service2Port}},
-      {config: {port: service3Port}}
+    happn_client.create([{
+        config: {
+          port: service1Port
+        }
+      },
+      {
+        config: {
+          port: service2Port
+        }
+      },
+      {
+        config: {
+          port: service3Port
+        }
+      }
     ], {
-      info: 'redundant_ordered',//info is appended to each connection
-      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+      info: 'redundant_ordered', //info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED, //default is 0 RANDOM
       poolReconnectAttempts: 3, //how many switches to perform until a connection is made
       socket: {
         reconnect: {
-          retries: 1,//one retry
+          retries: 1, //one retry
           timeout: 100
         }
       }
@@ -399,17 +442,28 @@ describe('longrunning/005_redundant_connections', function () {
 
     this.timeout(30000);
 
-    happn_client.create([
-      {config: {port: 55045}},
-      {config: {port: 55046}},
-      {config: {port: 55047}}
+    happn_client.create([{
+        config: {
+          port: 55045
+        }
+      },
+      {
+        config: {
+          port: 55046
+        }
+      },
+      {
+        config: {
+          port: 55047
+        }
+      }
     ], {
-      info: 'redundant_ordered',//info is appended to each connection
-      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+      info: 'redundant_ordered', //info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED, //default is 0 RANDOM
       poolReconnectAttempts: 3, //how many switches to perform until a connection is made
       socket: {
         reconnect: {
-          retries: 1,//one retry
+          retries: 1, //one retry
           timeout: 100
         }
       }
@@ -425,17 +479,28 @@ describe('longrunning/005_redundant_connections', function () {
 
     this.timeout(16000);
 
-    happn_client.create([
-      {config: {port: 55045}},
-      {config: {port: 55046}},
-      {config: {port: service3Port}}
+    happn_client.create([{
+        config: {
+          port: 55045
+        }
+      },
+      {
+        config: {
+          port: 55046
+        }
+      },
+      {
+        config: {
+          port: service3Port
+        }
+      }
     ], {
-      info: 'redundant_ordered',//info is appended to each connection
-      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+      info: 'redundant_ordered', //info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED, //default is 0 RANDOM
       poolReconnectAttempts: 4, //how many switches to perform until a connection is made
       socket: {
         reconnect: {
-          retries: 1,//one retry
+          retries: 1, //one retry
           timeout: 100
         }
       }
@@ -443,7 +508,7 @@ describe('longrunning/005_redundant_connections', function () {
 
       if (e) return done(e);
 
-      instance.get('/test/data', function(e, data){
+      instance.get('/test/data', function (e, data) {
 
         expect(data.id).to.be(3);
         done();
@@ -455,17 +520,28 @@ describe('longrunning/005_redundant_connections', function () {
 
     this.timeout(30000);
 
-    happn_client.create([
-      {config: {port: 55045}},
-      {config: {port: 55046}},
-      {config: {port: service3Port}}
+    happn_client.create([{
+        config: {
+          port: 55045
+        }
+      },
+      {
+        config: {
+          port: 55046
+        }
+      },
+      {
+        config: {
+          port: service3Port
+        }
+      }
     ], {
-      info: 'redundant_ordered',//info is appended to each connection
-      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+      info: 'redundant_ordered', //info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED, //default is 0 RANDOM
       poolReconnectAttempts: 0, //how many switches to perform until a connection is made
       socket: {
         reconnect: {
-          retries: 1,//one retry
+          retries: 1, //one retry
           timeout: 100
         }
       }
@@ -473,7 +549,7 @@ describe('longrunning/005_redundant_connections', function () {
 
       if (e) return done(e);
 
-      instance.get('/test/data', function(e, data){
+      instance.get('/test/data', function (e, data) {
 
         console.log('FAILURE:::', e, data);
 
@@ -492,25 +568,36 @@ describe('longrunning/005_redundant_connections', function () {
 
     var stopped = Date.now();
 
-    stopInstance(instances[2], function(e){
+    stopInstance(instances[2], function (e) {
 
       if (e) return done(e);
 
-      instances.splice(2, 1);//remove the instance
+      instances.splice(2, 1); //remove the instance
 
       console.log('STOPPED INSTANCE:::', randomMilliSeconds);
 
-      happn_client.create([
-        {config: {port: 55045}},
-        {config: {port: 55046}},
-        {config: {port: service3Port}}
+      happn_client.create([{
+          config: {
+            port: 55045
+          }
+        },
+        {
+          config: {
+            port: 55046
+          }
+        },
+        {
+          config: {
+            port: service3Port
+          }
+        }
       ], {
-        info: 'redundant_ordered',//info is appended to each connection
-        poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+        info: 'redundant_ordered', //info is appended to each connection
+        poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED, //default is 0 RANDOM
         poolReconnectAttempts: 0, //how many switches to perform until a connection is made
         socket: {
           reconnect: {
-            retries: 1,//one retry
+            retries: 1, //one retry
             timeout: 100
           }
         }
@@ -520,7 +607,7 @@ describe('longrunning/005_redundant_connections', function () {
 
         console.log('connected after ' + parseInt(Date.now() - stopped) + 'ms:::');
 
-        instance.get('/test/data', function(e, data){
+        instance.get('/test/data', function (e, data) {
 
           console.log('GOT DATA:::', e, data);
 
@@ -530,14 +617,16 @@ describe('longrunning/005_redundant_connections', function () {
         });
       });
 
-      setTimeout(function(){
+      setTimeout(function () {
 
-        initializeService(service3, service3Port, function(e){
+        initializeService(service3, service3Port, function (e) {
 
-          instances[2].services.session.localClient(function(e, cli){
+          instances[2].services.session.localClient(function (e, cli) {
             if (e) return done(e);
             console.log('CONNECTED UP SERVICE:::');
-            cli.set('/test/data', {id:3}, function(e){
+            cli.set('/test/data', {
+              id: 3
+            }, function (e) {
               if (e) return done(e);
               console.log('SET DATA:::');
             });
@@ -555,27 +644,31 @@ describe('longrunning/005_redundant_connections', function () {
 
     this.timeout(30000);
 
-    happn_client.create(
-      {config: {port: {range:[8000, 8005]}}}
-    , {
-      info: 'redundant_ordered',//info is appended to each connection
-      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
+    happn_client.create({
+      config: {
+        port: {
+          range: [8000, 8005]
+        }
+      }
+    }, {
+      info: 'redundant_ordered', //info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED, //default is 0 RANDOM
       poolReconnectAttempts: 3, //how many switches to perform until a connection is made
       socket: {
         reconnect: {
-          retries: 1,//one retry
+          retries: 1, //one retry
           timeout: 100
         }
       }
     }, function (e, instance) {
 
-        if (e) return done(e);
+      if (e) return done(e);
 
-        instance.get('/test/data', function(e, data){
+      instance.get('/test/data', function (e, data) {
 
-          expect(data.id).to.be(1);
-          done();
-        });
+        expect(data.id).to.be(1);
+        done();
+      });
     });
   });
 
@@ -583,105 +676,125 @@ describe('longrunning/005_redundant_connections', function () {
 
     this.timeout(30000);
 
-    happn_client.create(
-      {config: {host: {range:['127.0.0.1','127.0.0.5']}, port:8001}}
-      , {
-        info: 'redundant_ordered',//info is appended to each connection
-        poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
-        poolReconnectAttempts: 2, //how many switches to perform until a connection is made
-        socket: {
-          reconnect: {
-            retries: 1,//one retry
-            timeout: 100
-          }
+    happn_client.create({
+      config: {
+        host: {
+          range: ['127.0.0.1', '127.0.0.5']
+        },
+        port: 8001
+      }
+    }, {
+      info: 'redundant_ordered', //info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED, //default is 0 RANDOM
+      poolReconnectAttempts: 2, //how many switches to perform until a connection is made
+      socket: {
+        reconnect: {
+          retries: 1, //one retry
+          timeout: 100
         }
-      }, function (e, instance) {
+      }
+    }, function (e, instance) {
 
-        if (e) return done(e);
+      if (e) return done(e);
 
-        //console.log('GETTING TEST DATA:::');
+      //console.log('GETTING TEST DATA:::');
 
-        instance.get('/test/data', function(e, data){
+      instance.get('/test/data', function (e, data) {
 
-          //console.log('GOT TEST DATA???:::', e, data);
+        //console.log('GOT TEST DATA???:::', e, data);
 
-          if (data) expect(data.id).to.be(2);//something odd happens intermittently where the data is not saved...
-          else console.warn('DATA WAS NOT SAVED:::');
+        if (data) expect(data.id).to.be(2); //something odd happens intermittently where the data is not saved...
+        else console.warn('DATA WAS NOT SAVED:::');
 
-          done();
-        });
+        done();
       });
+    });
   });
 
   it('invalid ip range', function (done) {
 
     this.timeout(30000);
 
-    happn_client.create(
-      {config: {host: {range:['127.0.0.1']}}}
-      , {
-        info: 'redundant_ordered',//info is appended to each connection
-        poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
-        poolReconnectAttempts: 4, //how many switches to perform until a connection is made
-        socket: {
-          reconnect: {
-            retries: 1,//one retry
-            timeout: 100
-          }
+    happn_client.create({
+      config: {
+        host: {
+          range: ['127.0.0.1']
         }
-      }, function (e, instance) {
+      }
+    }, {
+      info: 'redundant_ordered', //info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED, //default is 0 RANDOM
+      poolReconnectAttempts: 4, //how many switches to perform until a connection is made
+      socket: {
+        reconnect: {
+          retries: 1, //one retry
+          timeout: 100
+        }
+      }
+    }, function (e, instance) {
 
-        expect(e.toString()).to.be('Error: invalid range option, range must be an array or length must be 2');
+      expect(e.toString()).to.be('Error: invalid range option, range must be an array or length must be 2');
 
-        done();
-      });
+      done();
+    });
   });
 
   it('invalid port range', function (done) {
 
     this.timeout(30000);
 
-    happn_client.create(
-      {config: {port: {range:[500]}}}
-      , {
-        info: 'redundant_ordered',//info is appended to each connection
-        poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
-        poolReconnectAttempts: 3, //how many switches to perform until a connection is made
-        socket: {
-          reconnect: {
-            retries: 1,//one retry
-            timeout: 100
-          }
+    happn_client.create({
+      config: {
+        port: {
+          range: [500]
         }
-      }, function (e, instance) {
+      }
+    }, {
+      info: 'redundant_ordered', //info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED, //default is 0 RANDOM
+      poolReconnectAttempts: 3, //how many switches to perform until a connection is made
+      socket: {
+        reconnect: {
+          retries: 1, //one retry
+          timeout: 100
+        }
+      }
+    }, function (e, instance) {
 
-        expect(e.toString()).to.be('Error: invalid range option, range must be an array or length must be 2');
+      expect(e.toString()).to.be('Error: invalid range option, range must be an array or length must be 2');
 
-        done();
-      });
+      done();
+    });
   });
 
   it('invalid ip and port range', function (done) {
 
     this.timeout(30000);
 
-    happn_client.create(
-      {config: {port: {range:[500, 600]}, host:{range:['127.0.0.1','127.0.0.5']}}}
-      , {
-        info: 'redundant_ordered',//info is appended to each connection
-        poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
-        poolReconnectAttempts: 3, //how many switches to perform until a connection is made
-        socket: {
-          reconnect: {
-            retries: 1,//one retry
-            timeout: 100
-          }
+    happn_client.create({
+      config: {
+        port: {
+          range: [500, 600]
+        },
+        host: {
+          range: ['127.0.0.1', '127.0.0.5']
         }
-      }, function (e, instance) {
+      }
+    }, {
+      info: 'redundant_ordered', //info is appended to each connection
+      poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED, //default is 0 RANDOM
+      poolReconnectAttempts: 3, //how many switches to perform until a connection is made
+      socket: {
+        reconnect: {
+          retries: 1, //one retry
+          timeout: 100
+        }
+      }
+    }, function (e, instance) {
 
-        expect(e.toString()).to.be('Error: invalid range option, range can only be by host or port, not both');
+      expect(e.toString()).to.be('Error: invalid range option, range can only be by host or port, not both');
 
-        done();
-      });
+      done();
+    });
   });
 });

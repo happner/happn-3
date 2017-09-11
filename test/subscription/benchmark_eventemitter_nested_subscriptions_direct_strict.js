@@ -1,10 +1,9 @@
-var Happn = require('../../lib/index')
-  , service = Happn.service
-  , expect = require('expect.js')
-  , async = require('async')
-  , shortid = require('shortid')
-  , Promise = require('bluebird')
-  ;
+var Happn = require('../../lib/index'),
+  service = Happn.service,
+  expect = require('expect.js'),
+  async = require('async'),
+  shortid = require('shortid'),
+  Promise = require('bluebird');
 
 describe('subscriptions direct', function () {
 
@@ -21,9 +20,9 @@ describe('subscriptions direct', function () {
 
   var subParts = {};
 
-  for (var i = 0;i < PARTSPERSEGMENT;i++){
+  for (var i = 0; i < PARTSPERSEGMENT; i++) {
 
-    for (var ii = 0;ii < DEPTH;ii++){
+    for (var ii = 0; ii < DEPTH; ii++) {
 
       if (!subParts[ii]) subParts[ii] = [];
 
@@ -31,11 +30,11 @@ describe('subscriptions direct', function () {
     }
   }
 
-  var getRandomPath = function(){
+  var getRandomPath = function () {
 
     var parts = [];
 
-    for (var i = 0;i < DEPTH;i++){
+    for (var i = 0; i < DEPTH; i++) {
       parts.push(subParts[i][Math.floor(Math.random() * PARTSPERSEGMENT) + 1]);
     }
 
@@ -48,15 +47,15 @@ describe('subscriptions direct', function () {
     var clientPublisherConfig = {};
 
     var config = {
-      services:{
-        queue:{
-          config:{
-            mode:'direct'
+      services: {
+        queue: {
+          config: {
+            mode: 'direct'
           }
         },
-        subscription:{
-          config:{
-            bucketImplementation:require('../../lib/services/subscription/bucket-strict')
+        subscription: {
+          config: {
+            bucketImplementation: require('../../lib/services/subscription/bucket-strict')
           }
         }
       }
@@ -118,19 +117,19 @@ describe('subscriptions direct', function () {
 
     var started = Date.now();
 
-    async.times(SUBSCRIPTION_COUNT, function(time, timeCB){
+    async.times(SUBSCRIPTION_COUNT, function (time, timeCB) {
 
       var sub = getRandomPath();
 
       if (testSubs.length < EVENT_COUNT) testSubs.push(sub);
 
-      clientInstanceListener.on(sub, function(data){
+      clientInstanceListener.on(sub, function (data) {
 
         matched++;
 
         if (matched % 500 == 0) console.log('events handled', matched);
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return timeCB(e);
 
@@ -141,7 +140,7 @@ describe('subscriptions direct', function () {
         timeCB();
       });
 
-    }, function(e){
+    }, function (e) {
 
       if (e) return done(e);
 
@@ -155,16 +154,18 @@ describe('subscriptions direct', function () {
 
       var eventsStarted = Date.now();
 
-      async.each(testSubs, function(path, pathCB){
+      async.each(testSubs, function (path, pathCB) {
 
-        clientInstancePublisher.set(path, {data:path}, function(e, response){
+        clientInstancePublisher.set(path, {
+          data: path
+        }, function (e, response) {
 
           if (e) return pathCB(e);
 
           pathCB();
         });
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return done(e);
 
@@ -202,19 +203,19 @@ describe('subscriptions direct', function () {
 
     var started = Date.now();
 
-    async.timesSeries(SUBSCRIPTION_COUNT, function(time, timeCB){
+    async.timesSeries(SUBSCRIPTION_COUNT, function (time, timeCB) {
 
       var sub = getRandomPath();
 
       if (testSubs.length < EVENT_COUNT) testSubs.push(sub);
 
-      clientInstanceListener.on(sub, function(data){
+      clientInstanceListener.on(sub, function (data) {
 
         matched++;
 
         if (matched % 500 == 0) console.log('events handled', matched);
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return timeCB(e);
 
@@ -225,7 +226,7 @@ describe('subscriptions direct', function () {
         timeCB();
       });
 
-    }, function(e){
+    }, function (e) {
 
       if (e) return done(e);
 
@@ -239,11 +240,13 @@ describe('subscriptions direct', function () {
 
       var eventsStarted = Date.now();
 
-      async.each(testSubs, function(path, pathCB){
+      async.each(testSubs, function (path, pathCB) {
 
-        clientInstancePublisher.set(path, {data:path}, pathCB);
+        clientInstancePublisher.set(path, {
+          data: path
+        }, pathCB);
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return done(e);
 

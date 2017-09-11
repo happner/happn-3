@@ -24,7 +24,9 @@ describe('c8_deferred_listen', function () {
 
     if (token) {
       if (!query)
-        options.headers = {'Cookie': ['happn_token=' + token]}
+        options.headers = {
+          'Cookie': ['happn_token=' + token]
+        }
       else
         options.url += '?happn_token=' + token;
     }
@@ -43,7 +45,9 @@ describe('c8_deferred_listen', function () {
     var http = require('http');
 
     httpServer = http.createServer(function (req, res) {
-      res.writeHead(200, {'Content-Type': 'text/plain'});
+      res.writeHead(200, {
+        'Content-Type': 'text/plain'
+      });
       res.end('TEST OUTPUT');
     }).listen(55000);
 
@@ -66,15 +70,15 @@ describe('c8_deferred_listen', function () {
   before('should initialize the service without listening', function (callback) {
 
     service.create({
-      deferListen: true
-    })
+        deferListen: true
+      })
 
-    .then(function (happnInst) {
-      happnInstance = happnInst;
-      callback();
-    })
+      .then(function (happnInst) {
+        happnInstance = happnInst;
+        callback();
+      })
 
-    .catch(callback);
+      .catch(callback);
 
   });
 
@@ -88,7 +92,9 @@ describe('c8_deferred_listen', function () {
 
       intraProcClientInstance = instance;
 
-      intraProcClientInstance.set('/test/', {"test": "data"}, function (e, response) {
+      intraProcClientInstance.set('/test/', {
+        "test": "data"
+      }, function (e, response) {
         if (e) return callback(e);
 
         intraProcClientInstance.get('/test/', function (e, response) {

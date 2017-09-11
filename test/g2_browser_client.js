@@ -1,9 +1,8 @@
-var Happn = require('..')
-  , homedir = require('homedir')
-  , expect = require('expect.js')
-  , path = require('path')
-  , fs = require('fs-extra')
-  ;
+var Happn = require('..'),
+  homedir = require('homedir'),
+  expect = require('expect.js'),
+  path = require('path'),
+  fs = require('fs-extra');
 
 describe('g2_browser_client', function () {
 
@@ -18,7 +17,9 @@ describe('g2_browser_client', function () {
 
   it('builds the happn browser client, returns the contents', function (done) {
 
-    var clientCode = Happn.packager.browserClient({contentsOnly:true});
+    var clientCode = Happn.packager.browserClient({
+      contentsOnly: true
+    });
 
     expect(clientCode.length > (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length).to.be(true);
 
@@ -31,17 +32,22 @@ describe('g2_browser_client', function () {
 
     Happn.packager.__cachedBrowserClient = null;
 
-    try{
+    try {
       fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    }catch(e){
+    } catch (e) {
 
     }
 
-    var clientCode = Happn.packager.browserClient({contentsOnly:true, id:'TEST_UNIQUE_ID'});
+    var clientCode = Happn.packager.browserClient({
+      contentsOnly: true,
+      id: 'TEST_UNIQUE_ID'
+    });
 
     expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
-    var clientCodeAgain = Happn.packager.browserClient({contentsOnly:true});
+    var clientCodeAgain = Happn.packager.browserClient({
+      contentsOnly: true
+    });
 
     expect(clientCodeAgain.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
@@ -55,14 +61,14 @@ describe('g2_browser_client', function () {
     var middleware = require('../lib/services/connect/middleware/client');
 
     var req = {
-      url:'/browser_client'
+      url: '/browser_client'
     };
 
     var res = {
-      setHeader:function(key, val){
+      setHeader: function (key, val) {
 
       },
-      end:function(content){
+      end: function (content) {
         expect(content.length > (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length).to.be(true);
         done();
       }
@@ -78,27 +84,30 @@ describe('g2_browser_client', function () {
 
     Happn.packager.__cachedBrowserClient = null;
 
-    try{
+    try {
       fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    }catch(e){
+    } catch (e) {
 
     }
 
-    var clientCode = Happn.packager.browserClient({contentsOnly:true, id:'TEST_UNIQUE_ID'});
+    var clientCode = Happn.packager.browserClient({
+      contentsOnly: true,
+      id: 'TEST_UNIQUE_ID'
+    });
 
     expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
     var middleware = require('../lib/services/connect/middleware/client');
 
     var req = {
-      url:'/browser_client'
+      url: '/browser_client'
     };
 
     var res = {
-      setHeader:function(key, val){
+      setHeader: function (key, val) {
 
       },
-      end:function(content){
+      end: function (content) {
 
         expect(content.length > (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length).to.be(true);
         expect(content.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
@@ -118,17 +127,22 @@ describe('g2_browser_client', function () {
 
     Happn.packager.__cachedBrowserClient = null;
 
-    try{
+    try {
       fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    }catch(e){
+    } catch (e) {
 
     }
 
-    var clientCode = Happn.packager.browserClient({contentsOnly:true, id:'TEST_UNIQUE_ID'});
+    var clientCode = Happn.packager.browserClient({
+      contentsOnly: true,
+      id: 'TEST_UNIQUE_ID'
+    });
 
     expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
-    var clientCodeAgain = Happn.packager.browserClient({contentsOnly:true});
+    var clientCodeAgain = Happn.packager.browserClient({
+      contentsOnly: true
+    });
 
     expect(clientCodeAgain.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
@@ -136,13 +150,16 @@ describe('g2_browser_client', function () {
 
     Happn.packager.__cachedBrowserClient = null;
 
-    try{
+    try {
       fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    }catch(e){
+    } catch (e) {
 
     }
 
-    var clientCode = Happn.packager.browserClient({contentsOnly:true, min:true});
+    var clientCode = Happn.packager.browserClient({
+      contentsOnly: true,
+      min: true
+    });
 
     expect(clientCodeAgain.length > clientCode.length).to.be(true);
 
@@ -154,44 +171,47 @@ describe('g2_browser_client', function () {
 
     Happn.packager.__cachedBrowserClient = null;
 
-    try{
+    try {
       fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    }catch(e){
+    } catch (e) {
 
     }
 
     process.env.NODE_ENV = 'test';
 
-    var clientCode = Happn.packager.browserClient({contentsOnly:true, overwrite:true});
+    var clientCode = Happn.packager.browserClient({
+      contentsOnly: true,
+      overwrite: true
+    });
 
     process.env.NODE_ENV = 'production';
 
     Happn.packager.__cachedBrowserClient = null;
 
-    try{
+    try {
       fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    }catch(e){
+    } catch (e) {
 
     }
 
     var middleware = require('../lib/services/connect/middleware/client');
 
     var req = {
-      url:'/browser_client'
+      url: '/browser_client'
     };
 
     var res = {
-      setHeader:function(key, val){
+      setHeader: function (key, val) {
 
       },
-      end:function(content){
+      end: function (content) {
 
         expect(clientCode.length > content.length).to.be(true);
         done();
       }
     };
 
-    middleware.process(req, res, function(e){
+    middleware.process(req, res, function (e) {
       if (e) return done(e);
     });
 

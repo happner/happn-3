@@ -1,6 +1,5 @@
 var Happn = require('..')
-  expect = require('expect.js')
-  ;
+expect = require('expect.js');
 
 describe('g3_error_service', function () {
 
@@ -24,7 +23,7 @@ describe('g3_error_service', function () {
       "code": 500,
       "message": "test system",
       "name": "SystemError",
-      "severity":0
+      "severity": 0
     });
 
     var resourceNotFound = errorService.ResourceNotFoundError('test resource not found');

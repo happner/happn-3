@@ -24,9 +24,11 @@ describe('b9_security_web_token', function () {
       url: 'http://127.0.0.1:55000' + path,
     };
 
-    if (!excludeToken){
+    if (!excludeToken) {
       if (!query)
-        options.headers = {'Cookie': ['happn_token=' + token]}
+        options.headers = {
+          'Cookie': ['happn_token=' + token]
+        }
       else
         options.url += '?happn_token=' + token;
     }
@@ -45,7 +47,9 @@ describe('b9_security_web_token', function () {
       url: 'http://127.0.0.1:55000' + path,
     };
 
-    if (!excludeToken) options.headers = {'Authorization': ['Bearer ' + token]};
+    if (!excludeToken) options.headers = {
+      'Authorization': ['Bearer ' + token]
+    };
 
     request(options, function (error, response, body) {
       callback(response, body);
@@ -70,10 +74,10 @@ describe('b9_security_web_token', function () {
     try {
       service.create({
         secure: true,
-        services:{
-          connect:{
-            config:{
-              middleware:{
+        services: {
+          connect: {
+            config: {
+              middleware: {
                 security: {
                   exclusions: [
                     '/test/excluded/specific',
@@ -83,10 +87,10 @@ describe('b9_security_web_token', function () {
               }
             }
           },
-          security:{
-            config:{
-              adminUser:{
-                publicKey:keyPair.publicKey
+          security: {
+            config: {
+              adminUser: {
+                publicKey: keyPair.publicKey
               }
             }
           }
@@ -100,49 +104,63 @@ describe('b9_security_web_token', function () {
         happnInstance.connect.use('/secure/route/test', function (req, res, next) {
 
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({"secure": "value"}));
+          res.end(JSON.stringify({
+            "secure": "value"
+          }));
 
         });
 
         happnInstance.connect.use('/secure/route', function (req, res, next) {
 
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({"secure": "value"}));
+          res.end(JSON.stringify({
+            "secure": "value"
+          }));
 
         });
 
         happnInstance.connect.use('/secure/route/qs', function (req, res, next) {
 
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({"secure": "value"}));
+          res.end(JSON.stringify({
+            "secure": "value"
+          }));
 
         });
 
         happnInstance.connect.use('/test/excluded/wildcard/blah', function (req, res, next) {
 
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({"secure": "value"}));
+          res.end(JSON.stringify({
+            "secure": "value"
+          }));
 
         });
 
         happnInstance.connect.use('/test/excluded/specific', function (req, res, next) {
 
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({"secure": "value"}));
+          res.end(JSON.stringify({
+            "secure": "value"
+          }));
 
         });
 
         happnInstance.connect.use('/secure/test/removed/group', function (req, res, next) {
 
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({"secure": "value"}));
+          res.end(JSON.stringify({
+            "secure": "value"
+          }));
 
         });
 
         happnInstance.connect.use('/secure/test/removed/user', function (req, res, next) {
 
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({"secure": "value"}));
+          res.end(JSON.stringify({
+            "secure": "value"
+          }));
 
         });
 
@@ -158,9 +176,9 @@ describe('b9_security_web_token', function () {
 
     this.timeout(15000);
 
-    adminClient.disconnect(function(e){
+    adminClient.disconnect(function (e) {
       if (e) return done(e);
-      testClient.disconnect(function(e){
+      testClient.disconnect(function (e) {
         if (e) return done(e);
         happnInstance.stop(done);
       });
@@ -174,7 +192,10 @@ describe('b9_security_web_token', function () {
   before('should initialize the admin client', function (callback) {
 
     happn.client.create({
-        config: {username: '_ADMIN', password: 'happn'},
+        config: {
+          username: '_ADMIN',
+          password: 'happn'
+        },
         secure: true
       })
 
@@ -210,12 +231,16 @@ describe('b9_security_web_token', function () {
 
   before('creates a group and a user, adds the group to the user, logs in with test user', function (done) {
 
-    happnInstance.services.security.users.upsertGroup(testGroup, {overwrite: false}, function (e, result) {
+    happnInstance.services.security.users.upsertGroup(testGroup, {
+      overwrite: false
+    }, function (e, result) {
 
       if (e) return done(e);
       addedTestGroup = result;
 
-      happnInstance.services.security.users.upsertUser(testUser, {overwrite: false}, function (e, result) {
+      happnInstance.services.security.users.upsertUser(testUser, {
+        overwrite: false
+      }, function (e, result) {
 
         if (e) return done(e);
         addedTestuser = result;
@@ -225,7 +250,10 @@ describe('b9_security_web_token', function () {
           if (e) return done(e);
 
           happn.client.create({
-              config: {username: testUser.username, password: 'TEST PWD'},
+              config: {
+                username: testUser.username,
+                password: 'TEST PWD'
+              },
               secure: true
             })
 
@@ -295,11 +323,17 @@ describe('b9_security_web_token', function () {
 
     try {
 
-      testGroup.permissions = {'/@HTTP/secure/route/test': {actions: ['get']}};
+      testGroup.permissions = {
+        '/@HTTP/secure/route/test': {
+          actions: ['get']
+        }
+      };
 
       happnInstance.services.security.users.upsertGroup(testGroup, {}, function (e, group) {
         if (e) return done(e);
-        expect(group.permissions['/@HTTP/secure/route/test']).to.eql({actions: ['get']});
+        expect(group.permissions['/@HTTP/secure/route/test']).to.eql({
+          actions: ['get']
+        });
 
         doRequest('/secure/route/test', testClient.session.token, false, function (response) {
 
@@ -318,11 +352,17 @@ describe('b9_security_web_token', function () {
 
     try {
 
-      testGroup.permissions = {'/@HTTP/secure/route/test': {actions: ['get']}};
+      testGroup.permissions = {
+        '/@HTTP/secure/route/test': {
+          actions: ['get']
+        }
+      };
 
       happnInstance.services.security.users.upsertGroup(testGroup, {}, function (e, group) {
         if (e) return done(e);
-        expect(group.permissions['/@HTTP/secure/route/test']).to.eql({actions: ['get']});
+        expect(group.permissions['/@HTTP/secure/route/test']).to.eql({
+          actions: ['get']
+        });
 
         doRequest('/secure/route/test', testClient.session.token, true, function (response) {
 
@@ -411,8 +451,12 @@ describe('b9_security_web_token', function () {
     };
 
     testGroup1.permissions = {
-      '/@HTTP/secure/test/removed/group': {actions: ['get']},
-      '/@HTTP/secure/test/not_removed/group': {actions: ['get']}
+      '/@HTTP/secure/test/removed/group': {
+        actions: ['get']
+      },
+      '/@HTTP/secure/test/not_removed/group': {
+        actions: ['get']
+      }
     };
 
     var testUser1 = {
@@ -426,12 +470,16 @@ describe('b9_security_web_token', function () {
     var addedTestGroup1;
     var addedTestuser1;
 
-    happnInstance.services.security.users.upsertGroup(testGroup1, {overwrite: false}, function (e, result) {
+    happnInstance.services.security.users.upsertGroup(testGroup1, {
+      overwrite: false
+    }, function (e, result) {
 
       if (e) return done(e);
       addedTestGroup1 = result;
 
-      happnInstance.services.security.users.upsertUser(testUser1, {overwrite: false}, function (e, result) {
+      happnInstance.services.security.users.upsertUser(testUser1, {
+        overwrite: false
+      }, function (e, result) {
 
         if (e) return done(e);
         addedTestuser1 = result;
@@ -441,7 +489,10 @@ describe('b9_security_web_token', function () {
           if (e) return done(e);
 
           happn.client.create({
-              config: {username: testUser1.username, password: 'TEST PWD'},
+              config: {
+                username: testUser1.username,
+                password: 'TEST PWD'
+              },
               secure: true
             })
 
@@ -455,7 +506,9 @@ describe('b9_security_web_token', function () {
 
                 delete addedTestGroup1.permissions['/@HTTP/secure/test/removed/group'];
 
-                happnInstance.services.security.users.upsertGroup(addedTestGroup1, {overwrite: true}, function (e) {
+                happnInstance.services.security.users.upsertGroup(addedTestGroup1, {
+                  overwrite: true
+                }, function (e) {
 
                   if (e) return done(e);
 
@@ -489,8 +542,12 @@ describe('b9_security_web_token', function () {
     };
 
     testGroup2.permissions = {
-      '/@HTTP/secure/test/removed/user': {actions: ['get']},
-      '/@HTTP/secure/test/not_removed/user': {actions: ['get']}
+      '/@HTTP/secure/test/removed/user': {
+        actions: ['get']
+      },
+      '/@HTTP/secure/test/not_removed/user': {
+        actions: ['get']
+      }
     };
 
     var testUser2 = {
@@ -504,12 +561,16 @@ describe('b9_security_web_token', function () {
     var addedTestGroup2;
     var addedTestuser2;
 
-    happnInstance.services.security.users.upsertGroup(testGroup2, {overwrite: false}, function (e, result) {
+    happnInstance.services.security.users.upsertGroup(testGroup2, {
+      overwrite: false
+    }, function (e, result) {
 
       if (e) return done(e);
       addedTestGroup2 = result;
 
-      happnInstance.services.security.users.upsertUser(testUser2, {overwrite: false}, function (e, result) {
+      happnInstance.services.security.users.upsertUser(testUser2, {
+        overwrite: false
+      }, function (e, result) {
 
         if (e) return done(e);
         addedTestuser2 = result;
@@ -519,7 +580,10 @@ describe('b9_security_web_token', function () {
           if (e) return done(e);
 
           happn.client.create({
-              config: {username: testUser2.username, password: 'TEST PWD'},
+              config: {
+                username: testUser2.username,
+                password: 'TEST PWD'
+              },
               secure: true
             })
 

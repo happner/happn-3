@@ -53,7 +53,7 @@ describe('longrunning/001_db_compaction', function () {
       data: {
         config: {
           filename: test_file3,
-          compactInterval: 5000//compact every 5 seconds
+          compactInterval: 5000 //compact every 5 seconds
         }
       }
     }
@@ -65,8 +65,7 @@ describe('longrunning/001_db_compaction', function () {
     services: {
       data: {
         config: {
-          datastores: [
-            {
+          datastores: [{
               name: 'file4',
               settings: {
                 filename: test_file4
@@ -238,7 +237,7 @@ describe('longrunning/001_db_compaction', function () {
 
           expect(fileSizeAfterActivity1 > fileSizeInitial).to.be(true);
 
-          serviceInstance1.services.data.on('provider-event', function(data){
+          serviceInstance1.services.data.on('provider-event', function (data) {
 
             expect(data.eventName).to.be('compaction-successful');
 
@@ -276,7 +275,7 @@ describe('longrunning/001_db_compaction', function () {
         client3 = client;
         randomActivity3 = new RandomActivityGenerator(client3);
 
-        randomActivity3.replay(randomActivity1, 'test', function (e) {//we perform the same set of operations we did in the first test
+        randomActivity3.replay(randomActivity1, 'test', function (e) { //we perform the same set of operations we did in the first test
 
           if (e) return callback(e);
 
@@ -304,7 +303,9 @@ describe('longrunning/001_db_compaction', function () {
         if (e) return callback(e);
         client4 = client;
 
-        randomActivity4 = new RandomActivityGenerator(client4, {pathPrefix: ['/c7a_db_compaction/' + test_id + '/4/', '/c7a_db_compaction/' + test_id + '/4a/']});
+        randomActivity4 = new RandomActivityGenerator(client4, {
+          pathPrefix: ['/c7a_db_compaction/' + test_id + '/4/', '/c7a_db_compaction/' + test_id + '/4a/']
+        });
 
         var fileSizeInitial4 = getFileSize(test_file4);
         var fileSizeInitial4a = getFileSize(test_file4a);
@@ -349,7 +350,10 @@ describe('longrunning/001_db_compaction', function () {
   it('starts compaction for every n seconds, then do random inserts and deletes, then verify the data', function (callback) {
 
     var fileSizeInitial = getFileSize(test_file2);
-    randomActivity2 = new RandomActivityGenerator(client2, {interval: 3000, verbose: true});
+    randomActivity2 = new RandomActivityGenerator(client2, {
+      interval: 3000,
+      verbose: true
+    });
 
     randomActivity2.generateActivityStart("test", function (e) {
       if (e) return callback(e);
@@ -363,7 +367,7 @@ describe('longrunning/001_db_compaction', function () {
         //DO NADA
       }, function () {
         compactionCount++;
-        if (compactionCount == 2) {//we have compacted 2 times
+        if (compactionCount == 2) { //we have compacted 2 times
           if (!verified) {
             verified = true;
             randomActivity2.generateActivityEnd("test", function (aggregatedLog) {

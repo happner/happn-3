@@ -22,44 +22,47 @@ describe('a8_eventemitter_security_audit', function () {
     this.timeout(15000);
 
     getService({
-      secure: true,
-      services:{
-        security:{
-          config:{
-            audit:{
-              paths:[
-                '/TEST/a7_eventemitter_security_audit/*'
-              ]
+        secure: true,
+        services: {
+          security: {
+            config: {
+              audit: {
+                paths: [
+                  '/TEST/a7_eventemitter_security_audit/*'
+                ]
+              }
             }
           }
         }
-      }
-    },
-    function (e, service) {
+      },
+      function (e, service) {
 
-      if (e) return done(e);
+        if (e) return done(e);
 
-      serviceInstance = service;
+        serviceInstance = service;
 
-      serviceInstance.services.session.localClient({username: '_ADMIN', password: 'happn'})
+        serviceInstance.services.session.localClient({
+            username: '_ADMIN',
+            password: 'happn'
+          })
 
-      .then(function (clientInstance) {
-        adminClient = clientInstance;
-        done();
-      })
+          .then(function (clientInstance) {
+            adminClient = clientInstance;
+            done();
+          })
 
-      .catch(function (e) {
-        done(e);
+          .catch(function (e) {
+            done(e);
+          });
       });
-    });
   });
 
   after('stop the service', function (callback) {
 
     this.timeout(15000);
 
-    adminClient.disconnect(function(e){
-      testClient.disconnect(function(e) {
+    adminClient.disconnect(function (e) {
+      testClient.disconnect(function (e) {
         serviceInstance.stop(callback);
       });
     });
@@ -77,11 +80,21 @@ describe('a8_eventemitter_security_audit', function () {
 
     testGroup.permissions = {};
 
-    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/on'] = {actions: ['on']};
-    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/set'] = {actions: ['set','get']};
-    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/remove'] = {actions: ['set','remove']};
-    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/*'] = {actions: ['set','remove']};
-    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/get_all/*'] = {actions: ['set', 'get']};
+    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/on'] = {
+      actions: ['on']
+    };
+    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/set'] = {
+      actions: ['set', 'get']
+    };
+    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/remove'] = {
+      actions: ['set', 'remove']
+    };
+    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/*'] = {
+      actions: ['set', 'remove']
+    };
+    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/get_all/*'] = {
+      actions: ['set', 'get']
+    };
 
 
     var testUser = {
@@ -94,12 +107,16 @@ describe('a8_eventemitter_security_audit', function () {
 
     before('creates a group and a user, adds the group to the user, logs in with test user', function (done) {
 
-      serviceInstance.services.security.users.upsertGroup(testGroup, {overwrite: false}, function (e, result) {
+      serviceInstance.services.security.users.upsertGroup(testGroup, {
+        overwrite: false
+      }, function (e, result) {
 
         if (e) return done(e);
         addedTestGroup = result;
 
-        serviceInstance.services.security.users.upsertUser(testUser, {overwrite: false}, function (e, result) {
+        serviceInstance.services.security.users.upsertUser(testUser, {
+          overwrite: false
+        }, function (e, result) {
 
           if (e) return done(e);
           addedTestuser = result;
@@ -108,7 +125,10 @@ describe('a8_eventemitter_security_audit', function () {
 
             if (e) return done(e);
 
-            serviceInstance.services.session.localClient({username: testUser.username, password: 'TEST PWD'})
+            serviceInstance.services.session.localClient({
+                username: testUser.username,
+                password: 'TEST PWD'
+              })
 
               .then(function (clientInstance) {
                 testClient = clientInstance;
@@ -125,14 +145,14 @@ describe('a8_eventemitter_security_audit', function () {
     });
 
     it('checks auditing on', function (done) {
-                  // /TEST/a7_eventemitter_security_audit/
+      // /TEST/a7_eventemitter_security_audit/
       testClient.on('/TEST/a7_eventemitter_security_audit/' + test_id + '/on', {}, function (message) {
 
       }, function (e, response) {
 
         if (e) return done(e);
 
-        adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/*', function(e, auditData){
+        adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/*', function (e, auditData) {
 
           if (e) return done(e);
 
@@ -148,15 +168,17 @@ describe('a8_eventemitter_security_audit', function () {
 
     it('checks auditing set and get', function (done) {
 
-      testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/set', {test:"data"}, function(e){
+      testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/set', {
+        test: "data"
+      }, function (e) {
 
         if (e) return done(e);
 
-        testClient.get('/TEST/a7_eventemitter_security_audit/' + test_id + '/set', function (e, items){
+        testClient.get('/TEST/a7_eventemitter_security_audit/' + test_id + '/set', function (e, items) {
 
           if (e) return done(e);
 
-          adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/set/*', function(e, auditData){
+          adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/set/*', function (e, auditData) {
 
             if (e) return done(e);
 
@@ -177,15 +199,17 @@ describe('a8_eventemitter_security_audit', function () {
 
     it('checks auditing remove', function (done) {
 
-      testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove', {test:"data"}, function(e){
+      testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove', {
+        test: "data"
+      }, function (e) {
 
         if (e) return done(e);
 
-        testClient.remove('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove', function (e){
+        testClient.remove('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove', function (e) {
 
           if (e) return done(e);
 
-          adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/remove/*', function(e, auditData){
+          adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/remove/*', function (e, auditData) {
 
             if (e) return done(e);
 
@@ -207,19 +231,23 @@ describe('a8_eventemitter_security_audit', function () {
 
     it('checks auditing get all', function (done) {
 
-      testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/get_all/1', {test:"data"}, function(e){
+      testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/get_all/1', {
+        test: "data"
+      }, function (e) {
 
         if (e) return done(e);
 
-        testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/get_all/2', {test:"data"}, function(e){
+        testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/get_all/2', {
+          test: "data"
+        }, function (e) {
 
           if (e) return done(e);
 
-          testClient.get('/TEST/a7_eventemitter_security_audit/' + test_id + '/get_all/*', function (e, items){
+          testClient.get('/TEST/a7_eventemitter_security_audit/' + test_id + '/get_all/*', function (e, items) {
 
             if (e) return done(e);
 
-            adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/get_all/*', function(e, auditData){
+            adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/get_all/*', function (e, auditData) {
 
               if (e) return done(e);
 
@@ -239,19 +267,23 @@ describe('a8_eventemitter_security_audit', function () {
 
     it('checks auditing remove all', function (done) {
 
-      testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/1', {test:"data"}, function(e){
+      testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/1', {
+        test: "data"
+      }, function (e) {
 
         if (e) return done(e);
 
-        testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/2', {test:"data"}, function(e){
+        testClient.set('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/2', {
+          test: "data"
+        }, function (e) {
 
           if (e) return done(e);
 
-          testClient.remove('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/*', function (e){
+          testClient.remove('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/*', function (e) {
 
             if (e) return done(e);
 
-            adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/*', function(e, auditData){
+            adminClient.get('/_AUDIT/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/*', function (e, auditData) {
 
               if (e) return done(e);
 

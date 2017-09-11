@@ -85,7 +85,7 @@ describe('9_websockets_proxy', function () {
   xit('should register the device1 mesh as a proxy to the gateway', function (callback) {
 
     device1.services.proxy.registerWebSocket({
-        host: '127.0.0.1',//will default to local anyhow
+        host: '127.0.0.1', //will default to local anyhow
         port: gatewayPort,
         paths: [ //we get the gateway to proxy any requests on these paths to the device
           '/device1/setValue',
@@ -100,9 +100,8 @@ describe('9_websockets_proxy', function () {
         expect(gateway.services.proxy.targets.count).to.be(1);
         expect(gateway.services.proxy.targets[0].type == 'WebSocket').to.be(true);
 
-        device2.services.proxy.registerWebSocket(
-          {
-            host: '127.0.0.1',//will default to local anyhow
+        device2.services.proxy.registerWebSocket({
+            host: '127.0.0.1', //will default to local anyhow
             port: gatewayPort,
             paths: [ //we get the gateway to proxy any requests on these paths to the device
               '/device2/setValue',
@@ -123,29 +122,44 @@ describe('9_websockets_proxy', function () {
 
   });
 
-  var device1client;// a client that is connecting to the device 1
-  var device2client;// a client that is connecting to the device 2
-  var gatewayclient;// a client that connects to the gateway for services on the gateway (non proxied requests)
+  var device1client; // a client that is connecting to the device 1
+  var device2client; // a client that is connecting to the device 2
+  var gatewayclient; // a client that connects to the gateway for services on the gateway (non proxied requests)
 
   it('should initialize the clients', function (callback) {
     this.timeout(default_timeout);
 
     try {
-      //plugin, config, context, 
+      //plugin, config, context,
 
-      happn_client.create({config: {secret: test_secret, port: device1Port}}, function (e, instance) {
+      happn_client.create({
+        config: {
+          secret: test_secret,
+          port: device1Port
+        }
+      }, function (e, instance) {
 
         if (e) return callback(e);
 
         device1client = instance;
 
-        happn_client.create({config: {secret: test_secret, port: device2Port}}, function (e, instance) {
+        happn_client.create({
+          config: {
+            secret: test_secret,
+            port: device2Port
+          }
+        }, function (e, instance) {
 
           if (e) return callback(e);
 
           device2client = instance;
 
-          happn_client.create({config: {secret: test_secret, port: gatewayPort}}, function (e, instance) {
+          happn_client.create({
+            config: {
+              secret: test_secret,
+              port: gatewayPort
+            }
+          }, function (e, instance) {
 
             if (e) return callback(e);
 
@@ -169,8 +183,11 @@ describe('9_websockets_proxy', function () {
     try {
 
       var testValue = Math.random();
-      //plugin, config, context, 
-      gatewayclient.on('/device1/setValue', {event_type: 'set', count: 1}, function (message) {
+      //plugin, config, context,
+      gatewayclient.on('/device1/setValue', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
         //check the message here
 
         callback();
@@ -179,7 +196,9 @@ describe('9_websockets_proxy', function () {
 
         if (!e) {
 
-          gatewayclient.set('/device1/setValue', {value: testValue}, null, function (e, result) {
+          gatewayclient.set('/device1/setValue', {
+            value: testValue
+          }, null, function (e, result) {
             //console.log('set happened - listening for result');
           });
         } else
@@ -200,7 +219,9 @@ describe('9_websockets_proxy', function () {
 
       var responseCount = 0;
 
-      gatewayclient.set('/events', {value: testValue}, null, function (e, result) {
+      gatewayclient.set('/events', {
+        value: testValue
+      }, null, function (e, result) {
 
         if (e) return callback(e);
 

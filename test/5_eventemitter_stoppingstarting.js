@@ -33,11 +33,11 @@ describe('5_eventemitter_stoppingstarting', function () {
       var doInitService = function () {
 
         var serviceConfig = {
-          name:name,
-          services:{
-            data:{
-              config:{
-                filename:filename
+          name: name,
+          services: {
+            data: {
+              config: {
+                filename: filename
               }
             }
           }
@@ -90,8 +90,10 @@ describe('5_eventemitter_stoppingstarting', function () {
 
         if (e) return callback(e);
 
-        testclient.set(persistKey,
-          {property1: "prop1", prop2: "prop2"},
+        testclient.set(persistKey, {
+            property1: "prop1",
+            prop2: "prop2"
+          },
           null,
           callback
         );
