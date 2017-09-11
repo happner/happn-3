@@ -63,6 +63,8 @@ describe(filename, function () {
 
     remote.stdout.on('data', function (data) {
 
+      // console.log(data.toString());
+
       if (data.toString().match(/READY/)) {
 
         callback();
