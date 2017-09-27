@@ -58,7 +58,36 @@ describe('d4_a_data_functional', function () {
 
   });
 
-  it('gets data', function (callback) {
+  it('sets data and gets an error from __upsertInternal', function(callback) {
+
+    setTimeout(function(){
+
+      var db = serviceInstance.db('/set/' + testId);
+
+      db.__oldUpsert = db.upsert;
+
+      db.upsert = function(path, setData, options, dataWasMerged, callback){
+
+        return callback(new Error('test error'));
+      };
+
+      serviceInstance.upsert('/set/' + testId, {"test":"data"}, {}, function(e, response){
+
+        expect(e).to.not.be(null);
+
+        expect(e.toString()).to.be('Error: test error');
+
+        db.upsert = db.__oldUpsert.bind(db);
+
+        callback();
+
+      });
+
+    }, 100);
+
+  });
+
+  it('gets data', function(callback) {
 
     serviceInstance.upsert('/get/' + testId, {
       "test": "data"
@@ -78,9 +107,7 @@ describe('d4_a_data_functional', function () {
         callback();
 
       });
-
     });
-
   });
 
   it('gets no data', function (callback) {
