@@ -58,7 +58,7 @@
     "uglify-js": "2.6.1",
     "underscore.string": "3.3.4",
     "user-home": "2.0.0",
-    "uuid": "3.0.0",
+    "uuid": "2.0.2",
     "ws": "1.0.1"
   },
   "devDependencies": {
