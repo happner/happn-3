@@ -1,5 +1,5 @@
 describe(require('path').basename(__filename), function () {
-  
+
   var expect = require('expect.js');
   var happn = require('../lib/index');
   var service = happn.service;
@@ -40,8 +40,8 @@ describe(require('path').basename(__filename), function () {
   after(function (done) {
 
     client.disconnect()
-        .then(happnInstance.stop()
-          .then(done))
+      .then(happnInstance.stop()
+        .then(done))
       .catch(done);
 
   });
@@ -73,7 +73,11 @@ describe(require('path').basename(__filename), function () {
 
     try {
 
-      happn_client.create({config:{port:4545}}, function (e, instance) {
+      happn_client.create({
+        config: {
+          port: 4545
+        }
+      }, function (e, instance) {
 
         expect(e.code).to.be('ECONNREFUSED');
         callback();
@@ -89,7 +93,12 @@ describe(require('path').basename(__filename), function () {
 
     try {
 
-      happn_client.create({config:{host:'99.99.99.99', connectTimeout:3000}}, function (e) {
+      happn_client.create({
+        config: {
+          host: '99.99.99.99',
+          connectTimeout: 3000
+        }
+      }, function (e) {
 
         expect(e.toString()).to.be('Error: connection timed out');
         callback();

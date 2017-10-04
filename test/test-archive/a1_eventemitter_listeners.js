@@ -12,7 +12,7 @@ describe('a1_eventemitter_listeners', function () {
   var default_timeout = 10000;
   var happnInstance = null;
   /*
-   This test demonstrates starting up the happn service - 
+   This test demonstrates starting up the happn service -
    the authentication service will use authTokenSecret to encrypt web tokens identifying
    the logon session. The utils setting will set the system to log non priority information
    */
@@ -69,7 +69,7 @@ describe('a1_eventemitter_listeners', function () {
   var listenerclient;
 
   /*
-   We are initializing 2 clients to test saving data against the database, one client will push data into the 
+   We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
    */
   it('should initialize the clients', function (callback) {
@@ -110,7 +110,10 @@ describe('a1_eventemitter_listeners', function () {
 
     try {
       //first listen for the change
-      listenerclient.on('/e2e_test1/testsubscribe/data/event/*', {event_type: 'set', count: 1}, function (message) {
+      listenerclient.on('/e2e_test1/testsubscribe/data/event/*', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event/*'].length).to.be(0);
         callback();
@@ -130,8 +133,7 @@ describe('a1_eventemitter_listeners', function () {
           }, null, function (e, result) {
             //console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -140,7 +142,7 @@ describe('a1_eventemitter_listeners', function () {
     }
   });
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -149,7 +151,10 @@ describe('a1_eventemitter_listeners', function () {
     try {
 
       //first listen for the change
-      listenerclient.on('/e2e_test1/testsubscribe/data/event', {event_type: 'set', count: 1}, function (message) {
+      listenerclient.on('/e2e_test1/testsubscribe/data/event', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
@@ -171,8 +176,7 @@ describe('a1_eventemitter_listeners', function () {
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -181,7 +185,7 @@ describe('a1_eventemitter_listeners', function () {
     }
   });
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -190,7 +194,10 @@ describe('a1_eventemitter_listeners', function () {
     try {
 
       //first listen for the change
-      listenerclient.on('/e2e_test1/testsubscribe/data/event', {event_type: 'set', count: 1}, function (message) {
+      listenerclient.on('/e2e_test1/testsubscribe/data/event', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
@@ -211,8 +218,7 @@ describe('a1_eventemitter_listeners', function () {
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -246,7 +252,7 @@ describe('a1_eventemitter_listeners', function () {
           //////////////////console.log(message);
 
           //we are looking at the event internals on the listener to ensure our event management is working - because we are only listening for 1
-          //instance of this event - the event listener should have been removed 
+          //instance of this event - the event listener should have been removed
           ////console.log('listenerclient.events');
           ////console.log(listenerclient.events);
           expect(listenerclient.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(0);
@@ -282,8 +288,7 @@ describe('a1_eventemitter_listeners', function () {
 
               ////////////////////////////console.log('put happened - listening for result');
             });
-          }
-          else
+          } else
             callback(e);
         });
       });
@@ -298,7 +303,10 @@ describe('a1_eventemitter_listeners', function () {
 
     var currentListenerId;
 
-    listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       //we detach all listeners from the path here
       ////console.log('ABOUT OFF PATH');
@@ -307,7 +315,10 @@ describe('a1_eventemitter_listeners', function () {
         if (e)
           return callback(new Error(e));
 
-        listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0},
+        listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {
+            event_type: 'set',
+            count: 0
+          },
           function (message) {
 
             ////console.log('ON RAN');
@@ -411,7 +422,10 @@ describe('a1_eventemitter_listeners', function () {
 
       if (e) return callback(e);
 
-      listenerclient.on('/e2e_test1/testsubscribe/data/off_all_test', {event_type: 'set', count: 0},
+      listenerclient.on('/e2e_test1/testsubscribe/data/off_all_test', {
+          event_type: 'set',
+          count: 0
+        },
         function (message) {
           onHappened = true;
           callback(new Error('this wasnt meant to happen'));

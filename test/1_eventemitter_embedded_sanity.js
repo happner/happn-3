@@ -22,10 +22,10 @@ describe('1_eventemitter_embedded_sanity', function () {
    */
 
   var config_file = {
-    services:{
-      data:{
-        config:{
-          filename:__dirname + '/tmp/1_eventemitter_sanity.json'
+    services: {
+      data: {
+        config: {
+          filename: __dirname + '/tmp/1_eventemitter_sanity.json'
         }
       }
     }
@@ -39,9 +39,9 @@ describe('1_eventemitter_embedded_sanity', function () {
 
     try {
 
-      try{
+      try {
         require('fs').unlinkSync(__dirname + '/tmp/1_eventemitter_sanity.json');
-      }catch(e){
+      } catch (e) {
 
       }
 
@@ -75,12 +75,12 @@ describe('1_eventemitter_embedded_sanity', function () {
 
     try {
 
-      happnInstance.services.session.localClient(function(e, instance){
+      happnInstance.services.session.localClient(function (e, instance) {
 
         if (e) return callback(e);
         publisherclient = instance;
 
-        happnInstance.services.session.localClient(function(e, instance){
+        happnInstance.services.session.localClient(function (e, instance) {
 
           if (e) return callback(e);
           listenerclient = instance;
@@ -162,30 +162,30 @@ describe('1_eventemitter_embedded_sanity', function () {
 
   it('the uses the onPublished event handler', function (callback) {
 
-      listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/*', {
-        onPublished:function(message, meta){
+    listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/*', {
+      onPublished: function (message, meta) {
 
-          expect(message.property1).to.be('property1');
+        expect(message.property1).to.be('property1');
 
-          expect(meta.created <= Date.now()).to.be(true);
+        expect(meta.created <= Date.now()).to.be(true);
 
-          callback();
-        }
-      }).then(function(eventId){
+        callback();
+      }
+    }).then(function (eventId) {
 
-        expect(eventId >= 0).to.be(true);
+      expect(eventId >= 0).to.be(true);
 
-        expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/*'].length).to.be(1);
+      expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/*'].length).to.be(1);
 
-        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/blah', {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        }, null, function (e) {
-          if (e) return callback (e);
-        });
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/blah', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      }, null, function (e) {
+        if (e) return callback(e);
+      });
 
-      }).catch(callback);
+    }).catch(callback);
   });
 
   it('the listener should pick up a single wildcard event, event type not specified', function (callback) {
@@ -377,10 +377,16 @@ describe('1_eventemitter_embedded_sanity', function () {
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
 
-    var object = {param1: 10, param2: 20};
+    var object = {
+      param1: 10,
+      param2: 20
+    };
     var firstTime = true;
 
-    listenerclient.on('mergeTest/object', {event_type: 'set', count: 2}, function (message, meta) {
+    listenerclient.on('mergeTest/object', {
+      event_type: 'set',
+      count: 2
+    }, function (message, meta) {
 
       expect(message).to.eql(object);
       if (firstTime) {
@@ -390,9 +396,13 @@ describe('1_eventemitter_embedded_sanity', function () {
       done();
     }, function (err) {
       expect(err).to.not.be.ok();
-      publisherclient.set('mergeTest/object', object, {merge: true}, function (err) {
+      publisherclient.set('mergeTest/object', object, {
+        merge: true
+      }, function (err) {
         expect(err).to.not.be.ok();
-        publisherclient.set('mergeTest/object', object, {merge: true}, function (err) {
+        publisherclient.set('mergeTest/object', object, {
+          merge: true
+        }, function (err) {
           expect(err).to.not.be.ok();
         });
       });
@@ -475,7 +485,10 @@ describe('1_eventemitter_embedded_sanity', function () {
     var criteria2 = null;
 
     var options2 = {
-      fields: {towns:1, keywords:1},
+      fields: {
+        towns: 1,
+        keywords: 1
+      },
       sort: {
         "field1": 1
       },
@@ -517,15 +530,25 @@ describe('1_eventemitter_embedded_sanity', function () {
 
   it('tests sift', function (callback) {
 
-    var array = [
-      {value:0},
-      {value:1},
-      {value:2}
+    var array = [{
+        value: 0
+      },
+      {
+        value: 1
+      },
+      {
+        value: 2
+      }
     ];
 
     var sift = require('sift');
 
-    var sifted = sift({value:{$gte:0, $lte:2}}, array);
+    var sifted = sift({
+      value: {
+        $gte: 0,
+        $lte: 2
+      }
+    }, array);
 
     callback();
 
@@ -551,7 +574,7 @@ describe('1_eventemitter_embedded_sanity', function () {
 
       expect(e == null).to.be(true);
 
-      setTimeout(function(){
+      setTimeout(function () {
 
         to = Date.now();
 
@@ -563,7 +586,7 @@ describe('1_eventemitter_embedded_sanity', function () {
         };
 
         var options = {
-          fields:null,
+          fields: null,
           sort: {
             "field1": 1
           },
@@ -578,7 +601,7 @@ describe('1_eventemitter_embedded_sanity', function () {
 
           expect(e == null).to.be(true);
 
-          if (search_result.length == 0){
+          if (search_result.length == 0) {
 
             publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, function (e, unmatched) {
 
@@ -1220,7 +1243,9 @@ describe('1_eventemitter_embedded_sanity', function () {
   });
 
   it('will do events in the order they are passed', function (done) {
-    publisherclient.set('/test_event_order', {property1: 'property1Value'}, {}, function () {
+    publisherclient.set('/test_event_order', {
+      property1: 'property1Value'
+    }, {}, function () {
       publisherclient.log.info('Done setting');
     });
     publisherclient.remove('/test_event_order', function (err) {
@@ -1246,7 +1271,7 @@ describe('1_eventemitter_embedded_sanity', function () {
         subcategories: ['Action.angling', 'History.art'],
         keywords: ['bass', 'Penny Siopis'],
         field1: 'field1',
-        timestamp:Date.now()
+        timestamp: Date.now()
       }
     };
 
@@ -1257,7 +1282,7 @@ describe('1_eventemitter_embedded_sanity', function () {
 
       expect(e == null).to.be(true);
 
-      setTimeout(function(){
+      setTimeout(function () {
 
         to = Date.now();
 
@@ -1269,7 +1294,7 @@ describe('1_eventemitter_embedded_sanity', function () {
         };
 
         var options = {
-          fields:null,
+          fields: null,
           sort: {
             "data.data.field1": 1
           },
@@ -1284,7 +1309,7 @@ describe('1_eventemitter_embedded_sanity', function () {
 
           if (e) return callback(e);
 
-          if (search_result.length == 0){
+          if (search_result.length == 0) {
 
             callback(new Error('no items found in the date range'));
 
@@ -1307,7 +1332,7 @@ describe('1_eventemitter_embedded_sanity', function () {
         subcategories: ['Action.angling', 'History.art'],
         keywords: ['bass', 'Penny Siopis'],
         field1: 'field1',
-        timestamp:Date.now()
+        timestamp: Date.now()
       }
     };
 
@@ -1318,7 +1343,7 @@ describe('1_eventemitter_embedded_sanity', function () {
 
       expect(e == null).to.be(true);
 
-      setTimeout(function(){
+      setTimeout(function () {
 
         to = Date.now();
 
@@ -1330,7 +1355,7 @@ describe('1_eventemitter_embedded_sanity', function () {
         };
 
         var options = {
-          fields:null,
+          fields: null,
           sort: {
             "_data.data.field1": 1
           },
@@ -1345,7 +1370,7 @@ describe('1_eventemitter_embedded_sanity', function () {
 
           if (e) return callback(e);
 
-          if (search_result.length == 0){
+          if (search_result.length == 0) {
 
             callback(new Error('no items found in the date range'));
 
@@ -1387,7 +1412,7 @@ describe('1_eventemitter_embedded_sanity', function () {
         property3: 'property3'
       });
 
-      setTimeout(function(){
+      setTimeout(function () {
 
         if (hits != 2) return callback(new Error('hits were over the agreed on 2'));
 
@@ -1428,7 +1453,7 @@ describe('1_eventemitter_embedded_sanity', function () {
         property3: 'property3'
       });
 
-      setTimeout(function(){
+      setTimeout(function () {
 
         if (hits != 3) return callback(new Error('hits were over the agreed on 2'));
 

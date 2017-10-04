@@ -13,7 +13,7 @@ describe('4_websockets_embedded_sanity', function () {
   var happnInstance = null;
   var test_id;
   /*
-   This test demonstrates starting up the happn service - 
+   This test demonstrates starting up the happn service -
    the authentication service will use authTokenSecret to encrypt web tokens identifying
    the logon session. The utils setting will set the system to log non priority information
    */
@@ -67,7 +67,7 @@ describe('4_websockets_embedded_sanity', function () {
   var listenerclient;
 
   /*
-   We are initializing 2 clients to test saving data against the database, one client will push data into the 
+   We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
    */
   before('should initialize the clients', function (callback) {
@@ -131,8 +131,7 @@ describe('4_websockets_embedded_sanity', function () {
           }, null, function (e, result) {
             //console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -153,7 +152,9 @@ describe('4_websockets_embedded_sanity', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         if (e) return callback(e);
 
@@ -186,7 +187,9 @@ describe('4_websockets_embedded_sanity', function () {
             property1: 'property1',
             property2: 'property2',
             property3: 'property3'
-          }, {noPublish: true}, timesCallback);
+          }, {
+            noPublish: true
+          }, timesCallback);
 
         },
         function (e) {
@@ -231,7 +234,11 @@ describe('4_websockets_embedded_sanity', function () {
         //////////////console.log('set results');
         //////////////console.log(result);
 
-        publisherclient.set('/4_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/merge/' + test_path_end, {property4: 'property4'}, {merge: true}, function (e, result) {
+        publisherclient.set('/4_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/merge/' + test_path_end, {
+          property4: 'property4'
+        }, {
+          merge: true
+        }, function (e, result) {
 
           if (e)
             return callback(e);
@@ -264,10 +271,16 @@ describe('4_websockets_embedded_sanity', function () {
   });
 
   it('should contain the same payload between 2 non-merging consecutive stores', function (done) {
-    var object = {param1: 10, param2: 20};
+    var object = {
+      param1: 10,
+      param2: 20
+    };
     var firstTime;
 
-    listenerclient.on('setTest/object', {event_type: 'set', count: 2}, function (message) {
+    listenerclient.on('setTest/object', {
+      event_type: 'set',
+      count: 2
+    }, function (message) {
       if (firstTime === undefined) {
         firstTime = message;
         return;
@@ -287,10 +300,16 @@ describe('4_websockets_embedded_sanity', function () {
   });
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
-    var object = {param1: 10, param2: 20};
+    var object = {
+      param1: 10,
+      param2: 20
+    };
     var firstTime = true;
 
-    listenerclient.on('mergeTest/object', {event_type: 'set', count: 2}, function (message) {
+    listenerclient.on('mergeTest/object', {
+      event_type: 'set',
+      count: 2
+    }, function (message) {
       expect(message).to.eql(object);
       if (firstTime) {
         firstTime = false;
@@ -299,9 +318,13 @@ describe('4_websockets_embedded_sanity', function () {
       done();
     }, function (err) {
       expect(err).to.not.be.ok();
-      publisherclient.set('mergeTest/object', object, {merge: true}, function (err) {
+      publisherclient.set('mergeTest/object', object, {
+        merge: true
+      }, function (err) {
         expect(err).to.not.be.ok();
-        publisherclient.set('mergeTest/object', object, {merge: true}, function (err) {
+        publisherclient.set('mergeTest/object', object, {
+          merge: true
+        }, function (err) {
           expect(err).to.not.be.ok();
         });
       });
@@ -326,15 +349,34 @@ describe('4_websockets_embedded_sanity', function () {
 
 
     var criteria1 = {
-      $or: [{"data.regions": {$in: ['North', 'South', 'East', 'West']}},
-        {"data.towns": {$in: ['North.Cape Town', 'South.East London']}},
-        {"data.categories": {$in: ["Action", "History"]}}],
-      "data.keywords": {$in: ["bass", "Penny Siopis"]}
+      $or: [{
+          "data.regions": {
+            $in: ['North', 'South', 'East', 'West']
+          }
+        },
+        {
+          "data.towns": {
+            $in: ['North.Cape Town', 'South.East London']
+          }
+        },
+        {
+          "data.categories": {
+            $in: ["Action", "History"]
+          }
+        }
+      ],
+      "data.keywords": {
+        $in: ["bass", "Penny Siopis"]
+      }
     }
 
     var options1 = {
-      fields: {"data": 1},
-      sort: {"data.field1": 1},
+      fields: {
+        "data": 1
+      },
+      sort: {
+        "data.field1": 1
+      },
       limit: 1
     }
 
@@ -342,7 +384,9 @@ describe('4_websockets_embedded_sanity', function () {
 
     var options2 = {
       fields: null,
-      sort: {"field1": 1},
+      sort: {
+        "field1": 1
+      },
       limit: 2
     }
 
@@ -394,10 +438,14 @@ describe('4_websockets_embedded_sanity', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         //We perform the actual delete
-        publisherclient.remove('/4_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/delete_me', {noPublish: true}, function (e, result) {
+        publisherclient.remove('/4_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/delete_me', {
+          noPublish: true
+        }, function (e, result) {
 
           expect(e).to.be(null);
           expect(result._meta.status).to.be('ok');
@@ -427,7 +475,9 @@ describe('4_websockets_embedded_sanity', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, insertResult) {
+      }, {
+        noPublish: true
+      }, function (e, insertResult) {
 
         expect(e).to.be(null);
 
@@ -436,7 +486,9 @@ describe('4_websockets_embedded_sanity', function () {
           property2: 'property2',
           property3: 'property3',
           property4: 'property4'
-        }, {noPublish: true}, function (e, updateResult) {
+        }, {
+          noPublish: true
+        }, function (e, updateResult) {
 
           expect(e).to.be(null);
           expect(updateResult._meta.id == insertResult._meta.id).to.be(true);
@@ -460,7 +512,9 @@ describe('4_websockets_embedded_sanity', function () {
       property1: 'property1',
       property2: 'property2',
       property3: 'property3'
-    }, {noPublish: true}, function (e, result) {
+    }, {
+      noPublish: true
+    }, function (e, result) {
 
       ////////////////////console.log('did set');
       ////////////////////console.log([e, result]);
@@ -522,7 +576,7 @@ describe('4_websockets_embedded_sanity', function () {
   });
 
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -556,8 +610,7 @@ describe('4_websockets_embedded_sanity', function () {
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -567,7 +620,7 @@ describe('4_websockets_embedded_sanity', function () {
   });
 
 
-//We are testing setting data at a specific path
+  //We are testing setting data at a specific path
 
   it('the publisher should set new data ', function (callback) {
 
@@ -593,8 +646,7 @@ describe('4_websockets_embedded_sanity', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -640,7 +692,7 @@ describe('4_websockets_embedded_sanity', function () {
   });
 
 
-//We are testing pushing a specific value to a path which will actually become an array in the database
+  //We are testing pushing a specific value to a path which will actually become an array in the database
 
   it('the publisher should push a sibling and get all siblings', function (callback) {
 
@@ -679,7 +731,7 @@ describe('4_websockets_embedded_sanity', function () {
   });
 
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -712,8 +764,7 @@ describe('4_websockets_embedded_sanity', function () {
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -803,7 +854,7 @@ describe('4_websockets_embedded_sanity', function () {
         //////////////////console.log(message);
 
         //we are looking at the event internals on the listener to ensure our event management is working - because we are only listening for 1
-        //instance of this event - the event listener should have been removed 
+        //instance of this event - the event listener should have been removed
         ////console.log('listenerclient.events');
         ////console.log(listenerclient.events);
         expect(listenerclient.events['/REMOVE@/4_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/delete_me'].length).to.be(0);

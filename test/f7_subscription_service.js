@@ -1,10 +1,9 @@
 describe('f7_subscription_service', function () {
 
-  var expect = require('expect.js')
-    , async = require('async')
-    , shortid = require('shortid')
-    , Promise = require('bluebird')
-    ;
+  var expect = require('expect.js'),
+    async = require('async'),
+    shortid = require('shortid'),
+    Promise = require('bluebird');
 
   it('tests the subscription bucket adding, allSubscriptions', function (done) {
 
@@ -22,11 +21,19 @@ describe('f7_subscription_service', function () {
 
       if (e) return done(e);
 
-      testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
+      testBucket.addSubscription('/test/path/*', sessionId1, {
+        options: {
+          refCount: 1
+        }
+      });
 
       expect(testBucket.allSubscriptions().length).to.be(1);
 
-      testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
+      testBucket.addSubscription('/test/path/*', sessionId1, {
+        options: {
+          refCount: 1
+        }
+      });
 
       expect(testBucket.allSubscriptions().length).to.be(1);
 
@@ -50,7 +57,11 @@ describe('f7_subscription_service', function () {
       channel: 'SET'
     });
 
-    var data = {options: {refCount: 1}};
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
 
     testBucket.initialize(function (e) {
 
@@ -99,7 +110,11 @@ describe('f7_subscription_service', function () {
       channel: 'SET'
     });
 
-    var data = {options: {refCount: 1}};
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
 
     testBucket.initialize(function (e) {
 
@@ -121,7 +136,7 @@ describe('f7_subscription_service', function () {
 
           expect(testBucket.allSubscriptions().length).to.be(1);
 
-          expect(testBucket.__segments.array.length).to.be(0);//all subscriptions do not have segments
+          expect(testBucket.__segments.array.length).to.be(0); //all subscriptions do not have segments
 
           done();
 
@@ -146,7 +161,11 @@ describe('f7_subscription_service', function () {
       channel: 'SET'
     });
 
-    var data = {options: {refCount: 1}};
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
 
     testBucket.initialize(function (e) {
 
@@ -214,7 +233,9 @@ describe('f7_subscription_service', function () {
 
           testBucket.addSubscription('/test/path/' + randomPath, shortid.generate(), {
             rand: randomPath,
-            options: {refCount: 1}
+            options: {
+              refCount: 1
+            }
           }, timeCB);
         },
 
@@ -416,9 +437,14 @@ describe('f7_subscription_service', function () {
 
     var config = {};
 
-    var testItems = [
-      {path: 'test/path/1', data: {}},
-      {path: 'test/path/2', data: {}}
+    var testItems = [{
+        path: 'test/path/1',
+        data: {}
+      },
+      {
+        path: 'test/path/2',
+        data: {}
+      }
     ];
 
     mockSubscriptionService(config, testItems, function (e, instance) {
@@ -456,9 +482,14 @@ describe('f7_subscription_service', function () {
 
     var config = {};
 
-    var testItems = [
-      {path: 'test/path/1', data: {}},
-      {path: 'test/path/2', data: {}}
+    var testItems = [{
+        path: 'test/path/1',
+        data: {}
+      },
+      {
+        path: 'test/path/2',
+        data: {}
+      }
     ];
 
     mockSubscriptionService(config, testItems, function (e, instance) {
@@ -579,13 +610,13 @@ describe('f7_subscription_service', function () {
 
     service.create()
 
-      .then(function(happnInst){
+      .then(function (happnInst) {
 
         happnInstance = happnInst;
 
-        return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
 
-          happnInstance.services.session.localClient(function(e, instance) {
+          happnInstance.services.session.localClient(function (e, instance) {
 
             if (e) return reject(e);
 
@@ -594,99 +625,109 @@ describe('f7_subscription_service', function () {
           });
         });
 
-    }).then(function(client){
+      }).then(function (client) {
 
-      happnClient = client;
+        happnClient = client;
 
-      return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
 
-        happnClient.on('/*/that', function(data){
+          happnClient.on('/*/that', function (data) {
 
-          if (!setFinished) done(new Error('should not have happened:::'));
+            if (!setFinished) done(new Error('should not have happened:::'));
 
-        }, function(e){
+          }, function (e) {
 
-          happnClient.set('/something/like/this', {test:'data'}, function(e){
+            happnClient.set('/something/like/this', {
+              test: 'data'
+            }, function (e) {
 
-            if (e) return reject(e);
+              if (e) return reject(e);
 
-            setTimeout(function(){
-              setFinished = true;
-              resolve();
-            }, 300);
+              setTimeout(function () {
+                setFinished = true;
+                resolve();
+              }, 300);
+            });
           });
         });
-      });
-    }).then(function(){
+      }).then(function () {
 
-      return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
 
-        happnClient.on('/*/that', function(data){
+          happnClient.on('/*/that', function (data) {
 
-          resolve();
+            resolve();
 
-        }, function(e){
+          }, function (e) {
 
-          happnClient.set('/something/like/that', {test:'data'}, function(e){
+            happnClient.set('/something/like/that', {
+              test: 'data'
+            }, function (e) {
 
-            if (e) return reject(e);
+              if (e) return reject(e);
+            });
           });
         });
-      });
-    }).then(function(){
+      }).then(function () {
 
-      return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
 
-        happnClient.on('/*/*/that', function(data){
+          happnClient.on('/*/*/that', function (data) {
 
-          resolve();
+            resolve();
 
-        }, function(e){
+          }, function (e) {
 
-          happnClient.set('/something/like/that', {test:'data'}, function(e){
+            happnClient.set('/something/like/that', {
+              test: 'data'
+            }, function (e) {
 
-            if (e) return reject(e);
+              if (e) return reject(e);
+            });
           });
         });
-      });
-    }).then(function(){
+      }).then(function () {
 
-      return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
 
-        happnClient.on('*that', function(data){
+          happnClient.on('*that', function (data) {
 
-          resolve();
+            resolve();
 
-        }, function(e){
+          }, function (e) {
 
-          happnClient.set('/something/like/that', {test:'data'}, function(e){
+            happnClient.set('/something/like/that', {
+              test: 'data'
+            }, function (e) {
 
-            if (e) return reject(e);
+              if (e) return reject(e);
+            });
           });
         });
-      });
-    }).then(function(){
+      }).then(function () {
 
-      return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
 
-        happnClient.on('*something*', function(data){
+          happnClient.on('*something*', function (data) {
 
-          resolve();
+            resolve();
 
-        }, function(e){
+          }, function (e) {
 
-          happnClient.set('/something/like/that', {test:'data'}, function(e){
+            happnClient.set('/something/like/that', {
+              test: 'data'
+            }, function (e) {
 
-            if (e) return reject(e);
+              if (e) return reject(e);
+            });
           });
         });
-      });
-    }).then(function(){
+      }).then(function () {
 
-        happnClient.disconnect(function(){
+        happnClient.disconnect(function () {
           happnInstance.stop(done);
         })
-    })
+      })
       .catch(done);
   });
 

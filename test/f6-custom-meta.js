@@ -30,7 +30,9 @@ describe('f6_custom_meta', function () {
 
   after('stop server', function (done) {
     if (!server) return done();
-    server.stop({reconnect: false}, done);
+    server.stop({
+      reconnect: false
+    }, done);
   });
 
   it('can pass custom meta via set to subscribers', function (done) {
@@ -45,7 +47,13 @@ describe('f6_custom_meta', function () {
     }, function (e) {
       if (e) return done(e);
 
-      client.set('/some/path1', {DATA: 1}, {meta: {custom: 'value'}}, function (e) {
+      client.set('/some/path1', {
+        DATA: 1
+      }, {
+        meta: {
+          custom: 'value'
+        }
+      }, function (e) {
         if (e) return done(e);
       });
     });
@@ -64,7 +72,13 @@ describe('f6_custom_meta', function () {
     }, function (e) {
       if (e) return done(e);
 
-      client.set('/some/path2', {DATA: 1}, {meta: {sessionId: 'value'}}, function (e) {
+      client.set('/some/path2', {
+        DATA: 1
+      }, {
+        meta: {
+          sessionId: 'value'
+        }
+      }, function (e) {
         if (e) return done(e);
       });
     });

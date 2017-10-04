@@ -115,7 +115,10 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
     try {
 
       //first listen for the change
-      eventEmitterClient.on('/e2e_test1/testsubscribe/data/event', {event_type: 'set', count: 1}, function (message) {
+      eventEmitterClient.on('/e2e_test1/testsubscribe/data/event', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(eventEmitterClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
@@ -153,7 +156,10 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
     try {
 
       //first listen for the change
-      socketClient.on('/e2e_test1/testsubscribe/data/event', {event_type: 'set', count: 1}, function (message) {
+      socketClient.on('/e2e_test1/testsubscribe/data/event', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(socketClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
@@ -196,7 +202,9 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         ////////////console.log('set happened');
         ////////////console.log([e, result]);
@@ -242,7 +250,11 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
         //////////////console.log('set results');
         //////////////console.log(result);
 
-        socketClient.set('e2e_test1/testsubscribe/data/merge/' + test_path_end, {property4: 'property4'}, {merge: true}, function (e, result) {
+        socketClient.set('e2e_test1/testsubscribe/data/merge/' + test_path_end, {
+          property4: 'property4'
+        }, {
+          merge: true
+        }, function (e, result) {
 
           if (e)
             return callback(e);
@@ -291,15 +303,34 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
 
 
     var criteria1 = {
-      $or: [{"regions": {$in: ['North', 'South', 'East', 'West']}},
-        {"towns": {$in: ['North.Cape Town', 'South.East London']}},
-        {"categories": {$in: ["Action", "History"]}}],
-      "keywords": {$in: ["bass", "Penny Siopis"]}
+      $or: [{
+          "regions": {
+            $in: ['North', 'South', 'East', 'West']
+          }
+        },
+        {
+          "towns": {
+            $in: ['North.Cape Town', 'South.East London']
+          }
+        },
+        {
+          "categories": {
+            $in: ["Action", "History"]
+          }
+        }
+      ],
+      "keywords": {
+        $in: ["bass", "Penny Siopis"]
+      }
     }
 
     var options1 = {
-      fields: {"data": 1},
-      sort: {"field1": 1},
+      fields: {
+        "data": 1
+      },
+      sort: {
+        "field1": 1
+      },
       limit: 1
     }
 
@@ -307,7 +338,9 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
 
     var options2 = {
       fields: null,
-      sort: {"field1": 1},
+      sort: {
+        "field1": 1
+      },
       limit: 2
     }
 
@@ -357,10 +390,14 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         //We perform the actual delete
-        socketClient.remove('/e2e_test1/testsubscribe/data/delete_me', {noPublish: true}, function (e, result) {
+        socketClient.remove('/e2e_test1/testsubscribe/data/delete_me', {
+          noPublish: true
+        }, function (e, result) {
 
           expect(e).to.be(null);
           expect(result._meta.status).to.be('ok');
@@ -390,7 +427,9 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, insertResult) {
+      }, {
+        noPublish: true
+      }, function (e, insertResult) {
 
         expect(e).to.be(null);
 
@@ -399,7 +438,9 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
           property2: 'property2',
           property3: 'property3',
           property4: 'property4'
-        }, {noPublish: true}, function (e, updateResult) {
+        }, {
+          noPublish: true
+        }, function (e, updateResult) {
 
           expect(e).to.be(null);
           expect(updateResult._id == insertResult._id).to.be(true);
@@ -527,7 +568,7 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
   });
 
 
-//  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -536,7 +577,10 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
     try {
 
       //first listen for the change
-      eventEmitterClient.on('/e2e_test1/testsubscribe/data/event', {event_type: 'set', count: 1}, function (message) {
+      eventEmitterClient.on('/e2e_test1/testsubscribe/data/event', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(eventEmitterClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
@@ -687,7 +731,10 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
         if (e)
           return callback(new Error(e));
 
-        eventEmitterClient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0},
+        eventEmitterClient.on('/e2e_test1/testsubscribe/data/on_off_test', {
+            event_type: 'set',
+            count: 0
+          },
           function (message) {
 
             ////console.log('ON RAN');
@@ -790,7 +837,10 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
 
       if (e) return callback(e);
 
-      eventEmitterClient.on('/e2e_test1/testsubscribe/data/off_all_test', {event_type: 'set', count: 0},
+      eventEmitterClient.on('/e2e_test1/testsubscribe/data/off_all_test', {
+          event_type: 'set',
+          count: 0
+        },
         function (message) {
           onHappened = true;
           callback(new Error('this wasnt meant to happen'));

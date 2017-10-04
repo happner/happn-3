@@ -42,8 +42,7 @@ describe('e8_manual_destroy', function () {
 
   var clientCount = 10;
 
-  function Tester() {
-  }
+  function Tester() {}
 
   it('create, then manually destroy ' + clientCount + ' clients', function (callback) {
 

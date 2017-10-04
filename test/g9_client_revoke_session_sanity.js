@@ -20,9 +20,11 @@ describe(require('path').basename(__filename), function () {
       url: 'http://127.0.0.1:55000' + path,
     };
 
-    if (!excludeToken){
+    if (!excludeToken) {
       if (!query)
-        options.headers = {'Cookie': ['happn_token=' + token]}
+        options.headers = {
+          'Cookie': ['happn_token=' + token]
+        }
       else
         options.url += '?happn_token=' + token;
     }
@@ -37,23 +39,25 @@ describe(require('path').basename(__filename), function () {
 
     getService({
       secure: true,
-      services:{
-        security:{
-          config:{
-            profiles:[
-              {
-                name:"test-session",
-                session:{
-                  $and:[{
-                    user:{username:{$eq:'TEST_SESSION'}}
-                  }]
-                },
-                policy:{
-                  ttl: '2 seconds',
-                  inactivity_threshold:'2 seconds'
-                }
+      services: {
+        security: {
+          config: {
+            profiles: [{
+              name: "test-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: 'TEST_SESSION'
+                    }
+                  }
+                }]
+              },
+              policy: {
+                ttl: '2 seconds',
+                inactivity_threshold: '2 seconds'
               }
-            ]
+            }]
           }
         }
       }
@@ -66,7 +70,9 @@ describe(require('path').basename(__filename), function () {
       serviceInstance.connect.use('/TEST/WEB/ROUTE', function (req, res, next) {
 
         res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify({"secure": "value"}));
+        res.end(JSON.stringify({
+          "secure": "value"
+        }));
       });
 
       done();
@@ -79,9 +85,13 @@ describe(require('path').basename(__filename), function () {
 
   var testGroup = {
     name: 'TEST GROUP',
-    permissions:{
-      '/TEST/DATA/*':{actions: ['*']},
-      '/@HTTP/TEST/WEB/ROUTE':{actions: ['get']}
+    permissions: {
+      '/TEST/DATA/*': {
+        actions: ['*']
+      },
+      '/@HTTP/TEST/WEB/ROUTE': {
+        actions: ['get']
+      }
     }
   };
 
@@ -97,12 +107,16 @@ describe(require('path').basename(__filename), function () {
 
   before('creates a group and a user, adds the group to the user, logs in with test user', function (done) {
 
-    serviceInstance.services.security.users.upsertGroup(testGroup, {overwrite: false}, function (e, result) {
+    serviceInstance.services.security.users.upsertGroup(testGroup, {
+      overwrite: false
+    }, function (e, result) {
 
       if (e) return done(e);
       addedTestGroup = result;
 
-      serviceInstance.services.security.users.upsertUser(testUser, {overwrite: false}, function (e, result) {
+      serviceInstance.services.security.users.upsertUser(testUser, {
+        overwrite: false
+      }, function (e, result) {
 
         if (e) return done(e);
         addedTestuser = result;
@@ -117,7 +131,10 @@ describe(require('path').basename(__filename), function () {
     this.timeout(4000);
 
     happn.client.create({
-        config: {username: testUser.username, password: 'TEST PWD'},
+        config: {
+          username: testUser.username,
+          password: 'TEST PWD'
+        },
         secure: true
       })
 
@@ -131,11 +148,13 @@ describe(require('path').basename(__filename), function () {
 
           expect(response.statusCode).to.equal(200);
 
-          testClient.disconnect({revokeSession:true}, function(e){
+          testClient.disconnect({
+            revokeSession: true
+          }, function (e) {
 
             if (e) return done(e);
 
-            setTimeout(function(){
+            setTimeout(function () {
 
               doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
 
@@ -157,7 +176,10 @@ describe(require('path').basename(__filename), function () {
   it('logs in with the ws user - we then test a call to a web-method, then disconnects with the revokeToken flag set to false, we try and reuse the token and ensure that it succeeds', function (done) {
 
     happn.client.create({
-        config: {username: testUser.username, password: 'TEST PWD'},
+        config: {
+          username: testUser.username,
+          password: 'TEST PWD'
+        },
         secure: true
       })
 
@@ -171,7 +193,9 @@ describe(require('path').basename(__filename), function () {
 
           expect(response.statusCode).to.equal(200);
 
-          testClient.disconnect({revokeSession:false}, function(e){
+          testClient.disconnect({
+            revokeSession: false
+          }, function (e) {
 
             if (e) return done(e);
 
@@ -195,7 +219,10 @@ describe(require('path').basename(__filename), function () {
     this.timeout(10000);
 
     happn.client.create({
-        config: {username: testUser.username, password: 'TEST PWD'},
+        config: {
+          username: testUser.username,
+          password: 'TEST PWD'
+        },
         secure: true
       })
 
@@ -210,19 +237,21 @@ describe(require('path').basename(__filename), function () {
 
           expect(response.statusCode).to.equal(200);
 
-          testClient.disconnect({revokeSession:true}, function(e){
+          testClient.disconnect({
+            revokeSession: true
+          }, function (e) {
 
             if (e) return done(e);
 
-            setTimeout(function(){
+            setTimeout(function () {
 
-              serviceInstance.services.security.__cache_revoked_sessions.get(sessionId, function(e, cachedToken){
+              serviceInstance.services.security.__cache_revoked_sessions.get(sessionId, function (e, cachedToken) {
 
                 expect(cachedToken.reason).to.equal('CLIENT');
 
-                setTimeout(function(){
+                setTimeout(function () {
 
-                  serviceInstance.services.security.__cache_revoked_sessions.get(sessionId, function(e, cachedToken){
+                  serviceInstance.services.security.__cache_revoked_sessions.get(sessionId, function (e, cachedToken) {
 
                     expect(cachedToken).to.be(undefined);
 
@@ -265,7 +294,7 @@ describe(require('path').basename(__filename), function () {
 
           expect(response.statusCode).to.equal(200);
 
-          testClient.revokeSession(function(e){
+          testClient.revokeSession(function (e) {
 
             if (e) return done(e);
 

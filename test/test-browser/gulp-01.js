@@ -11,7 +11,11 @@ var happnInstance;
  */
 gulp.task('default', function (done) {
 
-  var client_code = happn.packager.browserClient({contentsOnly:true, min:true, overwrite:true});
+  var client_code = happn.packager.browserClient({
+    contentsOnly: true,
+    min: true,
+    overwrite: true
+  });
 
   fs.writeFileSync(__dirname + path.sep + 'browser_client.js', client_code, 'utf8');
 
@@ -42,6 +46,5 @@ gulp.task('default', function (done) {
       }, done).start();
 
     });
-
 
 });

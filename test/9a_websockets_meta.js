@@ -21,9 +21,13 @@ describe('9a_websockets_meta.js', function () {
 
     this.timeout(10000);
 
-    publisherclient.disconnect({timeout:2000}, function(e){
+    publisherclient.disconnect({
+      timeout: 2000
+    }, function (e) {
       if (e) return console.warn('failed to disconnect:::', publisherclient);
-      listenerclient.disconnect({timeout:2000}, function(e){
+      listenerclient.disconnect({
+        timeout: 2000
+      }, function (e) {
         if (e) return console.warn('failed to disconnect:::', listenerclient);
         happnInstance.stop(done);
       });
@@ -36,12 +40,12 @@ describe('9a_websockets_meta.js', function () {
 
     try {
       service.create(function (e, happnInst) {
-          if (e)
-            return callback(e);
+        if (e)
+          return callback(e);
 
-          happnInstance = happnInst;
-          callback();
-        });
+        happnInstance = happnInst;
+        callback();
+      });
     } catch (e) {
       callback(e);
     }
@@ -86,7 +90,7 @@ describe('9a_websockets_meta.js', function () {
   var test_path_created_modified_update_notmerge = '/test/meta/test_path_created_modified_update_notmerge' + require('shortid').generate();
   var test_path_not_enumerable = '/test/meta/test_path_not_enumerable' + require('shortid').generate();
   var test_path_not_enumerable_get = '/test/meta/test_path_not_enumerable_get' + require('shortid').generate();
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('tests the set meta data', function (callback) {
 
@@ -94,7 +98,10 @@ describe('9a_websockets_meta.js', function () {
 
     try {
       //first listen for the change
-      listenerclient.on(test_path, {event_type: 'set', count: 1}, function (data, meta) {
+      listenerclient.on(test_path, {
+        event_type: 'set',
+        count: 1
+      }, function (data, meta) {
 
         expect(meta.path).to.be(test_path);
         callback();
@@ -115,8 +122,7 @@ describe('9a_websockets_meta.js', function () {
             if (e) return callback(e);
             expect(result._meta.path).to.be(test_path);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -156,15 +162,17 @@ describe('9a_websockets_meta.js', function () {
 
       expect(result._meta.path).to.be(test_path_remove);
 
-      listenerclient.on(test_path_remove, {event_type: 'remove', count: 1}, function (data, meta) {
+      listenerclient.on(test_path_remove, {
+        event_type: 'remove',
+        count: 1
+      }, function (data, meta) {
         expect(meta.path).to.be(test_path_remove);
         callback();
       }, function (e) {
 
         if (e) return callback(e);
 
-        publisherclient.remove(test_path_remove,
-          {},
+        publisherclient.remove(test_path_remove, {},
           function (e, result) {
 
             if (e) return callback(e);
@@ -197,7 +205,9 @@ describe('9a_websockets_meta.js', function () {
 
         publisherclient.set(test_path_created_modified, {
           property4: 'property4'
-        }, {merge: true}, function (e, result) {
+        }, {
+          merge: true
+        }, function (e, result) {
 
           if (e) return callback(e);
 
@@ -282,7 +292,9 @@ describe('9a_websockets_meta.js', function () {
 
         publisherclient.set(test_path_created_modified_update, {
           property4: 'property4'
-        }, {merge: true}, function (e, result) {
+        }, {
+          merge: true
+        }, function (e, result) {
 
           if (e) return callback(e);
 
@@ -425,7 +437,9 @@ describe('9a_websockets_meta.js', function () {
               }
             }
 
-            publisherclient.get('*', {criteria: searchCriteria}, function (e, items) {
+            publisherclient.get('*', {
+              criteria: searchCriteria
+            }, function (e, items) {
 
               if (e) return callback(e);
               expect(items.length == 10).to.be(true);
@@ -436,7 +450,9 @@ describe('9a_websockets_meta.js', function () {
                 }
               }
 
-              publisherclient.get('*', {criteria: searchCriteria}, function (e, items) {
+              publisherclient.get('*', {
+                criteria: searchCriteria
+              }, function (e, items) {
 
                 if (e) return callback(e);
 
@@ -449,7 +465,9 @@ describe('9a_websockets_meta.js', function () {
 
                   publisherclient.set(test_path_timestamp + '0', {
                     modifiedProperty: 'modified'
-                  }, {merge: true}, function (e, modifiedItem) {
+                  }, {
+                    merge: true
+                  }, function (e, modifiedItem) {
 
                     if (e) return callback(e);
 
@@ -459,7 +477,9 @@ describe('9a_websockets_meta.js', function () {
                       }
                     }
 
-                    publisherclient.get('*', {criteria: searchCriteria}, function (e, items) {
+                    publisherclient.get('*', {
+                      criteria: searchCriteria
+                    }, function (e, items) {
 
                       if (e) return callback(e);
 
@@ -538,13 +558,13 @@ describe('9a_websockets_meta.js', function () {
 
           if (e) return callback(e);
 
-          publisherclient.get(test_path_not_enumerable_get + '/*', function(e, items){
+          publisherclient.get(test_path_not_enumerable_get + '/*', function (e, items) {
 
             if (e) return callback(e);
 
             expect(items.length).to.be(2);
             var foundMeta = false;
-            items.map(function(item){
+            items.map(function (item) {
               expect(item._meta.path.indexOf(test_path_not_enumerable_get)).to.be(0);
 
               for (var propertyName in item) {

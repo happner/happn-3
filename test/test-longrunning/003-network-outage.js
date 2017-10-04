@@ -14,8 +14,8 @@ describe(filename, function () {
 
   before('start server', function (done) {
     Happn.service.create({
-      port: 49000 // <------------------
-    })
+        port: 49000 // <------------------
+      })
       .then(function (_server) {
         server = _server;
       })
@@ -26,7 +26,9 @@ describe(filename, function () {
   after('stop server', function (done) {
 
     if (!server) return done();
-    server.stop({reconnect: false}, done);
+    server.stop({
+      reconnect: false
+    }, done);
   });
 
   //////////////////////////////// socket proxy to fake network segmentation
@@ -45,7 +47,9 @@ describe(filename, function () {
 
         // create connection to target
 
-        var targetSocket = net.connect({port: _this.target});
+        var targetSocket = net.connect({
+          port: _this.target
+        });
 
         // relay end and close
 
@@ -67,12 +71,12 @@ describe(filename, function () {
 
         // relay data both ways except if paused
 
-        targetSocket.on('data', function(buf) {
+        targetSocket.on('data', function (buf) {
           if (_this.paused) return;
           clientSocket.write(buf);
         });
 
-        clientSocket.on('data', function(buf) {
+        clientSocket.on('data', function (buf) {
           if (_this.paused) return;
           targetSocket.write(buf);
         })
@@ -113,7 +117,7 @@ describe(filename, function () {
 
       socketProxy.start()
 
-        .then(function() {
+        .then(function () {
           return Happn.client.create();
         })
 
@@ -147,13 +151,13 @@ describe(filename, function () {
         .then(function () {
           return Promise.all([
             new Promise(function (resolve) {
-              client.onEvent('reconnect-scheduled', function() {
+              client.onEvent('reconnect-scheduled', function () {
                 // console.log('client detected disconnect after %dms', Date.now() - now);
                 resolve();
               });
             }),
             new Promise(function (resolve) {
-              server.services.session.on('disconnect', function() {
+              server.services.session.on('disconnect', function () {
                 // console.log('server detected disconnect after %dms', Date.now() - now);
                 resolve();
               });
@@ -171,15 +175,15 @@ describe(filename, function () {
           return promise;
         })
 
-        .then(function() {
+        .then(function () {
           return client.set('/test/x', {})
         })
 
-        .then(function() {
+        .then(function () {
           return Promise.delay(200);
         })
 
-        .then(function() {
+        .then(function () {
           expect(countReceived).to.equal(2); // re-subscribed automatically on connect
         })
 

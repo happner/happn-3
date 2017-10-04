@@ -19,7 +19,7 @@ function MockIncomingMessage(options) {
     'rawHeaders'
   ];
 
-  Object.keys(options).forEach(function(key) {
+  Object.keys(options).forEach(function (key) {
     if (reservedOptions.indexOf(key) === -1)
       self[key] = options[key];
   });
@@ -31,10 +31,10 @@ function MockIncomingMessage(options) {
   this.headers = {};
   this.rawHeaders = [];
   if (options.headers)
-    Object.keys(options.headers).forEach(function(key) {
+    Object.keys(options.headers).forEach(function (key) {
       var val = options.headers[key];
 
-      if(val !== undefined) {
+      if (val !== undefined) {
         if (typeof val !== 'string') {
           val += '';
         }
@@ -52,7 +52,7 @@ function MockIncomingMessage(options) {
 
 util.inherits(MockIncomingMessage, Transform);
 
-MockIncomingMessage.prototype._transform = function(chunk, encoding, next) {
+MockIncomingMessage.prototype._transform = function (chunk, encoding, next) {
   if (this._failError)
     return this.emit('error', this._failError);
 
@@ -65,6 +65,6 @@ MockIncomingMessage.prototype._transform = function(chunk, encoding, next) {
 };
 
 // Causes the request to emit an error when the body is read.
-MockIncomingMessage.prototype._fail = function(error) {
+MockIncomingMessage.prototype._fail = function (error) {
   this._failError = error;
 };

@@ -15,14 +15,14 @@ describe('e1_listen_retry', function () {
 
   var instances = [];
 
-  var stopInstances = function(callback){
+  var stopInstances = function (callback) {
 
     if (instances.length == 0) return callback();
 
     async.eachSeries(instances, function (instance, eachCallback) {
         instance.stop(eachCallback);
       },
-      function(e){
+      function (e) {
         if (e) return callback(e);
         instances = [];
         callback();
@@ -36,15 +36,15 @@ describe('e1_listen_retry', function () {
 
   var initializeService = function (instance, port, callback) {
     instance.initialize({
-      port: port,
-      deferListen:true
-    },
-    function (e, instance) {
-      if (e) return callback(e);
+        port: port,
+        deferListen: true
+      },
+      function (e, instance) {
+        if (e) return callback(e);
 
-      instances.push(instance);
-      callback();
-    }
+        instances.push(instance);
+        callback();
+      }
     );
   };
 
@@ -62,17 +62,17 @@ describe('e1_listen_retry', function () {
 
           if (e) return callback(e);
 
-          instances[0].listen(function(e){
+          instances[0].listen(function (e) {
 
             if (e) return callback(e);
 
-            instances[1].listen(function(e){
+            instances[1].listen(function (e) {
 
               if (e) return callback(e);
               callback();
             });
 
-            setTimeout(function(){
+            setTimeout(function () {
               instances[0].stop();
             }, 3000);
           })

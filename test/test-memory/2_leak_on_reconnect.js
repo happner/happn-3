@@ -39,7 +39,11 @@ describe(filename, function () {
       //console.log(data.toString());
 
       if (data.toString().match(/happn version/)) {
-        happn_client.create({config: {port: 8001}}, function (e, instance) {
+        happn_client.create({
+          config: {
+            port: 8001
+          }
+        }, function (e, instance) {
 
           if (e) return callback(e);
 
@@ -76,11 +80,14 @@ describe(filename, function () {
       },
       function (cb) {
 
-      }]);
+      }
+    ]);
 
     function writeBigBuffer(cb) {
       var buffer = new Buffer(102400);
-      var object = {buffer: buffer};
+      var object = {
+        buffer: buffer
+      };
       publisherclient.set('/2_leak/buffer', object, {}, cb);
     }
 

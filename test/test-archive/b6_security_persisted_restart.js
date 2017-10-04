@@ -22,7 +22,9 @@ describe('b6_security_persisted_restart', function () {
       security: {
         //path: './services/security/service.js',
         config: {
-          adminUser: {password: ADMIN_PWD}
+          adminUser: {
+            password: ADMIN_PWD
+          }
         }
       },
       data: {
@@ -87,12 +89,17 @@ describe('b6_security_persisted_restart', function () {
 
     this.timeout(default_timeout);
 
-    getClient({username: '_ADMIN', password: ADMIN_PWD}, currentService, function (e, testclient) {
+    getClient({
+      username: '_ADMIN',
+      password: ADMIN_PWD
+    }, currentService, function (e, testclient) {
 
       if (e) return callback(e);
 
-      testclient.set(persistKey,
-        {property1: "prop1", prop2: "prop2"},
+      testclient.set(persistKey, {
+          property1: "prop1",
+          prop2: "prop2"
+        },
         null,
         callback
       );
@@ -114,7 +121,10 @@ describe('b6_security_persisted_restart', function () {
 
         if (e) return callback(e);
 
-        getClient({username: '_ADMIN', password: ADMIN_PWD}, currentService, function (e, testclient) {
+        getClient({
+          username: '_ADMIN',
+          password: ADMIN_PWD
+        }, currentService, function (e, testclient) {
 
           if (e) return callback(e);
 
@@ -139,7 +149,9 @@ describe('b6_security_persisted_restart', function () {
     currentService.stop(function (e) {
       if (e) return callback(e);
 
-      var newCredentials = {password: 'MODIFIED'};
+      var newCredentials = {
+        password: 'MODIFIED'
+      };
 
       testConfig.services.security.config.adminUser = newCredentials;
 
@@ -147,7 +159,10 @@ describe('b6_security_persisted_restart', function () {
 
         if (e) return callback(e);
 
-        getClient({username: '_ADMIN', password: 'MODIFIED'}, currentService, function (e, testclient) {
+        getClient({
+          username: '_ADMIN',
+          password: 'MODIFIED'
+        }, currentService, function (e, testclient) {
 
           if (e) return callback(e);
 

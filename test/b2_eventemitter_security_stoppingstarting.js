@@ -33,9 +33,9 @@ describe('b2_eventemitter_security_stoppingstarting', function () {
       var doInitService = function () {
 
         var serviceConfig = {
-          services:{
-            data:{
-              config:{
+          services: {
+            data: {
+              config: {
 
               }
             }
@@ -63,7 +63,10 @@ describe('b2_eventemitter_security_stoppingstarting', function () {
 
     var getClient = function (service, callback) {
 
-      service.services.session.localClient({username:'_ADMIN', password:'happn'}, function(e, instance){
+      service.services.session.localClient({
+        username: '_ADMIN',
+        password: 'happn'
+      }, function (e, instance) {
         if (e) return callback(e);
 
         callback(null, instance);
@@ -98,8 +101,10 @@ describe('b2_eventemitter_security_stoppingstarting', function () {
 
         if (e) return callback(e);
 
-        testclient.set(persistKey,
-          {property1: "prop1", prop2: "prop2"},
+        testclient.set(persistKey, {
+            property1: "prop1",
+            prop2: "prop2"
+          },
           null,
           callback
         );

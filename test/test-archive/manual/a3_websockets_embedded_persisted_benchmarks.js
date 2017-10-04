@@ -24,7 +24,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
    */
 
   /*
-   This test demonstrates starting up the happn service - 
+   This test demonstrates starting up the happn service -
    the authentication service will use authTokenSecret to encrypt web tokens identifying
    the logon session. The utils setting will set the system to log non priority information
    */
@@ -90,7 +90,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
   var publisherclient;
   var listenerclient;
   /*
-   We are initializing 2 clients to test saving data against the database, one client will push data into the 
+   We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
    */
   it('should initialize the clients', function (callback) {
@@ -98,12 +98,20 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
     this.timeout(default_timeout);
 
     try {
-      happn_client.create({config: {secret: test_secret}}, function (e, instance) {
+      happn_client.create({
+        config: {
+          secret: test_secret
+        }
+      }, function (e, instance) {
 
         if (e) return callback(e);
 
         publisherclient = instance;
-        happn_client.create({config: {secret: test_secret}}, function (e, instance) {
+        happn_client.create({
+          config: {
+            secret: test_secret
+          }
+        }, function (e, instance) {
 
           if (e) return callback(e);
           listenerclient = instance;
@@ -123,7 +131,11 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
     this.timeout(default_timeout);
 
-    happn_client.create({config: {secret: test_secret}}, function (e, stressTestClient) {
+    happn_client.create({
+      config: {
+        secret: test_secret
+      }
+    }, function (e, stressTestClient) {
       if (e) return callback(e);
 
       var count = 0;
@@ -136,12 +148,17 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
         publisherclient.set('/e2e_test1/testsubscribe/sequence5', {
           property1: count++
-        }, {excludeId: true}, function (e, result) {
+        }, {
+          excludeId: true
+        }, function (e, result) {
           writeData();
         });
       }
 
-      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {event_type: 'set', count: 0}, function (message) {
+      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
 
         receivedCount++;
 
@@ -154,8 +171,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
         if (!e) {
           console.time(timerName);
           writeData();
-        }
-        else
+        } else
           callback(e);
       });
     });
@@ -177,7 +193,9 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
       //////////console.log('putting data: ', count);
       publisherclient.set('/e2e_test1/testsubscribe/sequence3', {
           property1: receivedCount
-        }, {noStore: true},
+        }, {
+          noStore: true
+        },
         function (e, result) {
           if (e)
             return callback(e);
@@ -185,9 +203,12 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
           ////////console.log('put data: ', result);
         });
     }
-//path, event_type, count, handler, done
+    //path, event_type, count, handler, done
     //first listen for the change
-    listenerclient.on('/e2e_test1/testsubscribe/sequence3', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/sequence3', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       ////////console.log('Event happened', message);
       receivedCount++;
@@ -208,8 +229,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
         //then make the change
         console.time(timerName);
         writeData();
-      }
-      else
+      } else
         callback(e);
 
     });
@@ -221,7 +241,11 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
     this.timeout(50000);
 
-    happn_client.create({config: {secret: test_secret}}, function (e, stressTestClient) {
+    happn_client.create({
+      config: {
+        secret: test_secret
+      }
+    }, function (e, stressTestClient) {
 
       if (e) return callback(e);
 
@@ -231,7 +255,10 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
       var timerName = expected + 'Events - no wait - no store';
       //console.log('FILENAME: ', tempFile);
       //first listen for the change
-      stressTestClient.on('/e2e_test1/testsubscribe/sequence1a3', {event_type: 'set', count: 0}, function (message) {
+      stressTestClient.on('/e2e_test1/testsubscribe/sequence1a3', {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
 
         receivedCount++;
 
@@ -264,15 +291,16 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
             ////////////////console.log('putting data: ', count);
             publisherclient.set('/e2e_test1/testsubscribe/sequence1a3', {
               property1: count++
-            }, {noStore: true}, function (e, result) {
+            }, {
+              noStore: true
+            }, function (e, result) {
               writeData();
             });
           }
 
           writeData();
 
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -285,7 +313,11 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
     this.timeout(default_timeout);
 
-    happn_client.create({config: {secret: test_secret}}, function (e, stressTestClient) {
+    happn_client.create({
+      config: {
+        secret: test_secret
+      }
+    }, function (e, stressTestClient) {
 
       if (e) return callback(e);
       setTimeout(function () {
@@ -354,7 +386,9 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
               publisherclient.set('/e2e_test1/testsubscribe/sequence_nostore', {
                 property1: sent[count]
-              }, {noStore: true}, function (e, result) {
+              }, {
+                noStore: true
+              }, function (e, result) {
 
                 //////////////console.log(e);
                 //////////////console.log(result);
@@ -368,8 +402,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
               count++;
             }
 
-          }
-          else
+          } else
             callback(e);
         });
 
@@ -381,7 +414,11 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
     this.timeout(default_timeout);
 
-    happn_client.create({config: {secret: test_secret}}, function (e, stressTestClient) {
+    happn_client.create({
+      config: {
+        secret: test_secret
+      }
+    }, function (e, stressTestClient) {
 
       if (e) return callback(e);
       setTimeout(function () {
@@ -445,13 +482,14 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
               publisherclient.set('/e2e_test1/testsubscribe/sequence_nostore_fireforget', {
                 property1: sent[count]
-              }, {noStore: true});
+              }, {
+                noStore: true
+              });
 
               count++;
             }
 
-          }
-          else
+          } else
             callback(e);
         });
 
@@ -463,7 +501,11 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
     this.timeout(default_timeout);
 
-    happn_client.create({config: {secret: test_secret}}, function (e, stressTestClient) {
+    happn_client.create({
+      config: {
+        secret: test_secret
+      }
+    }, function (e, stressTestClient) {
       if (e) return callback(e);
 
       var count = 0;
@@ -524,7 +566,9 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
             publisherclient.set('/e2e_test1/testsubscribe/sequence_persist', {
               property1: sent[count]
-            }, {excludeId: true}, function (e, result) {
+            }, {
+              excludeId: true
+            }, function (e, result) {
 
               //////////////console.log(e);
               //////////////console.log(result);
@@ -538,8 +582,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
             count++;
           }
 
-        }
-        else
+        } else
           callback(e);
       });
     });
@@ -549,7 +592,11 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
     this.timeout(default_timeout);
 
-    happn_client.create({config: {secret: test_secret}}, function (e, stressTestClient) {
+    happn_client.create({
+      config: {
+        secret: test_secret
+      }
+    }, function (e, stressTestClient) {
 
       if (e) return callback(e);
       var count = 0;
@@ -557,7 +604,10 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
       var receivedCount = 0;
       var timerName = expected + 'Events - no wait';
 
-      stressTestClient.on('/e2e_test1/testsubscribe/sequence4', {event_type: 'set', count: 0}, function (message) {
+      stressTestClient.on('/e2e_test1/testsubscribe/sequence4', {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
 
         receivedCount++;
 
@@ -570,8 +620,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
         if (!e) {
           console.time(timerName);
           writeData();
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -581,7 +630,9 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
         publisherclient.set('/e2e_test1/testsubscribe/sequence4', {
           property1: count++
-        }, {excludeId: true}, function (e, result) {
+        }, {
+          excludeId: true
+        }, function (e, result) {
           writeData();
         });
       }
@@ -600,7 +651,10 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
     var receivedCount = 0;
     var timerName = expected + 'Events';
 
-    listenerclient.on('/e2e_test1/testsubscribe/sequence32', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/sequence32', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       receivedCount++;
 
@@ -613,8 +667,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
       if (!e) {
         console.time(timerName);
         writeData();
-      }
-      else
+      } else
         callback(e);
     });
 
@@ -624,7 +677,9 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
       publisherclient.set('/e2e_test1/testsubscribe/sequence32', {
         property1: count++
-      }, {excludeId: true}, function (e, result) {
+      }, {
+        excludeId: true
+      }, function (e, result) {
         writeData();
       });
     }
@@ -635,7 +690,11 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
     this.timeout(default_timeout);
 
-    happn_client.create({config: {secret: test_secret}}, function (e, stressTestClient) {
+    happn_client.create({
+      config: {
+        secret: test_secret
+      }
+    }, function (e, stressTestClient) {
       if (e) return callback(e);
 
       var count = 0;
@@ -648,12 +707,17 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
         publisherclient.set('/e2e_test1/testsubscribe/sequence5', {
           property1: count++
-        }, {excludeId: true}, function (e, result) {
+        }, {
+          excludeId: true
+        }, function (e, result) {
           writeData();
         });
       }
 
-      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {event_type: 'set', count: 0}, function (message) {
+      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
 
         receivedCount++;
 
@@ -666,8 +730,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
         if (!e) {
           console.time(timerName);
           writeData();
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -684,7 +747,10 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
     var receivedCount = 0;
     var timerName = expected + 'Events';
 
-    listenerclient.on('/e2e_test1/testsubscribe/sequence31', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/sequence31', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       receivedCount++;
 
@@ -701,7 +767,9 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
         publisherclient.set('/e2e_test1/testsubscribe/sequence31', {
           property1: count++
-        }, {excludeId: true}, function (e, result) {
+        }, {
+          excludeId: true
+        }, function (e, result) {
           writeData();
         });
       }
@@ -709,8 +777,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
       if (!e) {
         console.time(timerName);
         writeData();
-      }
-      else
+      } else
         callback(e);
     });
 
@@ -720,7 +787,11 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
     this.timeout(default_timeout);
 
-    happn_client.create({config: {secret: test_secret}}, function (e, stressTestClient) {
+    happn_client.create({
+      config: {
+        secret: test_secret
+      }
+    }, function (e, stressTestClient) {
       if (e) return callback(e);
 
       var count = 0;
@@ -733,12 +804,17 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
 
         publisherclient.set('/e2e_test1/testsubscribe/sequence5', {
           property1: count++
-        }, {excludeId: true}, function (e, result) {
+        }, {
+          excludeId: true
+        }, function (e, result) {
           writeData();
         });
       }
 
-      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {event_type: 'set', count: 0}, function (message) {
+      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
 
         receivedCount++;
 
@@ -751,8 +827,7 @@ describe('a3_websockets_embedded_persisted_benchmarks', function () {
         if (!e) {
           console.time(timerName);
           writeData();
-        }
-        else
+        } else
           callback(e);
       });
 

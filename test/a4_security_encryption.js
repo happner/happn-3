@@ -27,11 +27,15 @@ describe('a4_security_encryption.js', function () {
 
   before('should initialize the service', function (callback) {
 
-    var happnMock = {services: {}};
+    var happnMock = {
+      services: {}
+    };
 
-    async.eachSeries(['utils','data', 'crypto'], function (serviceName, eachServiceCB) {
+    async.eachSeries(['utils', 'data', 'crypto'], function (serviceName, eachServiceCB) {
 
-      testServices[serviceName] = new testServices[serviceName]({logger: Logger});
+      testServices[serviceName] = new testServices[serviceName]({
+        logger: Logger
+      });
       testServices[serviceName].happn = happnMock;
 
       happnMock.services[serviceName] = testServices[serviceName];
@@ -102,11 +106,11 @@ describe('a4_security_encryption.js', function () {
 
     var message = 'this is a secret';
     var hashed = testServices.crypto.generateHash(message, function (e, hash) {
-      if (e)  return callback(e);
+      if (e) return callback(e);
 
       var verified = testServices.crypto.verifyHash(message, hash, function (e, verified) {
 
-        if (e)  return callback(e);
+        if (e) return callback(e);
         expect(verified).to.be(true);
         callback();
 

@@ -12,7 +12,7 @@ describe('a5_eventemitter_meta.js', function () {
   var default_timeout = 10000;
   var happnInstance = null;
   /*
-   This test demonstrates starting up the happn service - 
+   This test demonstrates starting up the happn service -
    the authentication service will use authTokenSecret to encrypt web tokens identifying
    the logon session. The utils setting will set the system to log non priority information
    */
@@ -67,7 +67,7 @@ describe('a5_eventemitter_meta.js', function () {
   var listenerclient;
 
   /*
-   We are initializing 2 clients to test saving data against the database, one client will push data into the 
+   We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
    */
   it('should initialize the clients', function (callback) {
@@ -107,7 +107,7 @@ describe('a5_eventemitter_meta.js', function () {
   var test_path_remove = '/test/meta/remove' + require('shortid').generate();
   var test_path_all = '/test/meta/all' + require('shortid').generate();
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('tests the set meta data', function (callback) {
 
@@ -115,7 +115,10 @@ describe('a5_eventemitter_meta.js', function () {
 
     try {
       //first listen for the change
-      listenerclient.on(test_path, {event_type: 'set', count: 1}, function (data, meta) {
+      listenerclient.on(test_path, {
+        event_type: 'set',
+        count: 1
+      }, function (data, meta) {
 
         //console.log('EVENT-DATA: ', data);
         //console.log('META: ', meta);
@@ -142,8 +145,7 @@ describe('a5_eventemitter_meta.js', function () {
 
             expect(result._meta.path).to.be(test_path);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -184,7 +186,10 @@ describe('a5_eventemitter_meta.js', function () {
 
       expect(result._meta.path).to.be(test_path_remove);
 
-      listenerclient.on(test_path_remove, {event_type: 'remove', count: 1}, function (data, meta) {
+      listenerclient.on(test_path_remove, {
+        event_type: 'remove',
+        count: 1
+      }, function (data, meta) {
 
         console.log('REM-DATA: ', data, meta);
         expect(meta.path).to.be(test_path_remove);
@@ -195,8 +200,7 @@ describe('a5_eventemitter_meta.js', function () {
 
         if (e) return callback(e);
 
-        publisherclient.remove(test_path_remove,
-          {},
+        publisherclient.remove(test_path_remove, {},
           function (e, result) {
 
             if (e) return callback(e);

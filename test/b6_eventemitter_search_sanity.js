@@ -35,7 +35,10 @@ describe('b6_eventemitter_search', function () {
 
   before('authenticates with the _ADMIN user, using the default password', function (done) {
 
-    serviceInstance.services.session.localClient({username:'_ADMIN', password:'happn'})
+    serviceInstance.services.session.localClient({
+        username: '_ADMIN',
+        password: 'happn'
+      })
 
       .then(function (clientInstance) {
         searchClient = clientInstance;
@@ -50,20 +53,28 @@ describe('b6_eventemitter_search', function () {
 
   it('can get using criteria', function (done) {
 
-    searchClient.set('movie/war', {name: 'crimson tide', genre: 'war'},
+    searchClient.set('movie/war', {
+        name: 'crimson tide',
+        genre: 'war'
+      },
       function (e, result) {
 
         if (e) return done(e);
 
         var options = {
-          sort: {"name": 1}
+          sort: {
+            "name": 1
+          }
         }
 
         var criteria = {
           "name": "crimson tide"
         }
 
-        searchClient.get('movie/*', {criteria: criteria, options: options},
+        searchClient.get('movie/*', {
+            criteria: criteria,
+            options: options
+          },
           function (e, result) {
             if (e) return done(e);
 
@@ -79,20 +90,28 @@ describe('b6_eventemitter_search', function () {
   //DOESNT WORK USING NEDB PLUGIN
   it('can get using criteria, limit to fields', function (done) {
 
-    searchClient.set('movie/war/ww2', {name: 'crimson tide', genre: 'ww2'},
+    searchClient.set('movie/war/ww2', {
+        name: 'crimson tide',
+        genre: 'ww2'
+      },
       function (e, result) {
 
         if (e) return done(e);
 
         var options = {
-          fields: {"name": 1}
+          fields: {
+            "name": 1
+          }
         }
 
         var criteria = {
           "genre": "ww2"
         }
 
-        searchClient.get('movie/*', {criteria: criteria, options: options},
+        searchClient.get('movie/*', {
+            criteria: criteria,
+            options: options
+          },
           function (e, result) {
 
             if (e) return done(e);
@@ -117,8 +136,10 @@ describe('b6_eventemitter_search', function () {
 
     async.eachSeries(indexes, function (index, eachCallback) {
 
-      searchClient.set('movie/family/' + index,
-        {name: 'the black stallion', genre: 'family'},
+      searchClient.set('movie/family/' + index, {
+          name: 'the black stallion',
+          genre: 'family'
+        },
         eachCallback);
 
     }, function (e) {
@@ -126,7 +147,9 @@ describe('b6_eventemitter_search', function () {
       if (e) return callback(e);
 
       var options = {
-        sort: {"_meta.created": -1},
+        sort: {
+          "_meta.created": -1
+        },
         limit: 1
       };
 
@@ -136,7 +159,10 @@ describe('b6_eventemitter_search', function () {
 
       var latestResult;
 
-      searchClient.get('movie/*', {criteria: criteria, options: options},
+      searchClient.get('movie/*', {
+          criteria: criteria,
+          options: options
+        },
         function (e, result) {
 
           if (e) return done(e);
@@ -185,8 +211,10 @@ describe('b6_eventemitter_search', function () {
 
     async.eachSeries(indexes, function (index, eachCallback) {
 
-      searchClient.set('movie/family/' + index,
-        {name: 'the black stallion', genre: 'family'},
+      searchClient.set('movie/family/' + index, {
+          name: 'the black stallion',
+          genre: 'family'
+        },
         eachCallback);
 
     }, function (e) {
@@ -194,7 +222,9 @@ describe('b6_eventemitter_search', function () {
       if (e) return callback(e);
 
       var options = {
-        sort: {"_meta.created": -1},
+        sort: {
+          "_meta.created": -1
+        },
         limit: 1
       }
 
@@ -204,7 +234,10 @@ describe('b6_eventemitter_search', function () {
 
       var latestResult;
 
-      searchClient.get('movie/*', {criteria: criteria, options: options},
+      searchClient.get('movie/*', {
+          criteria: criteria,
+          options: options
+        },
         function (e, result) {
 
           if (e) return done(e);

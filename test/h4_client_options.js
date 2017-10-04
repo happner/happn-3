@@ -11,7 +11,7 @@ describe(require('path').basename(__filename), function () {
   var http = require('http');
 
   var serviceConfig1 = {
-    port:10000
+    port: 10000
   };
 
   before('should initialize the service', function (callback) {
@@ -44,7 +44,10 @@ describe(require('path').basename(__filename), function () {
 
   it('tests host and port empty options', function (done) {
 
-    var connection = {host:'192.168.0.1', port:10000};
+    var connection = {
+      host: '192.168.0.1',
+      port: 10000
+    };
 
     var options = {};
 
@@ -52,7 +55,10 @@ describe(require('path').basename(__filename), function () {
 
     var clientOptions = client.__prepareOptions(connection, options);
 
-    expect(clientOptions).to.eql({host:'192.168.0.1', port:10000});
+    expect(clientOptions).to.eql({
+      host: '192.168.0.1',
+      port: 10000
+    });
 
     done();
 
@@ -60,7 +66,10 @@ describe(require('path').basename(__filename), function () {
 
   it('tests host and port null options', function (done) {
 
-    var connection = {host:'192.168.0.1', port:10000};
+    var connection = {
+      host: '192.168.0.1',
+      port: 10000
+    };
 
     var options = null;
 
@@ -68,7 +77,10 @@ describe(require('path').basename(__filename), function () {
 
     var clientOptions = client.__prepareOptions(connection, options);
 
-    expect(clientOptions).to.eql({host:'192.168.0.1', port:10000});
+    expect(clientOptions).to.eql({
+      host: '192.168.0.1',
+      port: 10000
+    });
 
     done();
 
@@ -76,7 +88,10 @@ describe(require('path').basename(__filename), function () {
 
   it('tests host and port undefined options', function (done) {
 
-    var connection = {host:'192.168.0.1', port:10000};
+    var connection = {
+      host: '192.168.0.1',
+      port: 10000
+    };
 
     var options = undefined;
 
@@ -84,7 +99,10 @@ describe(require('path').basename(__filename), function () {
 
     var clientOptions = client.__prepareOptions(connection, options);
 
-    expect(clientOptions).to.eql({host:'192.168.0.1', port:10000});
+    expect(clientOptions).to.eql({
+      host: '192.168.0.1',
+      port: 10000
+    });
 
     done();
 
@@ -94,13 +112,19 @@ describe(require('path').basename(__filename), function () {
 
     var connection = null;
 
-    var options = {host:'192.168.0.1', port:10000};
+    var options = {
+      host: '192.168.0.1',
+      port: 10000
+    };
 
     var client = happn.client;
 
     var clientOptions = client.__prepareOptions(connection, options);
 
-    expect(clientOptions).to.eql({host:'192.168.0.1', port:10000});
+    expect(clientOptions).to.eql({
+      host: '192.168.0.1',
+      port: 10000
+    });
 
     done();
 
@@ -110,28 +134,34 @@ describe(require('path').basename(__filename), function () {
 
     var connection = null;
 
-    var options = {host:'127.0.0.1', port:10000};
+    var options = {
+      host: '127.0.0.1',
+      port: 10000
+    };
 
     happn.client.create(connection, options)
-      .then(function(client){
+      .then(function (client) {
         client.disconnect(done);
       })
-      .catch(function(e){
+      .catch(function (e) {
         done(e);
       });
   });
 
   it('tests host and port null options', function (done) {
 
-    var connection =  {host:'127.0.0.1', port:10000};
+    var connection = {
+      host: '127.0.0.1',
+      port: 10000
+    };
 
     var options = null;
 
     happn.client.create(connection, options)
-      .then(function(client){
+      .then(function (client) {
         client.disconnect(done);
       })
-      .catch(function(e){
+      .catch(function (e) {
         done(e);
       });
   });

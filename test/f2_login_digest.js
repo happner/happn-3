@@ -11,7 +11,9 @@ describe('f2_login_digest', function () {
 
   before('starts the services', function (done) {
 
-    Happn.service.create({secure: true})
+    Happn.service.create({
+        secure: true
+      })
       .then(function (server) {
         server1 = server;
         service1Name = server.name;
@@ -41,8 +43,12 @@ describe('f2_login_digest', function () {
     };
 
     testGroup2.permissions = {
-      '/@HTTP/secure/test/removed/user': {actions: ['get']},
-      '/@HTTP/secure/test/not_removed/user': {actions: ['get']}
+      '/@HTTP/secure/test/removed/user': {
+        actions: ['get']
+      },
+      '/@HTTP/secure/test/not_removed/user': {
+        actions: ['get']
+      }
     };
 
     var Crypto = require('happn-util-crypto');
@@ -59,12 +65,16 @@ describe('f2_login_digest', function () {
     var addedTestGroup2;
     var addedTestuser2;
 
-    server1.services.security.users.upsertGroup(testGroup2, {overwrite: false}, function (e, result) {
+    server1.services.security.users.upsertGroup(testGroup2, {
+      overwrite: false
+    }, function (e, result) {
 
       if (e) return done(e);
       addedTestGroup2 = result;
 
-      server1.services.security.users.upsertUser(testUser2, {overwrite: false}, function (e, result) {
+      server1.services.security.users.upsertUser(testUser2, {
+        overwrite: false
+      }, function (e, result) {
 
         if (e) return done(e);
         addedTestuser2 = result;
@@ -78,8 +88,7 @@ describe('f2_login_digest', function () {
               publicKey: testUser2.publicKey,
               privateKey: keyPair.privateKey,
               loginType: 'digest'
-            }
-            )
+            })
 
             .then(function (clientInstance) {
               done();

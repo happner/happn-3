@@ -24,7 +24,9 @@ describe('g4_client_offline_disconnect', function () {
 
   after('stop server', function (done) {
     if (!server) return done();
-    server.stop({reconnect: false}, done);
+    server.stop({
+      reconnect: false
+    }, done);
   });
 
   it('can disconnect client when server offline', function (done) {
@@ -87,7 +89,9 @@ describe('g4_client_offline_disconnect', function () {
 
       });
 
-      server.stop({reconnect: true}, function (e) {
+      server.stop({
+        reconnect: true
+      }, function (e) {
 
         if (e) return done(e);
 

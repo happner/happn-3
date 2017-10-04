@@ -29,9 +29,9 @@ describe('b8_security_https_websockets_sanity', function () {
 
     try {
       service.create({
-        services:{
-          transport:{
-            config:{
+        services: {
+          transport: {
+            config: {
               mode: 'https'
             }
           }
@@ -53,8 +53,8 @@ describe('b8_security_https_websockets_sanity', function () {
 
   after(function (done) {
 
-    publisherclient.disconnect(function(){
-      listenerclient.disconnect(function(){
+    publisherclient.disconnect(function () {
+      listenerclient.disconnect(function () {
         happnInstance.stop(done);
       });
     });
@@ -68,12 +68,22 @@ describe('b8_security_https_websockets_sanity', function () {
 
 
     try {
-      happn_client.create({config: {protocol: 'https', allowSelfSignedCerts: true}}, function (e, instance) {
+      happn_client.create({
+        config: {
+          protocol: 'https',
+          allowSelfSignedCerts: true
+        }
+      }, function (e, instance) {
 
         if (e) return callback(e);
 
         publisherclient = instance;
-        happn_client.create({config: {protocol: 'https', allowSelfSignedCerts: true}}, function (e, instance) {
+        happn_client.create({
+          config: {
+            protocol: 'https',
+            allowSelfSignedCerts: true
+          }
+        }, function (e, instance) {
 
           if (e) return callback(e);
           listenerclient = instance;
@@ -122,8 +132,7 @@ describe('b8_security_https_websockets_sanity', function () {
           }, null, function (e, result) {
             //console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -159,7 +168,9 @@ describe('b8_security_https_websockets_sanity', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         if (e) return callback(e);
 
@@ -192,7 +203,9 @@ describe('b8_security_https_websockets_sanity', function () {
             property1: 'property1',
             property2: 'property2',
             property3: 'property3'
-          }, {noPublish: true}, timesCallback);
+          }, {
+            noPublish: true
+          }, timesCallback);
 
         },
         function (e) {
@@ -233,7 +246,11 @@ describe('b8_security_https_websockets_sanity', function () {
         if (e)
           return callback(e);
 
-        publisherclient.set('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/merge/' + test_path_end, {property4: 'property4'}, {merge: true}, function (e, result) {
+        publisherclient.set('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/merge/' + test_path_end, {
+          property4: 'property4'
+        }, {
+          merge: true
+        }, function (e, result) {
 
           if (e)
             return callback(e);
@@ -260,10 +277,16 @@ describe('b8_security_https_websockets_sanity', function () {
   });
 
   it('should contain the same payload between 2 non-merging consecutive stores', function (done) {
-    var object = {param1: 10, param2: 20};
+    var object = {
+      param1: 10,
+      param2: 20
+    };
     var firstTime;
 
-    listenerclient.on('setTest/object', {event_type: 'set', count: 2}, function (message) {
+    listenerclient.on('setTest/object', {
+      event_type: 'set',
+      count: 2
+    }, function (message) {
       if (firstTime === undefined) {
         firstTime = message;
         return;
@@ -283,10 +306,16 @@ describe('b8_security_https_websockets_sanity', function () {
   });
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
-    var object = {param1: 10, param2: 20};
+    var object = {
+      param1: 10,
+      param2: 20
+    };
     var firstTime = true;
 
-    listenerclient.on('mergeTest/object', {event_type: 'set', count: 2}, function (message) {
+    listenerclient.on('mergeTest/object', {
+      event_type: 'set',
+      count: 2
+    }, function (message) {
       expect(message).to.eql(object);
       if (firstTime) {
         firstTime = false;
@@ -295,9 +324,13 @@ describe('b8_security_https_websockets_sanity', function () {
       done();
     }, function (err) {
       expect(err).to.not.be.ok();
-      publisherclient.set('mergeTest/object', object, {merge: true}, function (err) {
+      publisherclient.set('mergeTest/object', object, {
+        merge: true
+      }, function (err) {
         expect(err).to.not.be.ok();
-        publisherclient.set('mergeTest/object', object, {merge: true}, function (err) {
+        publisherclient.set('mergeTest/object', object, {
+          merge: true
+        }, function (err) {
           expect(err).to.not.be.ok();
         });
       });
@@ -320,15 +353,34 @@ describe('b8_security_https_websockets_sanity', function () {
 
 
     var criteria1 = {
-      $or: [{"regions": {$in: ['North', 'South', 'East', 'West']}},
-        {"towns": {$in: ['North.Cape Town', 'South.East London']}},
-        {"categories": {$in: ["Action", "History"]}}],
-      "keywords": {$in: ["bass", "Penny Siopis"]}
+      $or: [{
+          "regions": {
+            $in: ['North', 'South', 'East', 'West']
+          }
+        },
+        {
+          "towns": {
+            $in: ['North.Cape Town', 'South.East London']
+          }
+        },
+        {
+          "categories": {
+            $in: ["Action", "History"]
+          }
+        }
+      ],
+      "keywords": {
+        $in: ["bass", "Penny Siopis"]
+      }
     }
 
     var options1 = {
-      fields: {"data": 1},
-      sort: {"field1": 1},
+      fields: {
+        "data": 1
+      },
+      sort: {
+        "field1": 1
+      },
       limit: 1
     }
 
@@ -336,7 +388,9 @@ describe('b8_security_https_websockets_sanity', function () {
 
     var options2 = {
       fields: null,
-      sort: {"field1": 1},
+      sort: {
+        "field1": 1
+      },
       limit: 2
     }
 
@@ -386,10 +440,14 @@ describe('b8_security_https_websockets_sanity', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         //We perform the actual delete
-        publisherclient.remove('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/delete_me', {noPublish: true}, function (e, result) {
+        publisherclient.remove('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/delete_me', {
+          noPublish: true
+        }, function (e, result) {
 
           expect(e).to.be(null);
           expect(result._meta.status).to.be('ok');
@@ -418,7 +476,9 @@ describe('b8_security_https_websockets_sanity', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, insertResult) {
+      }, {
+        noPublish: true
+      }, function (e, insertResult) {
 
         expect(e).to.be(null);
 
@@ -427,7 +487,9 @@ describe('b8_security_https_websockets_sanity', function () {
           property2: 'property2',
           property3: 'property3',
           property4: 'property4'
-        }, {noPublish: true}, function (e, updateResult) {
+        }, {
+          noPublish: true
+        }, function (e, updateResult) {
 
           expect(e).to.be(null);
           expect(updateResult._meta.id == insertResult._meta.id).to.be(true);
@@ -451,7 +513,9 @@ describe('b8_security_https_websockets_sanity', function () {
       property1: 'property1',
       property2: 'property2',
       property3: 'property3'
-    }, {noPublish: true}, function (e, result) {
+    }, {
+      noPublish: true
+    }, function (e, result) {
 
       ////////////////////console.log('did set');
       ////////////////////console.log([e, result]);
@@ -543,8 +607,7 @@ describe('b8_security_https_websockets_sanity', function () {
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -554,7 +617,7 @@ describe('b8_security_https_websockets_sanity', function () {
   });
 
 
-//We are testing setting data at a specific path
+  //We are testing setting data at a specific path
 
   it('the publisher should set new data ', function (callback) {
 
@@ -579,8 +642,7 @@ describe('b8_security_https_websockets_sanity', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -626,7 +688,7 @@ describe('b8_security_https_websockets_sanity', function () {
   });
 
 
-//We are testing pushing a specific value to a path which will actually become an array in the database
+  //We are testing pushing a specific value to a path which will actually become an array in the database
 
   it('the publisher should push a sibling and get all siblings', function (callback) {
 
@@ -663,7 +725,7 @@ describe('b8_security_https_websockets_sanity', function () {
   });
 
 
-//  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -694,8 +756,7 @@ describe('b8_security_https_websockets_sanity', function () {
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -989,7 +1050,13 @@ describe('b8_security_https_websockets_sanity', function () {
 
   it('fails to connect on http and the client is destroyed', function (done) {
 
-    happn_client.create({config: {protocol: 'http'}, testMode: true, connectTimeout:1000}, function (e) {
+    happn_client.create({
+      config: {
+        protocol: 'http'
+      },
+      testMode: true,
+      connectTimeout: 1000
+    }, function (e) {
 
       expect(e).to.be.an('object');
       expect(happn_client.lastClient).to.be.an('object');

@@ -17,7 +17,9 @@ describe('b4_check_for_holes', function () {
 
   before('it starts completely defaulted service, created a websockets client and an eventemiiter client', function (done) {
 
-    getService({secure: true}, function (e, service) {
+    getService({
+      secure: true
+    }, function (e, service) {
 
       if (e) return done(e);
 
@@ -26,7 +28,10 @@ describe('b4_check_for_holes', function () {
       serviceInstance = service;
 
       happn.client.create({
-          config: {username: '_ADMIN', password: 'happn'},
+          config: {
+            username: '_ADMIN',
+            password: 'happn'
+          },
           secure: true
         })
 

@@ -27,7 +27,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
   };
 
   var getClient = function (service, callback) {
-    service.services.session.localClient(function(e, instance){
+    service.services.session.localClient(function (e, instance) {
 
       if (e) return callback(e);
       callback(null, instance);
@@ -37,18 +37,16 @@ describe('a3_eventemitter_multiple_datasource', function () {
 
   before('should initialize the services', function (callback) {
 
-    this.timeout(60000);//travis sometiems takes ages...
+    this.timeout(60000); //travis sometiems takes ages...
 
-    var serviceConfigs = [
-      {
+    var serviceConfigs = [{
         port: 55001
       },
       {
         services: {
           data: {
             config: {
-              datastores: [
-                {
+              datastores: [{
                   name: 'memory',
                   isDefault: true,
                   patterns: [
@@ -142,8 +140,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
             expect(results.property1 == 'property1').to.be(true);
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -172,8 +169,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
             expect(results.property1 == 'property1').to.be(true);
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -189,8 +185,11 @@ describe('a3_eventemitter_multiple_datasource', function () {
 
       setTimeout(function () {
 
-        var fs = require('fs'), byline = require('byline');
-        var stream = byline(fs.createReadStream(filepath, {encoding: 'utf8'}));
+        var fs = require('fs'),
+          byline = require('byline');
+        var stream = byline(fs.createReadStream(filepath, {
+          encoding: 'utf8'
+        }));
         var found = false;
 
         stream.on('data', function (line) {
@@ -251,8 +250,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
             });
 
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -331,8 +329,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
             });
 
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -375,8 +372,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
             });
 
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -416,8 +412,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
             });
 
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -439,7 +434,9 @@ describe('a3_eventemitter_multiple_datasource', function () {
       property1: 'property1',
       property2: 'property2',
       property3: 'property3'
-    }, {noPublish: true}, function (e, result) {
+    }, {
+      noPublish: true
+    }, function (e, result) {
 
       ////////////////////console.log('did set');
       ////////////////////console.log([e, result]);
@@ -578,8 +575,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
             });
 
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -623,8 +619,7 @@ describe('a3_eventemitter_multiple_datasource', function () {
             });
 
           });
-        }
-        else
+        } else
           callback(e);
       });
 

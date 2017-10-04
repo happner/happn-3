@@ -14,7 +14,7 @@ describe('a6_eventemitter_embedded_datatypes', function () {
   var test_id;
 
   /*
-   This test demonstrates starting up the happn service - 
+   This test demonstrates starting up the happn service -
    the authentication service will use authTokenSecret to encrypt web tokens identifying
    the logon session. The utils setting will set the system to log non priority information
    */
@@ -71,7 +71,7 @@ describe('a6_eventemitter_embedded_datatypes', function () {
   var listenerclient;
 
   /*
-   We are initializing 2 clients to test saving data against the database, one client will push data into the 
+   We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
    */
   before('should initialize the clients', function (callback) {
@@ -114,7 +114,9 @@ describe('a6_eventemitter_embedded_datatypes', function () {
       var test_string = require('shortid').generate();
       var test_base_url = '/a6_eventemitter_embedded_datatypes/' + test_id + '/set/string/' + test_string;
 
-      publisherclient.set(test_base_url, test_string, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_string, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -130,8 +132,7 @@ describe('a6_eventemitter_embedded_datatypes', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -149,7 +150,9 @@ describe('a6_eventemitter_embedded_datatypes', function () {
       var test_number = Math.random();
       var test_base_url = '/a6_eventemitter_embedded_datatypes/' + test_id + '/set/number/' + test_number.toString().replace('.', '');
 
-      publisherclient.set(test_base_url, test_number, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_number, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -165,8 +168,7 @@ describe('a6_eventemitter_embedded_datatypes', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -185,7 +187,9 @@ describe('a6_eventemitter_embedded_datatypes', function () {
       var test_bool = true;
       var test_base_url = '/a6_eventemitter_embedded_datatypes/' + test_id + '/set/boolean/' + test_bool.toString();
 
-      publisherclient.set(test_base_url, test_bool, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_bool, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -201,8 +205,7 @@ describe('a6_eventemitter_embedded_datatypes', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -220,7 +223,9 @@ describe('a6_eventemitter_embedded_datatypes', function () {
       var test_date = new Date();
       var test_base_url = '/a6_eventemitter_embedded_datatypes/' + test_id + '/set/date';
 
-      publisherclient.set(test_base_url, test_date, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_date, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -236,8 +241,7 @@ describe('a6_eventemitter_embedded_datatypes', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -255,7 +259,9 @@ describe('a6_eventemitter_embedded_datatypes', function () {
       var test_null = null;
       var test_base_url = '/a6_eventemitter_embedded_datatypes/' + test_id + '/set/null';
 
-      publisherclient.set(test_base_url, test_null, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_null, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -267,12 +273,11 @@ describe('a6_eventemitter_embedded_datatypes', function () {
 
             if (e) return callback(e);
 
-            expect(result.value).to.be(test_null);//YES. IT IS NOW UNDEFINED
+            expect(result.value).to.be(test_null); //YES. IT IS NOW UNDEFINED
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -290,7 +295,9 @@ describe('a6_eventemitter_embedded_datatypes', function () {
       var test_undefined = undefined;
       var test_base_url = '/a6_eventemitter_embedded_datatypes/' + test_id + '/set/undefined';
 
-      publisherclient.set(test_base_url, test_undefined, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_undefined, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -306,8 +313,7 @@ describe('a6_eventemitter_embedded_datatypes', function () {
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -325,7 +331,9 @@ describe('a6_eventemitter_embedded_datatypes', function () {
       var test_array = [0, 1, 2, 3, 4, 5];
       var test_base_url = '/a6_eventemitter_embedded_datatypes/' + test_id + '/set/array';
 
-      publisherclient.set(test_base_url, test_array, {noPublish: true}, function (e, result) {
+      publisherclient.set(test_base_url, test_array, {
+        noPublish: true
+      }, function (e, result) {
 
         if (!e) {
 
@@ -344,8 +352,7 @@ describe('a6_eventemitter_embedded_datatypes', function () {
             callback(e);
 
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -364,7 +371,10 @@ describe('a6_eventemitter_embedded_datatypes', function () {
     try {
 
       //first listen for the change
-      listenerclient.on(test_base_url + '/*', {event_type: 'set', count: 1}, function (message) {
+      listenerclient.on(test_base_url + '/*', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(listenerclient.events['/SET@' + test_base_url + '/*'].length).to.be(0);
 
@@ -386,8 +396,7 @@ describe('a6_eventemitter_embedded_datatypes', function () {
 
 
           });
-        }
-        else
+        } else
           callback(e);
       });
 

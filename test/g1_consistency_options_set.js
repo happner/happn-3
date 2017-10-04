@@ -1,10 +1,9 @@
-var Happn = require('..')
-  , service = Happn.service
-  , expect = require('expect.js')
-  , async = require('async')
-  , shortid = require('shortid')
-  , Promise = require('bluebird')
-  ;
+var Happn = require('..'),
+  service = Happn.service,
+  expect = require('expect.js'),
+  async = require('async'),
+  shortid = require('shortid'),
+  Promise = require('bluebird');
 
 describe('g1_consistency_options_set', function () {
 
@@ -41,7 +40,8 @@ describe('g1_consistency_options_set', function () {
       }
     };
 
-    var ran1 = false, ran2 = false;
+    var ran1 = false,
+      ran2 = false;
 
     var subscription1, subscription2;
 
@@ -60,7 +60,9 @@ describe('g1_consistency_options_set', function () {
         clientInstance2 = client;
 
         return clientInstance1.on('/test/path/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran1 = true;
           }
@@ -71,7 +73,9 @@ describe('g1_consistency_options_set', function () {
         subscription1 = subscription;
 
         return clientInstance2.on('/test/path/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran2 = true;
           }
@@ -83,7 +87,9 @@ describe('g1_consistency_options_set', function () {
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance1.set('/test/path/1', {test: 'data'}, {
+          clientInstance1.set('/test/path/1', {
+            test: 'data'
+          }, {
             consistency: CONSISTENCY.DEFERRED,
             onPublished: function (e, results) {
 
@@ -122,7 +128,8 @@ describe('g1_consistency_options_set', function () {
       }
     };
 
-    var ran1 = false, ran2 = false;
+    var ran1 = false,
+      ran2 = false;
 
     var subscription1, subscription2;
 
@@ -141,7 +148,9 @@ describe('g1_consistency_options_set', function () {
         clientInstance2 = client;
 
         return clientInstance1.on('/test/path/transactional/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran1 = true;
           }
@@ -152,7 +161,9 @@ describe('g1_consistency_options_set', function () {
         subscription1 = subscription;
 
         return clientInstance2.on('/test/path/transactional/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran2 = true;
           }
@@ -164,7 +175,9 @@ describe('g1_consistency_options_set', function () {
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance1.set('/test/path/transactional/1', {test: 'data'}, {
+          clientInstance1.set('/test/path/transactional/1', {
+            test: 'data'
+          }, {
             consistency: CONSISTENCY.TRANSACTIONAL,
             publishResults: true
           }, function (e, response) {
@@ -198,7 +211,8 @@ describe('g1_consistency_options_set', function () {
       }
     };
 
-    var ran1 = false, ran2 = false;
+    var ran1 = false,
+      ran2 = false;
 
     var subscription1, subscription2;
 
@@ -217,7 +231,9 @@ describe('g1_consistency_options_set', function () {
         clientInstance2 = client;
 
         return clientInstance1.on('/test/path/queued/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran1 = true;
           }
@@ -228,7 +244,9 @@ describe('g1_consistency_options_set', function () {
         subscription1 = subscription;
 
         return clientInstance2.on('/test/path/queued/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran2 = true;
           }
@@ -240,7 +258,9 @@ describe('g1_consistency_options_set', function () {
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance1.set('/test/path/queued/1', {test: 'data'}, {
+          clientInstance1.set('/test/path/queued/1', {
+            test: 'data'
+          }, {
             consistency: CONSISTENCY.QUEUED,
             publishResults: true
           }, function (e, response) {
@@ -273,7 +293,8 @@ describe('g1_consistency_options_set', function () {
       }
     };
 
-    var ran1 = false, ran2 = false;
+    var ran1 = false,
+      ran2 = false;
 
     var subscription1, subscription2;
 
@@ -305,7 +326,9 @@ describe('g1_consistency_options_set', function () {
         clientInstance2 = client;
 
         return clientInstance1.on('/test/path/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran1 = true;
           }
@@ -316,7 +339,9 @@ describe('g1_consistency_options_set', function () {
         subscription1 = subscription;
 
         return clientInstance2.on('/test/path/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran2 = true;
           }
@@ -327,7 +352,9 @@ describe('g1_consistency_options_set', function () {
         subscription2 = subscription;
         setHappened = false;
 
-        clientInstance1.set('/test/path/1', {test: 'data'}, {
+        clientInstance1.set('/test/path/1', {
+          test: 'data'
+        }, {
 
           consistency: CONSISTENCY.DEFERRED,
 
@@ -368,7 +395,8 @@ describe('g1_consistency_options_set', function () {
       }
     };
 
-    var ran1 = false, ran2 = false;
+    var ran1 = false,
+      ran2 = false;
 
     var subscription1, subscription2;
 
@@ -391,7 +419,9 @@ describe('g1_consistency_options_set', function () {
         clientInstance2 = client;
 
         return clientInstance1.on('/test/path/acknowledged/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran1 = true;
           }
@@ -403,7 +433,9 @@ describe('g1_consistency_options_set', function () {
         subscription1 = subscription;
 
         return clientInstance2.on('/test/path/acknowledged/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran2 = true;
           }
@@ -416,7 +448,9 @@ describe('g1_consistency_options_set', function () {
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance1.set('/test/path/acknowledged/1', {test: 'data'}, {
+          clientInstance1.set('/test/path/acknowledged/1', {
+            test: 'data'
+          }, {
 
             consistency: CONSISTENCY.ACKNOWLEDGED,
 
@@ -468,7 +502,8 @@ describe('g1_consistency_options_set', function () {
       }
     };
 
-    var ran1 = false, ran2 = false;
+    var ran1 = false,
+      ran2 = false;
 
     var subscription1, subscription2;
 
@@ -495,7 +530,9 @@ describe('g1_consistency_options_set', function () {
         };
 
         return clientInstance1.on('/test/path/acknowledged_timed_out/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran1 = true;
           }
@@ -506,7 +543,9 @@ describe('g1_consistency_options_set', function () {
         subscription1 = subscription;
 
         return clientInstance2.on('/test/path/acknowledged_timed_out/*', {
-          meta: {publish: true},
+          meta: {
+            publish: true
+          },
           onPublished: function (data) {
             ran2 = true;
           }
@@ -516,7 +555,9 @@ describe('g1_consistency_options_set', function () {
 
         subscription2 = subscription;
 
-        clientInstance1.set('/test/path/acknowledged_timed_out/1', {test: 'data'}, {
+        clientInstance1.set('/test/path/acknowledged_timed_out/1', {
+          test: 'data'
+        }, {
 
           consistency: CONSISTENCY.ACKNOWLEDGED,
 

@@ -15,72 +15,108 @@ describe(require('path').basename(__filename), function () {
   var crypto = new Crypto();
 
   var serviceConfig1 = {
-    port:10000,
+    port: 10000,
     secure: true,
     encryptPayloads: true,
-    services:{
+    services: {
       security: {
         config: {
-          sessionTokenSecret:'h1_test-secret',
+          sessionTokenSecret: 'h1_test-secret',
           keyPair: {
             privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=',
             publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
           },
-          profiles:[ //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
+          profiles: [ //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
             {
-              name:"token-not-allowed",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{tokenNotAllowedForLogin:{$eq:true}}
+              name: "token-not-allowed",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    tokenNotAllowedForLogin: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
-                disallowTokenLogins:true
+              policy: {
+                disallowTokenLogins: true
               }
             }, {
-              name:"short-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{shortSession:{$eq:true}}
+              name: "short-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    shortSession: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
+              policy: {
                 ttl: '2 seconds'
               }
             }, {
-              name:"browser-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{_browser:{$eq:true}}
+              name: "browser-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    _browser: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
+              policy: {
                 ttl: '7 days'
               }
             }, {
-              name:"locked-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  info:{tokenOriginLocked:{$eq:true}}
+              name: "locked-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  info: {
+                    tokenOriginLocked: {
+                      $eq: true
+                    }
+                  }
                 }]
               },
-              policy:{
+              policy: {
                 ttl: 0, // no ttl
-                lockTokenToOrigin:true
+                lockTokenToOrigin: true
               }
             }, {
-              name:"node-session",
-              session:{
-                $and:[{
-                  user:{username:{$eq:'_ADMIN'}},
-                  _browser:false
+              name: "node-session",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  _browser: false
                 }]
               },
-              policy:{
+              policy: {
                 ttl: 0 // no ttl
               }
             }
@@ -120,17 +156,21 @@ describe(require('path').basename(__filename), function () {
 
   it('tests the default browser profile', function (done) {
 
-    var session = {info:{_browser:true}};
+    var session = {
+      info: {
+        _browser: true
+      }
+    };
 
     happnInstance1.services.security.__profileSession(session);
 
-    expect(session.policy[0].ttl).to.be(7 * 24 * 60 * 60 * 1000);// 7 days
+    expect(session.policy[0].ttl).to.be(7 * 24 * 60 * 60 * 1000); // 7 days
 
-    expect(session.policy[0].inactivity_threshold).to.be(60 * 60 * 1000);// 1 hour
+    expect(session.policy[0].inactivity_threshold).to.be(60 * 60 * 1000); // 1 hour
 
-    expect(session.policy[1].ttl).to.be(7 * 24 * 60 * 60 * 1000);// 7 days
+    expect(session.policy[1].ttl).to.be(7 * 24 * 60 * 60 * 1000); // 7 days
 
-    expect(session.policy[1].inactivity_threshold).to.be(60 * 60 * 1000);// 1 hour
+    expect(session.policy[1].inactivity_threshold).to.be(60 * 60 * 1000); // 1 hour
 
     done();
 
@@ -138,13 +178,15 @@ describe(require('path').basename(__filename), function () {
 
   it('tests the default stateful profile', function (done) {
 
-    var session = {type:1};
+    var session = {
+      type: 1
+    };
 
     happnInstance1.services.security.__profileSession(session);
 
-    expect(session.policy[1].ttl).to.be(0);// never
+    expect(session.policy[1].ttl).to.be(0); // never
 
-    expect(session.policy[1].inactivity_threshold).to.be(Infinity);// never
+    expect(session.policy[1].inactivity_threshold).to.be(Infinity); // never
 
     done();
 
@@ -152,13 +194,15 @@ describe(require('path').basename(__filename), function () {
 
   it('tests the default stateless profile', function (done) {
 
-    var session = {type:0};
+    var session = {
+      type: 0
+    };
 
     happnInstance1.services.security.__profileSession(session);
 
-    expect(session.policy[1].ttl).to.be(0);// never
+    expect(session.policy[1].ttl).to.be(0); // never
 
-    expect(session.policy[1].inactivity_threshold).to.be(Infinity);// never
+    expect(session.policy[1].inactivity_threshold).to.be(Infinity); // never
 
     done();
 

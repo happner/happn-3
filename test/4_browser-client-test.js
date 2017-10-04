@@ -25,11 +25,11 @@ describe('4_browser-client-test', function () {
 
     try {
       service.create(function (e, happnInst) {
-          if (e) return callback(e);
+        if (e) return callback(e);
 
-          happnInstance = happnInst;
-          callback();
-        });
+        happnInstance = happnInst;
+        callback();
+      });
     } catch (e) {
       callback(e);
     }
