@@ -1326,47 +1326,6 @@ describe('2_websockets_embedded_sanity', function () {
     });
   });
 
-  it('subscribes with a count - we ensure the event only gets kicked off for the correct amounts', function (callback) {
-
-    var hits = 0;
-    //first listen for the change
-    listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/*', {
-      event_type: 'set',
-      count: 2
-    }, function (message) {
-      hits++;
-    }, function (e) {
-
-      if (e) return callback(e);
-
-      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/1', {
-        property1: 'property1',
-        property2: 'property2',
-        property3: 'property3'
-      });
-
-      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/2', {
-        property1: 'property1',
-        property2: 'property2',
-        property3: 'property3'
-      });
-
-      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/2', {
-        property1: 'property1',
-        property2: 'property2',
-        property3: 'property3'
-      });
-
-      setTimeout(function () {
-
-        if (hits != 2) return callback(new Error('hits were over the agreed on 2'));
-
-        callback();
-
-      }, 1500);
-    });
-  });
-
   it('subscribes with a count - we ensure the event only gets kicked off for the correct amounts - negative test', function (callback) {
 
     var hits = 0;
@@ -1404,6 +1363,57 @@ describe('2_websockets_embedded_sanity', function () {
 
         callback();
 
+      }, 1500);
+    });
+  });
+
+  it('subscribe, then does an off with a bad handle', function (done) {
+
+    var hits = 0;
+    var currentEventId;
+    //first listen for the change
+    listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/*', {
+      event_type: 'set'
+    }, function (message) {
+      hits++;
+    }, function (e, eventId) {
+
+      if (e) return callback(e);
+
+      currentEventId = eventId;
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/1', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/2', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/2', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      setTimeout(function () {
+
+        publisherclient.off('/1_eventemitter_embedded_sanity/*', function(e){
+
+          expect(e.toString()).to.be('Error: handle must be a number');
+
+          publisherclient.off(null, function(e){
+
+            expect(e.toString()).to.be('Error: handle cannot be null');
+
+            publisherclient.off(currentEventId, done);
+
+          });
+        });
       }, 1500);
     });
   });

@@ -1463,4 +1463,55 @@ describe('1_eventemitter_embedded_sanity', function () {
     });
   });
 
+  it('subscribe, then does an off with a bad handle', function (done) {
+
+    var hits = 0;
+    var currentEventId;
+    //first listen for the change
+    listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/*', {
+      event_type: 'set'
+    }, function (message) {
+      hits++;
+    }, function (e, eventId) {
+
+      if (e) return callback(e);
+
+      currentEventId = eventId;
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/1', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/2', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/2', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      });
+
+      setTimeout(function () {
+
+        publisherclient.off('/1_eventemitter_embedded_sanity/*', function(e){
+
+          expect(e.toString()).to.be('Error: handle must be a number');
+
+          publisherclient.off(null, function(e){
+
+            expect(e.toString()).to.be('Error: handle cannot be null');
+
+            publisherclient.off(currentEventId, done);
+
+          });
+        });
+      }, 1500);
+    });
+  });
+
 });

@@ -123,8 +123,7 @@ describe(require('path').basename(__filename), function () {
           if (pathOnRan) return callback(new Error('subscription was not removed by path'));
           else pathOnRan = true;
 
-          //off path is deprecated - but should still function
-          listenerclient.off(path, function (e) {
+          listenerclient.offPath(path, function (e) {
 
             if (e) return callback(new Error(e));
 
@@ -269,10 +268,10 @@ describe(require('path').basename(__filename), function () {
       it('tests various fail conditions', function (callback) {
 
         listenerclient.off(null, function (e) {
-          expect(e.toString()).to.be('Error: handle or callback cannot be null');
+          expect(e.toString()).to.be('Error: handle cannot be null');
 
           listenerclient.off(undefined, function (e) {
-            expect(e.toString()).to.be('Error: handle or callback cannot be null');
+            expect(e.toString()).to.be('Error: handle cannot be null');
             //doing off with non-existant path
             listenerclient.offPath('some odd random path', function (e) {
               if (e) return callback(e);

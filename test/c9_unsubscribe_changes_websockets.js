@@ -77,8 +77,7 @@ describe('c9_unsubscribe_changes_websockets', function () {
       if (pathOnRan) return callback(new Error('subscription was not removed by path'));
       else pathOnRan = true;
 
-      //off path is deprecated - but should still function
-      listenerclient.off('/e2e_test1/testsubscribe/data/on_off_test', function (e) {
+      listenerclient.offPath('/e2e_test1/testsubscribe/data/on_off_test', function (e) {
 
         if (e)
           return callback(new Error(e));
@@ -221,10 +220,10 @@ describe('c9_unsubscribe_changes_websockets', function () {
   it('tests various fail conditions', function (callback) {
 
     listenerclient.off(null, function (e) {
-      expect(e.toString()).to.be('Error: handle or callback cannot be null');
+      expect(e.toString()).to.be('Error: handle cannot be null');
 
       listenerclient.off(undefined, function (e) {
-        expect(e.toString()).to.be('Error: handle or callback cannot be null');
+        expect(e.toString()).to.be('Error: handle cannot be null');
         //doing off with non-existant path
         listenerclient.offPath('some odd random path', function (e) {
           if (e) return callback(e);
