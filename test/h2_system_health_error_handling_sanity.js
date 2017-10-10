@@ -82,11 +82,11 @@ describe(require('path').basename(__filename), function () {
 
     testProvider.__oldFindOne = testProvider.findOne;
 
-    testProvider.findOne = function(criteria, fields, callback){
+    testProvider.findOne = function (criteria, fields, callback) {
       return callback(new Error('test error'));
     };
 
-    serviceInstance.services.data.getOneByPath('/test/path', null, function(e){
+    serviceInstance.services.data.getOneByPath('/test/path', null, function (e) {
 
       expect(e.toString()).to.be('SystemError: test error');
 
@@ -99,21 +99,24 @@ describe(require('path').basename(__filename), function () {
 
   it('tests failures in the subscription service', function (done) {
 
-    serviceInstance.services.session.localClient({username: '_ADMIN', password: 'happn'})
+    serviceInstance.services.session.localClient({
+        username: '_ADMIN',
+        password: 'happn'
+      })
 
       .then(function (client) {
 
         serviceInstance.services.subscription.__oldAddListener = serviceInstance.services.subscription.addListener.bind(serviceInstance.services.subscription);
 
-        serviceInstance.services.subscription.addListener = function(channel, key, sessionId, parameters, callback){
+        serviceInstance.services.subscription.addListener = function (channel, key, sessionId, parameters, callback) {
 
           return callback(new Error('test subscribe error'));
 
         }.bind(serviceInstance.services.subscription);
 
-        client.on('/test/on', function(data){
+        client.on('/test/on', function (data) {
           //do nothing
-        }, function(e){
+        }, function (e) {
 
           expect(e.toString()).to.be('SystemError: subscribe failed');
 
@@ -137,24 +140,31 @@ describe(require('path').basename(__filename), function () {
 
   it('tests failures in the publisher service', function (done) {
 
-    serviceInstance.services.session.localClient({username: '_ADMIN', password: 'happn'})
+    serviceInstance.services.session.localClient({
+        username: '_ADMIN',
+        password: 'happn'
+      })
 
       .then(function (client) {
 
         serviceInstance.services.publisher.__oldPublishMessage = serviceInstance.services.publisher.publishMessage.bind(serviceInstance.services.publisher);
 
-        serviceInstance.services.publisher.publishMessage = function(message, callback){
+        serviceInstance.services.publisher.publishMessage = function (message, callback) {
 
           return callback(new Error('a test publication error'), message);
         };
 
-        client.on('/test/publication', function(data){
+        client.on('/test/publication', function (data) {
           //do nothing
-        }, function(e){
+        }, function (e) {
 
           if (e) return done(e);
 
-          client.set('/test/publication', {test:'data'}, {consistency:constants.CONSISTENCY.TRANSACTIONAL}, function(e){
+          client.set('/test/publication', {
+            test: 'data'
+          }, {
+            consistency: constants.CONSISTENCY.TRANSACTIONAL
+          }, function (e) {
 
             var stats = serviceInstance.services.system.stats();
 
@@ -181,23 +191,26 @@ describe(require('path').basename(__filename), function () {
 
   it('tests failures in the protocol service', function (done) {
 
-    serviceInstance.services.session.localClient({username: '_ADMIN', password: 'happn'})
+    serviceInstance.services.session.localClient({
+        username: '_ADMIN',
+        password: 'happn'
+      })
 
       .then(function (client) {
 
         serviceInstance.services.protocol.__oldRespondMessageIn = serviceInstance.services.protocol.__respondMessageIn;
 
-        serviceInstance.services.protocol.__respondMessageIn = function(protocol, message, respond, e){
+        serviceInstance.services.protocol.__respondMessageIn = function (protocol, message, respond, e) {
 
           serviceInstance.services.protocol.__latest.__oldFail = serviceInstance.services.protocol.__latest.fail;
 
-          serviceInstance.services.protocol.__latest.fail = function(){
+          serviceInstance.services.protocol.__latest.fail = function () {
             throw new Error('test protocol fail error');
           };
 
           serviceInstance.services.protocol.__oldRespondMessageIn(protocol, message, respond, new Error('test protocol error'));
 
-          setTimeout(function(){
+          setTimeout(function () {
 
             var stats = serviceInstance.services.system.stats();
 
@@ -211,7 +224,7 @@ describe(require('path').basename(__filename), function () {
 
             serviceInstance.services.protocol.__respondMessageIn = serviceInstance.services.protocol.__oldRespondMessageIn.bind(serviceInstance.services.protocol);
 
-            client.get('/test/get', function(e, items){
+            client.get('/test/get', function (e, items) {
               expect(e).to.be(null);
               done();
             });
@@ -220,7 +233,7 @@ describe(require('path').basename(__filename), function () {
 
         }.bind(serviceInstance.services.protocol);
 
-        client.get('/test/get', function(e, items){
+        client.get('/test/get', function (e, items) {
           //do nothing
         });
       })

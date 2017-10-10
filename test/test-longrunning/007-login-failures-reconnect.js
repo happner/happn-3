@@ -21,8 +21,12 @@ describe(require('path').basename(__filename), function () {
   };
 
   testGroup2.permissions = {
-    '/@HTTP/secure/test/removed/user': {actions: ['get']},
-    '/@HTTP/secure/test/not_removed/user': {actions: ['get']}
+    '/@HTTP/secure/test/removed/user': {
+      actions: ['get']
+    },
+    '/@HTTP/secure/test/not_removed/user': {
+      actions: ['get']
+    }
   };
 
   var testUser2 = {
@@ -35,12 +39,16 @@ describe(require('path').basename(__filename), function () {
       var addedTestGroup2;
       var addedTestuser2;
 
-      server1.services.security.users.upsertGroup(testGroup2, {overwrite: false}, function (e, result) {
+      server1.services.security.users.upsertGroup(testGroup2, {
+        overwrite: false
+      }, function (e, result) {
 
         if (e) return reject(e);
         addedTestGroup2 = result;
 
-        server1.services.security.users.upsertUser(testUser2, {overwrite: false}, function (e, result) {
+        server1.services.security.users.upsertUser(testUser2, {
+          overwrite: false
+        }, function (e, result) {
 
           if (e) return reject(e);
           addedTestuser2 = result;
@@ -57,7 +65,10 @@ describe(require('path').basename(__filename), function () {
 
   function createService(allowLogin, returnError) {
 
-    return Happn.service.create({secure: true, port: testPort})
+    return Happn.service.create({
+        secure: true,
+        port: testPort
+      })
 
       .then(function (server) {
 
@@ -110,8 +121,7 @@ describe(require('path').basename(__filename), function () {
   });
 
   it('logs in normally', function () {
-    Happn.client.create(
-      {
+    Happn.client.create({
         config: {
           username: testUser2.username,
           password: testUser2.password,
@@ -129,8 +139,7 @@ describe(require('path').basename(__filename), function () {
 
     var client;
 
-    return Happn.client.create(
-      {
+    return Happn.client.create({
         username: testUser2.username,
         password: testUser2.password,
         port: testPort,
@@ -187,7 +196,7 @@ describe(require('path').basename(__filename), function () {
 
         server1.services.security.login = function (credentials, sessionId, callback) {
           this.emit('loginAttempt');
-          callback();//allow login
+          callback(); //allow login
         }.bind(server1.services.security);
 
       })
@@ -197,14 +206,13 @@ describe(require('path').basename(__filename), function () {
 
     var client;
 
-    return Happn.client.create(
-      {
-        config:{
+    return Happn.client.create({
+        config: {
           username: testUser2.username,
           password: testUser2.password,
           port: testPort,
           callTimeout: 2000,
-          loginRetry: 0//don't login retry
+          loginRetry: 0 //don't login retry
         }
       })
       .then(function (clientInstance) {
@@ -260,14 +268,13 @@ describe(require('path').basename(__filename), function () {
 
     var client;
 
-    return Happn.client.create(
-      {
-        config:{
+    return Happn.client.create({
+        config: {
           username: testUser2.username,
           password: testUser2.password,
           port: testPort,
           callTimeout: 2000,
-          loginRetry: 0//don't login retry
+          loginRetry: 0 //don't login retry
         }
       })
       .then(function (clientInstance) {
@@ -305,10 +312,10 @@ describe(require('path').basename(__filename), function () {
         return new Promise(function (resolve) {
           {
             var subHandle = client.onEvent('reconnect-successful',
-            function waitForConnectSuccess() {
-              client.offEvent(subHandle);
-              resolve();
-            });
+              function waitForConnectSuccess() {
+                client.offEvent(subHandle);
+                resolve();
+              });
           }
         });
       })
@@ -318,9 +325,9 @@ describe(require('path').basename(__filename), function () {
           {
 
             var subHandle = client.onEvent('reconnect',
-            function waitForConnectSuccess() {
-              reject(new Error('This should not happen'));
-            });
+              function waitForConnectSuccess() {
+                reject(new Error('This should not happen'));
+              });
 
             setTimeout(function () {
               client.offEvent(subHandle);
@@ -340,13 +347,12 @@ describe(require('path').basename(__filename), function () {
 
     var client;
 
-    return Happn.client.create(
-      {
+    return Happn.client.create({
         username: testUser2.username,
         password: testUser2.password,
         port: testPort,
         callTimeout: 2000,
-        loginRetry: 0//don't login retry
+        loginRetry: 0 //don't login retry
       })
       .then(function (clientInstance) {
         client = clientInstance;
@@ -390,14 +396,13 @@ describe(require('path').basename(__filename), function () {
 
     var reconnectionAttempts = 0;
 
-    Happn.client.create(
-      {
+    Happn.client.create({
         config: {
           username: testUser2.username,
           password: 'bad_password',
           port: testPort,
-          loginRetry:0,
-          loginTimeout:4000
+          loginRetry: 0,
+          loginTimeout: 4000
         }
       })
       .then(function () {
@@ -439,24 +444,23 @@ describe(require('path').basename(__filename), function () {
 
     var callbackCalled = 0;
 
-    Happn.client.create(
-      {
-        username: testUser2.username,
-        password: testUser2.password,
-        port: testPort + 1,
-        callTimeout: 2000,
-        loginRetry: 0//don't login retry
+    Happn.client.create({
+      username: testUser2.username,
+      password: testUser2.password,
+      port: testPort + 1,
+      callTimeout: 2000,
+      loginRetry: 0 //don't login retry
 
-      }, function (e) {
+    }, function (e) {
 
-        callbackCalled++;
+      callbackCalled++;
 
-        expect(e).to.be.an('object');
+      expect(e).to.be.an('object');
 
-        setTimeout(function () {
-          expect(callbackCalled).to.equal(1);
-          done();
-        }, 30000);
-      });
+      setTimeout(function () {
+        expect(callbackCalled).to.equal(1);
+        done();
+      }, 30000);
+    });
   });
 });

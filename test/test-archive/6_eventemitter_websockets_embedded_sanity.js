@@ -12,7 +12,7 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
   var happnInstance = null;
 
   /*
-   This test demonstrates starting up the happn service - 
+   This test demonstrates starting up the happn service -
    the authentication service will use authTokenSecret to encrypt web tokens identifying
    the logon session. The utils setting will set the system to log non priority information
    */
@@ -65,7 +65,7 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
   var listenerclient;
 
   /*
-   We are initializing 2 clients to test saving data against the database, one client will push data into the 
+   We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
    */
   it('should initialize the clients', function (callback) {
@@ -78,7 +78,10 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
 
         publisherclient = instance;
 
-        happn_client.create({plugin: happn.client_plugins.intra_process, context: happnInstance},
+        happn_client.create({
+            plugin: happn.client_plugins.intra_process,
+            context: happnInstance
+          },
           function (e, instance) {
 
             if (e) return callback(e);
@@ -104,7 +107,9 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         ////////////console.log('set happened');
         ////////////console.log([e, result]);
@@ -151,7 +156,11 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
         //////////////console.log('set results');
         //////////////console.log(result);
 
-        publisherclient.set('e2e_test1/testsubscribe/data/merge/' + test_path_end, {property4: 'property4'}, {merge: true}, function (e, result) {
+        publisherclient.set('e2e_test1/testsubscribe/data/merge/' + test_path_end, {
+          property4: 'property4'
+        }, {
+          merge: true
+        }, function (e, result) {
 
           if (e)
             return callback(e);
@@ -201,15 +210,34 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
 
 
     var criteria1 = {
-      $or: [{"data.regions": {$in: ['North', 'South', 'East', 'West']}},
-        {"data.towns": {$in: ['North.Cape Town', 'South.East London']}},
-        {"data.categories": {$in: ["Action", "History"]}}],
-      "data.keywords": {$in: ["bass", "Penny Siopis"]}
+      $or: [{
+          "data.regions": {
+            $in: ['North', 'South', 'East', 'West']
+          }
+        },
+        {
+          "data.towns": {
+            $in: ['North.Cape Town', 'South.East London']
+          }
+        },
+        {
+          "data.categories": {
+            $in: ["Action", "History"]
+          }
+        }
+      ],
+      "data.keywords": {
+        $in: ["bass", "Penny Siopis"]
+      }
     }
 
     var options1 = {
-      fields: {"data": 1},
-      sort: {"data.field1": 1},
+      fields: {
+        "data": 1
+      },
+      sort: {
+        "data.field1": 1
+      },
       limit: 1
     }
 
@@ -217,7 +245,9 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
 
     var options2 = {
       fields: null,
-      sort: {"field1": 1},
+      sort: {
+        "field1": 1
+      },
       limit: 2
     }
 
@@ -268,10 +298,14 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         //We perform the actual delete
-        publisherclient.remove('/e2e_test1/testsubscribe/data/delete_me', {noPublish: true}, function (e, result) {
+        publisherclient.remove('/e2e_test1/testsubscribe/data/delete_me', {
+          noPublish: true
+        }, function (e, result) {
 
           expect(e).to.be(null);
           expect(result._meta.status).to.be('ok');
@@ -301,7 +335,9 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, insertResult) {
+      }, {
+        noPublish: true
+      }, function (e, insertResult) {
 
         expect(e).to.be(null);
 
@@ -310,7 +346,9 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
           property2: 'property2',
           property3: 'property3',
           property4: 'property4'
-        }, {noPublish: true}, function (e, updateResult) {
+        }, {
+          noPublish: true
+        }, function (e, updateResult) {
 
           expect(e).to.be(null);
           expect(updateResult._id == insertResult._id).to.be(true);
@@ -326,7 +364,7 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
   });
 
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -335,7 +373,10 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
     try {
 
       //first listen for the change
-      listenerclient.on('/e2e_test1/testsubscribe/data/event', {event_type: 'set', count: 1}, function (message) {
+      listenerclient.on('/e2e_test1/testsubscribe/data/event', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
@@ -479,7 +520,7 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
   });
 
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -488,7 +529,10 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
     try {
 
       //first listen for the change
-      listenerclient.on('/e2e_test1/testsubscribe/data/event', {event_type: 'set', count: 1}, function (message) {
+      listenerclient.on('/e2e_test1/testsubscribe/data/event', {
+        event_type: 'set',
+        count: 1
+      }, function (message) {
 
         expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
@@ -576,7 +620,7 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
           //////////////////console.log(message);
 
           //we are looking at the event internals on the listener to ensure our event management is working - because we are only listening for 1
-          //instance of this event - the event listener should have been removed 
+          //instance of this event - the event listener should have been removed
           ////console.log('listenerclient.events');
           ////console.log(listenerclient.events);
           expect(listenerclient.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(0);
@@ -627,7 +671,10 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
 
     var currentListenerId;
 
-    listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       //we detach all listeners from the path here
       ////console.log('ABOUT OFF PATH');
@@ -636,7 +683,10 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
         if (e)
           return callback(new Error(e));
 
-        listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0},
+        listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {
+            event_type: 'set',
+            count: 0
+          },
           function (message) {
 
             ////console.log('ON RAN');
@@ -747,7 +797,10 @@ describe('6_eventemitter_websockets_embedded_sanity', function () {
 
       if (e) return callback(e);
 
-      listenerclient.on('/e2e_test1/testsubscribe/data/off_all_test', {event_type: 'set', count: 0},
+      listenerclient.on('/e2e_test1/testsubscribe/data/off_all_test', {
+          event_type: 'set',
+          count: 0
+        },
         function (message) {
           onHappened = true;
           callback(new Error('this wasnt meant to happen'));

@@ -86,7 +86,9 @@ describe(name, function () {
         // if any events go missing (not emitted to subscribers this
         // test go on forever because it only emits just enough events
         // to satisfy the required total (endAt) where/when endTest() is run
-        this.publisher.set('/some/path/event' + i % eventCount, {da: 'ta'});
+        this.publisher.set('/some/path/event' + i % eventCount, {
+          da: 'ta'
+        });
       }
     });
 
@@ -157,7 +159,9 @@ describe(name, function () {
       this.happnServer.log.info('XXX -- START TEST -- calling set()');
       this.timeout(subscriberCount * emitCount / 10);
       this.endTest = done;
-      this.publisher.set('/some/path/0', {da: 'ta'});
+      this.publisher.set('/some/path/0', {
+        da: 'ta'
+      });
       // this.publisher.set('/some/path/0', {da: 'ta'}, {noStore: true});
     });
 
@@ -319,7 +323,9 @@ describe(name, function () {
 
       debug('XXX -- START TEST -- calling set()');
       this.endTest = done;
-      this.publisher.set('/some/path', {da: 'ta'});
+      this.publisher.set('/some/path', {
+        da: 'ta'
+      });
 
     });
 

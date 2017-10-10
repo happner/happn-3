@@ -32,60 +32,70 @@ describe(filename, function () {
       'stats'
     ];
 
-    var serviceConfig = {services:{}};
+    var serviceConfig = {
+      services: {}
+    };
 
-    systemServices.forEach(function(serviceName){
+    systemServices.forEach(function (serviceName) {
 
       serviceConfig.services[serviceName] = {
-        instance:{
-          initialize:function(config, cb){
+        instance: {
+          initialize: function (config, cb) {
             cb();
           },
-          stop:function(opts, cb){
+          stop: function (opts, cb) {
             cb();
           }
         }
       };
     });
 
-    serviceConfig.services['myService1'] = {instance:{
-      initialize:function(config, cb){
-        cb();
-      },
-      stop:function(opts, cb){
-        cb();
-      },
-      test:function(){return 'TEST1';}
-    }};
+    serviceConfig.services['myService1'] = {
+      instance: {
+        initialize: function (config, cb) {
+          cb();
+        },
+        stop: function (opts, cb) {
+          cb();
+        },
+        test: function () {
+          return 'TEST1';
+        }
+      }
+    };
 
-    serviceConfig.services['myService2'] = {instance:{
-      initialize:function(config, cb){
-        cb();
-      },
-      stop:function(opts, cb){
-        cb();
-      },
-      test:function(){return 'TEST2';}
-    }};
+    serviceConfig.services['myService2'] = {
+      instance: {
+        initialize: function (config, cb) {
+          cb();
+        },
+        stop: function (opts, cb) {
+          cb();
+        },
+        test: function () {
+          return 'TEST2';
+        }
+      }
+    };
 
     var happn = {
 
-      services:{},
+      services: {},
 
-      log:{
-        $$TRACE:function(message){
+      log: {
+        $$TRACE: function (message) {
           console.log(message);
         },
-        error:function(message){
+        error: function (message) {
           console.log(message);
         },
-        info:function(message){
+        info: function (message) {
           console.log(message);
         }
       }
     };
 
-    serviceManager.initialize(serviceConfig, happn, function(e){
+    serviceManager.initialize(serviceConfig, happn, function (e) {
 
       if (e) return done(e);
 

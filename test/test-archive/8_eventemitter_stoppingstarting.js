@@ -80,8 +80,10 @@ describe('8_eventemitter_stoppingstarting', function () {
 
       if (e) return callback(e);
 
-      testclient.set(persistKey,
-        {property1: "prop1", prop2: "prop2"},
+      testclient.set(persistKey, {
+          property1: "prop1",
+          prop2: "prop2"
+        },
         null,
         callback
       );

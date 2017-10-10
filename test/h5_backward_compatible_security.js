@@ -13,9 +13,9 @@ describe(require('path').basename(__filename), function () {
   var http = require('http');
 
   var serviceConfig = {
-    port:10000,
-    secure:true,
-    services:{
+    port: 10000,
+    secure: true,
+    services: {
       data: {
         config: {
           filename: __dirname + path.sep + 'fixtures' + path.sep + 'old_db.nedb'
@@ -52,9 +52,12 @@ describe(require('path').basename(__filename), function () {
     else done();
   });
 
-  it('logs in with the correct admin password', function(done){
+  it('logs in with the correct admin password', function (done) {
 
-    happnInstance.services.session.localClient({username: '_ADMIN', password: 'password'})
+    happnInstance.services.session.localClient({
+        username: '_ADMIN',
+        password: 'password'
+      })
 
       .then(function (clientInstance) {
         done();

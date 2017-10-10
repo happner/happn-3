@@ -72,7 +72,9 @@ describe('f1_client_call_timeout', function () {
 
   it('should increase the call timeout for the client', function (callback) {
 
-    happn.client.create({callTimeout: 40000}, function (e, instance) {
+    happn.client.create({
+      callTimeout: 40000
+    }, function (e, instance) {
 
       if (e) return callback(e);
       expect(instance.options.callTimeout).to.be(40000);
@@ -85,13 +87,19 @@ describe('f1_client_call_timeout', function () {
 
   it('should decrease the call timeout for the client, and fail to make a call', function (callback) {
 
-    happn.client.create({callTimeout: 40000}, function (e, instance) {
+    happn.client.create({
+      callTimeout: 40000
+    }, function (e, instance) {
 
       if (e) return callback(e);
 
       expect(instance.options.callTimeout).to.be(40000);
 
-      instance.set('/test/path', {test: 'data'}, {timeout: 1}, function (e) {
+      instance.set('/test/path', {
+        test: 'data'
+      }, {
+        timeout: 1
+      }, function (e) {
 
         expect(e.toString()).to.be('Error: api request timed out path: /test/path action: set');
 
@@ -103,5 +111,3 @@ describe('f1_client_call_timeout', function () {
 });
 
 //require('benchmarket').stop();
-
-

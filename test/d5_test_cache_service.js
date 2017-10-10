@@ -1,4 +1,4 @@
-describe('d5_test_cache_service', function() {
+describe('d5_test_cache_service', function () {
 
   this.timeout(20000);
 
@@ -13,30 +13,32 @@ describe('d5_test_cache_service', function() {
 
   var async = require('async');
 
-  before('should initialize the service', function(callback) {
+  before('should initialize the service', function (callback) {
 
     var UtilService = require('../lib/services/utils/service');
     var utilService = new UtilService();
 
     serviceInstance.happn = {
-      services:{
-        utils:utilService
+      services: {
+        utils: utilService
       }
     };
 
     serviceInstance.initialize(config, callback);
   });
 
-  after(function(done) {
+  after(function (done) {
 
     serviceInstance.stop(done);
   });
 
-  it('sets data, default cache', function(done) {
+  it('sets data, default cache', function (done) {
 
     var key = testId + 'test1';
 
-    serviceInstance.set(key, {"dkey":key}, function(e, result){
+    serviceInstance.set(key, {
+      "dkey": key
+    }, function (e, result) {
 
       if (e) return done(e);
 
@@ -50,18 +52,20 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('gets data, default cache', function(done) {
+  it('gets data, default cache', function (done) {
 
     var key = testId + 'test1';
 
-    serviceInstance.set(key, {"dkey":key}, function(e, result){
+    serviceInstance.set(key, {
+      "dkey": key
+    }, function (e, result) {
 
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
       expect(serviceInstance.__defaultCache.__cache[key].key).to.be(key);
 
-      serviceInstance.get(key, function(e, data){
+      serviceInstance.get(key, function (e, data) {
 
         if (e) return done(e);
 
@@ -72,18 +76,20 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('gets no data, default cache', function(done) {
+  it('gets no data, default cache', function (done) {
 
     var key = testId + 'test55';
 
-    serviceInstance.set(key, {"dkey":key}, function(e, result){
+    serviceInstance.set(key, {
+      "dkey": key
+    }, function (e, result) {
 
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
       expect(serviceInstance.__defaultCache.__cache[key].key).to.be(key);
 
-      serviceInstance.get(key + 'blah', function(e, data){
+      serviceInstance.get(key + 'blah', function (e, data) {
 
         if (e) return done(e);
 
@@ -94,11 +100,13 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('removes data, default cache', function(done) {
+  it('removes data, default cache', function (done) {
 
     var key = testId + 'test1';
 
-    serviceInstance.set(key, {"dkey":key}, function(e, result){
+    serviceInstance.set(key, {
+      "dkey": key
+    }, function (e, result) {
 
       if (e) return done(e);
 
@@ -107,17 +115,17 @@ describe('d5_test_cache_service', function() {
 
       expect(serviceInstance.__defaultCache.__cache[key].key).to.be(key);
 
-      serviceInstance.get(key, function(e, data){
+      serviceInstance.get(key, function (e, data) {
 
         if (e) return done(e);
 
         expect(data.dkey).to.be(key);
 
-        serviceInstance.remove(key, function(e){
+        serviceInstance.remove(key, function (e) {
 
           if (e) return done(e);
 
-          serviceInstance.get(key, function(e, data){
+          serviceInstance.get(key, function (e, data) {
 
             if (e) return done(e);
 
@@ -129,15 +137,17 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('retrieves unfound data, default cache', function(done) {
+  it('retrieves unfound data, default cache', function (done) {
 
     var opts = {
-      retrieveMethod:function(callback){
-        callback(null, {data:'foundMe'});
+      retrieveMethod: function (callback) {
+        callback(null, {
+          data: 'foundMe'
+        });
       }
     };
 
-    serviceInstance.get('totallyCrazyPath', opts, function(e, item){
+    serviceInstance.get('totallyCrazyPath', opts, function (e, item) {
 
       if (e) return done(e);
 
@@ -148,19 +158,21 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('gets and sets data, specific cache', function(done) {
+  it('gets and sets data, specific cache', function (done) {
 
     var key = testId + 'test3';
     var specific = serviceInstance.new('specific');
 
-    specific.set(key, {"dkey":key}, function(e, result){
+    specific.set(key, {
+      "dkey": key
+    }, function (e, result) {
 
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
       expect(serviceInstance.__caches['specific'].__cache[key].key).to.be(key);
 
-      specific.get(key, function(e, data){
+      specific.get(key, function (e, data) {
 
         if (e) return done(e);
 
@@ -174,19 +186,21 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('gets no data, specific cache', function(done) {
+  it('gets no data, specific cache', function (done) {
 
     var key = testId + 'test3';
     var specific = serviceInstance.new('specific-no-data');
 
-    specific.set(key, {"dkey":key}, function(e, result){
+    specific.set(key, {
+      "dkey": key
+    }, function (e, result) {
 
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
       expect(serviceInstance.__caches['specific-no-data'].__cache[key].key).to.be(key);
 
-      specific.get('totally-non-existent', function(e, data){
+      specific.get('totally-non-existent', function (e, data) {
 
         if (e) return done(e);
 
@@ -200,31 +214,33 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('removes data, specific cache', function(done) {
+  it('removes data, specific cache', function (done) {
 
     var key = testId + 'test3';
     var specific = serviceInstance.new('specific');
 
-    specific.set(key, {"dkey":key}, function(e, result){
+    specific.set(key, {
+      "dkey": key
+    }, function (e, result) {
 
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
       expect(serviceInstance.__caches['specific'].__cache[key].key).to.be(key);
 
-      specific.get(key, function(e, data){
+      specific.get(key, function (e, data) {
 
         if (e) return done(e);
 
         expect(data.dkey).to.be(key);
 
-        specific.remove(key, function(e, removed){
+        specific.remove(key, function (e, removed) {
 
           if (e) return done(e);
 
           expect(removed).to.be(true);
 
-          specific.get(key, function(e, data){
+          specific.get(key, function (e, data) {
 
             if (e) return done(e);
 
@@ -242,17 +258,19 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('retrieves unfound data, specific cache', function(done) {
+  it('retrieves unfound data, specific cache', function (done) {
 
     var specific = serviceInstance.new('specific');
 
     var opts = {
-      retrieveMethod:function(callback){
-        callback(null, {data:'foundMe'});
+      retrieveMethod: function (callback) {
+        callback(null, {
+          data: 'foundMe'
+        });
       }
     };
 
-    specific.get('totallyCrazyPath', opts, function(e, item){
+    specific.get('totallyCrazyPath', opts, function (e, item) {
 
       if (e) return done(e);
 
@@ -263,13 +281,15 @@ describe('d5_test_cache_service', function() {
 
   });
 
-  it('times data out, default cache', function(done) {
+  it('times data out, default cache', function (done) {
 
     this.timeout(5000);
 
     var key = testId + 'test1';
 
-    serviceInstance.set(key, {"dkey":key}, function(e, result){
+    serviceInstance.set(key, {
+      "dkey": key
+    }, function (e, result) {
 
       if (e) return done(e);
 
@@ -278,19 +298,23 @@ describe('d5_test_cache_service', function() {
 
       expect(serviceInstance.__caches['default'].__cache[key].key).to.be(key);
 
-      serviceInstance.get(key, function(e, data){
+      serviceInstance.get(key, function (e, data) {
 
         if (e) return done(e);
 
         expect(data.dkey).to.be(key);
 
-        serviceInstance.set(key, {"dkey":key}, {ttl:500}, function(e, result){
+        serviceInstance.set(key, {
+          "dkey": key
+        }, {
+          ttl: 500
+        }, function (e, result) {
 
           if (e) return done(e);
 
-          setTimeout(function(){
+          setTimeout(function () {
 
-            serviceInstance.get(key, function(e, data){
+            serviceInstance.get(key, function (e, data) {
 
               if (e) return done(e);
               expect(data).to.be(null);
@@ -307,7 +331,7 @@ describe('d5_test_cache_service', function() {
 
   });
 
-  it('times data out, specific cache', function(done) {
+  it('times data out, specific cache', function (done) {
 
     this.timeout(5000);
     var key = testId + 'test1';
@@ -316,19 +340,23 @@ describe('d5_test_cache_service', function() {
 
     var specific = serviceInstance.new('specific');
 
-    specific.set(key, {"dkey":key}, {ttl:2000}, function(e){
+    specific.set(key, {
+      "dkey": key
+    }, {
+      ttl: 2000
+    }, function (e) {
 
       if (e) return done(e);
 
-      specific.get(key, function(e, data){
+      specific.get(key, function (e, data) {
 
         if (e) return done(e);
 
         expect(data).to.not.be(null);
 
-        setTimeout(function(){
+        setTimeout(function () {
 
-          specific.get(key, function(e, data){
+          specific.get(key, function (e, data) {
 
             if (e) return done(e);
             expect(data).to.be(null);
@@ -345,18 +373,20 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('clears the default cache', function(done){
+  it('clears the default cache', function (done) {
 
     var key = testId + 'test1';
 
-    serviceInstance.set(key, {"dkey":key}, function(e, result){
+    serviceInstance.set(key, {
+      "dkey": key
+    }, function (e, result) {
 
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
       expect(serviceInstance.__defaultCache.__cache[key].key).to.be(key);
 
-      serviceInstance.get(key, function(e, data){
+      serviceInstance.get(key, function (e, data) {
 
         if (e) return done(e);
 
@@ -366,7 +396,7 @@ describe('d5_test_cache_service', function() {
 
         expect(Object.keys(serviceInstance.__defaultCache.__cache).length).to.be(0);
 
-        serviceInstance.get(key, function(e, data){
+        serviceInstance.get(key, function (e, data) {
 
           if (e) return done(e);
 
@@ -379,18 +409,22 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('clears the specific cache', function(done){
+  it('clears the specific cache', function (done) {
 
     this.timeout(5000);
     var key = testId + 'test1';
 
     var specific = serviceInstance.new('specific');
 
-    specific.set(key, {"dkey":key}, {ttl:2000}, function(e){
+    specific.set(key, {
+      "dkey": key
+    }, {
+      ttl: 2000
+    }, function (e) {
 
       if (e) return done(e);
 
-      specific.get(key, function(e, data){
+      specific.get(key, function (e, data) {
 
         if (e) return done(e);
 
@@ -408,18 +442,20 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('clears the default cache, then sets an item on it', function(done){
+  it('clears the default cache, then sets an item on it', function (done) {
 
     var key = testId + 'test1';
 
-    serviceInstance.set(key, {"dkey":key}, function(e, result){
+    serviceInstance.set(key, {
+      "dkey": key
+    }, function (e, result) {
 
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
       expect(serviceInstance.__defaultCache.__cache[key].key).to.be(key);
 
-      serviceInstance.get(key, function(e, data){
+      serviceInstance.get(key, function (e, data) {
 
         if (e) return done(e);
 
@@ -429,17 +465,19 @@ describe('d5_test_cache_service', function() {
 
         expect(Object.keys(serviceInstance.__defaultCache.__cache).length).to.be(0);
 
-        serviceInstance.get(key, function(e, data){
+        serviceInstance.get(key, function (e, data) {
 
           if (e) return done(e);
 
           if (data) return done(new Error('this was not meant to happn'));
 
-          serviceInstance.set(key, {"dkey":key}, function(e, result){
+          serviceInstance.set(key, {
+            "dkey": key
+          }, function (e, result) {
 
             if (e) return done(e);
 
-            serviceInstance.get(key, function(e, data){
+            serviceInstance.get(key, function (e, data) {
 
               if (e) return done(e);
               expect(data.dkey).to.be(key);
@@ -452,15 +490,20 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('tests the default mechanism and update, default cache', function(done){
+  it('tests the default mechanism and update, default cache', function (done) {
 
-    serviceInstance.get('nonexistantItem', {default:{ttl:1000, value:20}}, function(e, data){
+    serviceInstance.get('nonexistantItem', {
+      default: {
+        ttl: 1000,
+        value: 20
+      }
+    }, function (e, data) {
 
       if (e) return done(e);
 
       expect(data).to.be(20);
 
-      serviceInstance.update('nonexistantItem', 30, function(e, cacheItem){
+      serviceInstance.update('nonexistantItem', 30, function (e, cacheItem) {
 
         if (e) return done(e);
 
@@ -472,7 +515,7 @@ describe('d5_test_cache_service', function() {
         expect(cacheItem.ttl).to.not.be(null);
         expect(cacheItem.ttl).to.not.be(undefined);
 
-        serviceInstance.get('nonexistantItem', function(e, data){
+        serviceInstance.get('nonexistantItem', function (e, data) {
 
           if (e) return done(e);
           expect(data).to.be(30);
@@ -481,9 +524,9 @@ describe('d5_test_cache_service', function() {
 
           var didCB = false;
 
-          serviceInstance.on('item-timed-out', function(timed){
+          serviceInstance.on('item-timed-out', function (timed) {
 
-            try{
+            try {
 
               if (didCB) return;
 
@@ -495,7 +538,7 @@ describe('d5_test_cache_service', function() {
 
               done();
 
-            }catch(e){
+            } catch (e) {
               done(e);
             }
 
@@ -506,7 +549,7 @@ describe('d5_test_cache_service', function() {
   });
 
 
-  it('tests the default mechanism and update, specific cache', function(done){
+  it('tests the default mechanism and update, specific cache', function (done) {
 
     this.timeout(5000);
     var key = testId + 'test1DefaultItemNotFound';
@@ -514,7 +557,14 @@ describe('d5_test_cache_service', function() {
     serviceInstance.clear('specific');
     var specific = serviceInstance.new('specific');
 
-    specific.get(key, {default:{value:{'nice':'value'}, ttl:1000}}, function(e, data){
+    specific.get(key, {
+      default: {
+        value: {
+          'nice': 'value'
+        },
+        ttl: 1000
+      }
+    }, function (e, data) {
 
       if (e) return done(e);
 
@@ -523,9 +573,9 @@ describe('d5_test_cache_service', function() {
 
       expect(serviceInstance.__caches['specific']).to.not.be(undefined);
 
-      setTimeout(function(){
+      setTimeout(function () {
 
-        specific.get(key, function(e, data){
+        specific.get(key, function (e, data) {
 
           if (e) return done(e);
 
@@ -540,14 +590,19 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('tests the increment function, default cache', function(done){
-    serviceInstance.get('nonexistantItem', {default:{ttl:1000, value:20}}, function(e, data){
+  it('tests the increment function, default cache', function (done) {
+    serviceInstance.get('nonexistantItem', {
+      default: {
+        ttl: 1000,
+        value: 20
+      }
+    }, function (e, data) {
 
       if (e) return done(e);
 
       expect(data).to.be(20);
 
-      serviceInstance.increment('nonexistantItem', 30, function(e, data){
+      serviceInstance.increment('nonexistantItem', 30, function (e, data) {
 
         if (e) return done(e);
 
@@ -558,7 +613,7 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('tests the increment function, specific cache', function(done){
+  it('tests the increment function, specific cache', function (done) {
 
     this.timeout(5000);
     var key = testId + 'test1DefaultItemNotFound';
@@ -566,14 +621,19 @@ describe('d5_test_cache_service', function() {
     serviceInstance.clear('specific');
     var specific = serviceInstance.new('specific');
 
-    specific.get(key, {default:{value:20, ttl:1000}}, function(e, data){
+    specific.get(key, {
+      default: {
+        value: 20,
+        ttl: 1000
+      }
+    }, function (e, data) {
 
       if (e) return done(e);
 
       expect(data).to.not.be(null);
       expect(serviceInstance.__caches['specific']).to.not.be(undefined);
 
-      specific.increment(key, 15, function(e, data){
+      specific.increment(key, 15, function (e, data) {
 
         if (e) return done(e);
 
@@ -584,32 +644,34 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  xit('tests the all function, default cache', function(done){
+  xit('tests the all function, default cache', function (done) {
 
 
   });
 
-  it('tests the all function, specific cache', function(done){
+  it('tests the all function, specific cache', function (done) {
 
     serviceInstance.clear('specific');
     var specific = serviceInstance.new('specific');
 
-    async.times(5, function(time, timeCB){
+    async.times(5, function (time, timeCB) {
 
       var key = "sync_key_" + time;
       var opts = {};
 
       if (time == 4) opts.ttl = 2000;
 
-      specific.set(key, {"val":key}, opts, timeCB);
+      specific.set(key, {
+        "val": key
+      }, opts, timeCB);
 
-    }, function(e){
+    }, function (e) {
 
       if (e) return done(e);
 
       expect(Object.keys(specific.__cache).length).to.be(5);
 
-      specific.all(function(e, items){
+      specific.all(function (e, items) {
 
         if (e) return done(e);
         expect(items.length).to.be(5);
@@ -626,27 +688,33 @@ describe('d5_test_cache_service', function() {
     });
   });
 
-  it('tests the all function, specific cache, with a filter', function(done){
+  it('tests the all function, specific cache, with a filter', function (done) {
 
     serviceInstance.clear('specific');
     var specific = serviceInstance.new('specific');
 
-    async.times(5, function(time, timeCB){
+    async.times(5, function (time, timeCB) {
 
       var key = "sync_key_" + time;
       var opts = {};
 
       if (time == 4) opts.ttl = 2000;
 
-      specific.set(key, {"val":key}, opts, timeCB);
+      specific.set(key, {
+        "val": key
+      }, opts, timeCB);
 
-    }, function(e){
+    }, function (e) {
 
       if (e) return done(e);
 
       expect(Object.keys(specific.__cache).length).to.be(5);
 
-      specific.all({val:{$in:['sync_key_1','sync_key_2']}}, function(e, items){
+      specific.all({
+        val: {
+          $in: ['sync_key_1', 'sync_key_2']
+        }
+      }, function (e, items) {
 
         if (e) return done(e);
 

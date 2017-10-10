@@ -34,7 +34,9 @@ describe('f5_client_disconnection', function () {
 
     try {
 
-      service.create({port: 55002}, function (e, happnInst) {
+      service.create({
+        port: 55002
+      }, function (e, happnInst) {
 
         if (e) return callback(e);
 
@@ -42,7 +44,10 @@ describe('f5_client_disconnection', function () {
 
         console.log('created unsecured instance:::');
 
-        service.create({secure: true, port: 55003}, function (e, happnInst) {
+        service.create({
+          secure: true,
+          port: 55003
+        }, function (e, happnInst) {
 
           if (e) return callback(e);
 
@@ -58,12 +63,12 @@ describe('f5_client_disconnection', function () {
     }
   });
 
-  var getClients = function(service, clientCount, opts, callback){
+  var getClients = function (service, clientCount, opts, callback) {
 
     var wsClientCollection = [];
     var localClientCollection = [];
 
-    async.times(clientCount, function(count, countCB){
+    async.times(clientCount, function (count, countCB) {
 
       try {
 
@@ -73,7 +78,7 @@ describe('f5_client_disconnection', function () {
 
           wsClientCollection.push(instance);
 
-          service.services.session.localClient(opts, function(e, instance){
+          service.services.session.localClient(opts, function (e, instance) {
 
             if (e) return callback(e);
 
@@ -87,7 +92,7 @@ describe('f5_client_disconnection', function () {
         countCB(e);
       }
 
-    }, function(e){
+    }, function (e) {
 
       if (e) return callback(e);
 
@@ -98,10 +103,12 @@ describe('f5_client_disconnection', function () {
 
   it('should initialize the Service1 clients, disconnect all the clients and ensure we have no remaining client data', function (callback) {
 
-    getClients(Service1, 5, {port:55002}, function(e, wsClients, localClients){
+    getClients(Service1, 5, {
+      port: 55002
+    }, function (e, wsClients, localClients) {
       if (e) return callback(e);
 
-      Service1.services.session.disconnectAllClients(function(e){
+      Service1.services.session.disconnectAllClients(function (e) {
         if (e) return callback(e);
 
         console.log(Service1.services.session.__sessions);
@@ -112,10 +119,14 @@ describe('f5_client_disconnection', function () {
 
   it('should initialize the Service2 clients, disconnect all the clients and ensure we have no remaining client data', function (callback) {
 
-    getClients(Service2, 5, {port:55003, username:'_ADMIN', password:'happn'}, function(e, wsClients, localClients){
+    getClients(Service2, 5, {
+      port: 55003,
+      username: '_ADMIN',
+      password: 'happn'
+    }, function (e, wsClients, localClients) {
       if (e) return callback(e);
 
-      Service2.services.session.disconnectAllClients(function(e){
+      Service2.services.session.disconnectAllClients(function (e) {
         if (e) return callback(e);
 
         console.log(Service2.services.session.__sessions);

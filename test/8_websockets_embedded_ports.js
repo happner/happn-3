@@ -25,9 +25,15 @@ describe('8_websockets_embedded_ports', function () {
 
   after('stop all services', function (callback) {
 
-    service1Client.disconnect({timeout:2000})
-      .then(service2Client.disconnect({timeout:2000}))
-      .then(defaultClient.disconnect({timeout:2000}))
+    service1Client.disconnect({
+        timeout: 2000
+      })
+      .then(service2Client.disconnect({
+        timeout: 2000
+      }))
+      .then(defaultClient.disconnect({
+        timeout: 2000
+      }))
       .then(function () {
 
         async.eachSeries(instances, function (instance, eachCallback) {
@@ -41,7 +47,9 @@ describe('8_websockets_embedded_ports', function () {
   });
 
   var initializeService = function (instance, port, callback) {
-    instance.initialize({port: port},
+    instance.initialize({
+        port: port
+      },
       function (e, instance) {
         if (e) return callback(e);
 
@@ -78,17 +86,29 @@ describe('8_websockets_embedded_ports', function () {
     try {
       //plugin, config, context,
 
-      happn_client.create({config: {port: service1Port}}, function (e, instance) {
+      happn_client.create({
+        config: {
+          port: service1Port
+        }
+      }, function (e, instance) {
 
         if (e) return callback(e);
 
         service1Client = instance;
-        happn_client.create({config: {port: service2Port}}, function (e, instance) {
+        happn_client.create({
+          config: {
+            port: service2Port
+          }
+        }, function (e, instance) {
 
           if (e) return callback(e);
 
           service2Client = instance;
-          happn_client.create({config: {port: 55000}}, function (e, instance) {
+          happn_client.create({
+            config: {
+              port: 55000
+            }
+          }, function (e, instance) {
 
             if (e) return callback(e);
 

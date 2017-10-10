@@ -10,7 +10,7 @@ describe('7_browser-client-test', function () {
   var happnInstance = null;
 
   /*
-   This test demonstrates starting up the happn service - 
+   This test demonstrates starting up the happn service -
    the authentication service will use authTokenSecret to encrypt web tokens identifying
    the logon session. The utils setting will set the system to log non priority information
    */
@@ -36,7 +36,9 @@ describe('7_browser-client-test', function () {
             },
             pubsub: {
               path: './services/pubsub/service.js',
-              config: {"security-mode": 'unsecure'}
+              config: {
+                "security-mode": 'unsecure'
+              }
             }
           },
           utils: {

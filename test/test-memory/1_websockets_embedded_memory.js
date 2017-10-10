@@ -36,7 +36,11 @@ describe('1-websockets-embedded-memory', function () {
       //console.log(data.toString());
 
       if (data.toString().match(/happn version/)) {
-        happn_client.create({config: {port: 8001}}, function (e, instance) {
+        happn_client.create({
+          config: {
+            port: 8001
+          }
+        }, function (e, instance) {
 
           if (e) return callback(e);
 
@@ -95,7 +99,7 @@ describe('1-websockets-embedded-memory', function () {
         object[0].should.exist;
         should.not.exist(err);
         if (++count == timesCount) {
-          if (snapshotTimer)console.log('SNAPSHOT');
+          if (snapshotTimer) console.log('SNAPSHOT');
           return setTimeout(testComplete, snapshotTimer);
         }
         setImmediate(doTest);

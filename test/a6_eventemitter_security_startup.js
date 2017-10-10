@@ -28,20 +28,26 @@ describe('a6_eventemitter_security_groups', function () {
   testServices.log = require('../lib/services/log/service');
 
   var checkpoint = require('../lib/services/security/checkpoint');
-  testServices.checkpoint = new checkpoint({logger: Logger});
+  testServices.checkpoint = new checkpoint({
+    logger: Logger
+  });
 
   var initializeMockServices = function (callback) {
 
-    var happnMock = {services: {}};
+    var happnMock = {
+      services: {}
+    };
 
-    async.eachSeries(['log','error','utils', 'crypto', 'cache', 'session','data', 'security'], function (serviceName, eachServiceCB) {
+    async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function (serviceName, eachServiceCB) {
 
-      testServices[serviceName] = new testServices[serviceName]({logger: Logger});
+      testServices[serviceName] = new testServices[serviceName]({
+        logger: Logger
+      });
       testServices[serviceName].happn = happnMock;
 
       happnMock.services[serviceName] = testServices[serviceName];
 
-      if (serviceName == 'error') happnMock.services[serviceName].handleFatal = function(message, e){
+      if (serviceName == 'error') happnMock.services[serviceName].handleFatal = function (message, e) {
         console.log('FATAL FAILURE:::', message);
         throw e;
       };

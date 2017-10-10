@@ -1,12 +1,13 @@
 var
-  SortedObjectArray = require("sorted-object-array")
-  , LRU = require("lru-cache")
-  , async = require('async')
-  ;
+  SortedObjectArray = require("sorted-object-array"),
+  LRU = require("lru-cache"),
+  async = require('async');
 
 function Bucket(options) {
 
-  if (!options.cache) options.cache = {max: 500};
+  if (!options.cache) options.cache = {
+    max: 500
+  };
 
   if (!options.channel) throw new Error('bucket must be for a specified channel');
 
@@ -21,15 +22,25 @@ function Bucket(options) {
 
 Bucket.prototype.initialize = function (callback) {
 
-  Object.defineProperty(this, '__segments', {value: new SortedObjectArray('path')});
+  Object.defineProperty(this, '__segments', {
+    value: new SortedObjectArray('path')
+  });
 
-  Object.defineProperty(this, '__cache', {value: new LRU(this.options.cache)});
+  Object.defineProperty(this, '__cache', {
+    value: new LRU(this.options.cache)
+  });
 
-  Object.defineProperty(this, '__catchall_subscribers', {value: new SortedObjectArray('sessionId')});
+  Object.defineProperty(this, '__catchall_subscribers', {
+    value: new SortedObjectArray('sessionId')
+  });
 
-  Object.defineProperty(this, '__subscribers', {value: new SortedObjectArray('segment')});
+  Object.defineProperty(this, '__subscribers', {
+    value: new SortedObjectArray('segment')
+  });
 
-  Object.defineProperty(this, '__explicit_subscribers', {value: new SortedObjectArray('fullPath')});
+  Object.defineProperty(this, '__explicit_subscribers', {
+    value: new SortedObjectArray('fullPath')
+  });
 
   callback();
 };
@@ -87,7 +98,7 @@ Bucket.prototype.__getSmallestSegment = function (path) {
 
   var segmentPath = path.split('*')[0];
 
-  var currentPath = segmentPath.substring(0, 1);//start at the first character
+  var currentPath = segmentPath.substring(0, 1); //start at the first character
 
   var currentLength = 1;
 
@@ -97,7 +108,7 @@ Bucket.prototype.__getSmallestSegment = function (path) {
 
   while (searching) {
 
-    segmentIndex = this.__segments.search(currentPath);//search by segment
+    segmentIndex = this.__segments.search(currentPath); //search by segment
 
     if (segmentIndex > -1) {
 
@@ -130,7 +141,7 @@ Bucket.prototype.__getSegment = function (path) {
 
   while (searching) {
 
-    segmentIndex = this.__segments.search(currentPath);//search by segment
+    segmentIndex = this.__segments.search(currentPath); //search by segment
 
     if (segmentIndex > -1) {
 
@@ -156,7 +167,7 @@ Bucket.prototype.__getStartIndex = function (segmentPath) {
   //binary search finds the first matching index, which may not actually the first one in the alphabetically sorted array
   //we have to find a matching index, then walk backwards until the segment path no longer matches
 
-  var initialStartIndex = this.__subscribers.search(segmentPath);//search by segment
+  var initialStartIndex = this.__subscribers.search(segmentPath); //search by segment
 
   if (initialStartIndex == -1) return initialStartIndex;
 
@@ -166,7 +177,7 @@ Bucket.prototype.__getStartIndex = function (segmentPath) {
     startIndex--;
   }
 
-  return startIndex + 1;//jump forward a step as the while condition broke because the segment path no longer matches
+  return startIndex + 1; //jump forward a step as the while condition broke because the segment path no longer matches
 };
 
 Bucket.prototype.__returnSubscriptions = function (path, subscriptions, cacheKey, callback) {
@@ -176,7 +187,7 @@ Bucket.prototype.__returnSubscriptions = function (path, subscriptions, cacheKey
   callback(null, subscriptions);
 };
 
-Bucket.prototype.__getItemsForSegment = function(path, sortedArray, matchesCriteria){
+Bucket.prototype.__getItemsForSegment = function (path, sortedArray, matchesCriteria) {
 
   var searchIndex = sortedArray.search(path);
 
@@ -193,12 +204,15 @@ Bucket.prototype.__getItemsForSegment = function(path, sortedArray, matchesCrite
   var subscriptions = [];
 
   //walk backwards
-  while (matchesCriteria(subscription)){
+  while (matchesCriteria(subscription)) {
 
     //console.log('pushing::::');
-    subscriptions.push({subscription:subscription, index:walkIndex});
+    subscriptions.push({
+      subscription: subscription,
+      index: walkIndex
+    });
 
-    walkIndex --;
+    walkIndex--;
 
     subscription = sortedArray.array[walkIndex];
   }
@@ -208,11 +222,14 @@ Bucket.prototype.__getItemsForSegment = function(path, sortedArray, matchesCrite
   subscription = sortedArray.array[walkIndex];
 
   //walk forwards
-  while (matchesCriteria(subscription)){
+  while (matchesCriteria(subscription)) {
 
-    subscriptions.push({subscription:subscription, index:walkIndex});
+    subscriptions.push({
+      subscription: subscription,
+      index: walkIndex
+    });
 
-    walkIndex ++;
+    walkIndex++;
 
     subscription = sortedArray.array[walkIndex];
   }
@@ -220,59 +237,68 @@ Bucket.prototype.__getItemsForSegment = function(path, sortedArray, matchesCrite
   return subscriptions;
 };
 
-Bucket.prototype.__getCatchAllSubscriptions = function(){
+Bucket.prototype.__getCatchAllSubscriptions = function () {
 
   var subscriptions = [];
 
   this.__catchall_subscribers.array.forEach(function (subscription) {
 
-    subscriptions.push({subscription: subscription, index: -1});
+    subscriptions.push({
+      subscription: subscription,
+      index: -1
+    });
   });
 
   return subscriptions;
 };
 
-Bucket.prototype.__getExplicitSubscriptions = function(path){
+Bucket.prototype.__getExplicitSubscriptions = function (path) {
 
-  var matchesCriteria = function(subscription){
+  var matchesCriteria = function (subscription) {
 
     if (subscription == null) return false;
 
     return subscription.fullPath == this.path;
 
-  }.bind({path:path});
+  }.bind({
+    path: path
+  });
 
   return this.__getItemsForSegment(path, this.__explicit_subscribers, matchesCriteria);
 };
 
-Bucket.prototype.__getWildcardSubscriptions = function(path, options, segment){
+Bucket.prototype.__getWildcardSubscriptions = function (path, options, segment) {
 
   var _this = this;
 
-  var matchesCriteria = function(subscription){
+  var matchesCriteria = function (subscription) {
 
-    if (subscription == null) return false;
+      if (subscription == null) return false;
 
-    //console.log('matches this:::', this);
+      //console.log('matches this:::', this);
 
-    // console.log('matches sub:::', subscription);
-    //
-    // console.log('matches sub:::', subscription.fullPath.indexOf(this.segment) != 0);
-    //
-    // console.log('matches sub:::', subscription.fullPath == this.path);
-    //
-    // console.log('matches sub:::', _this.wildcardMatch(subscription.fullPath, this.path));
+      // console.log('matches sub:::', subscription);
+      //
+      // console.log('matches sub:::', subscription.fullPath.indexOf(this.segment) != 0);
+      //
+      // console.log('matches sub:::', subscription.fullPath == this.path);
+      //
+      // console.log('matches sub:::', _this.wildcardMatch(subscription.fullPath, this.path));
 
-    if (subscription.fullPath.indexOf(this.segment) != 0) return false;
+      if (subscription.fullPath.indexOf(this.segment) != 0) return false;
 
-    if (this.options.preciseMatch) {
-      return (subscription.fullPath == this.path);
-    } else {
-      return (_this.wildcardMatch(subscription.fullPath, this.path));
+      if (this.options.preciseMatch) {
+        return (subscription.fullPath == this.path);
+      } else {
+        return (_this.wildcardMatch(subscription.fullPath, this.path));
+      }
     }
-  }
 
-    .bind({path:path, options:options, segment:segment});
+    .bind({
+      path: path,
+      options: options,
+      segment: segment
+    });
 
   return this.__getItemsForSegment(segment, _this.__subscribers, matchesCriteria);
 };
@@ -298,11 +324,11 @@ Bucket.prototype.getSubscriptions = function (path, options, callback) {
 
   //for * subscriptions
   if (!options.preciseMatch)
-    _this.__getCatchAllSubscriptions().forEach(function(recipient){
+    _this.__getCatchAllSubscriptions().forEach(function (recipient) {
       recipients.push(recipient);
     });
 
-  _this.__getExplicitSubscriptions(path).forEach(function(recipient){
+  _this.__getExplicitSubscriptions(path).forEach(function (recipient) {
     recipients.push(recipient);
   });
 
@@ -310,12 +336,12 @@ Bucket.prototype.getSubscriptions = function (path, options, callback) {
 
   if (segment == null) return this.__returnSubscriptions(path, recipients, cache_key, callback);
 
-  var startIndex = this.__getStartIndex(segment.path);//search by segment
+  var startIndex = this.__getStartIndex(segment.path); //search by segment
 
   if (startIndex == -1) return this.__returnSubscriptions(path, recipients, cache_key, callback);
 
   //console.log('getting wildcard:::', path);
-  _this.__getWildcardSubscriptions(path, options, segment.path).forEach(function(recipient){
+  _this.__getWildcardSubscriptions(path, options, segment.path).forEach(function (recipient) {
     recipients.push(recipient);
   });
 
@@ -334,8 +360,7 @@ Bucket.prototype.__addCatchAllSubscription = function (sessionId, data, callback
 
     subscription = this.__catchall_subscribers.array[subscriptionIndex];
     insert = false;
-  }
-  else
+  } else
     subscription = {
       sessionId: sessionId,
       data: data,
@@ -358,7 +383,7 @@ Bucket.prototype.__addCatchAllSubscription = function (sessionId, data, callback
   callback();
 };
 
-Bucket.prototype.__removeExplicitSubscription = function(path, sessionId, options, callback){
+Bucket.prototype.__removeExplicitSubscription = function (path, sessionId, options, callback) {
 
   var subscriptionIndex = this.__explicit_subscribers.search(path);
 
@@ -383,7 +408,7 @@ Bucket.prototype.__addExplicitSubscription = function (path, sessionId, data, ca
 
   var insert = false;
 
-  if (subscriptionIndex > -1){
+  if (subscriptionIndex > -1) {
 
     subscription = this.__explicit_subscribers.array[subscriptionIndex];
 
@@ -391,7 +416,7 @@ Bucket.prototype.__addExplicitSubscription = function (path, sessionId, data, ca
 
   } else insert = true;
 
-  if (insert){
+  if (insert) {
 
     subscription = {
       sessionId: sessionId,
@@ -425,8 +450,7 @@ Bucket.prototype.addSubscription = function (path, sessionId, data, callback) {
     data = null;
   }
 
-  if (!callback) callback = function () {
-  };//in case we have a bucket that needs a callback
+  if (!callback) callback = function () {}; //in case we have a bucket that needs a callback
 
   var wildcard = path.indexOf('*') > -1;
 
@@ -436,13 +460,16 @@ Bucket.prototype.addSubscription = function (path, sessionId, data, callback) {
 
   var segmentPath = _this.__updateSegment(path);
 
-  _this.getSubscriptions(path, {preciseMatch: true}, function (e, subscriptions) {
+  _this.getSubscriptions(path, {
+    preciseMatch: true
+  }, function (e, subscriptions) {
 
     if (e) return callback(e);
 
     //console.log('got:::', subscriptions);
 
-    var foundSubscription = null, insert = false;
+    var foundSubscription = null,
+      insert = false;
 
     subscriptions.forEach(function (recipient) {
 
@@ -468,7 +495,7 @@ Bucket.prototype.addSubscription = function (path, sessionId, data, callback) {
       insert = true;
     }
 
-    foundSubscription.data = data;//overwritten with the most recent data
+    foundSubscription.data = data; //overwritten with the most recent data
 
     foundSubscription.refCount += data.options.refCount;
     //do not be confused, the data.options.refCount is the client-side listener reference
@@ -549,17 +576,17 @@ Bucket.prototype.removeAllSubscriptions = function (sessionId, callback) {
 
     async.eachSeries(subscriptionsToRemove, function (subscription, subscriptionCB) {
 
-      setImmediate(function(){
+      setImmediate(function () {
         _this.removeSubscription(subscription.fullPath, subscription.sessionId, subscriptionCB)
       });
 
-    }, function(e){
+    }, function (e) {
 
       if (e) return callback(e);
 
       async.eachSeries(explicitSubscriptionsToRemove, function (subscription, subscriptionCB) {
 
-        setImmediate(function() {
+        setImmediate(function () {
           _this.removeSubscription(subscription.fullPath, subscription.sessionId, subscriptionCB);
         });
       }, callback);
@@ -576,9 +603,9 @@ Bucket.prototype.removeSubscription = function (path, sessionId, options, callba
     options = null;
   }
 
-  if (!callback) callback = function () {};//in case we have a bucket that needs a callback
+  if (!callback) callback = function () {}; //in case we have a bucket that needs a callback
 
-  if (!options) options = {};//in case we have a bucket that needs a callback
+  if (!options) options = {}; //in case we have a bucket that needs a callback
 
   if (!options.refCount) options.refCount = 1;
 
@@ -588,7 +615,9 @@ Bucket.prototype.removeSubscription = function (path, sessionId, options, callba
 
   if (path == '*') return _this.__removeCatchAllSubscription(sessionId, options, callback);
 
-  this.getSubscriptions(path, {preciseMatch: true}, function (e, subscriptions) {
+  this.getSubscriptions(path, {
+    preciseMatch: true
+  }, function (e, subscriptions) {
 
     if (e) return callback(e);
 
@@ -639,5 +668,3 @@ Bucket.prototype.stats = function () {
 };
 
 module.exports = Bucket;
-
-

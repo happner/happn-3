@@ -27,7 +27,9 @@ describe('f3_target_clients', function () {
 
     try {
 
-      service.create({port: 55002}, function (e, happnInst) {
+      service.create({
+        port: 55002
+      }, function (e, happnInst) {
 
         if (e) return callback(e);
 
@@ -35,7 +37,10 @@ describe('f3_target_clients', function () {
 
         console.log('created unsecured instance:::');
 
-        service.create({secure: true, port: 55003}, function (e, happnInst) {
+        service.create({
+          secure: true,
+          port: 55003
+        }, function (e, happnInst) {
 
           if (e) return callback(e);
 
@@ -60,19 +65,27 @@ describe('f3_target_clients', function () {
 
     this.timeout(20000);
 
-    secureClient.disconnect({timeout: 2000}, function (e) {
+    secureClient.disconnect({
+      timeout: 2000
+    }, function (e) {
 
       if (e) console.warn('issue disconnecting secureClient');
 
-      secureMiddleman.disconnect({timeout: 2000}, function (e) {
+      secureMiddleman.disconnect({
+        timeout: 2000
+      }, function (e) {
 
         if (e) console.warn('issue disconnecting secureMiddleman');
 
-        client.disconnect({timeout: 2000}, function (e) {
+        client.disconnect({
+          timeout: 2000
+        }, function (e) {
 
           if (e) console.warn('issue disconnecting client');
 
-          middleman.disconnect({timeout: 2000}, function (e) {
+          middleman.disconnect({
+            timeout: 2000
+          }, function (e) {
 
             if (e) console.warn('issue disconnecting middleman');
 
@@ -99,28 +112,40 @@ describe('f3_target_clients', function () {
    */
   before('should initialize the clients', function (callback) {
 
-    happn_client.create({port: 55002}, function (e, instance) {
+    happn_client.create({
+      port: 55002
+    }, function (e, instance) {
 
       if (e) return callback(e);
       client = instance;
 
       console.log('created client:::');
 
-      happn_client.create({port: 55002}, function (e, instance) {
+      happn_client.create({
+        port: 55002
+      }, function (e, instance) {
 
         if (e) return callback(e);
         middleman = instance;
 
         console.log('created middleman:::');
 
-        happn_client.create({port: 55003, username: '_ADMIN', password: 'happn'}, function (e, instance) {
+        happn_client.create({
+          port: 55003,
+          username: '_ADMIN',
+          password: 'happn'
+        }, function (e, instance) {
 
           if (e) return callback(e);
           secureClient = instance;
 
           console.log('created secure client:::');
 
-          happn_client.create({port: 55003, username: '_ADMIN', password: 'happn'}, function (e, instance) {
+          happn_client.create({
+            port: 55003,
+            username: '_ADMIN',
+            password: 'happn'
+          }, function (e, instance) {
 
             if (e) return callback(e);
             secureMiddleman = instance;
@@ -167,7 +192,11 @@ describe('f3_target_clients', function () {
 
         console.log('attached client:::', client.session.id);
 
-        client.set('/targeted/test', {test: 'value'}, {targetClients: [client.session.id]}, function (e) {
+        client.set('/targeted/test', {
+          test: 'value'
+        }, {
+          targetClients: [client.session.id]
+        }, function (e) {
           if (e) return callback(e);
 
           console.log('did unsecured set:::');
@@ -209,7 +238,11 @@ describe('f3_target_clients', function () {
 
         console.log('attached client:::', client.session.id);
 
-        client.set('/grouptargeted/test', {test: 'value'}, {targetClients: [client.session.id, middleman.session.id]}, function (e) {
+        client.set('/grouptargeted/test', {
+          test: 'value'
+        }, {
+          targetClients: [client.session.id, middleman.session.id]
+        }, function (e) {
           if (e) return callback(e);
 
           console.log('did unsecured set:::');
@@ -251,7 +284,9 @@ describe('f3_target_clients', function () {
 
         console.log('attached client:::', client.session.id);
 
-        client.set('/untargeted/test', {test: 'value'}, function (e) {
+        client.set('/untargeted/test', {
+          test: 'value'
+        }, function (e) {
           if (e) return callback(e);
 
           console.log('did unsecured set:::');
@@ -293,7 +328,11 @@ describe('f3_target_clients', function () {
 
         console.log('attached secureClient:::', secureClient.session.id);
 
-        secureClient.set('/targeted/test', {test: 'value'}, {targetClients: [secureClient.session.id]}, function (e) {
+        secureClient.set('/targeted/test', {
+          test: 'value'
+        }, {
+          targetClients: [secureClient.session.id]
+        }, function (e) {
           if (e) return callback(e);
 
           console.log('did unsecured set:::');
@@ -335,7 +374,11 @@ describe('f3_target_clients', function () {
 
         console.log('attached secureClient:::', secureClient.session.id);
 
-        secureClient.set('/grouptargeted/test', {test: 'value'}, {targetClients: [secureClient.session.id, secureMiddleman.session.id]}, function (e) {
+        secureClient.set('/grouptargeted/test', {
+          test: 'value'
+        }, {
+          targetClients: [secureClient.session.id, secureMiddleman.session.id]
+        }, function (e) {
           if (e) return callback(e);
 
           console.log('did unsecured set:::');
@@ -377,7 +420,9 @@ describe('f3_target_clients', function () {
 
         console.log('attached secureClient:::', secureClient.session.id);
 
-        secureClient.set('/untargeted/test', {test: 'value'}, function (e) {
+        secureClient.set('/untargeted/test', {
+          test: 'value'
+        }, function (e) {
           if (e) return callback(e);
 
           console.log('did unsecured set:::');

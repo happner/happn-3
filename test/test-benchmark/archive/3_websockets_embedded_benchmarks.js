@@ -106,12 +106,17 @@ describe('3_websockets_embedded_benchmarks', function () {
 
         publisherclient.set('/e2e_test1/testsubscribe/sequence5', {
           property1: count++
-        }, {excludeId: true}, function (e, result) {
+        }, {
+          excludeId: true
+        }, function (e, result) {
           writeData();
         });
       }
 
-      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {event_type: 'set', count: 0}, function (message) {
+      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
 
         receivedCount++;
 
@@ -124,8 +129,7 @@ describe('3_websockets_embedded_benchmarks', function () {
         if (!e) {
           console.time(timerName);
           writeData();
-        }
-        else
+        } else
           callback(e);
       });
     });
@@ -147,7 +151,9 @@ describe('3_websockets_embedded_benchmarks', function () {
       //////////console.log('putting data: ', count);
       publisherclient.set('/e2e_test1/testsubscribe/sequence3', {
           property1: receivedCount
-        }, {noStore: true},
+        }, {
+          noStore: true
+        },
         function (e, result) {
           if (e)
             return callback(e);
@@ -155,9 +161,12 @@ describe('3_websockets_embedded_benchmarks', function () {
           ////////console.log('put data: ', result);
         });
     }
-//path, event_type, count, handler, done
+    //path, event_type, count, handler, done
     //first listen for the change
-    listenerclient.on('/e2e_test1/testsubscribe/sequence3', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/sequence3', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       ////////console.log('Event happened', message);
       receivedCount++;
@@ -178,8 +187,7 @@ describe('3_websockets_embedded_benchmarks', function () {
         //then make the change
         console.time(timerName);
         writeData();
-      }
-      else
+      } else
         callback(e);
 
     });
@@ -203,7 +211,10 @@ describe('3_websockets_embedded_benchmarks', function () {
       var timerName = expected + 'Events - no wait - no store';
 
       //first listen for the change
-      stressTestClient.on('/e2e_test1/testsubscribe/sequence1', {event_type: 'set', count: 0}, function (message) {
+      stressTestClient.on('/e2e_test1/testsubscribe/sequence1', {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
 
         receivedCount++;
 
@@ -230,15 +241,16 @@ describe('3_websockets_embedded_benchmarks', function () {
             ////////////////console.log('putting data: ', count);
             publisherclient.set('/e2e_test1/testsubscribe/sequence1', {
               property1: count++
-            }, {noStore: true}, function (e, result) {
+            }, {
+              noStore: true
+            }, function (e, result) {
               writeData();
             });
           }
 
           writeData();
 
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -315,7 +327,9 @@ describe('3_websockets_embedded_benchmarks', function () {
 
               publisherclient.set('/e2e_test1/testsubscribe/sequence_nostore', {
                 property1: sent[count]
-              }, {noStore: true}, function (e, result) {
+              }, {
+                noStore: true
+              }, function (e, result) {
 
                 //////////////console.log(e);
                 //////////////console.log(result);
@@ -329,8 +343,7 @@ describe('3_websockets_embedded_benchmarks', function () {
               count++;
             }
 
-          }
-          else
+          } else
             callback(e);
         });
 
@@ -409,13 +422,14 @@ describe('3_websockets_embedded_benchmarks', function () {
 
               publisherclient.set('/e2e_test1/testsubscribe/sequence_nostore_fireforget', {
                 property1: sent[count]
-              }, {noStore: true});
+              }, {
+                noStore: true
+              });
 
               count++;
             }
 
-          }
-          else
+          } else
             callback(e);
         });
 
@@ -476,7 +490,9 @@ describe('3_websockets_embedded_benchmarks', function () {
 
             publisherclient.set('/e2e_test1/testsubscribe/sequence_persist', {
               property1: sent[count]
-            }, {excludeId: true}, function (e, result) {
+            }, {
+              excludeId: true
+            }, function (e, result) {
 
               if (e)
                 return callback(e);
@@ -487,8 +503,7 @@ describe('3_websockets_embedded_benchmarks', function () {
             count++;
           }
 
-        }
-        else
+        } else
           callback(e);
       });
     });
@@ -509,7 +524,10 @@ describe('3_websockets_embedded_benchmarks', function () {
       var receivedCount = 0;
       var timerName = expected + 'Events - no wait';
 
-      stressTestClient.on('/e2e_test1/testsubscribe/sequence4', {event_type: 'set', count: 0}, function (message) {
+      stressTestClient.on('/e2e_test1/testsubscribe/sequence4', {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
 
         receivedCount++;
 
@@ -522,8 +540,7 @@ describe('3_websockets_embedded_benchmarks', function () {
         if (!e) {
           console.time(timerName);
           writeData();
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -533,7 +550,9 @@ describe('3_websockets_embedded_benchmarks', function () {
 
         publisherclient.set('/e2e_test1/testsubscribe/sequence4', {
           property1: count++
-        }, {excludeId: true}, function (e, result) {
+        }, {
+          excludeId: true
+        }, function (e, result) {
           writeData();
         });
       }
@@ -552,7 +571,10 @@ describe('3_websockets_embedded_benchmarks', function () {
     var receivedCount = 0;
     var timerName = expected + 'Events';
 
-    listenerclient.on('/e2e_test1/testsubscribe/sequence32', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/sequence32', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       receivedCount++;
 
@@ -565,8 +587,7 @@ describe('3_websockets_embedded_benchmarks', function () {
       if (!e) {
         console.time(timerName);
         writeData();
-      }
-      else
+      } else
         callback(e);
     });
 
@@ -576,7 +597,9 @@ describe('3_websockets_embedded_benchmarks', function () {
 
       publisherclient.set('/e2e_test1/testsubscribe/sequence32', {
         property1: count++
-      }, {excludeId: true}, function (e, result) {
+      }, {
+        excludeId: true
+      }, function (e, result) {
         writeData();
       });
     }
@@ -602,12 +625,17 @@ describe('3_websockets_embedded_benchmarks', function () {
 
         publisherclient.set('/e2e_test1/testsubscribe/sequence5', {
           property1: count++
-        }, {excludeId: true}, function (e, result) {
+        }, {
+          excludeId: true
+        }, function (e, result) {
           writeData();
         });
       }
 
-      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {event_type: 'set', count: 0}, function (message) {
+      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
 
         receivedCount++;
 
@@ -620,8 +648,7 @@ describe('3_websockets_embedded_benchmarks', function () {
         if (!e) {
           console.time(timerName);
           writeData();
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -638,7 +665,10 @@ describe('3_websockets_embedded_benchmarks', function () {
     var receivedCount = 0;
     var timerName = expected + 'Events';
 
-    listenerclient.on('/e2e_test1/testsubscribe/sequence31', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/sequence31', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       receivedCount++;
 
@@ -655,7 +685,9 @@ describe('3_websockets_embedded_benchmarks', function () {
 
         publisherclient.set('/e2e_test1/testsubscribe/sequence31', {
           property1: count++
-        }, {excludeId: true}, function (e, result) {
+        }, {
+          excludeId: true
+        }, function (e, result) {
           writeData();
         });
       }
@@ -663,8 +695,7 @@ describe('3_websockets_embedded_benchmarks', function () {
       if (!e) {
         console.time(timerName);
         writeData();
-      }
-      else
+      } else
         callback(e);
     });
 
@@ -689,12 +720,17 @@ describe('3_websockets_embedded_benchmarks', function () {
 
         publisherclient.set('/e2e_test1/testsubscribe/sequence5', {
           property1: count++
-        }, {excludeId: true}, function (e, result) {
+        }, {
+          excludeId: true
+        }, function (e, result) {
           writeData();
         });
       }
 
-      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {event_type: 'set', count: 0}, function (message) {
+      stressTestClient.on('/e2e_test1/testsubscribe/sequence5', {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
 
         receivedCount++;
 
@@ -707,8 +743,7 @@ describe('3_websockets_embedded_benchmarks', function () {
         if (!e) {
           console.time(timerName);
           writeData();
-        }
-        else
+        } else
           callback(e);
       });
 

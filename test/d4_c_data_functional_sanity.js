@@ -1,4 +1,4 @@
-describe('d4_c_data_functional', function() {
+describe('d4_c_data_functional', function () {
 
   this.timeout(20000);
 
@@ -16,33 +16,37 @@ describe('d4_c_data_functional', function() {
 
   var serviceInstance = new service(config);
 
-  before('should initialize the service', function(callback) {
+  before('should initialize the service', function (callback) {
 
     serviceInstance.happn = {
-      services:{
-        utils:utils
+      services: {
+        utils: utils
       }
     };
 
-    serviceInstance.initialize(function(e){
+    serviceInstance.initialize(function (e) {
 
       if (e) return callback(e);
       callback();
     });
   });
 
-  after(function(done) {
+  after(function (done) {
 
     serviceInstance.stop(done);
   });
 
-  it('sets data', function(callback) {
+  it('sets data', function (callback) {
 
     var beforeCreatedOrModified = Date.now();
 
-    setTimeout(function(){
+    setTimeout(function () {
 
-      serviceInstance.upsert('/set/' + testId, {"data":{"test":"data"}}, {}, false, function(e, response, created, upsert, meta){
+      serviceInstance.upsert('/set/' + testId, {
+        "data": {
+          "test": "data"
+        }
+      }, {}, false, function (e, response, created, upsert, meta) {
 
         if (e) return callback(e);
 
@@ -59,15 +63,19 @@ describe('d4_c_data_functional', function() {
 
   });
 
-  it('gets data', function(callback) {
+  it('gets data', function (callback) {
 
-    serviceInstance.upsert('/get/' + testId, {data:{"test":"data"}}, {}, false, function(e, response, created){
+    serviceInstance.upsert('/get/' + testId, {
+      data: {
+        "test": "data"
+      }
+    }, {}, false, function (e, response, created) {
 
       if (e) return callback(e);
 
       expect(created.data.test).to.equal("data");
 
-      serviceInstance.find('/get/' + testId, {}, function(e, items){
+      serviceInstance.find('/get/' + testId, {}, function (e, items) {
 
         if (e) return callback(e);
 
@@ -79,11 +87,11 @@ describe('d4_c_data_functional', function() {
     });
   });
 
-  it('gets no data', function(callback) {
+  it('gets no data', function (callback) {
 
     var random = require('shortid').generate();
 
-    serviceInstance.find('/wontfind/' + random, {}, function(e, response){
+    serviceInstance.find('/wontfind/' + random, {}, function (e, response) {
 
       if (e) return callback(e);
 
@@ -94,13 +102,15 @@ describe('d4_c_data_functional', function() {
     });
   });
 
-  it('removes data', function(callback) {
+  it('removes data', function (callback) {
 
-    serviceInstance.upsert('/remove/' + testId, {"test":"data"}, {}, false, function(e, response){
+    serviceInstance.upsert('/remove/' + testId, {
+      "test": "data"
+    }, {}, false, function (e, response) {
 
       if (e) return callback(e);
 
-      serviceInstance.remove('/remove/' + testId, function(e, response){
+      serviceInstance.remove('/remove/' + testId, function (e, response) {
 
         if (e) return callback(e);
 
@@ -113,17 +123,21 @@ describe('d4_c_data_functional', function() {
     });
   });
 
-  it('removes multiple data', function(callback) {
+  it('removes multiple data', function (callback) {
 
-    serviceInstance.upsert('/remove/multiple/1/' + testId, {"test":"data"}, {}, false, function(e, response){
+    serviceInstance.upsert('/remove/multiple/1/' + testId, {
+      "test": "data"
+    }, {}, false, function (e, response) {
 
       if (e) return callback(e);
 
-      serviceInstance.upsert('/remove/multiple/2/' + testId, {"test":"data"}, {}, false, function(e, response){
+      serviceInstance.upsert('/remove/multiple/2/' + testId, {
+        "test": "data"
+      }, {}, false, function (e, response) {
 
         if (e) return callback(e);
 
-        serviceInstance.remove('/remove/multiple/*', function(e, response){
+        serviceInstance.remove('/remove/multiple/*', function (e, response) {
 
           if (e) return callback(e);
 
@@ -138,17 +152,25 @@ describe('d4_c_data_functional', function() {
     });
   });
 
-  it('gets data with wildcard', function(callback) {
+  it('gets data with wildcard', function (callback) {
 
-    serviceInstance.upsert('/get/multiple/1/' + testId, {data:{"test":"data"}}, {}, false, function(e, response){
+    serviceInstance.upsert('/get/multiple/1/' + testId, {
+      data: {
+        "test": "data"
+      }
+    }, {}, false, function (e, response) {
 
       if (e) return callback(e);
 
-      serviceInstance.upsert('/get/multiple/2/' + testId, {data:{"test":"data"}}, {}, false, function(e, response){
+      serviceInstance.upsert('/get/multiple/2/' + testId, {
+        data: {
+          "test": "data"
+        }
+      }, {}, false, function (e, response) {
 
         if (e) return callback(e);
 
-        serviceInstance.find('/get/multiple/*/' + testId, {}, function(e, response){
+        serviceInstance.find('/get/multiple/*/' + testId, {}, function (e, response) {
 
           expect(response.length).to.equal(2);
 
@@ -163,7 +185,7 @@ describe('d4_c_data_functional', function() {
     });
   });
 
-  it('gets data with complex search', function(callback) {
+  it('gets data with complex search', function (callback) {
 
     var test_path_end = require('shortid').generate();
 
@@ -177,14 +199,31 @@ describe('d4_c_data_functional', function() {
     };
 
     var criteria1 = {
-      $or: [{"data.regions": {$in: ['North', 'South', 'East', 'West']}},
-        {"data.towns": {$in: ['North.Cape Town', 'South.East London']}},
-        {"data.categories": {$in: ["Action", "History"]}}],
-      "data.keywords": {$in: ["bass", "Penny Siopis"]}
+      $or: [{
+          "data.regions": {
+            $in: ['North', 'South', 'East', 'West']
+          }
+        },
+        {
+          "data.towns": {
+            $in: ['North.Cape Town', 'South.East London']
+          }
+        },
+        {
+          "data.categories": {
+            $in: ["Action", "History"]
+          }
+        }
+      ],
+      "data.keywords": {
+        $in: ["bass", "Penny Siopis"]
+      }
     };
 
     var options1 = {
-      sort: {"field1": 1},
+      sort: {
+        "field1": 1
+      },
       limit: 1
     };
 
@@ -192,20 +231,28 @@ describe('d4_c_data_functional', function() {
 
     var options2 = {
       fields: null,
-      sort: {"field1": 1},
+      sort: {
+        "field1": 1
+      },
       limit: 2
     };
 
     // serviceInstance.upsert('/get/multiple/1/' + testId, {data:{"test":"data"}}, {}, false, function(e, response){
-    serviceInstance.upsert('/1_eventemitter_embedded_sanity/' + testId + '/testsubscribe/data/complex/' + test_path_end, {data:complex_obj}, {}, false, function (e, put_result) {
+    serviceInstance.upsert('/1_eventemitter_embedded_sanity/' + testId + '/testsubscribe/data/complex/' + test_path_end, {
+      data: complex_obj
+    }, {}, false, function (e, put_result) {
 
       expect(e == null).to.be(true);
 
-      serviceInstance.upsert('/1_eventemitter_embedded_sanity/' + testId + '/testsubscribe/data/complex/' + test_path_end + '/1', {data:complex_obj}, {}, false, function (e, put_result) {
+      serviceInstance.upsert('/1_eventemitter_embedded_sanity/' + testId + '/testsubscribe/data/complex/' + test_path_end + '/1', {
+        data: complex_obj
+      }, {}, false, function (e, put_result) {
 
         expect(e == null).to.be(true);
 
-        serviceInstance.upsert('/1_eventemitter_embedded_sanity/' + testId + '/testsubscribe/data/complex/' + test_path_end + '/2', {"test":"data"}, {}, false, function (e, put_result) {
+        serviceInstance.upsert('/1_eventemitter_embedded_sanity/' + testId + '/testsubscribe/data/complex/' + test_path_end + '/2', {
+          "test": "data"
+        }, {}, false, function (e, put_result) {
 
           expect(e == null).to.be(true);
 
@@ -231,27 +278,33 @@ describe('d4_c_data_functional', function() {
     });
   });
 
-  it('gets data with $not', function(done) {
+  it('gets data with $not', function (done) {
 
     var test_obj = {
-      data:'ok'
+      data: 'ok'
     };
 
     var test_obj1 = {
-      data:'notok'
+      data: 'notok'
     };
 
     serviceInstance.upsert('/not_get/' + testId + '/ok/1', test_obj, {}, false, function (e) {
 
       expect(e == null).to.be(true);
 
-      serviceInstance.upsert('/not_get/' + testId + '/_notok_/1' , test_obj1, {}, false, function (e) {
+      serviceInstance.upsert('/not_get/' + testId + '/_notok_/1', test_obj1, {}, false, function (e) {
 
         expect(e == null).to.be(true);
 
-        var listCriteria = {criteria: {$not:{}}};
+        var listCriteria = {
+          criteria: {
+            $not: {}
+          }
+        };
 
-        listCriteria.criteria.$not['path'] = {$regex: new RegExp(".*_notok_.*")};
+        listCriteria.criteria.$not['path'] = {
+          $regex: new RegExp(".*_notok_.*")
+        };
 
         serviceInstance.find('/not_get/' + testId + '/*', listCriteria, function (e, search_result) {
 
@@ -266,7 +319,7 @@ describe('d4_c_data_functional', function() {
     });
   });
 
-  it('does a sort and limit', function(done){
+  it('does a sort and limit', function (done) {
 
     var itemCount = 100;
 
@@ -278,10 +331,10 @@ describe('d4_c_data_functional', function() {
 
     var async = require('async');
 
-    for (var i = 0; i < itemCount; i++){
+    for (var i = 0; i < itemCount; i++) {
 
       var item = {
-        item_sort_id: i + (Math.floor( Math.random() * 1000000 ))
+        item_sort_id: i + (Math.floor(Math.random() * 1000000))
       };
 
       randomItems.push(item);
@@ -289,11 +342,15 @@ describe('d4_c_data_functional', function() {
 
     async.eachSeries(randomItems,
 
-      function(item, callback){
+      function (item, callback) {
 
         var testPath = base_path + item.item_sort_id;
 
-        serviceInstance.upsert(testPath, {data:item}, {noPublish: true}, false, function(e){
+        serviceInstance.upsert(testPath, {
+          data: item
+        }, {
+          noPublish: true
+        }, false, function (e) {
 
           if (e) return callback(e);
 
@@ -302,22 +359,29 @@ describe('d4_c_data_functional', function() {
         });
       },
 
-      function(e){
+      function (e) {
 
         if (e) return done(e);
 
         //ascending
-        randomItems.sort(function(a, b){
+        randomItems.sort(function (a, b) {
 
           return a.item_sort_id - b.item_sort_id;
 
         });
 
-        serviceInstance.find(base_path + '*', {options:{sort:{'data.item_sort_id':1}}, limit:50}, function(e, items){
+        serviceInstance.find(base_path + '*', {
+          options: {
+            sort: {
+              'data.item_sort_id': 1
+            }
+          },
+          limit: 50
+        }, function (e, items) {
 
           if (e) return done(e);
 
-          for (var itemIndex in items){
+          for (var itemIndex in items) {
 
             if (itemIndex >= 50) break;
 
@@ -329,17 +393,24 @@ describe('d4_c_data_functional', function() {
           }
 
           //ascending
-          randomItems.sort(function(a, b){
+          randomItems.sort(function (a, b) {
 
             return b.item_sort_id - a.item_sort_id;
 
           });
 
-          serviceInstance.find(base_path + '/*', {options:{sort:{"data.item_sort_id":-1}}, limit:50}, function(e, items){
+          serviceInstance.find(base_path + '/*', {
+            options: {
+              sort: {
+                "data.item_sort_id": -1
+              }
+            },
+            limit: 50
+          }, function (e, items) {
 
             if (e) return done(e);
 
-            for (var itemIndex in items){
+            for (var itemIndex in items) {
 
               if (itemIndex >= 50) break;
 

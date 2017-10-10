@@ -1,8 +1,7 @@
-var Happn = require('../..')
-  , expect = require('expect.js')
-  , async = require('async')
-  , shortid = require('shortid')
-  ;
+var Happn = require('../..'),
+  expect = require('expect.js'),
+  async = require('async'),
+  shortid = require('shortid');
 
 describe('functional subscription tree', function () {
 
@@ -21,7 +20,9 @@ describe('functional subscription tree', function () {
     var subscriptionTree = new SubscriptionTree();
 
     //path, id, dataId, data, depth, originalPath
-    subscriptionTree.addSubscription('/test/path/1', 1, 1, {test:1});
+    subscriptionTree.addSubscription('/test/path/1', 1, 1, {
+      test: 1
+    });
 
     var subscribers = subscriptionTree.search('/test/path/1');
 
@@ -37,17 +38,33 @@ describe('functional subscription tree', function () {
     var subscriptionTree = new SubscriptionTree();
 
     //path, id, dataId, data, depth, originalPath
-    subscriptionTree.addSubscription('/test/path/1', 1, 1, {test:1});
-    subscriptionTree.addSubscription('/test/path/1', 1, 2, {test:2});
+    subscriptionTree.addSubscription('/test/path/1', 1, 1, {
+      test: 1
+    });
+    subscriptionTree.addSubscription('/test/path/1', 1, 2, {
+      test: 2
+    });
 
-    subscriptionTree.addSubscription('/test/path/2', 2, 1, {test:1});
-    subscriptionTree.addSubscription('/test/path/2', 2, 2, {test:2});
+    subscriptionTree.addSubscription('/test/path/2', 2, 1, {
+      test: 1
+    });
+    subscriptionTree.addSubscription('/test/path/2', 2, 2, {
+      test: 2
+    });
 
-    subscriptionTree.addSubscription('/test/path/3', 3, 1, {test:1});
-    subscriptionTree.addSubscription('/test/path/3', 3, 2, {test:2});
+    subscriptionTree.addSubscription('/test/path/3', 3, 1, {
+      test: 1
+    });
+    subscriptionTree.addSubscription('/test/path/3', 3, 2, {
+      test: 2
+    });
 
-    subscriptionTree.addSubscription('/test/path/*', 4, 1, {test:1});
-    subscriptionTree.addSubscription('/test/path/*', 4, 2, {test:2});
+    subscriptionTree.addSubscription('/test/path/*', 4, 1, {
+      test: 1
+    });
+    subscriptionTree.addSubscription('/test/path/*', 4, 2, {
+      test: 2
+    });
 
     var subscribers = subscriptionTree.search('/test/path/1');
 
@@ -64,19 +81,37 @@ describe('functional subscription tree', function () {
     var subscriptionTree = new SubscriptionTree();
 
     //path, id, dataId, data, depth, originalPath
-    subscriptionTree.addSubscription('/2/test/path/1', 1, 1, {test:1});
-    subscriptionTree.addSubscription('/2/test/path/1', 1, 2, {test:2});
+    subscriptionTree.addSubscription('/2/test/path/1', 1, 1, {
+      test: 1
+    });
+    subscriptionTree.addSubscription('/2/test/path/1', 1, 2, {
+      test: 2
+    });
 
-    subscriptionTree.addSubscription('/2/test/path/2', 2, 1, {test:1});
-    subscriptionTree.addSubscription('/2/test/path/2', 2, 2, {test:2});
+    subscriptionTree.addSubscription('/2/test/path/2', 2, 1, {
+      test: 1
+    });
+    subscriptionTree.addSubscription('/2/test/path/2', 2, 2, {
+      test: 2
+    });
 
-    subscriptionTree.addSubscription('/2/test/path/3', 3, 1, {test:1});
-    subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {test:2});
+    subscriptionTree.addSubscription('/2/test/path/3', 3, 1, {
+      test: 1
+    });
+    subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {
+      test: 2
+    });
 
-    subscriptionTree.addSubscription('/2/test/path/*', 4, 1, {test:1});
-    subscriptionTree.addSubscription('/2/test/path/*', 4, 2, {test:2});
+    subscriptionTree.addSubscription('/2/test/path/*', 4, 1, {
+      test: 1
+    });
+    subscriptionTree.addSubscription('/2/test/path/*', 4, 2, {
+      test: 2
+    });
 
-    subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {test:3});
+    subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {
+      test: 3
+    });
 
     var subscribers = subscriptionTree.search('/2/test/path/3');
 
@@ -91,14 +126,20 @@ describe('functional subscription tree', function () {
 
     var subscriptionTree = new SubscriptionTree();
 
-    subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {test:2});
-    subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {test:3});
+    subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {
+      test: 2
+    });
+    subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {
+      test: 3
+    });
 
     var subscribers = subscriptionTree.search('/2/test/path/3');
 
     expect(subscribers.length).to.be(2);
-    
-    subscriptionTree.removeSubscription('/2/*/*/3', 3, {dataId:3});
+
+    subscriptionTree.removeSubscription('/2/*/*/3', 3, {
+      dataId: 3
+    });
 
     subscribers = subscriptionTree.search('/2/test/path/3');
 
@@ -113,8 +154,12 @@ describe('functional subscription tree', function () {
 
     var subscriptionTree = new SubscriptionTree();
 
-    subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {test:2});
-    subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {test:3});
+    subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {
+      test: 2
+    });
+    subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {
+      test: 3
+    });
 
     var subscribers = subscriptionTree.search('/2/test/path/3');
 
@@ -135,11 +180,17 @@ describe('functional subscription tree', function () {
 
     var subscriptionTree = new SubscriptionTree();
 
-    subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {test:2});
+    subscriptionTree.addSubscription('/2/test/path/3', 3, 2, {
+      test: 2
+    });
 
-    subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {test:3});
+    subscriptionTree.addSubscription('/2/*/*/3', 3, 1, {
+      test: 3
+    });
 
-    subscriptionTree.addSubscription('/2/test/*/4', 3, 1, {test:3});
+    subscriptionTree.addSubscription('/2/test/*/4', 3, 1, {
+      test: 3
+    });
 
     var subscribers1 = subscriptionTree.search('/2/test/path/3');
 

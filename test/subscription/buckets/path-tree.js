@@ -1,5 +1,4 @@
-var SortedObjectArray = require("sorted-object-array")
-  ;
+var SortedObjectArray = require("sorted-object-array");
 
 function PathTree(options, branch) {
 
@@ -20,7 +19,7 @@ function PathTree(options, branch) {
   this.branch = branch;
 }
 
-PathTree.prototype.__clearCache = function(key){
+PathTree.prototype.__clearCache = function (key) {
 
   if (!key) return this.__cache.array = [];
 
@@ -49,18 +48,18 @@ PathTree.prototype._addSubscriptionData = function (path, id, dataId, data, dept
   if (subscriptionDataIndex == -1) {
 
     subscription = {
-      fullPath:originalPath,
+      fullPath: originalPath,
       key: subscriptionKey,
       segment: subscriptionSegment,
       id: id,
       refCount: 0,
-      subscriptionData:{}
+      subscriptionData: {}
     };
 
   } else subscription = this.__subscriptions.array[subscriptionDataIndex];
 
   subscription.refCount++;
-  subscription.data = data;//overwritten
+  subscription.data = data; //overwritten
   subscription.subscriptionData[dataId] = data;
 
   if (subscriptionDataIndex == -1) {
@@ -102,7 +101,7 @@ PathTree.prototype.addSubscription = function (path, id, dataId, data, depth, or
   child.addSubscription(splitPath.slice(1, splitPath.length), id, dataId, data, depth, originalPath);
 };
 
-PathTree.prototype._removeSubscriptionData = function(path, id, dataId, data, depth, originalPath){
+PathTree.prototype._removeSubscriptionData = function (path, id, dataId, data, depth, originalPath) {
 
   var subscriptionKey = originalPath + id;
 
@@ -142,7 +141,7 @@ PathTree.prototype.removeSubscription = function (path, id, dataId, data, depth,
 
   var child;
 
-  if (childIndex < 0) return;//doesnt exist - cannot remove
+  if (childIndex < 0) return; //doesnt exist - cannot remove
 
   else child = _this.children.array[childIndex];
 
@@ -193,7 +192,10 @@ PathTree.prototype.__getItemsForSegment = function (path, sortedArray, matchesCr
   while (matchesCriteria(subscription)) {
 
     if (this.wildcardMatch(subscription.fullPath, options.fullPath))
-      subscriptions.push({subscription: subscription, index: walkIndex});
+      subscriptions.push({
+        subscription: subscription,
+        index: walkIndex
+      });
 
     walkIndex--;
 
@@ -207,7 +209,10 @@ PathTree.prototype.__getItemsForSegment = function (path, sortedArray, matchesCr
   while (matchesCriteria(subscription)) {
 
     if (this.wildcardMatch(subscription.fullPath, options.fullPath))
-      subscriptions.push({subscription: subscription, index: walkIndex});
+      subscriptions.push({
+        subscription: subscription,
+        index: walkIndex
+      });
 
     walkIndex++;
 
@@ -243,27 +248,27 @@ PathTree.prototype._searchSubscriptions = function (originalPath, id) {
 
     //so looking for a specific subscription
 
-    if (_this.branch == '*'){
+    if (_this.branch == '*') {
 
       //no filtering necessary - all subscriptions under * get pulled out
-      subscriptions = _this.__subscriptions.array.map(function(subscription){
+      subscriptions = _this.__subscriptions.array.map(function (subscription) {
         if (subscription.id == id)
           return subscription;
       });
-    } else subscriptions = _this.__subscriptions.array.map(function(subscription){
+    } else subscriptions = _this.__subscriptions.array.map(function (subscription) {
       if (_this.wildcardMatch(subscription.fullPath, originalPath) && subscription.id == id)
         return subscription;
     });
 
   } else {
 
-    if (_this.branch == '*'){
+    if (_this.branch == '*') {
 
       //no filtering necessary - all subscriptions under * get pulled out
-      subscriptions = _this.__subscriptions.array.map(function(subscription){
+      subscriptions = _this.__subscriptions.array.map(function (subscription) {
         return subscription;
       });
-    } else subscriptions = _this.__subscriptions.array.map(function(subscription){
+    } else subscriptions = _this.__subscriptions.array.map(function (subscription) {
       if (_this.wildcardMatch(subscription.fullPath, originalPath))
         return subscription;
     });
@@ -303,10 +308,9 @@ PathTree.prototype.search = function (path, id, depth, originalPath) {
 
   var kids = [];
 
-  if (_this.branch == '*'){
+  if (_this.branch == '*') {
     kids = _this.children.array;
-  }
-  else {
+  } else {
 
     var child = _this.__childByBranch(branch);
 
@@ -321,8 +325,8 @@ PathTree.prototype.search = function (path, id, depth, originalPath) {
 
   kids.forEach(function (child) {
 
-    if (splitPath.length == 1){
-      return child._searchSubscriptions(originalPath, id).forEach(function(subscription){
+    if (splitPath.length == 1) {
+      return child._searchSubscriptions(originalPath, id).forEach(function (subscription) {
         subscriptions.push(subscription);
       });
     }
@@ -335,7 +339,7 @@ PathTree.prototype.search = function (path, id, depth, originalPath) {
   return subscriptions;
 };
 
-PathTree.prototype.__childByBranch = function(branch){
+PathTree.prototype.__childByBranch = function (branch) {
 
   var childIndex = this.children.search(branch);
 
@@ -345,5 +349,3 @@ PathTree.prototype.__childByBranch = function(branch){
 };
 
 module.exports = PathTree;
-
-

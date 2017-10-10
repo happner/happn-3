@@ -25,8 +25,12 @@ describe(require('path').basename(__filename), function () {
   };
 
   testGroup2.permissions = {
-    '/@HTTP/secure/test/removed/user': {actions: ['get']},
-    '/@HTTP/secure/test/not_removed/user': {actions: ['get']}
+    '/@HTTP/secure/test/removed/user': {
+      actions: ['get']
+    },
+    '/@HTTP/secure/test/not_removed/user': {
+      actions: ['get']
+    }
   };
 
   var testUser2 = {
@@ -39,12 +43,16 @@ describe(require('path').basename(__filename), function () {
       var addedTestGroup2;
       var addedTestuser2;
 
-      server1.services.security.users.upsertGroup(testGroup2, {overwrite: false}, function (e, result) {
+      server1.services.security.users.upsertGroup(testGroup2, {
+        overwrite: false
+      }, function (e, result) {
 
         if (e) return reject(e);
         addedTestGroup2 = result;
 
-        server1.services.security.users.upsertUser(testUser2, {overwrite: false}, function (e, result) {
+        server1.services.security.users.upsertUser(testUser2, {
+          overwrite: false
+        }, function (e, result) {
 
           if (e) return reject(e);
           addedTestuser2 = result;
@@ -77,7 +85,7 @@ describe(require('path').basename(__filename), function () {
 
       if (!server1) resolve();
 
-      var stopService = function(clientE){
+      var stopService = function (clientE) {
 
         if (clientE) console.warn('client disconnect failed:::', clientE);
 
@@ -103,111 +111,105 @@ describe(require('path').basename(__filename), function () {
     activeClient = null;
 
     async.series([
-      function(itemCB){
-        createService(
-          {
-            services:{
-              security:{
-                config:{
-                  accountLockout:{
-                    enabled:true,
-                    attempts:2,
-                    retryInterval:3000
+      function (itemCB) {
+        createService({
+            services: {
+              security: {
+                config: {
+                  accountLockout: {
+                    enabled: true,
+                    attempts: 2,
+                    retryInterval: 3000
                   }
                 }
               }
             }
-          }
-        )
-          .then(function(){
+          })
+          .then(function () {
             console.log('created service:::');
             itemCB();
           })
-          .catch(function(e){
+          .catch(function (e) {
             itemCB(e);
           })
       },
-      function(itemCB){
+      function (itemCB) {
 
         console.log('trying login 1:::');
 
-        Happn.client.create(
-          {
+        Happn.client.create({
             config: {
               username: testUser2.username,
               password: 'BAD...',
               port: testPort
             }
           })
-          .catch(function(e){
+          .catch(function (e) {
             expect(e.toString()).to.be('AccessDenied: Invalid credentials');
             console.log('got expected error 1:::');
             itemCB();
           });
       },
-      function(itemCB){
+      function (itemCB) {
 
         console.log('trying login 2:::');
 
-        Happn.client.create(
-          {
+        Happn.client.create({
             config: {
               username: testUser2.username,
               password: 'BAD...',
               port: testPort
             }
           })
-          .catch(function(e){
+          .catch(function (e) {
             expect(e.toString()).to.be('AccessDenied: Invalid credentials');
             console.log('got expected error 2:::');
             itemCB();
           });
       },
-      function(itemCB){
+      function (itemCB) {
 
         console.log('trying login 3:::');
 
-        Happn.client.create(
-          {
+        Happn.client.create({
             config: {
               username: testUser2.username,
               password: 'BAD...',
               port: testPort
             }
           })
-          .catch(function(e){
+          .catch(function (e) {
             expect(e.toString()).to.be('AccessDenied: Account locked out');
             console.log('got expected error 3:::');
-            setTimeout(itemCB, 3000);//wait 3 seconds
+            setTimeout(itemCB, 3000); //wait 3 seconds
           });
       },
-      function(itemCB){
+      function (itemCB) {
 
         console.log('trying login 4:::');
 
-        Happn.client.create(
-          {
+        Happn.client.create({
             config: {
               username: testUser2.username,
               password: testUser2.password,
               port: testPort
             }
           })
-          .then(function(client){
+          .then(function (client) {
             activeClient = client;
             console.log('succeeded login 4:::');
             itemCB();
           })
-          .catch(function(e){
+          .catch(function (e) {
             itemCB(e);
           });
       },
-      function(itemCB){
+      function (itemCB) {
         stopService()
-          .then(function(){
+          .then(function () {
             itemCB();
           })
-          .catch(function(e){
+          .catch(function (e) {
             itemCB(e);
           })
       }
@@ -221,76 +223,72 @@ describe(require('path').basename(__filename), function () {
     activeClient = null;
 
     async.series([
-      function(itemCB){
-        createService(
-          {
-            services:{
-              security:{
-                config:{
-                  accountLockout:{
-                    enabled:true,
-                    attempts:3,
-                    retryInterval:3000
+      function (itemCB) {
+        createService({
+            services: {
+              security: {
+                config: {
+                  accountLockout: {
+                    enabled: true,
+                    attempts: 3,
+                    retryInterval: 3000
                   }
                 }
               }
             }
-          }
-        )
-          .then(function(){
+          })
+          .then(function () {
             console.log('created service:::');
             itemCB();
           })
-          .catch(function(e){
+          .catch(function (e) {
             itemCB(e);
           })
       },
-      function(itemCB){
+      function (itemCB) {
 
         console.log('trying login 1:::');
 
-        Happn.client.create(
-          {
+        Happn.client.create({
             config: {
               username: testUser2.username,
               password: 'BAD...',
               port: testPort
             }
           })
-          .catch(function(e){
+          .catch(function (e) {
             expect(e.toString()).to.be('AccessDenied: Invalid credentials');
             console.log('got expected error 1:::');
             itemCB();
           });
       },
-      function(itemCB){
+      function (itemCB) {
 
         console.log('trying login 2:::');
 
-        Happn.client.create(
-          {
+        Happn.client.create({
             config: {
               username: testUser2.username,
               password: 'BAD...',
               port: testPort
             }
           })
-          .catch(function(e){
+          .catch(function (e) {
 
             expect(e.toString()).to.be('AccessDenied: Invalid credentials');
 
             console.log('got expected error 2:::');
 
-            server1.services.security.__locks.get(testUser2.username, function(e, lock){
+            server1.services.security.__locks.get(testUser2.username, function (e, lock) {
 
               expect(lock.attempts).to.be(2);
               setTimeout(itemCB, 3000);
             });
           });
       },
-      function(itemCB){
+      function (itemCB) {
 
-        server1.services.security.__locks.get(testUser2.username, function(e, lock){
+        server1.services.security.__locks.get(testUser2.username, function (e, lock) {
 
           expect(e).to.be(null);
 
@@ -299,33 +297,32 @@ describe(require('path').basename(__filename), function () {
           itemCB();
         });
       },
-      function(itemCB){
+      function (itemCB) {
 
         console.log('trying login 3:::');
 
-        Happn.client.create(
-          {
+        Happn.client.create({
             config: {
               username: testUser2.username,
               password: testUser2.password,
               port: testPort
             }
           })
-          .then(function(client){
+          .then(function (client) {
             activeClient = client;
             console.log('succeeded login 3:::');
             itemCB();
           })
-          .catch(function(e){
+          .catch(function (e) {
             itemCB(e);
           });
       },
-      function(itemCB){
+      function (itemCB) {
         stopService()
-          .then(function(){
+          .then(function () {
             itemCB();
           })
-          .catch(function(e){
+          .catch(function (e) {
             itemCB(e);
           })
       }

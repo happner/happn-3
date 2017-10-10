@@ -34,8 +34,7 @@ describe('c7_ds_iterate', function () {
     services: {
       data: {
         config: {
-          datastores: [
-            {
+          datastores: [{
               name: 'file2',
               settings: {
                 filename: test_file2

@@ -1,8 +1,7 @@
-var Happn = require('../..')
-  , expect = require('expect.js')
-  , async = require('async')
-  , shortid = require('shortid')
-  ;
+var Happn = require('../..'),
+  expect = require('expect.js'),
+  async = require('async'),
+  shortid = require('shortid');
 
 describe('functional strict bucket', function () {
 
@@ -30,11 +29,19 @@ describe('functional strict bucket', function () {
 
       if (e) return done(e);
 
-      testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
+      testBucket.addSubscription('/test/path/*', sessionId1, {
+        options: {
+          refCount: 1
+        }
+      });
 
       expect(testBucket.allSubscriptions().length).to.be(1);
 
-      testBucket.addSubscription('/test/path/*', sessionId1, {options: {refCount: 1}});
+      testBucket.addSubscription('/test/path/*', sessionId1, {
+        options: {
+          refCount: 1
+        }
+      });
 
       expect(testBucket.allSubscriptions().length).to.be(1);
 
@@ -55,7 +62,11 @@ describe('functional strict bucket', function () {
       channel: 'SET'
     });
 
-    var data = {options: {refCount: 1}};
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
 
     testBucket.initialize(function (e) {
 
@@ -96,7 +107,11 @@ describe('functional strict bucket', function () {
       channel: 'SET'
     });
 
-    var data = {options: {refCount: 1}};
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
 
     testBucket.initialize(function (e) {
 
@@ -139,7 +154,11 @@ describe('functional strict bucket', function () {
       channel: 'SET'
     });
 
-    var data = {options: {refCount: 1}};
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
 
     testBucket.initialize(function (e) {
 
@@ -203,12 +222,14 @@ describe('functional strict bucket', function () {
 
           pathCounts[randomPath]++;
 
-          var subId =  shortid.generate();
+          var subId = shortid.generate();
 
           testBucket.addSubscription('/test/path/' + randomPath, subId, {
             rand: randomPath,
-            options: {refCount: 1}
-          }, function(e){
+            options: {
+              refCount: 1
+            }
+          }, function (e) {
 
             if (e) return timeCB(e);
 
@@ -225,7 +246,7 @@ describe('functional strict bucket', function () {
 
             testBucket.getSubscriptions('/test/path/' + key, function (e, recipients) {
 
-              if (recipients.length != pathCounts[key]){
+              if (recipients.length != pathCounts[key]) {
 
                 console.log(':::', testBucket.__explicit_subscriptions.get(''));
 
@@ -423,9 +444,14 @@ describe('functional strict bucket', function () {
 
     var config = {};
 
-    var testItems = [
-      {path: 'test/path/1', data: {}},
-      {path: 'test/path/2', data: {}}
+    var testItems = [{
+        path: 'test/path/1',
+        data: {}
+      },
+      {
+        path: 'test/path/2',
+        data: {}
+      }
     ];
 
     mockSubscriptionService(config, testItems, function (e, instance) {
@@ -463,9 +489,14 @@ describe('functional strict bucket', function () {
 
     var config = {};
 
-    var testItems = [
-      {path: 'test/path/1', data: {}},
-      {path: 'test/path/2', data: {}}
+    var testItems = [{
+        path: 'test/path/1',
+        data: {}
+      },
+      {
+        path: 'test/path/2',
+        data: {}
+      }
     ];
 
     mockSubscriptionService(config, testItems, function (e, instance) {

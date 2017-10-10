@@ -33,7 +33,9 @@ describe('a2_websockets_embedded_ports', function () {
   });
 
   var initializeService = function (instance, port, callback) {
-    instance.initialize({port: port},
+    instance.initialize({
+        port: port
+      },
       function (e, instance) {
         if (e) return callback(e);
 
@@ -64,17 +66,21 @@ describe('a2_websockets_embedded_ports', function () {
     }
   });
 
-  var device1client;// a client that is connecting to the device 1
-  var device2client;// a client that is connecting to the device 2
-  var gatewayclient;// a client that connects to the gateway for services on the gateway (non proxied requests)
+  var device1client; // a client that is connecting to the device 1
+  var device2client; // a client that is connecting to the device 2
+  var gatewayclient; // a client that connects to the gateway for services on the gateway (non proxied requests)
 
   it('should initialize the clients', function (callback) {
     this.timeout(default_timeout);
 
     try {
-      //plugin, config, context, 
+      //plugin, config, context,
 
-      happn_client.create({config: {port: service1Port}}, function (e, instance) {
+      happn_client.create({
+        config: {
+          port: service1Port
+        }
+      }, function (e, instance) {
 
         if (e) return callback(e);
 
@@ -82,7 +88,11 @@ describe('a2_websockets_embedded_ports', function () {
 
         console.log('have service1Client:::');
 
-        happn_client.create({config: {port: service2Port}}, function (e, instance) {
+        happn_client.create({
+          config: {
+            port: service2Port
+          }
+        }, function (e, instance) {
 
           if (e) return callback(e);
 
@@ -90,7 +100,11 @@ describe('a2_websockets_embedded_ports', function () {
 
           console.log('have service2Client:::');
 
-          happn_client.create({config: {port: 55000}}, function (e, instance) {
+          happn_client.create({
+            config: {
+              port: 55000
+            }
+          }, function (e, instance) {
 
             if (e) return callback(e);
 

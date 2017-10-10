@@ -7,13 +7,13 @@ var async = require('async');
 var happnInstance = null;
 var test_id;
 
-function SanityTests(){
+function SanityTests() {
 
   this.happnInstance = null;
   this.test_id = Date.now() + '_' + require('shortid').generate();
 }
 
-SanityTests.prototype.run = function(server, publisherclient, listenerclient){
+SanityTests.prototype.run = function (server, publisherclient, listenerclient) {
 
   this.timeout(5000);
 
@@ -73,8 +73,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
 
             if (e) return callback(e);
           });
-        }
-        else callback(e);
+        } else callback(e);
       });
 
     } catch (e) {
@@ -85,7 +84,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
   it('the uses the onPublished event handler', function (callback) {
 
     _this.listenerclient.on('/1_eventemitter_embedded_sanity/' + _this.test_id + '/testsubscribe/data/onPublished/*', {
-      onPublished:function(message, meta){
+      onPublished: function (message, meta) {
 
         expect(message.property1).to.be('property1');
 
@@ -93,7 +92,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
 
         callback();
       }
-    }).then(function(eventId){
+    }).then(function (eventId) {
 
       expect(eventId >= 0).to.be(true);
 
@@ -104,7 +103,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
         property2: 'property2',
         property3: 'property3'
       }, null, function (e) {
-        if (e) return callback (e);
+        if (e) return callback(e);
       });
 
     }).catch(callback);
@@ -135,8 +134,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
 
             if (e) return callback(e);
           });
-        }
-        else callback(e);
+        } else callback(e);
       });
 
     } catch (e) {
@@ -169,8 +167,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
 
             if (e) return callback(e);
           });
-        }
-        else callback(e);
+        } else callback(e);
       });
 
     } catch (e) {
@@ -183,7 +180,9 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
     try {
 
       //first listen for the change
-      _this.listenerclient.on('2_websockets_embedded_sanity/anyeventonce/*', {count: 1}, function (message) {
+      _this.listenerclient.on('2_websockets_embedded_sanity/anyeventonce/*', {
+        count: 1
+      }, function (message) {
 
         expect(_this.listenerclient.events['/ALL@2_websockets_embedded_sanity/anyeventonce/*'].length).to.be(0);
         callback();
@@ -203,8 +202,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
 
             if (e) return callback(e);
           });
-        }
-        else callback(e);
+        } else callback(e);
       });
 
     } catch (e) {
@@ -237,7 +235,9 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         if (e) return callback(e);
 
@@ -270,7 +270,9 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
             property1: 'property1',
             property2: 'property2',
             property3: 'property3'
-          }, {noPublish: true}, timesCallback);
+          }, {
+            noPublish: true
+          }, timesCallback);
 
         },
         function (e) {
@@ -311,7 +313,11 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
         if (e)
           return callback(e);
 
-        _this.publisherclient.set('/2_websockets_embedded_sanity/' + _this.test_id + '/testsubscribe/data/merge/' + test_path_end, {property4: 'property4'}, {merge: true}, function (e, result) {
+        _this.publisherclient.set('/2_websockets_embedded_sanity/' + _this.test_id + '/testsubscribe/data/merge/' + test_path_end, {
+          property4: 'property4'
+        }, {
+          merge: true
+        }, function (e, result) {
 
           if (e)
             return callback(e);
@@ -338,10 +344,16 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
   });
 
   it('should contain the same payload between 2 non-merging consecutive stores', function (done) {
-    var object = {param1: 10, param2: 20};
+    var object = {
+      param1: 10,
+      param2: 20
+    };
     var firstTime;
 
-    _this.listenerclient.on('setTest/object', {event_type: 'set', count: 2}, function (message) {
+    _this.listenerclient.on('setTest/object', {
+      event_type: 'set',
+      count: 2
+    }, function (message) {
       if (firstTime === undefined) {
         firstTime = message;
         return;
@@ -361,10 +373,16 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
   });
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
-    var object = {param1: 10, param2: 20};
+    var object = {
+      param1: 10,
+      param2: 20
+    };
     var firstTime = true;
 
-    _this.listenerclient.on('mergeTest/object', {event_type: 'set', count: 2}, function (message, meta) {
+    _this.listenerclient.on('mergeTest/object', {
+      event_type: 'set',
+      count: 2
+    }, function (message, meta) {
 
       expect(message).to.eql(object);
       if (firstTime) {
@@ -374,9 +392,13 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
       done();
     }, function (err) {
       expect(err).to.not.be.ok();
-      _this.publisherclient.set('mergeTest/object', object, {merge: true}, function (err) {
+      _this.publisherclient.set('mergeTest/object', object, {
+        merge: true
+      }, function (err) {
         expect(err).to.not.be.ok();
-        _this.publisherclient.set('mergeTest/object', object, {merge: true}, function (err) {
+        _this.publisherclient.set('mergeTest/object', object, {
+          merge: true
+        }, function (err) {
           expect(err).to.not.be.ok();
         });
       });
@@ -426,7 +448,10 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
     var criteria2 = null;
 
     var options2 = {
-      fields: {towns:1, keywords:1},
+      fields: {
+        towns: 1,
+        keywords: 1
+      },
       sort: {
         "field1": 1
       },
@@ -479,10 +504,14 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, result) {
+      }, {
+        noPublish: true
+      }, function (e, result) {
 
         //We perform the actual delete
-        _this.publisherclient.remove('/2_websockets_embedded_sanity/' + _this.test_id + '/testsubscribe/data/delete_me', {noPublish: true}, function (e, result) {
+        _this.publisherclient.remove('/2_websockets_embedded_sanity/' + _this.test_id + '/testsubscribe/data/delete_me', {
+          noPublish: true
+        }, function (e, result) {
 
           expect(e).to.be(null);
           expect(result._meta.status).to.be('ok');
@@ -511,7 +540,9 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
         property1: 'property1',
         property2: 'property2',
         property3: 'property3'
-      }, {noPublish: true}, function (e, insertResult) {
+      }, {
+        noPublish: true
+      }, function (e, insertResult) {
 
         expect(e).to.be(null);
 
@@ -520,7 +551,9 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
           property2: 'property2',
           property3: 'property3',
           property4: 'property4'
-        }, {noPublish: true}, function (e, updateResult) {
+        }, {
+          noPublish: true
+        }, function (e, updateResult) {
 
           expect(e).to.be(null);
           expect(updateResult._meta.id == insertResult._meta.id).to.be(true);
@@ -544,7 +577,9 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
       property1: 'property1',
       property2: 'property2',
       property3: 'property3'
-    }, {noPublish: true}, function (e, result) {
+    }, {
+      noPublish: true
+    }, function (e, result) {
 
       ////////////////////console.log('did set');
       ////////////////////console.log([e, result]);
@@ -602,7 +637,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
   });
 
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -632,8 +667,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -643,7 +677,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
   });
 
 
-//We are testing setting data at a specific path
+  //We are testing setting data at a specific path
 
   it('the publisher should set new data ', function (callback) {
 
@@ -665,8 +699,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
 
             callback(e);
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -711,7 +744,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
   });
 
 
-//We are testing pushing a specific value to a path which will actually become an array in the database
+  //We are testing pushing a specific value to a path which will actually become an array in the database
 
   it('the publisher should push a sibling and get all siblings', function (callback) {
 
@@ -749,7 +782,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
   });
 
 
-//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
   it('the listener should pick up a single published event', function (callback) {
 
@@ -781,8 +814,7 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
           }, null, function (e, result) {
             ////////////////////////////console.log('put happened - listening for result');
           });
-        }
-        else
+        } else
           callback(e);
       });
 
@@ -1074,7 +1106,9 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
   });
 
   it('will do events in the order they are passed', function (done) {
-    _this.publisherclient.set('/test_event_order', {property1: 'property1Value'}, {}, function () {
+    _this.publisherclient.set('/test_event_order', {
+      property1: 'property1Value'
+    }, {}, function () {
       _this.publisherclient.log.info('Done setting');
     });
     _this.publisherclient.remove('/test_event_order', function (err) {
@@ -1090,5 +1124,3 @@ SanityTests.prototype.run = function(server, publisherclient, listenerclient){
 };
 
 module.exports = new SanityTests();
-
-

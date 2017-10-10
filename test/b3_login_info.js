@@ -17,7 +17,9 @@ context('b3_login_info', function () {
   var server2;
 
   before('starts the services', function (done) {
-    Happn.service.create({port: 55005}).then(function (server) {
+    Happn.service.create({
+      port: 55005
+    }).then(function (server) {
       server1 = server;
       service1Name = server.name;
       Happn.service.create({
@@ -76,7 +78,14 @@ context('b3_login_info', function () {
         events['disconnect'] = evt;
       });
 
-      Happn.client.create({info: {KEY: 'VALUE'}, config: {port: 55005}}).then(function (client) {
+      Happn.client.create({
+        info: {
+          KEY: 'VALUE'
+        },
+        config: {
+          port: 55005
+        }
+      }).then(function (client) {
         client.disconnect();
       }).catch(done);
 
@@ -126,7 +135,9 @@ context('b3_login_info', function () {
           password: 'secret',
           port: 55006
         },
-        info: {"KEY": "VALUE"}
+        info: {
+          "KEY": "VALUE"
+        }
       }).then(function (client) {
         client.disconnect();
       }).catch(done);

@@ -164,7 +164,9 @@ describe('c1_security_pubpriv_login', function () {
 
         admClient = clientInstance;
 
-        admClient.set('/an/encrypted/payload/target', {"encrypted": "test"}, {}, function (e, response) {
+        admClient.set('/an/encrypted/payload/target', {
+          "encrypted": "test"
+        }, {}, function (e, response) {
 
           expect(e).to.equal(null);
           expect(response.encrypted == "test").to.equal(true);
@@ -202,7 +204,9 @@ describe('c1_security_pubpriv_login', function () {
 
         admClient = clientInstance;
 
-        admClient.on('/an/encrypted/payload/target/event', {count: 1}, function (data) {
+        admClient.on('/an/encrypted/payload/target/event', {
+          count: 1
+        }, function (data) {
 
           callback();
 
@@ -210,7 +214,9 @@ describe('c1_security_pubpriv_login', function () {
 
           expect(e).to.equal(null);
 
-          admClient.set('/an/encrypted/payload/target/event', {"test": "on"}, function (e, response) {
+          admClient.set('/an/encrypted/payload/target/event', {
+            "test": "on"
+          }, function (e, response) {
             if (e) return callback(e);
           })
 
@@ -261,9 +267,11 @@ describe('c1_security_pubpriv_login', function () {
 
               expect(e).to.equal(null);
 
-              admClient.set('/an/encrypted/payload/target/event', {"test": "on"}, function (e, response) {
+              admClient.set('/an/encrypted/payload/target/event', {
+                "test": "on"
+              }, function (e, response) {
 
-                setTimeout(function(){
+                setTimeout(function () {
 
                   if (onHappened) return callback();
                   callback(new Error('on didn\'t happen'));
@@ -289,7 +297,10 @@ describe('c1_security_pubpriv_login', function () {
   xit('fails to log in with the test client, without supplying a public key to the default encryptPayload server', function (callback) {
 
     happn.client.create({
-        config: {username: '_ADMIN', password: 'happn'},
+        config: {
+          username: '_ADMIN',
+          password: 'happn'
+        },
         port: 10000,
         secure: true
       })

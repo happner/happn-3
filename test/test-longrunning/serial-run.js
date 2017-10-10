@@ -1,7 +1,6 @@
-var sm = require("happner-serial-mocha")
-  , path = require("path")
-  , fs = require("fs")
-  ;
+var sm = require("happner-serial-mocha"),
+  path = require("path"),
+  fs = require("fs");
 
 var testDir = __dirname;
 
@@ -22,10 +21,10 @@ console.log('about to run:::', reportDir);
 
 sm.runTasks(files, null, reportDir)
 
-  .then(function(results){
+  .then(function (results) {
     console.log('tests completed, check the latest report file in ' + reportDir);
   })
 
-  .catch(function(e){
+  .catch(function (e) {
     console.log('broke:::', e);
   });

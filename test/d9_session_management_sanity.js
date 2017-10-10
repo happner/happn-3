@@ -13,60 +13,60 @@ describe('d9_session_management_sanity', function () {
   var serviceInstance;
   var clientInstance;
 
-  var disconnectClient = function(callback){
+  var disconnectClient = function (callback) {
     if (clientInstance)
       clientInstance.disconnect(callback);
     else
       callback();
   };
 
-  var stopService = function(callback){
+  var stopService = function (callback) {
     if (serviceInstance)
       serviceInstance.stop(callback);
     else
       callback();
   };
 
-  after('disconnects the client and stops the server', function(callback){
+  after('disconnects the client and stops the server', function (callback) {
 
     this.timeout(3000);
 
-    disconnectClient(function(){
+    disconnectClient(function () {
       stopService(callback);
     });
 
   });
 
-  var getService = function(activateSessionManagement, sessionActivityTTL, callback, sessionActivityLogging, port){
+  var getService = function (activateSessionManagement, sessionActivityTTL, callback, sessionActivityLogging, port) {
 
     if (!port) port = 55556;
 
     if (sessionActivityLogging == undefined) sessionActivityLogging = true;
 
-    if (typeof activateSessionManagement == 'function'){
+    if (typeof activateSessionManagement == 'function') {
 
       callback = activateSessionManagement;
       activateSessionManagement = true;
       sessionActivityTTL = 60000 * 60 * 24 * 30;
     }
 
-    disconnectClient(function(e){
+    disconnectClient(function (e) {
 
       if (e) return callback(e);
 
-      stopService(function(e){
+      stopService(function (e) {
 
         if (e) return callback(e);
 
         var serviceConfig = {
           secure: true,
-          port:port,
-          services:{
-            security:{
-              config:{
-                activateSessionManagement:activateSessionManagement,
-                logSessionActivity:sessionActivityLogging,
-                sessionActivityTTL:sessionActivityTTL
+          port: port,
+          services: {
+            security: {
+              config: {
+                activateSessionManagement: activateSessionManagement,
+                logSessionActivity: sessionActivityLogging,
+                sessionActivityTTL: sessionActivityTTL
               }
             }
           }
@@ -81,12 +81,12 @@ describe('d9_session_management_sanity', function () {
 
             happn_client.create({
               config: {
-                port:port,
+                port: port,
                 username: '_ADMIN',
                 password: 'happn'
               },
-              info:{
-                from:'startup'
+              info: {
+                from: 'startup'
               }
             }, function (e, instance) {
 
@@ -103,7 +103,7 @@ describe('d9_session_management_sanity', function () {
     });
   };
 
-  before('starts up happn instance with session management switched on', function(callback){
+  before('starts up happn instance with session management switched on', function (callback) {
     getService(callback);
   });
 
@@ -120,12 +120,12 @@ describe('d9_session_management_sanity', function () {
       setTimeout(function () {
         randomActivity1.generateActivityEnd("test", function (aggregatedLog) {
 
-          serviceInstance.services.security.listActiveSessions(function(e, list){
+          serviceInstance.services.security.listActiveSessions(function (e, list) {
 
             if (e) return callback(e);
             expect(list.length).to.be(1);
 
-            serviceInstance.services.security.listSessionActivity(function(e, list){
+            serviceInstance.services.security.listSessionActivity(function (e, list) {
 
               if (e) return callback(e);
               expect(list.length).to.be(1);
@@ -153,34 +153,34 @@ describe('d9_session_management_sanity', function () {
 
         randomActivity1.generateActivityEnd("test", function (aggregatedLog) {
 
-          serviceInstance.services.security.listActiveSessions(function(e, list){
+          serviceInstance.services.security.listActiveSessions(function (e, list) {
 
             if (e) return callback(e);
             expect(list.length).to.be(1);
 
             var session = list[0];
 
-            serviceInstance.services.security.listSessionActivity(function(e, list){
+            serviceInstance.services.security.listSessionActivity(function (e, list) {
 
               if (e) return callback(e);
               expect(list.length).to.be(1);
 
-              serviceInstance.services.security.revokeSession(session, 'APP', function(e){
+              serviceInstance.services.security.revokeSession(session, 'APP', function (e) {
 
                 if (e) return callback(e);
 
-                serviceInstance.services.security.listRevokedSessions(function(e, items){
+                serviceInstance.services.security.listRevokedSessions(function (e, items) {
 
                   if (e) return callback(e);
 
                   expect(items.length).to.be(1);
 
-                  clientInstance.set('/TEST/DATA', {}, function(e, result){
+                  clientInstance.set('/TEST/DATA', {}, function (e, result) {
 
                     expect(e.toString()).to.be('AccessDenied: unauthorized');
                     expect(e.reason).to.be('session with id ' + session.id + ' has been revoked');
 
-                    serviceInstance.services.security.restoreSession(session, function(e){
+                    serviceInstance.services.security.restoreSession(session, function (e) {
 
                       if (e) return callback(e);
 
@@ -204,13 +204,13 @@ describe('d9_session_management_sanity', function () {
 
     var session_results = [];
 
-    getService(function(e){
+    getService(function (e) {
 
-      async.timesSeries(times, function(timeIndex, timeCB){
+      async.timesSeries(times, function (timeIndex, timeCB) {
 
         happn_client.create({
           config: {
-            port:55556,
+            port: 55556,
             username: '_ADMIN',
             password: 'happn'
           }
@@ -229,7 +229,7 @@ describe('d9_session_management_sanity', function () {
 
           randomActivity.generateActivityStart("test", function () {
 
-            setTimeout(function(){
+            setTimeout(function () {
 
               randomActivity.generateActivityEnd("test", function (aggregatedLog) {
 
@@ -245,19 +245,19 @@ describe('d9_session_management_sanity', function () {
           });
         });
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return callback(e);
 
-        setTimeout(function(){
+        setTimeout(function () {
 
-          serviceInstance.services.security.listActiveSessions(function(e, list){
+          serviceInstance.services.security.listActiveSessions(function (e, list) {
 
             if (e) return callback(e);
 
-            expect(list.length).to.be(times + 1);//+1 for connected client
+            expect(list.length).to.be(times + 1); //+1 for connected client
 
-            serviceInstance.services.security.listSessionActivity(function(e, list){
+            serviceInstance.services.security.listSessionActivity(function (e, list) {
 
               if (e) return callback(e);
 
@@ -276,7 +276,7 @@ describe('d9_session_management_sanity', function () {
   it('tests session management, switching on session management with activity logging', function (callback) {
     this.timeout(6000);
 
-    getService(false, 10000,  function(e){
+    getService(false, 10000, function (e) {
 
       var RandomActivityGenerator = require("happn-random-activity-generator");
 
@@ -287,15 +287,15 @@ describe('d9_session_management_sanity', function () {
         setTimeout(function () {
           randomActivity1.generateActivityEnd("test", function (aggregatedLog) {
 
-            serviceInstance.services.security.listActiveSessions(function(e, list){
+            serviceInstance.services.security.listActiveSessions(function (e, list) {
 
               expect(e.toString()).to.be('Error: session management not activated');
 
-              serviceInstance.services.security.listSessionActivity(function(e, list){
+              serviceInstance.services.security.listSessionActivity(function (e, list) {
 
                 expect(e.toString()).to.be('Error: session activity logging not activated');
 
-                serviceInstance.services.security.activateSessionManagement(true, function(e){
+                serviceInstance.services.security.activateSessionManagement(true, function (e) {
 
                   if (e) return callback(e);
 
@@ -305,13 +305,13 @@ describe('d9_session_management_sanity', function () {
                     setTimeout(function () {
                       randomActivity2.generateActivityEnd("test", function (aggregatedLog) {
 
-                        serviceInstance.services.security.listActiveSessions(function(e, list){
+                        serviceInstance.services.security.listActiveSessions(function (e, list) {
 
                           if (e) return callback(e);
 
                           expect(list.length).to.be(1);
 
-                          serviceInstance.services.security.listSessionActivity(function(e, list){
+                          serviceInstance.services.security.listSessionActivity(function (e, list) {
 
                             if (e) return callback(e);
 
@@ -335,7 +335,7 @@ describe('d9_session_management_sanity', function () {
 
     this.timeout(6000);
 
-    getService(false, 10000,  function(e){
+    getService(false, 10000, function (e) {
 
       var RandomActivityGenerator = require("happn-random-activity-generator");
 
@@ -346,15 +346,15 @@ describe('d9_session_management_sanity', function () {
         setTimeout(function () {
           randomActivity1.generateActivityEnd("test", function (aggregatedLog) {
 
-            serviceInstance.services.security.listActiveSessions(function(e, list){
+            serviceInstance.services.security.listActiveSessions(function (e, list) {
 
               expect(e.toString()).to.be('Error: session management not activated');
 
-              serviceInstance.services.security.listSessionActivity(function(e, list){
+              serviceInstance.services.security.listSessionActivity(function (e, list) {
 
                 expect(e.toString()).to.be('Error: session activity logging not activated');
 
-                serviceInstance.services.security.activateSessionManagement(false, function(e){
+                serviceInstance.services.security.activateSessionManagement(false, function (e) {
 
                   if (e) return callback(e);
 
@@ -364,12 +364,12 @@ describe('d9_session_management_sanity', function () {
                     setTimeout(function () {
                       randomActivity2.generateActivityEnd("test", function (aggregatedLog) {
 
-                        serviceInstance.services.security.listActiveSessions(function(e, list){
+                        serviceInstance.services.security.listActiveSessions(function (e, list) {
 
                           if (e) return callback(e);
                           expect(list.length).to.be(1);
 
-                          serviceInstance.services.security.listSessionActivity(function(e, list){
+                          serviceInstance.services.security.listSessionActivity(function (e, list) {
                             expect(e.toString()).to.be('Error: session activity logging not activated');
                             callback();
                           });
@@ -391,7 +391,7 @@ describe('d9_session_management_sanity', function () {
 
     this.timeout(10000);
 
-    getService(false, 10000,  function(e){
+    getService(false, 10000, function (e) {
 
       var RandomActivityGenerator = require("happn-random-activity-generator");
 
@@ -402,15 +402,15 @@ describe('d9_session_management_sanity', function () {
         setTimeout(function () {
           randomActivity1.generateActivityEnd("test", function (aggregatedLog) {
 
-            serviceInstance.services.security.listActiveSessions(function(e, list){
+            serviceInstance.services.security.listActiveSessions(function (e, list) {
 
               expect(e.toString()).to.be('Error: session management not activated');
 
-              serviceInstance.services.security.listSessionActivity(function(e, list){
+              serviceInstance.services.security.listSessionActivity(function (e, list) {
 
                 expect(e.toString()).to.be('Error: session activity logging not activated');
 
-                serviceInstance.services.security.activateSessionManagement(false, function(e){
+                serviceInstance.services.security.activateSessionManagement(false, function (e) {
 
                   if (e) return callback(e);
 
@@ -420,24 +420,24 @@ describe('d9_session_management_sanity', function () {
                     setTimeout(function () {
                       randomActivity2.generateActivityEnd("test", function (aggregatedLog) {
 
-                        serviceInstance.services.security.listActiveSessions(function(e, list){
+                        serviceInstance.services.security.listActiveSessions(function (e, list) {
 
                           if (e) return callback(e);
                           expect(list.length).to.be(1);
 
-                          serviceInstance.services.security.listSessionActivity(function(e, list){
+                          serviceInstance.services.security.listSessionActivity(function (e, list) {
                             expect(e.toString()).to.be('Error: session activity logging not activated');
 
-                            serviceInstance.services.security.activateSessionActivity(function(e){
+                            serviceInstance.services.security.activateSessionActivity(function (e) {
 
                               if (e) return callback(e);
 
-                              serviceInstance.services.security.listActiveSessions(function(e, list) {
+                              serviceInstance.services.security.listActiveSessions(function (e, list) {
 
                                 if (e) return callback(e);
                                 expect(list.length).to.be(1);
 
-                                clientInstance.set('/test/data', 50000, function(e){
+                                clientInstance.set('/test/data', 50000, function (e) {
 
                                   if (e) return callback(e);
 

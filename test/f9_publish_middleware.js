@@ -1,10 +1,9 @@
-var Happn = require('..')
-  , service = Happn.service
-  , expect = require('expect.js')
-  , async = require('async')
-  , shortid = require('shortid')
-  , Promise = require('bluebird')
-  ;
+var Happn = require('..'),
+  service = Happn.service,
+  expect = require('expect.js'),
+  async = require('async'),
+  shortid = require('shortid'),
+  Promise = require('bluebird');
 
 describe('f9_publish_middleware', function () {
 
@@ -27,7 +26,7 @@ describe('f9_publish_middleware', function () {
 
       //filter recipients by message and recipient meta
       callback(null, recipients.filter(function (recipient) {
-        
+
         return recipient.subscription.data.options.meta.publish;
       }));
     };
@@ -44,7 +43,8 @@ describe('f9_publish_middleware', function () {
       }
     };
 
-    var ran1 = false, ran2 = false;
+    var ran1 = false,
+      ran2 = false;
 
     var eventId1, eventId2;
 
@@ -58,7 +58,11 @@ describe('f9_publish_middleware', function () {
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance.on('/test/path/*', {meta: {publish: true}}, function (data) {
+          clientInstance.on('/test/path/*', {
+            meta: {
+              publish: true
+            }
+          }, function (data) {
 
             ran1 = true;
 
@@ -76,7 +80,11 @@ describe('f9_publish_middleware', function () {
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance.on('/test/path/1/*', {meta: {publish: false}}, function (data) {
+          clientInstance.on('/test/path/1/*', {
+            meta: {
+              publish: false
+            }
+          }, function (data) {
 
             ran2 = true;
 
@@ -92,7 +100,13 @@ describe('f9_publish_middleware', function () {
       })
       .then(function () {
 
-        return clientInstance.set('/test/path/1/1', {test: 'data'}, {meta: {filter: true}})
+        return clientInstance.set('/test/path/1/1', {
+          test: 'data'
+        }, {
+          meta: {
+            filter: true
+          }
+        })
 
       })
       .then(function () {

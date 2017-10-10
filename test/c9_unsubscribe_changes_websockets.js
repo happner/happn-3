@@ -28,12 +28,12 @@ describe('c9_unsubscribe_changes_websockets', function () {
 
     try {
       service.create(function (e, happnInst) {
-          if (e)
-            return callback(e);
+        if (e)
+          return callback(e);
 
-          happnInstance = happnInst;
-          callback();
-        });
+        happnInstance = happnInst;
+        callback();
+      });
     } catch (e) {
       callback(e);
     }
@@ -69,18 +69,23 @@ describe('c9_unsubscribe_changes_websockets', function () {
     var onRan = false;
     var pathOnRan = false;
 
-    listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       if (pathOnRan) return callback(new Error('subscription was not removed by path'));
       else pathOnRan = true;
 
-      //off path is deprecated - but should still function
-      listenerclient.off('/e2e_test1/testsubscribe/data/on_off_test', function (e) {
+      listenerclient.offPath('/e2e_test1/testsubscribe/data/on_off_test', function (e) {
 
         if (e)
           return callback(new Error(e));
 
-        listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set', count: 0},
+        listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {
+            event_type: 'set',
+            count: 0
+          },
           function (message) {
             if (onRan) return callback(new Error('subscription was not removed'));
             else {
@@ -137,7 +142,10 @@ describe('c9_unsubscribe_changes_websockets', function () {
     var onRan = false;
     var pathOnRan = false;
 
-    listenerclient.on('/e2e_test1/testsubscribe/data/path_off_test', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/data/path_off_test', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
 
       if (pathOnRan) return callback(new Error('subscription was not removed by path'));
       else pathOnRan = true;
@@ -177,14 +185,17 @@ describe('c9_unsubscribe_changes_websockets', function () {
     var onRan = false;
     var pathOnRan = false;
 
-    listenerclient.on('/e2e_test1/testsubscribe/data/wildcard_path_off_test/*', {event_type: 'set', count: 0}, function (message) {
+    listenerclient.on('/e2e_test1/testsubscribe/data/wildcard_path_off_test/*', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
       return callback(new Error('not meant to happen'));
     }, function (e) {
       if (e) return callback(new Error(e));
 
-      listenerclient.on('/e2e_test1/testsubscribe/data/wildcard_path_off_test/data/*', function(data){
+      listenerclient.on('/e2e_test1/testsubscribe/data/wildcard_path_off_test/data/*', function (data) {
         return callback(new Error('not meant to happen'));
-      }, function(e){
+      }, function (e) {
 
         if (e) return callback(new Error(e));
 
@@ -209,10 +220,10 @@ describe('c9_unsubscribe_changes_websockets', function () {
   it('tests various fail conditions', function (callback) {
 
     listenerclient.off(null, function (e) {
-      expect(e.toString()).to.be('Error: handle or callback cannot be null');
+      expect(e.toString()).to.be('Error: handle cannot be null');
 
       listenerclient.off(undefined, function (e) {
-        expect(e.toString()).to.be('Error: handle or callback cannot be null');
+        expect(e.toString()).to.be('Error: handle cannot be null');
         //doing off with non-existant path
         listenerclient.offPath('some odd random path', function (e) {
           if (e) return callback(e);
@@ -237,7 +248,10 @@ describe('c9_unsubscribe_changes_websockets', function () {
 
       if (e) return callback(e);
 
-      listenerclient.on('/e2e_test1/testsubscribe/data/off_all_test', {event_type: 'set', count: 0},
+      listenerclient.on('/e2e_test1/testsubscribe/data/off_all_test', {
+          event_type: 'set',
+          count: 0
+        },
         function (message) {
           onHappened = true;
           callback(new Error('this wasnt meant to happen'));

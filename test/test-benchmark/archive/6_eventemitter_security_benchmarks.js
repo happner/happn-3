@@ -95,7 +95,10 @@ describe('6_eventemitter_security_benchmarks', function () {
       try {
 
         happn_client.create({
-          config: {username: '_ADMIN', password: 'happn'},
+          config: {
+            username: '_ADMIN',
+            password: 'happn'
+          },
           secure: true,
           plugin: happn.client_plugins.intra_process,
           context: happnInstance
@@ -106,7 +109,10 @@ describe('6_eventemitter_security_benchmarks', function () {
           publisherclient = instance;
 
           happn_client.create({
-            config: {username: '_ADMIN', password: 'happn'},
+            config: {
+              username: '_ADMIN',
+              password: 'happn'
+            },
             secure: true,
             plugin: happn.client_plugins.intra_process,
             context: happnInstance
@@ -130,7 +136,10 @@ describe('6_eventemitter_security_benchmarks', function () {
       this.timeout(default_timeout);
 
       happn_client.create({
-          config: {username: '_ADMIN', password: 'happn'},
+          config: {
+            username: '_ADMIN',
+            password: 'happn'
+          },
           plugin: happn.client_plugins.intra_process,
           context: happnInstance,
           secure: true,
@@ -236,7 +245,10 @@ describe('6_eventemitter_security_benchmarks', function () {
       this.timeout(default_timeout);
 
       happn_client.create({
-          config: {username: '_ADMIN', password: 'happn'},
+          config: {
+            username: '_ADMIN',
+            password: 'happn'
+          },
           plugin: happn.client_plugins.intra_process,
           context: happnInstance,
           secure: true,
@@ -262,7 +274,8 @@ describe('6_eventemitter_security_benchmarks', function () {
                 callback();
               }
 
-            }, function (e) {
+            },
+            function (e) {
 
               if (!e) {
 
@@ -298,7 +311,10 @@ describe('6_eventemitter_security_benchmarks', function () {
       this.timeout(default_timeout);
 
       happn_client.create({
-          config: {username: '_ADMIN', password: 'happn'},
+          config: {
+            username: '_ADMIN',
+            password: 'happn'
+          },
           plugin: happn.client_plugins.intra_process,
           context: happnInstance,
           secure: true,
@@ -365,7 +381,10 @@ describe('6_eventemitter_security_benchmarks', function () {
       this.timeout(default_timeout);
 
       happn_client.create({
-          config: {username: '_ADMIN', password: 'happn'},
+          config: {
+            username: '_ADMIN',
+            password: 'happn'
+          },
           plugin: happn.client_plugins.intra_process,
           context: happnInstance,
           secure: true,
@@ -445,7 +464,10 @@ describe('6_eventemitter_security_benchmarks', function () {
       this.timeout(default_timeout);
 
       happn_client.create({
-          config: {username: '_ADMIN', password: 'happn'},
+          config: {
+            username: '_ADMIN',
+            password: 'happn'
+          },
           plugin: happn.client_plugins.intra_process,
           context: happnInstance,
           secure: true,
@@ -466,7 +488,10 @@ describe('6_eventemitter_security_benchmarks', function () {
             sent[i] = require('shortid').generate();
           }
 
-          stressTestClient.on('/e2e_test1/testsubscribe/sequence_persist', {event_type: 'set', count: 0},
+          stressTestClient.on('/e2e_test1/testsubscribe/sequence_persist', {
+              event_type: 'set',
+              count: 0
+            },
             function (message) {
 
               ////console.log(message);
@@ -496,7 +521,9 @@ describe('6_eventemitter_security_benchmarks', function () {
 
               while (count < expected) {
 
-                publisherclient.set('/e2e_test1/testsubscribe/sequence_persist', {property1: sent[count]}, {},
+                publisherclient.set('/e2e_test1/testsubscribe/sequence_persist', {
+                    property1: sent[count]
+                  }, {},
                   function (e, result) {
                     if (e) return callback(e);
                   });
@@ -512,7 +539,10 @@ describe('6_eventemitter_security_benchmarks', function () {
       this.timeout(default_timeout);
 
       happn_client.create({
-          config: {username: '_ADMIN', password: 'happn'},
+          config: {
+            username: '_ADMIN',
+            password: 'happn'
+          },
           plugin: happn.client_plugins.intra_process,
           context: happnInstance,
           secure: true,
@@ -613,7 +643,10 @@ describe('6_eventemitter_security_benchmarks', function () {
       this.timeout(default_timeout);
 
       happn_client.create({
-          config: {username: '_ADMIN', password: 'happn'},
+          config: {
+            username: '_ADMIN',
+            password: 'happn'
+          },
           plugin: happn.client_plugins.intra_process,
           context: happnInstance,
           secure: true,
@@ -713,7 +746,10 @@ describe('6_eventemitter_security_benchmarks', function () {
       this.timeout(default_timeout);
 
       happn_client.create({
-          config: {username: '_ADMIN', password: 'happn'},
+          config: {
+            username: '_ADMIN',
+            password: 'happn'
+          },
           plugin: happn.client_plugins.intra_process,
           context: happnInstance,
           secure: true,

@@ -1,8 +1,7 @@
-var Happn = require('..')
-  , expect = require('expect.js')
-  , async = require('async')
-  , shortid = require('shortid')
-  ;
+var Happn = require('..'),
+  expect = require('expect.js'),
+  async = require('async'),
+  shortid = require('shortid');
 
 describe('f8_publisher_service', function () {
 
@@ -149,13 +148,13 @@ describe('f8_publisher_service', function () {
 
     var publication = new Publication(message);
 
-    expect(publication.options.consistency).to.be(2);//transactional by default
+    expect(publication.options.consistency).to.be(2); //transactional by default
 
     expect(publication.origin).to.be(message.session);
 
-    expect(publication.id).to.be(message.session.id + '-' + message.request.eventId);//publications have a unique id built up from session and eventId
+    expect(publication.id).to.be(message.session.id + '-' + message.request.eventId); //publications have a unique id built up from session and eventId
 
-    expect(publication.payload).to.eql(JSON.stringify(expectedMessage));//not what gets queued exactly, just the data bit
+    expect(publication.payload).to.eql(JSON.stringify(expectedMessage)); //not what gets queued exactly, just the data bit
 
     expect(publication.recipients.length).to.eql(message.recipients.length);
 
@@ -220,11 +219,11 @@ describe('f8_publisher_service', function () {
 
     var publication = new Publication(message);
 
-    expect(publication.options.consistency).to.be(1);//this was defined
+    expect(publication.options.consistency).to.be(1); //this was defined
 
     expect(publication.origin).to.be(message.session);
 
-    expect(publication.id).to.be(message.session.id + '-' + message.request.eventId);//publications have a unique id
+    expect(publication.id).to.be(message.session.id + '-' + message.request.eventId); //publications have a unique id
 
     expect(publication.payload).to.eql(JSON.stringify(expectedMessage));
 
@@ -323,21 +322,23 @@ describe('f8_publisher_service', function () {
         id: '1'
       },
       protocol: 'happn-1.0.0',
-      recipients: [
-        {
-          subscription: {
-            data: {
-              session: {id: '1'}
-            }
-          }
-        }, {
-          subscription: {
-            data: {
-              session: {id: '2'}
+      recipients: [{
+        subscription: {
+          data: {
+            session: {
+              id: '1'
             }
           }
         }
-      ],
+      }, {
+        subscription: {
+          data: {
+            session: {
+              id: '2'
+            }
+          }
+        }
+      }],
       response: {
         "data": {
           "data": {
@@ -405,21 +406,23 @@ describe('f8_publisher_service', function () {
         id: '1'
       },
       protocol: 'happn-1.0.0',
-      recipients: [
-        {
-          subscription: {
-            data: {
-              session: {id: '1'}
-            }
-          }
-        }, {
-          subscription: {
-            data: {
-              session: {id: '2'}
+      recipients: [{
+        subscription: {
+          data: {
+            session: {
+              id: '1'
             }
           }
         }
-      ],
+      }, {
+        subscription: {
+          data: {
+            session: {
+              id: '2'
+            }
+          }
+        }
+      }],
       response: {
         "data": {
           "data": {
@@ -476,21 +479,23 @@ describe('f8_publisher_service', function () {
         id: '1'
       },
       protocol: 'happn-1.0.0',
-      recipients: [
-        {
-          subscription: {
-            data: {
-              session: {id: '1'}
-            }
-          }
-        }, {
-          subscription: {
-            data: {
-              session: {id: '2'}
+      recipients: [{
+        subscription: {
+          data: {
+            session: {
+              id: '1'
             }
           }
         }
-      ],
+      }, {
+        subscription: {
+          data: {
+            session: {
+              id: '2'
+            }
+          }
+        }
+      }],
       response: {
         "data": {
           "data": {
@@ -554,24 +559,29 @@ describe('f8_publisher_service', function () {
         id: '1'
       },
       protocol: 'happn-1.0.0',
-      recipients: [
-        {
+      recipients: [{
           subscription: {
             data: {
-              session: {id: '1'}
+              session: {
+                id: '1'
+              }
             }
           }
         }, {
           subscription: {
             data: {
-              session: {id: '2'}
+              session: {
+                id: '2'
+              }
             }
           }
         },
         {
           subscription: {
             data: {
-              session: {id: '3'}
+              session: {
+                id: '3'
+              }
             }
           }
         }
@@ -639,24 +649,29 @@ describe('f8_publisher_service', function () {
         id: '1'
       },
       protocol: 'happn-1.0.0',
-      recipients: [
-        {
+      recipients: [{
           subscription: {
             data: {
-              session: {id: '1'}
+              session: {
+                id: '1'
+              }
             }
           }
         }, {
           subscription: {
             data: {
-              session: {id: '2'}
+              session: {
+                id: '2'
+              }
             }
           }
         },
         {
           subscription: {
             data: {
-              session: {id: '3'}
+              session: {
+                id: '3'
+              }
             }
           }
         }
@@ -738,24 +753,29 @@ describe('f8_publisher_service', function () {
           id: '1'
         },
         protocol: 'happn-1.0.0',
-        recipients: [
-          {
+        recipients: [{
             subscription: {
               data: {
-                session: {id: '1'}
+                session: {
+                  id: '1'
+                }
               }
             }
           }, {
             subscription: {
               data: {
-                session: {id: '2'}
+                session: {
+                  id: '2'
+                }
               }
             }
           },
           {
             subscription: {
               data: {
-                session: {id: '3'}
+                session: {
+                  id: '3'
+                }
               }
             }
           }
@@ -828,24 +848,29 @@ describe('f8_publisher_service', function () {
           id: '1'
         },
         protocol: 'happn-1.0.0',
-        recipients: [
-          {
+        recipients: [{
             subscription: {
               data: {
-                session: {id: '1'}
+                session: {
+                  id: '1'
+                }
               }
             }
           }, {
             subscription: {
               data: {
-                session: {id: '2'}
+                session: {
+                  id: '2'
+                }
               }
             }
           },
           {
             subscription: {
               data: {
-                session: {id: '3'}
+                session: {
+                  id: '3'
+                }
               }
             }
           }

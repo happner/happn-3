@@ -80,13 +80,13 @@ describe('d2_primus_client_options.js', function () {
     try {
 
       happn_client.create({
-          socket:{
-            reconnect:{
-              retries:60,
-              max:2100000
-            }
+        socket: {
+          reconnect: {
+            retries: 60,
+            max: 2100000
           }
-        },function (e, instance) {
+        }
+      }, function (e, instance) {
 
         if (e) return callback(e);
         primusClient = instance;
@@ -115,11 +115,11 @@ describe('d2_primus_client_options.js', function () {
     try {
 
       happn_client.create({
-        reconnect:{
-          retries:50,
-          max:2000000
+        reconnect: {
+          retries: 50,
+          max: 2000000
         }
-      },function (e, instance) {
+      }, function (e, instance) {
 
         if (e) return callback(e);
         primusClient = instance;

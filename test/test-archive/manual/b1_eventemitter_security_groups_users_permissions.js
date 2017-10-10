@@ -22,7 +22,9 @@ describe('b1_eventemitter_security_groups', function () {
 
   var initializeMockServices = function (callback) {
 
-    var happnMock = {services: {}};
+    var happnMock = {
+      services: {}
+    };
 
     happnMock.utils = require('../../lib/utils');
 
@@ -39,7 +41,7 @@ describe('b1_eventemitter_security_groups', function () {
       testServices[serviceName].happn = happnMock;
 
       testServices[serviceName].initialize(testConfigs[serviceName], function (e, instance) {
-        if (e)  return eachServiceCB(e);
+        if (e) return eachServiceCB(e);
 
         happnMock.services[serviceName] = testServices[serviceName];
 
@@ -151,7 +153,9 @@ describe('b1_eventemitter_security_groups', function () {
   });
 
   it('should create a sub group', function (callback) {
-    testServices.security.upsertGroup(subGroup, {parent: addedGroup}, function (e, result) {
+    testServices.security.upsertGroup(subGroup, {
+      parent: addedGroup
+    }, function (e, result) {
 
       if (e) return callback(e);
 
@@ -166,7 +170,9 @@ describe('b1_eventemitter_security_groups', function () {
   });
 
   it('should fail to create a group as it already exists', function (callback) {
-    testServices.security.upsertGroup(testGroup, {overwrite: false}, function (e, result) {
+    testServices.security.upsertGroup(testGroup, {
+      overwrite: false
+    }, function (e, result) {
 
       if (e && e.toString() == 'Error: validation failure: group by the name ' + testGroup.name + ' already exists')
         return callback();
@@ -206,31 +212,49 @@ describe('b1_eventemitter_security_groups', function () {
     testGroup.permissions = {};
 
     //add set permissions to a group
-    testGroup.permissions['/b1_eventemitter_security_groups/' + test_id + '/permission_set'] = {action: ['set']};
+    testGroup.permissions['/b1_eventemitter_security_groups/' + test_id + '/permission_set'] = {
+      action: ['set']
+    };
 
     //add get permissions to a group
-    testGroup.permissions['/b1_eventemitter_security_groups/' + test_id + '/permission_get'] = {action: ['get']};
+    testGroup.permissions['/b1_eventemitter_security_groups/' + test_id + '/permission_get'] = {
+      action: ['get']
+    };
 
     //add on permissions to a group
-    testGroup.permissions['/b1_eventemitter_security_groups/' + test_id + '/permission_on'] = {action: ['on']};
+    testGroup.permissions['/b1_eventemitter_security_groups/' + test_id + '/permission_on'] = {
+      action: ['on']
+    };
 
     //add remove permissions to a group
-    testGroup.permissions['/b1_eventemitter_security_groups/' + test_id + '/permission_remove'] = {action: ['remove']};
+    testGroup.permissions['/b1_eventemitter_security_groups/' + test_id + '/permission_remove'] = {
+      action: ['remove']
+    };
 
     //add all permissions to a group
-    testGroup.permissions['/b1_eventemitter_security_groups/' + test_id + '/permission_all'] = {action: ['*']};
+    testGroup.permissions['/b1_eventemitter_security_groups/' + test_id + '/permission_all'] = {
+      action: ['*']
+    };
 
     //add all permissions to a wildcard group
-    testGroup.permissions['/*' + test_id + '/permission_wildcard/all/*'] = {action: ['*']};
+    testGroup.permissions['/*' + test_id + '/permission_wildcard/all/*'] = {
+      action: ['*']
+    };
 
     //add set permissions to a wildcard group
-    testGroup.permissions['/*' + test_id + '/permission_wildcard/set/*'] = {action: ['set']};
+    testGroup.permissions['/*' + test_id + '/permission_wildcard/set/*'] = {
+      action: ['set']
+    };
 
     //add multiple permissions to a wildcard group
-    testGroup.permissions['/*' + test_id + '/permission_wildcard/multiple/*'] = {action: ['set', 'get']};
+    testGroup.permissions['/*' + test_id + '/permission_wildcard/multiple/*'] = {
+      action: ['set', 'get']
+    };
 
     //add multiple permissions to a group
-    testGroup.permissions['/' + test_id + '/permission_wildcard/multiple'] = {action: ['set', 'on']};
+    testGroup.permissions['/' + test_id + '/permission_wildcard/multiple'] = {
+      action: ['set', 'on']
+    };
 
     testServices.security.upsertGroup(testGroup, function (e, result) {
 
@@ -292,7 +316,9 @@ describe('b1_eventemitter_security_groups', function () {
 
     it('should add a user', function (callback) {
 
-      testServices.security.upsertUser(testUser, {overwrite: false}, function (e, result) {
+      testServices.security.upsertUser(testUser, {
+        overwrite: false
+      }, function (e, result) {
         if (e) return callback(e);
 
         delete result['_meta'];
@@ -332,13 +358,17 @@ describe('b1_eventemitter_security_groups', function () {
       testUser.username += '.org';
       testUser.password = 'TSTPWD';
 
-      testServices.security.upsertUser(testUser, {overwrite: false}, function (e, result) {
+      testServices.security.upsertUser(testUser, {
+        overwrite: false
+      }, function (e, result) {
         if (e) return callback(e);
 
         var user = result;
         user.password = 'TSTPWD';
 
-        testServices.security.upsertUser(user, {overwrite: false}, function (e, result) {
+        testServices.security.upsertUser(user, {
+          overwrite: false
+        }, function (e, result) {
 
           expect(e.toString()).to.equal('Error: validation failure: user by the name ' + user.username + ' already exists');
           callback();
@@ -429,8 +459,12 @@ describe('b1_eventemitter_security_groups', function () {
             testServices.security.deleteUser(user, function (e, result) {
               if (e) return callback(e);
 
-              expect(result.obj.data).to.eql({removed: 1});
-              expect(result.tree.data).to.eql({removed: 0});
+              expect(result.obj.data).to.eql({
+                removed: 1
+              });
+              expect(result.tree.data).to.eql({
+                removed: 0
+              });
 
               testServices.data.get('/_SYSTEM/_SECURITY/_USER/' + user.username, {},
                 function (e, result) {

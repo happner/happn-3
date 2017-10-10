@@ -115,17 +115,22 @@ describe(require('path').basename(__filename), function () {
         var onRan = false;
         var pathOnRan = false;
 
-        listenerclient.on(path, {event_type: 'set', count: 0}, function (message) {
+        listenerclient.on(path, {
+          event_type: 'set',
+          count: 0
+        }, function (message) {
 
           if (pathOnRan) return callback(new Error('subscription was not removed by path'));
           else pathOnRan = true;
 
-          //off path is deprecated - but should still function
-          listenerclient.off(path, function (e) {
+          listenerclient.offPath(path, function (e) {
 
             if (e) return callback(new Error(e));
 
-            listenerclient.on(path, {event_type: 'set', count: 0},
+            listenerclient.on(path, {
+                event_type: 'set',
+                count: 0
+              },
               function (message) {
                 if (onRan) return callback(new Error('subscription was not removed'));
                 else {
@@ -263,10 +268,10 @@ describe(require('path').basename(__filename), function () {
       it('tests various fail conditions', function (callback) {
 
         listenerclient.off(null, function (e) {
-          expect(e.toString()).to.be('Error: handle or callback cannot be null');
+          expect(e.toString()).to.be('Error: handle cannot be null');
 
           listenerclient.off(undefined, function (e) {
-            expect(e.toString()).to.be('Error: handle or callback cannot be null');
+            expect(e.toString()).to.be('Error: handle cannot be null');
             //doing off with non-existant path
             listenerclient.offPath('some odd random path', function (e) {
               if (e) return callback(e);
@@ -292,7 +297,10 @@ describe(require('path').basename(__filename), function () {
 
           if (e) return callback(e);
 
-          listenerclient.on(path, {event_type: 'set', count: 0},
+          listenerclient.on(path, {
+              event_type: 'set',
+              count: 0
+            },
             function (message) {
               onHappened = true;
               callback(new Error('this wasnt meant to happen'));
@@ -330,16 +338,22 @@ describe(require('path').basename(__filename), function () {
         var results = {};
 
         Promise.all([
-          listenerclient.onAsync(path, {event_type: 'set'}, function (data, meta) {
-            results[1] = true
-          }),
-          listenerclient.onAsync(path, {event_type: 'set'}, function (data, meta) {
-            results[2] = true
-          }),
-          listenerclient.onAsync(path, {event_type: 'set'}, function (data, meta) {
-            results[3] = true
-          })
-        ])
+            listenerclient.onAsync(path, {
+              event_type: 'set'
+            }, function (data, meta) {
+              results[1] = true
+            }),
+            listenerclient.onAsync(path, {
+              event_type: 'set'
+            }, function (data, meta) {
+              results[2] = true
+            }),
+            listenerclient.onAsync(path, {
+              event_type: 'set'
+            }, function (data, meta) {
+              results[3] = true
+            })
+          ])
 
           .spread(function (result1, result2, result3) {
             // unsubscribe from 2nd subscription only
@@ -374,16 +388,22 @@ describe(require('path').basename(__filename), function () {
         var emittedPath;
 
         Promise.all([
-          listenerclient.onAsync(path, {event_type: 'set'}, function (data, meta) {
-            results[1] = true
-          }),
-          listenerclient.onAsync(path, {event_type: 'set'}, function (data, meta) {
-            results[2] = true
-          }),
-          listenerclient.onAsync(path, {event_type: 'set'}, function (data, meta) {
-            results[3] = true
-          })
-        ])
+            listenerclient.onAsync(path, {
+              event_type: 'set'
+            }, function (data, meta) {
+              results[1] = true
+            }),
+            listenerclient.onAsync(path, {
+              event_type: 'set'
+            }, function (data, meta) {
+              results[2] = true
+            }),
+            listenerclient.onAsync(path, {
+              event_type: 'set'
+            }, function (data, meta) {
+              results[3] = true
+            })
+          ])
 
           .spread(function (result1, result2, result3) {
             listenerId1 = result1[0];
@@ -455,25 +475,31 @@ describe(require('path').basename(__filename), function () {
         var path = '/' + bucketType + '/with/wildcard/remove/correct/subscriptionData/*';
 
         Promise.all([
-          listenerclient.onAsync(path, {
-            event_type: 'set',
-            meta: {x: 1}
-          }, function (data, meta) {
-            results[1] = true
-          }),
-          listenerclient.onAsync(path, {
-            event_type: 'set',
-            meta: {x: 2}
-          }, function (data, meta) {
-            results[2] = true
-          }),
-          listenerclient.onAsync(path, {
-            event_type: 'set',
-            meta: {x: 3}
-          }, function (data, meta) {
-            results[3] = true
-          })
-        ])
+            listenerclient.onAsync(path, {
+              event_type: 'set',
+              meta: {
+                x: 1
+              }
+            }, function (data, meta) {
+              results[1] = true
+            }),
+            listenerclient.onAsync(path, {
+              event_type: 'set',
+              meta: {
+                x: 2
+              }
+            }, function (data, meta) {
+              results[2] = true
+            }),
+            listenerclient.onAsync(path, {
+              event_type: 'set',
+              meta: {
+                x: 3
+              }
+            }, function (data, meta) {
+              results[3] = true
+            })
+          ])
 
           .spread(function (result1, result2, result3) {
             // unsubscribe from 2nd subscription only
@@ -493,9 +519,12 @@ describe(require('path').basename(__filename), function () {
               return segment.subscriptionData[listenerId].options.meta;
             });
 
-            expect(metaArray).to.eql([
-              {x: 1},
-              {x: 3}
+            expect(metaArray).to.eql([{
+                x: 1
+              },
+              {
+                x: 3
+              }
             ]);
           })
 
@@ -510,25 +539,31 @@ describe(require('path').basename(__filename), function () {
         var path = '/' + bucketType + '/without/wildcard/remove/correct/subscriptionData';
 
         Promise.all([
-          listenerclient.onAsync(path, {
-            event_type: 'set',
-            meta: {x: 1}
-          }, function (data, meta) {
-            results[1] = true
-          }),
-          listenerclient.onAsync(path, {
-            event_type: 'set',
-            meta: {x: 2}
-          }, function (data, meta) {
-            results[2] = true
-          }),
-          listenerclient.onAsync(path, {
-            event_type: 'set',
-            meta: {x: 3}
-          }, function (data, meta) {
-            results[3] = true
-          })
-        ])
+            listenerclient.onAsync(path, {
+              event_type: 'set',
+              meta: {
+                x: 1
+              }
+            }, function (data, meta) {
+              results[1] = true
+            }),
+            listenerclient.onAsync(path, {
+              event_type: 'set',
+              meta: {
+                x: 2
+              }
+            }, function (data, meta) {
+              results[2] = true
+            }),
+            listenerclient.onAsync(path, {
+              event_type: 'set',
+              meta: {
+                x: 3
+              }
+            }, function (data, meta) {
+              results[3] = true
+            })
+          ])
 
           .spread(function (result1, result2, result3) {
             // unsubscribe from 2nd subscription only
@@ -551,9 +586,12 @@ describe(require('path').basename(__filename), function () {
               return subscription.subscriptionData[listenerId].options.meta;
             });
 
-            expect(metaArray).to.eql([
-              {x: 1},
-              {x: 3}
+            expect(metaArray).to.eql([{
+                x: 1
+              },
+              {
+                x: 3
+              }
             ]);
 
           })
@@ -570,16 +608,22 @@ describe(require('path').basename(__filename), function () {
         var emittedPath;
 
         Promise.all([
-          listenerclient.onAsync(path, {event_type: 'set'}, function (data, meta) {
-            results[1] = true
-          }),
-          listenerclient.onAsync(path, {event_type: 'set'}, function (data, meta) {
-            results[2] = true
-          }),
-          listenerclient.onAsync(path, {event_type: 'set'}, function (data, meta) {
-            results[3] = true
-          })
-        ])
+            listenerclient.onAsync(path, {
+              event_type: 'set'
+            }, function (data, meta) {
+              results[1] = true
+            }),
+            listenerclient.onAsync(path, {
+              event_type: 'set'
+            }, function (data, meta) {
+              results[2] = true
+            }),
+            listenerclient.onAsync(path, {
+              event_type: 'set'
+            }, function (data, meta) {
+              results[3] = true
+            })
+          ])
 
           .then(function () {
             return listenerclient.offPath(path);
