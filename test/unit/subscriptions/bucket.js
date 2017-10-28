@@ -1,11 +1,10 @@
-var Happn = require('../..'),
-  expect = require('expect.js'),
+var expect = require('expect.js'),
   async = require('async'),
   shortid = require('shortid');
 
-describe('functional subscription', function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
-  var SubscriptionBucket = require('../../lib/services/subscription/bucket.js');
+  var SubscriptionBucket = require('../../../lib/services/subscription/bucket.js');
 
   it('test the trie lib, remove functionality', function (done) {
 
@@ -141,7 +140,134 @@ describe('functional subscription', function () {
       done();
 
     });
+  });
 
+  it('tests the subscription bucket adding and removing, duplicate segments', function (done) {
+
+    var sessionId1 = '1';
+    var sessionId2 = '2';
+    var sessionId3 = '3';
+
+    var testBucket = new SubscriptionBucket({
+      type: 1,
+      name: 'testBucket',
+      channel: 'SET'
+    });
+
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
+
+    testBucket.initialize(function (e) {
+
+      if (e) return done(e);
+
+      testBucket.addSubscription('/_events/field-pop/server/deviceRegistered/*', sessionId1, data);
+
+      testBucket.addSubscription('/_events/field-pop/server/deviceRegistered/A corp/*', sessionId2, data);
+
+      testBucket.addSubscription('/_events/field-pop/server/deviceStatus/*', sessionId3, data);
+
+      expect(testBucket.allSubscriptions().length).to.be(3);
+
+      testBucket.removeSubscription('/_events/field-pop/server/deviceRegistered/A corp/*', sessionId2);
+
+      //console.log(testBucket.allSubscriptions());
+
+      expect(testBucket.allSubscriptions().length).to.be(2);
+
+      done();
+
+    });
+  });
+
+  it('tests the subscription bucket adding and getting, similar paths', function (done) {
+
+    var sessionId1 = '1';
+    var sessionId2 = '2';
+    var sessionId3 = '3';
+
+    var testBucket = new SubscriptionBucket({
+      type: 1,
+      name: 'testBucket',
+      channel: 'SET'
+    });
+
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
+
+    testBucket.initialize(function (e) {
+
+      if (e) return done(e);
+
+      testBucket.addSubscription('/_events/field-pop/server/deviceRegistered/*', sessionId1, data);
+
+      testBucket.addSubscription('/_events/field-pop/server/deviceRegistered/A corp/*', sessionId2, data);
+
+      testBucket.addSubscription('/_events/field-pop/server/deviceStatus/*', sessionId3, data);
+
+      testBucket.getSubscriptions('/_events/field-pop/server/deviceRegistered/A corp/*', {
+        // preciseMatch: true,
+        // fullPath: '/_events/field-pop/server/deviceRegistered/A corp/*'
+      }, function(e, subscriptions){
+        if (e) return done(e);
+
+        expect(subscriptions.length).to.be(2);
+        expect(subscriptions[0].index).to.be(0);
+        expect(subscriptions[1].index).to.be(1);
+
+        console.log('');
+        done();
+      });
+    });
+  });
+
+  it('tests the subscription bucket adding and getting, similar paths', function (done) {
+
+    var sessionId1 = '1';
+    var sessionId2 = '2';
+    var sessionId3 = '3';
+
+    var testBucket = new SubscriptionBucket({
+      type: 1,
+      name: 'testBucket',
+      channel: 'SET'
+    });
+
+    var data = {
+      options: {
+        refCount: 1
+      }
+    };
+
+    testBucket.initialize(function (e) {
+
+      if (e) return done(e);
+
+      testBucket.addSubscription('/_events/field-pop/server/deviceRegistered/*', sessionId1, data);
+
+      testBucket.addSubscription('/_events/field-pop/server/deviceRegistered/A corp/*', sessionId2, data);
+
+      testBucket.addSubscription('/_events/field-pop/server/deviceStatus/*', sessionId3, data);
+
+      testBucket.getSubscriptions('/_events/field-pop/server/deviceRegistered/A corp/*', {
+        preciseMatch: true,
+        fullPath: '/_events/field-pop/server/deviceRegistered/A corp/*'
+      }, function(e, subscriptions){
+        if (e) return done(e);
+
+        expect(subscriptions.length).to.be(1);
+
+        expect(subscriptions[0].index).to.be(1);
+
+        done();
+      });
+    });
   });
 
   it('tests the catchall segment, allSubscriptions', function (done) {
@@ -290,13 +416,13 @@ describe('functional subscription', function () {
 
             testBucket.getSubscriptions('/test/path/' + key, function (e, recipients) {
 
-              if (recipients.length != pathCounts[key]) {
-
-                console.log(':::', testBucket.__explicit_subscriptions.get(''));
-
-                console.log('amount expected:::', pathCounts[key]);
-                console.log('for path:::', '/test/path/' + key);
-              }
+              // if (recipients.length != pathCounts[key]) {
+              //
+              //   console.log(':::', testBucket.__explicit_subscriptions.get(''));
+              //
+              //   console.log('amount expected:::', pathCounts[key]);
+              //   console.log('for path:::', '/test/path/' + key);
+              // }
 
               expect(recipients.length).to.be(pathCounts[key]);
 
@@ -311,11 +437,11 @@ describe('functional subscription', function () {
 
   function mockSubscriptionService(config, testItems, callback) {
 
-    var UtilsService = require('../../lib/services/utils/service');
+    var UtilsService = require('../../../lib/services/utils/service');
 
     var utilsService = new UtilsService();
 
-    var SubscriptionService = require('../../lib/services/subscription/service');
+    var SubscriptionService = require('../../../lib/services/subscription/service');
 
     var subscriptionService = new SubscriptionService({
       logger: {
@@ -489,9 +615,9 @@ describe('functional subscription', function () {
     var config = {};
 
     var testItems = [{
-        path: 'test/path/1',
-        data: {}
-      },
+      path: 'test/path/1',
+      data: {}
+    },
       {
         path: 'test/path/2',
         data: {}
@@ -534,9 +660,9 @@ describe('functional subscription', function () {
     var config = {};
 
     var testItems = [{
-        path: 'test/path/1',
-        data: {}
-      },
+      path: 'test/path/1',
+      data: {}
+    },
       {
         path: 'test/path/2',
         data: {}
