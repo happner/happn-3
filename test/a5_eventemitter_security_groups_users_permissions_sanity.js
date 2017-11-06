@@ -326,12 +326,8 @@ describe('a5_eventemitter_security_groups', function () {
 
             callback();
           });
-
-
         });
-
       });
-
     });
 
     context('manage users', function () {
