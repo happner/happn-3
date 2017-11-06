@@ -23,23 +23,7 @@ describe(require('path').basename(__filename), function () {
 
   before('should initialize the service', function (callback) {
 
-    var config = {
-      services: {
-        subscription: {
-          config: {
-            buckets: [
-
-              {
-                name: 'strict',
-                channel: '*@/strict_bucket/*', // any messages (SET or REMOVE) with path starting with /strict/
-                implementation: happn.bucketStrict
-              }
-              // SubscriptionService.prototype.initializeBuckets still adds default "unstrict" buckets
-            ]
-          }
-        }
-      }
-    };
+    var config = {};
 
     try {
 
@@ -331,7 +315,7 @@ describe(require('path').basename(__filename), function () {
         });
       });
 
-      it('should unsubscribe from only specific events with wildcard', function (callback) {
+      it.only('should unsubscribe from only specific events with wildcard', function (callback) {
 
         var path = '/' + bucketType + '/with/wildcard/unsubscribe/from/only/*';
 

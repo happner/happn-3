@@ -128,6 +128,8 @@ describe('1_eventemitter_embedded_sanity', function () {
 
     try {
 
+      this.timeout(5000);
+
       //first listen for the change
       listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*', {
         event_type: 'set',
@@ -135,13 +137,45 @@ describe('1_eventemitter_embedded_sanity', function () {
       }, function (message) {
 
         expect(listenerclient.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(0);
-        callback();
+        setTimeout(callback, 2000);
 
       }, function (e) {
 
         if (!e) {
 
           expect(listenerclient.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
+
+          //then make the change
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/blah', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          }, null, function (e, result) {
+
+          });
+
+        } else callback(e);
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('the listener should pick up a single wildcard event, event type not specified', function (callback) {
+
+    try {
+
+      //first listen for the change
+      listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*', function (message) {
+
+        callback();
+
+      }, function (e) {
+
+        if (!e) {
+
+          expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
 
           //then make the change
           publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/blah', {
@@ -188,44 +222,11 @@ describe('1_eventemitter_embedded_sanity', function () {
     }).catch(callback);
   });
 
-  it('the listener should pick up a single wildcard event, event type not specified', function (callback) {
-
-    try {
-
-      //first listen for the change
-      listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*', function (message) {
-
-        callback();
-
-      }, function (e) {
-
-        if (!e) {
-
-          expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
-
-          //then make the change
-          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/blah', {
-            property1: 'property1',
-            property2: 'property2',
-            property3: 'property3'
-          }, null, function (e, result) {
-
-          });
-
-        } else callback(e);
-      });
-
-    } catch (e) {
-      callback(e);
-    }
-  });
-
   it('the publisher should get null for unfound data, exact path', function (callback) {
 
 
     var test_path_end = require('shortid').generate();
     publisherclient.get('1_eventemitter_embedded_sanity/' + test_id + '/unfound/exact/' + test_path_end, null, function (e, results) {
-      ////////////console.log('new data results');
 
       expect(e).to.be(null);
       expect(results).to.be(null);
@@ -324,9 +325,6 @@ describe('1_eventemitter_embedded_sanity', function () {
 
             if (e)
               return callback(e);
-
-            //////////////console.log('merge get results');
-            //////////////console.log(results);
 
             expect(results.property4).to.be('property4');
             expect(results.property1).to.be('property1');
@@ -503,7 +501,6 @@ describe('1_eventemitter_embedded_sanity', function () {
 
         if (e) return callback(e);
 
-        ////////////console.log('searching');
         publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*', {
           criteria: criteria1,
           options: options1
@@ -644,9 +641,6 @@ describe('1_eventemitter_embedded_sanity', function () {
 
           expect(e).to.be(null);
           expect(result._meta.status).to.be('ok');
-
-          ////////////////////console.log('DELETE RESULT');
-          ////////////////////console.log(result);
 
           callback();
         });

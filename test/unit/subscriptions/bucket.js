@@ -1,10 +1,82 @@
 var expect = require('expect.js'),
   async = require('async'),
-  shortid = require('shortid');
+  shortid = require('shortid'),
+  Promise = require('bluebird')
+  ;
 
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var SubscriptionBucket = require('../../../lib/services/subscription/bucket.js');
+
+  var BucketHelper = function(){
+
+  };
+
+  BucketHelper.create = function(callback){
+
+    var bucketHelper = new BucketHelper();
+
+    bucketHelper.bucket = new SubscriptionBucket({
+      type: 1,
+      name: 'testBucket',
+      channel: 'SET'
+    });
+
+    bucketHelper.bucket.initialize(function(e){
+
+      if (e) return callback(e);
+      callback(null, bucketHelper);
+    });
+  };
+
+  BucketHelper.prototype.matches = function(searchTerm, searchSessionId, subscriptions, removeSubscriptions, options){
+
+    var _this = this;
+
+    console.log('matches:::',searchTerm);
+
+    return new Promise(function(resolve, reject){
+
+      try{
+
+        if (!options) options = {};
+
+        var data = {
+          options: {
+            refCount: 0
+          }
+        };
+
+        subscriptions.forEach(function(subscription){
+
+          _this.bucket.addSubscription(subscription.path, subscription.sessionId, data);
+        });
+
+        if (removeSubscriptions) removeSubscriptions.forEach(function(subscription){
+
+          _this.bucket.removeSubscription(subscription.path, subscription.sessionId);
+        });
+
+        _this.bucket.getSubscriptions(searchTerm, options, function(e, subscriptions){
+
+          if (e) return reject(e);
+
+          var subCount = 0;
+
+          if (searchSessionId != null) subscriptions.forEach(function(item){
+            if (item.subscription.sessionId == searchSessionId) subCount++;
+          });
+          else subCount = subscriptions.length;
+
+          resolve(subCount);
+        });
+
+      }catch(e){
+
+        reject(e);
+      }
+    });
+  };
 
   it('test the trie lib, remove functionality', function (done) {
 
@@ -699,6 +771,63 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
   });
+
+  it('various adds removes and gets', function (done) {
+
+    BucketHelper.create(function(e, bucketHelper){
+
+      if (e) return done(e);
+
+      bucketHelper.matches('/get/some/*', 1, [{path:'/get/som*', sessionId:1}, {path:'/get/som*', sessionId:2}])
+        .then(function(counter){
+        expect(counter).to.be(1);
+        return bucketHelper.matches('/get/some/*', 2, [{path:'/get/som*', sessionId:1}, {path:'/get/som*', sessionId:2}]);
+      }).then(function(counter){
+        expect(counter).to.be(1);
+        return bucketHelper.matches('/get/some/*', null, [{path:'/get/som*', sessionId:1}, {path:'/get/som*', sessionId:2}], [{path:'/get/som*', sessionId:1}]);
+      }).then(function(counter){
+        expect(counter).to.be(1);
+        return bucketHelper.matches('/get/some/*', null, [{path:'/get/som*', sessionId:1}, {path:'/get/som*', sessionId:2}], [{path:'/get/som*', sessionId:2}]);
+      }).then(function(counter){
+        expect(counter).to.be(1);
+        return bucketHelper.matches('/get/some/*', null, [{path:'/get/som*', sessionId:1}, {path:'/get/som*', sessionId:2}]);
+      }).then(function(counter){
+          expect(counter).to.be(2);
+          done();
+        })
+        .catch(done);
+
+    });
+  });
+
+  it('various adds removes and gets, more complex', function (done) {
+
+    BucketHelper.create(function(e, bucketHelper){
+
+      if (e) return done(e);
+
+      bucketHelper.matches('/get/some/*', null, [{path:'*/get/som*', sessionId:1}, {path:'*/get/som', sessionId:2}])
+        .then(function(counter){
+          expect(counter).to.be(1);
+          return bucketHelper.matches('/get/some/*', null, [{path:'/get/so1*', sessionId:1}, {path:'/get/s*', sessionId:2}]);
+        }).then(function(counter){
+        expect(counter).to.be(1);
+        return bucketHelper.matches('/get/some/*', null, [{path:'/*/som*', sessionId:1}, {path:'/get/som*', sessionId:2}], [{path:'/get/som*', sessionId:2}]);
+      }).then(function(counter){
+        expect(counter).to.be(1);
+        return bucketHelper.matches('/get/some/*', null, [{path:'/*/som*', sessionId:1}, {path:'/get/som*', sessionId:2}], [{path:'/*/som*', sessionId:2}]);
+      }).then(function(counter){
+        expect(counter).to.be(1);
+        return bucketHelper.matches('/get/some/*', null, [{path:'/*/som*', sessionId:1}, {path:'***', sessionId:2}]);
+      }).then(function(counter){
+          expect(counter).to.be(2);
+          done();
+        })
+        .catch(done);
+
+    });
+  });
+
 
   it('does a clearSubscriptions for a specific session', function (done) {
 
