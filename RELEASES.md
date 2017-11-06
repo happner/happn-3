@@ -359,3 +359,6 @@
   - breaking changes:
     - set and remove requests can no longer contain *'s
     - doing away with integer listener ids and the refCount thing
+    - off can take a string now, it is the reference not the path
+    - offPath takes in the path
+  - no more buckets
