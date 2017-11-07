@@ -303,7 +303,7 @@ describe(require('path').basename(__filename), function () {
                 if (!onHappened)
                   callback();
 
-              }, 500);
+              }, 1000);
             });
           });
         }
@@ -424,7 +424,10 @@ describe(require('path').basename(__filename), function () {
         // no longer subscribed to any, ensure the publication does not erroneously get sent to
         // listenerclient anyway... and be filtered out clientside
 
-        listenerclient.handle_data = function (path) {
+        listenerclient.handle_data = function (path, data) {
+
+          console.log('handle_data:::', path, data);
+
           emittedPath = path;
           originalHandleData.apply(this, arguments);
         }
