@@ -358,9 +358,8 @@
 ----------------
   - breaking changes, protocol 2.0.0:
     - server
-      - 
-    - set and remove requests can no longer contain *'s
-    - doing away with integer listener ids and the refCount thing
+      - set and remove requests can not contain *'s
+    - doing away with integer listener ids
     - off can take a string now, it is the reference not the path
     - offPath takes in the path
     - emitImmediate is now handled by the client, so old clients will not receive immediate messages
