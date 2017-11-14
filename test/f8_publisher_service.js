@@ -56,19 +56,19 @@ describe('f8_publisher_service', function () {
         createLogger: function (key) {
           return {
             warn: function (message) {
-              console.log(message);
+              //console.log(message);
             },
             info: function (message) {
-              console.log(message);
+              //console.log(message);
             },
             success: function (message) {
-              console.log(message);
+              //console.log(message);
             },
             error: function (message) {
-              console.log(message);
+              //console.log(message);
             },
             $$TRACE: function (message) {
-              console.log(message);
+              //console.log(message);
             }
           }
         }
@@ -531,7 +531,7 @@ describe('f8_publisher_service', function () {
 
       if (e) return done(e);
 
-      console.log(results);
+      //console.log(results);
 
     });
 
@@ -620,7 +620,7 @@ describe('f8_publisher_service', function () {
 
       if (e) return done(e);
 
-      console.log(results);
+      //console.log(results);
 
     });
 
@@ -709,7 +709,7 @@ describe('f8_publisher_service', function () {
 
       if (e) return done(e);
 
-      console.log(results);
+      //console.log(results);
 
     });
 

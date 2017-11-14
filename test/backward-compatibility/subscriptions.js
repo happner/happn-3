@@ -393,7 +393,46 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
         });
       });
     });
+  });
 
+  it('the listener should pick up wildcard remove events', function (callback) {
+
+    //We put the data we want to delete into the database
+    publisherclient.set('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/wildcard_delete_me/1', {
+      property1: 'property1',
+      property2: 'property2',
+      property3: 'property3'
+    }, null, function (e, result) {
+
+      publisherclient.set('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/wildcard_delete_me/2', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      }, null, function (e, result) {
+
+        listenerclient.on('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/wildcard_delete_me/*', {
+          event_type: 'remove',
+          count: 1
+        }, function (eventData) {
+
+          expect(listenerclient.events['/REMOVE@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/wildcard_delete_me/*'].length).to.be(0);
+          expect(eventData.payload.removed).to.be(2);
+
+          callback();
+
+        }, function (e) {
+
+          if (!e) return callback(e);
+
+          expect(listenerclient.events['/REMOVE@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/wildcard_delete_me/*'].length).to.be(1);
+
+          //We perform the actual delete
+          publisherclient.remove('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/*/wildcard_delete_me/*', null, function (e, result) {
+
+          });
+        });
+      });
+    });
   });
 
   it('should unsubscribe from an event', function (callback) {
@@ -462,6 +501,63 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
         property3: 'property3'
       }, {}, function (e, setresult) {
         if (e) return callback(new Error(e));
+      });
+    });
+  });
+
+  it('should unsubscribe from a specific event', function (done) {
+
+    var emitted = {};
+
+    var reference1;
+    var reference2;
+
+    var response1;
+    var response2;
+
+    var path = '/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/on_off_specific_test';
+
+    listenerclient.on(path, {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
+
+      if (!emitted[reference1]) emitted[reference1] = [];
+      emitted[reference1].push(message);
+
+    }, function (e, eventReference) {
+
+      reference1 = eventReference;
+
+      return listenerclient.on(path, {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
+
+        if (!emitted[reference2]) emitted[reference2] = [];
+        emitted[reference2].push(message);
+
+      }, function (e, eventReference) {
+
+        reference2 = eventReference;
+
+        listenerclient.set(path, {test: 'data1'})
+          .then(function (response) {
+            response1 = response;
+            return listenerclient.set(path, {test: 'data2'});
+          }).then(function (response) {
+          response2 = response;
+          return listenerclient.off(reference2);
+        }).then(function () {
+          return listenerclient.set(path, {test: 'data3'});
+        }).then(function () {
+
+          expect(emitted[reference1].length).to.be(3);
+          expect(emitted[reference2].length).to.be(2);
+
+          done();
+        }).catch(done);
+
       });
     });
   });
@@ -726,11 +822,11 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
 
       setTimeout(function () {
 
-        publisherclient.off('/1_eventemitter_embedded_sanity/*', function(e){
+        publisherclient.off('/1_eventemitter_embedded_sanity/*', function (e) {
 
           expect(e.toString()).to.be('Error: handle must be a number');
 
-          publisherclient.off(null, function(e){
+          publisherclient.off(null, function (e) {
 
             expect(e.toString()).to.be('Error: handle cannot be null');
 
