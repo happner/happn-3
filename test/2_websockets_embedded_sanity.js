@@ -609,6 +609,54 @@ describe('2_websockets_embedded_sanity', function () {
 
   });
 
+  it('should delete multiple items', function (callback) {
+
+    try {
+
+      //We put the data we want to delete into the database
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/1', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      }, {
+        noPublish: true
+      }, function (e, result) {
+
+        if (e) return callback(e);
+
+        //We put the data we want to delete into the database
+        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/2', {
+          property1: 'property1',
+          property2: 'property2',
+          property3: 'property3'
+        }, {
+          noPublish: true
+        }, function (e, result) {
+
+          if (e) return callback(e);
+
+          //We perform the actual delete
+          publisherclient.remove('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/*', {
+            noPublish: true
+          }, function (e, result) {
+
+            expect(e).to.be(null);
+
+            expect(result._meta.status).to.be('ok');
+
+            expect(result.removed).to.be(2);
+
+            callback();
+          });
+        });
+
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
   it('the publisher should set new data then update the data', function (callback) {
 
 

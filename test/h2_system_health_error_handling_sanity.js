@@ -214,6 +214,8 @@ describe(require('path').basename(__filename), function () {
 
             var stats = serviceInstance.services.system.stats();
 
+            console.log(stats);
+
             expect(stats.HEALTH.lastError.message).to.be('Error: test protocol fail error');
             expect(stats.HEALTH.lastError.area).to.be('ProtocolService.__respondMessageIn');
             expect(stats.HEALTH.lastError.severity).to.be(1);

@@ -528,8 +528,8 @@ describe('1_eventemitter_embedded_sanity', function () {
   it('tests sift', function (callback) {
 
     var array = [{
-        value: 0
-      },
+      value: 0
+    },
       {
         value: 1
       },
@@ -650,7 +650,54 @@ describe('1_eventemitter_embedded_sanity', function () {
     } catch (e) {
       callback(e);
     }
+  });
 
+  it('should delete multiple items', function (callback) {
+
+    try {
+
+      //We put the data we want to delete into the database
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/1', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      }, {
+        noPublish: true
+      }, function (e, result) {
+
+        if (e) return callback(e);
+
+        //We put the data we want to delete into the database
+        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/2', {
+          property1: 'property1',
+          property2: 'property2',
+          property3: 'property3'
+        }, {
+          noPublish: true
+        }, function (e, result) {
+
+          if (e) return callback(e);
+
+          //We perform the actual delete
+          publisherclient.remove('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/*', {
+            noPublish: true
+          }, function (e, result) {
+
+            expect(e).to.be(null);
+
+            expect(result._meta.status).to.be('ok');
+
+            expect(result.removed).to.be(2);
+
+            callback();
+          });
+        });
+
+      });
+
+    } catch (e) {
+      callback(e);
+    }
   });
 
   it('the publisher should set new data then update the data', function (callback) {
@@ -1549,11 +1596,11 @@ describe('1_eventemitter_embedded_sanity', function () {
 
       setTimeout(function () {
 
-        publisherclient.off('/1_eventemitter_embedded_sanity/*', function(e){
+        publisherclient.off('/1_eventemitter_embedded_sanity/*', function (e) {
 
           expect(e.toString()).to.be('Error: handle must be a number');
 
-          publisherclient.off(null, function(e){
+          publisherclient.off(null, function (e) {
 
             expect(e.toString()).to.be('Error: handle cannot be null');
 
