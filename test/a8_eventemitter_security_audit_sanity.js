@@ -83,10 +83,10 @@ describe('a8_eventemitter_security_audit', function () {
     testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/on'] = {
       actions: ['on']
     };
-    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/set'] = {
+    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/set*'] = {
       actions: ['set', 'get']
     };
-    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/remove'] = {
+    testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/remove*'] = {
       actions: ['set', 'remove']
     };
     testGroup.permissions['/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/*'] = {
@@ -279,7 +279,7 @@ describe('a8_eventemitter_security_audit', function () {
 
           if (e) return done(e);
 
-          testClient.remove('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/*', function (e) {
+          testClient.remove('/TEST/a7_eventemitter_security_audit/' + test_id + '/remove_all/1', function (e) {
 
             if (e) return done(e);
 
@@ -299,11 +299,6 @@ describe('a8_eventemitter_security_audit', function () {
           });
         });
       });
-
     });
-
   });
-
-  //require('benchmarket').stop();
-
 });

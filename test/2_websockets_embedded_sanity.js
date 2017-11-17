@@ -609,6 +609,54 @@ describe('2_websockets_embedded_sanity', function () {
 
   });
 
+  it('should delete multiple items', function (callback) {
+
+    try {
+
+      //We put the data we want to delete into the database
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/1', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      }, {
+        noPublish: true
+      }, function (e, result) {
+
+        if (e) return callback(e);
+
+        //We put the data we want to delete into the database
+        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/2', {
+          property1: 'property1',
+          property2: 'property2',
+          property3: 'property3'
+        }, {
+          noPublish: true
+        }, function (e, result) {
+
+          if (e) return callback(e);
+
+          //We perform the actual delete
+          publisherclient.remove('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/*', {
+            noPublish: true
+          }, function (e, result) {
+
+            expect(e).to.be(null);
+
+            expect(result._meta.status).to.be('ok');
+
+            expect(result.removed).to.be(2);
+
+            callback();
+          });
+        });
+
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
   it('the publisher should set new data then update the data', function (callback) {
 
 
@@ -645,6 +693,63 @@ describe('2_websockets_embedded_sanity', function () {
     } catch (e) {
       callback(e);
     }
+  });
+
+  it('should unsubscribe from a specific event', function (done) {
+
+    var emitted = {};
+
+    var reference1;
+    var reference2;
+
+    var response1;
+    var response2;
+
+    var path = '/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/on_off_specific_test';
+
+    listenerclient.on(path, {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
+
+      if (!emitted[reference1]) emitted[reference1] = [];
+      emitted[reference1].push(message);
+
+    }, function (e, eventReference) {
+
+      reference1 = eventReference;
+
+      return listenerclient.on(path, {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
+
+        if (!emitted[reference2]) emitted[reference2] = [];
+        emitted[reference2].push(message);
+
+      }, function (e, eventReference) {
+
+        reference2 = eventReference;
+
+        listenerclient.set(path, {test: 'data1'})
+          .then(function (response) {
+            response1 = response;
+            return listenerclient.set(path, {test: 'data2'});
+          }).then(function (response) {
+          response2 = response;
+          return listenerclient.off(reference2);
+        }).then(function () {
+          return listenerclient.set(path, {test: 'data3'});
+        }).then(function () {
+
+          expect(emitted[reference1].length).to.be(3);
+          expect(emitted[reference2].length).to.be(2);
+
+          done();
+        }).catch(done);
+
+      });
+    });
   });
 
 

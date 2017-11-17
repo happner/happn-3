@@ -46,7 +46,7 @@ describe('f3_target_clients', function () {
 
           happnInstanceSecure = happnInst;
 
-          console.log('created secured instance:::');
+          //console.log('created secured instance:::');
 
           callback();
         });
@@ -119,7 +119,7 @@ describe('f3_target_clients', function () {
       if (e) return callback(e);
       client = instance;
 
-      console.log('created client:::');
+      //console.log('created client:::');
 
       happn_client.create({
         port: 55002
@@ -128,7 +128,7 @@ describe('f3_target_clients', function () {
         if (e) return callback(e);
         middleman = instance;
 
-        console.log('created middleman:::');
+        //console.log('created middleman:::');
 
         happn_client.create({
           port: 55003,
@@ -139,7 +139,7 @@ describe('f3_target_clients', function () {
           if (e) return callback(e);
           secureClient = instance;
 
-          console.log('created secure client:::');
+          //console.log('created secure client:::');
 
           happn_client.create({
             port: 55003,
@@ -150,7 +150,7 @@ describe('f3_target_clients', function () {
             if (e) return callback(e);
             secureMiddleman = instance;
 
-            console.log('created secure middleman:::');
+            //console.log('created secure middleman:::');
 
             callback();
           });
@@ -167,18 +167,18 @@ describe('f3_target_clients', function () {
 
     middleman.on('/targeted/*', function (message) {
 
-      console.log('MIDDLEMAN HAS MESSAGE:::', message);
+      //console.log('MIDDLEMAN HAS MESSAGE:::', message);
       middlemanGotMessage = true;
 
     }, function (e) {
 
       if (e) return callback(e);
 
-      console.log('attached middleman:::');
+      //console.log('attached middleman:::');
 
       client.on('/targeted/*', function (message) {
 
-        console.log('HAVE MESSAGE:::', message);
+        //console.log('HAVE MESSAGE:::', message);
         setTimeout(function () {
 
           if (middlemanGotMessage) return callback(new Error('middleman got message!!'));
@@ -190,7 +190,7 @@ describe('f3_target_clients', function () {
 
         if (e) return callback(e);
 
-        console.log('attached client:::', client.session.id);
+        //console.log('attached client:::', client.session.id);
 
         client.set('/targeted/test', {
           test: 'value'
@@ -199,7 +199,7 @@ describe('f3_target_clients', function () {
         }, function (e) {
           if (e) return callback(e);
 
-          console.log('did unsecured set:::');
+          //console.log('did unsecured set:::');
         });
       });
     });
@@ -213,18 +213,18 @@ describe('f3_target_clients', function () {
 
     middleman.on('/grouptargeted/*', function (message) {
 
-      console.log('MIDDLEMAN HAS MESSAGE:::', message);
+      //console.log('MIDDLEMAN HAS MESSAGE:::', message);
       middlemanGotMessage = true;
 
     }, function (e) {
 
       if (e) return callback(e);
 
-      console.log('attached middleman:::');
+      //console.log('attached middleman:::');
 
       client.on('/grouptargeted/*', function (message) {
 
-        console.log('HAVE MESSAGE:::', message);
+        //console.log('HAVE MESSAGE:::', message);
         setTimeout(function () {
 
           if (!middlemanGotMessage) return callback(new Error('middleman got no message!!'));
@@ -236,7 +236,7 @@ describe('f3_target_clients', function () {
 
         if (e) return callback(e);
 
-        console.log('attached client:::', client.session.id);
+        //console.log('attached client:::', client.session.id);
 
         client.set('/grouptargeted/test', {
           test: 'value'
@@ -245,7 +245,7 @@ describe('f3_target_clients', function () {
         }, function (e) {
           if (e) return callback(e);
 
-          console.log('did unsecured set:::');
+          //console.log('did unsecured set:::');
         });
       });
     });
@@ -259,18 +259,18 @@ describe('f3_target_clients', function () {
 
     middleman.on('/untargeted/*', function (message) {
 
-      console.log('MIDDLEMAN HAS MESSAGE:::', message);
+      //console.log('MIDDLEMAN HAS MESSAGE:::', message);
       middlemanGotMessage = true;
 
     }, function (e) {
 
       if (e) return callback(e);
 
-      console.log('attached middleman:::');
+      //console.log('attached middleman:::');
 
       client.on('/untargeted/*', function (message) {
 
-        console.log('HAVE MESSAGE:::', message);
+        //console.log('HAVE MESSAGE:::', message);
         setTimeout(function () {
 
           if (!middlemanGotMessage) return callback(new Error('middleman got no message!!'));
@@ -282,14 +282,14 @@ describe('f3_target_clients', function () {
 
         if (e) return callback(e);
 
-        console.log('attached client:::', client.session.id);
+        //console.log('attached client:::', client.session.id);
 
         client.set('/untargeted/test', {
           test: 'value'
         }, function (e) {
           if (e) return callback(e);
 
-          console.log('did unsecured set:::');
+          //console.log('did unsecured set:::');
         });
       });
     });
@@ -303,18 +303,18 @@ describe('f3_target_clients', function () {
 
     secureMiddleman.on('/targeted/*', function (message) {
 
-      console.log('MIDDLEMAN HAS MESSAGE:::', message);
+      //console.log('MIDDLEMAN HAS MESSAGE:::', message);
       secureMiddlemanGotMessage = true;
 
     }, function (e) {
 
       if (e) return callback(e);
 
-      console.log('attached secureMiddleman:::');
+      //console.log('attached secureMiddleman:::');
 
       secureClient.on('/targeted/*', function (message) {
 
-        console.log('HAVE MESSAGE:::', message);
+        //console.log('HAVE MESSAGE:::', message);
         setTimeout(function () {
 
           if (secureMiddlemanGotMessage) return callback(new Error('secureMiddleman got message!!'));
@@ -326,7 +326,7 @@ describe('f3_target_clients', function () {
 
         if (e) return callback(e);
 
-        console.log('attached secureClient:::', secureClient.session.id);
+        //console.log('attached secureClient:::', secureClient.session.id);
 
         secureClient.set('/targeted/test', {
           test: 'value'
@@ -335,7 +335,7 @@ describe('f3_target_clients', function () {
         }, function (e) {
           if (e) return callback(e);
 
-          console.log('did unsecured set:::');
+          //console.log('did unsecured set:::');
         });
       });
     });
@@ -349,18 +349,18 @@ describe('f3_target_clients', function () {
 
     secureMiddleman.on('/grouptargeted/*', function (message) {
 
-      console.log('MIDDLEMAN HAS MESSAGE:::', message);
+      //console.log('MIDDLEMAN HAS MESSAGE:::', message);
       secureMiddlemanGotMessage = true;
 
     }, function (e) {
 
       if (e) return callback(e);
 
-      console.log('attached secureMiddleman:::');
+      //console.log('attached secureMiddleman:::');
 
       secureClient.on('/grouptargeted/*', function (message) {
 
-        console.log('HAVE MESSAGE:::', message);
+        //console.log('HAVE MESSAGE:::', message);
         setTimeout(function () {
 
           if (!secureMiddlemanGotMessage) return callback(new Error('secureMiddleman got no message!!'));
@@ -372,7 +372,7 @@ describe('f3_target_clients', function () {
 
         if (e) return callback(e);
 
-        console.log('attached secureClient:::', secureClient.session.id);
+        //console.log('attached secureClient:::', secureClient.session.id);
 
         secureClient.set('/grouptargeted/test', {
           test: 'value'
@@ -381,7 +381,7 @@ describe('f3_target_clients', function () {
         }, function (e) {
           if (e) return callback(e);
 
-          console.log('did unsecured set:::');
+          //console.log('did unsecured set:::');
         });
       });
     });
@@ -395,18 +395,18 @@ describe('f3_target_clients', function () {
 
     secureMiddleman.on('/untargeted/*', function (message) {
 
-      console.log('MIDDLEMAN HAS MESSAGE:::', message);
+      //console.log('MIDDLEMAN HAS MESSAGE:::', message);
       secureMiddlemanGotMessage = true;
 
     }, function (e) {
 
       if (e) return callback(e);
 
-      console.log('attached secureMiddleman:::');
+      //console.log('attached secureMiddleman:::');
 
       secureClient.on('/untargeted/*', function (message) {
 
-        console.log('HAVE MESSAGE:::', message);
+        //console.log('HAVE MESSAGE:::', message);
         setTimeout(function () {
 
           if (!secureMiddlemanGotMessage) return callback(new Error('secureMiddleman got no message!!'));
@@ -418,14 +418,14 @@ describe('f3_target_clients', function () {
 
         if (e) return callback(e);
 
-        console.log('attached secureClient:::', secureClient.session.id);
+        //console.log('attached secureClient:::', secureClient.session.id);
 
         secureClient.set('/untargeted/test', {
           test: 'value'
         }, function (e) {
           if (e) return callback(e);
 
-          console.log('did unsecured set:::');
+          //console.log('did unsecured set:::');
         });
       });
     });

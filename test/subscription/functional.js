@@ -5,14 +5,6 @@ var Happn = require('../..'),
 
 describe('functional subscription', function () {
 
-  before('', function () {
-
-  });
-
-  after('', function () {
-
-  });
-
   var SubscriptionBucket = require('../../lib/services/subscription/bucket.js');
 
   it('test the trie lib, remove functionality', function (done) {
