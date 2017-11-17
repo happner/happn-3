@@ -1,9 +1,8 @@
 describe(require('path').basename(__filename), function () {
 
   var happn = require('../lib/index');
-  var serviceInstance;
   var expect = require('expect.js');
-  var constants = happn.constants;
+  var serviceInstance;
 
   var getService = function (config, callback) {
     happn.service.create(config,
@@ -19,7 +18,7 @@ describe(require('path').basename(__filename), function () {
         stats:{
           config:{
             emit:true,
-            print:true,
+            db:true,
             interval:1000
           }
         }
@@ -53,4 +52,31 @@ describe(require('path').basename(__filename), function () {
     }, 10000);
   });
 
+  it('tests process message handler', function (done) {
+
+    process.__oldSend = process.send;
+
+    var sent = [];
+
+    process.send = function(message){
+      sent.push(message);
+    };
+
+    try{
+
+      serviceInstance.services.system.__processSystemMessage({action:'GC'});
+
+      serviceInstance.services.system.__processSystemMessage({action:'MEMORY_USAGE'});
+
+      serviceInstance.services.system.__processSystemMessage({action:'STATS'});
+
+      expect(sent.length).to.be(3);
+
+      done();
+
+    }catch(e){
+      process.send = process.__oldSend;
+      done(e);
+    }
+  });
 });
