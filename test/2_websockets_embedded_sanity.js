@@ -304,6 +304,23 @@ describe('2_websockets_embedded_sanity', function () {
     });
   });
 
+  it('the publisher should get [] for unfound data, wildcard path', function (callback) {
+
+
+    var test_path_end = require('shortid').generate();
+
+    publisherclient.get('1_eventemitter_embedded_sanity/' + test_id + '/unfound/wild/*' + test_path_end + '/*', null, function (e, results) {
+      ////////////console.log('new data results');
+
+      expect(e).to.be(null);
+      expect(results.length).to.be(0);
+
+      callback(e);
+
+    });
+  });
+
+
 
   it('the publisher should set new data', function (callback) {
 
