@@ -358,9 +358,8 @@
 ----------------
   - breaking changes, protocol 2.0.0:
     - server
-      - set and remove requests can not contain *'s
+      - set requests can not contain *'s
     - doing away with integer listener ids
-    - off can take a string now, it is the reference not the path
+    - off cannot take a string now, it is the reference not the path
     - offPath takes in the path
-    - emitImmediate is now handled by the client, so old clients will not receive immediate messages
-  - no more buckets
+  - no more buckets, wild-pare integrated
