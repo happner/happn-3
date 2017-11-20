@@ -198,13 +198,9 @@ describe(require('path').basename(__filename), function () {
 
       .then(function (client) {
 
-        console.log('DID LCLIENT:::');
-
         serviceInstance.services.protocol.__oldRespondMessageIn = serviceInstance.services.protocol.__respondMessageIn;
 
         serviceInstance.services.protocol.__respondMessageIn = function (protocol, message, respond, e) {
-
-          console.log('DID RMESSAGE IN:::', message);
 
           serviceInstance.services.protocol.__latest.__oldFail = serviceInstance.services.protocol.__latest.fail;
 
@@ -229,7 +225,7 @@ describe(require('path').basename(__filename), function () {
             serviceInstance.services.protocol.__respondMessageIn = serviceInstance.services.protocol.__oldRespondMessageIn.bind(serviceInstance.services.protocol);
 
             client.get('/test/get', function (e, items) {
-              console.log('DID GET:::');
+              console.log('DID GET:::', e, items);
               expect(e).to.be(null);
               done();
             });
@@ -237,10 +233,6 @@ describe(require('path').basename(__filename), function () {
           }, 1000);
 
         }.bind(serviceInstance.services.protocol);
-
-        client.get('/test/get', function (e, items) {
-          //do nothing
-        });
       })
 
       .catch(function (e) {
