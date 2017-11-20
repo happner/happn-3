@@ -1,4 +1,4 @@
-describe(require('path').basename(__filename), function () {
+describe.only(require('path').basename(__filename), function () {
 
   this.timeout(30000);
 

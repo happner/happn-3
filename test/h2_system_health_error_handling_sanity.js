@@ -1,4 +1,4 @@
-describe(require('path').basename(__filename), function () {
+describe.only(require('path').basename(__filename), function () {
 
   var happn = require('../lib/index');
   var serviceInstance;
@@ -214,8 +214,6 @@ describe(require('path').basename(__filename), function () {
 
             var stats = serviceInstance.services.system.stats();
 
-            console.log(stats);
-
             expect(stats.HEALTH.lastError.message).to.be('Error: test protocol fail error');
             expect(stats.HEALTH.lastError.area).to.be('ProtocolService.__respondMessageIn');
             expect(stats.HEALTH.lastError.severity).to.be(1);
@@ -225,7 +223,6 @@ describe(require('path').basename(__filename), function () {
             serviceInstance.services.protocol.__respondMessageIn = serviceInstance.services.protocol.__oldRespondMessageIn.bind(serviceInstance.services.protocol);
 
             client.get('/test/get', function (e, items) {
-              console.log('DID GET:::', e, items);
               expect(e).to.be(null);
               done();
             });
@@ -233,12 +230,15 @@ describe(require('path').basename(__filename), function () {
           }, 1000);
 
         }.bind(serviceInstance.services.protocol);
+
+        client.get('/test/get', function (e, items) {
+          //do nothing
+        });
       })
 
       .catch(function (e) {
         if (e) return done(e);
       });
-
   });
 
 });
