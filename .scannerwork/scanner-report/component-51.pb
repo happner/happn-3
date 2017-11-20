@@ -1,1 +1,0 @@
-3!lib/services/publisher/service.js 2jsX±h
