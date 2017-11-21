@@ -173,8 +173,6 @@ describe('d8_session_management', function () {
 
       happn.services.session.attachSession(session.id, session);
 
-      if (e) return done(e);
-
       happn.services.security.listActiveSessions(function (e, list) {
 
         if (e) return done(e);

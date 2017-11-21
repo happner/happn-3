@@ -662,9 +662,6 @@ describe('d3-security-tokens', function () {
       },
       '/test/group/*': {
         action: ['*']
-      },
-      '/test/group/*': {
-        action: ['*']
       }
     };
 
