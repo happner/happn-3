@@ -1318,6 +1318,8 @@ describe('1_eventemitter_embedded_sanity', function () {
 
   it('should search for a complex object with a data property', function (callback) {
 
+    this.timeout(10000);
+
     var test_path_end = require('shortid').generate();
 
     var complex_obj = {
@@ -1332,7 +1334,7 @@ describe('1_eventemitter_embedded_sanity', function () {
       }
     };
 
-    var from = Date.now();
+    var from = Date.now() - 1000;
     var to;
 
     publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
@@ -1341,7 +1343,7 @@ describe('1_eventemitter_embedded_sanity', function () {
 
       setTimeout(function () {
 
-        to = Date.now();
+        to = Date.now() + 1000;
 
         var criteria = {
           "data.data.timestamp": {
@@ -1373,11 +1375,13 @@ describe('1_eventemitter_embedded_sanity', function () {
           } else callback();
 
         });
-      }, 300);
+      }, 500);
     });
   });
 
   it('should search for a complex object with a data property, using _data', function (callback) {
+
+    this.timeout(10000);
 
     var test_path_end = require('shortid').generate();
 
@@ -1393,7 +1397,7 @@ describe('1_eventemitter_embedded_sanity', function () {
       }
     };
 
-    var from = Date.now();
+    var from = Date.now() - 1000;
     var to;
 
     publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
@@ -1402,7 +1406,7 @@ describe('1_eventemitter_embedded_sanity', function () {
 
       setTimeout(function () {
 
-        to = Date.now();
+        to = Date.now() + 1000;
 
         var criteria = {
           "_data.data.timestamp": {
@@ -1434,7 +1438,7 @@ describe('1_eventemitter_embedded_sanity', function () {
           } else callback();
 
         });
-      }, 300);
+      }, 500);
     });
   });
 
