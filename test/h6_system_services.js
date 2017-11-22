@@ -1,4 +1,4 @@
-describe.only(require('path').basename(__filename), function () {
+describe(require('path').basename(__filename), function () {
 
   var happn = require('../lib/index');
   var expect = require('expect.js');

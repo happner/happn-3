@@ -1,4 +1,4 @@
-describe.only(require('path').basename(__filename), function () {
+describe(require('path').basename(__filename), function () {
 
   var happn = require('../lib/index');
   var serviceInstance;
@@ -182,10 +182,6 @@ describe.only(require('path').basename(__filename), function () {
       .catch(function (e) {
         if (e) return done(e);
       });
-
-  });
-
-  xit('tests failures in the security service', function (done) {
 
   });
 
