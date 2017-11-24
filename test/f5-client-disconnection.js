@@ -42,8 +42,6 @@ describe('f5_client_disconnection', function () {
 
         Service1 = happnInst;
 
-        console.log('created unsecured instance:::');
-
         service.create({
           secure: true,
           port: 55003
@@ -52,8 +50,6 @@ describe('f5_client_disconnection', function () {
           if (e) return callback(e);
 
           Service2 = happnInst;
-
-          console.log('created secured instance:::');
 
           callback();
         });
@@ -105,7 +101,8 @@ describe('f5_client_disconnection', function () {
 
     getClients(Service1, 5, {
       port: 55002
-    }, function (e, wsClients, localClients) {
+    }, function (e) {
+
       if (e) return callback(e);
 
       Service1.services.session.disconnectAllClients(function (e) {

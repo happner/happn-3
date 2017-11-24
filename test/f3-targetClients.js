@@ -35,8 +35,6 @@ describe('f3_target_clients', function () {
 
         happnInstance = happnInst;
 
-        console.log('created unsecured instance:::');
-
         service.create({
           secure: true,
           port: 55003
@@ -45,8 +43,6 @@ describe('f3_target_clients', function () {
           if (e) return callback(e);
 
           happnInstanceSecure = happnInst;
-
-          //console.log('created secured instance:::');
 
           callback();
         });
