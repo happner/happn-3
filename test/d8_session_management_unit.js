@@ -79,6 +79,7 @@ describe('d8_session_management', function () {
       .then(mockService(happn, 'Utils'))
       .then(mockService(happn, 'Log'))
       .then(mockService(happn, 'Error'))
+      .then(mockService(happn, 'Session', false))
       .then(mockService(happn, 'Protocol'))
       .then(mockService(happn, 'Subscription'))
       .then(mockService(happn, 'Publisher'))
@@ -86,7 +87,6 @@ describe('d8_session_management', function () {
       .then(mockService(happn, 'Data'))
       .then(mockService(happn, 'Cache'))
       .then(mockService(happn, 'System'))
-      .then(mockService(happn, 'Session', false))
       .then(mockService(happn, 'Security', {
         activateSessionManagement: sessionManagementActive,
         logSessionActivity: true,
@@ -172,8 +172,6 @@ describe('d8_session_management', function () {
       var session = mockSession(1, client.sessionId, 'TESTUSER', null, happn.services.security);
 
       happn.services.session.attachSession(session.id, session);
-
-      if (e) return done(e);
 
       happn.services.security.listActiveSessions(function (e, list) {
 

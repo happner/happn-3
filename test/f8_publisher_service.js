@@ -56,19 +56,19 @@ describe('f8_publisher_service', function () {
         createLogger: function (key) {
           return {
             warn: function (message) {
-              console.log(message);
+              //console.log(message);
             },
             info: function (message) {
-              console.log(message);
+              //console.log(message);
             },
             success: function (message) {
-              console.log(message);
+              //console.log(message);
             },
             error: function (message) {
-              console.log(message);
+              //console.log(message);
             },
             $$TRACE: function (message) {
-              console.log(message);
+              //console.log(message);
             }
           }
         }
@@ -323,19 +323,19 @@ describe('f8_publisher_service', function () {
       },
       protocol: 'happn-1.0.0',
       recipients: [{
-        subscription: {
-          data: {
-            session: {
-              id: '1'
-            }
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '1'
           }
         }
       }, {
-        subscription: {
-          data: {
-            session: {
-              id: '2'
-            }
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '2'
           }
         }
       }],
@@ -382,7 +382,6 @@ describe('f8_publisher_service', function () {
       done();
 
     });
-
   });
 
   it('tests the publications publish method, with recipients, acknowledged consistency', function (done) {
@@ -407,19 +406,19 @@ describe('f8_publisher_service', function () {
       },
       protocol: 'happn-1.0.0',
       recipients: [{
-        subscription: {
-          data: {
-            session: {
-              id: '1'
-            }
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '1'
           }
         }
       }, {
-        subscription: {
-          data: {
-            session: {
-              id: '2'
-            }
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '2'
           }
         }
       }],
@@ -480,19 +479,19 @@ describe('f8_publisher_service', function () {
       },
       protocol: 'happn-1.0.0',
       recipients: [{
-        subscription: {
-          data: {
-            session: {
-              id: '1'
-            }
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '1'
           }
         }
       }, {
-        subscription: {
-          data: {
-            session: {
-              id: '2'
-            }
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '2'
           }
         }
       }],
@@ -532,7 +531,7 @@ describe('f8_publisher_service', function () {
 
       if (e) return done(e);
 
-      console.log(results);
+      //console.log(results);
 
     });
 
@@ -560,28 +559,27 @@ describe('f8_publisher_service', function () {
       },
       protocol: 'happn-1.0.0',
       recipients: [{
-          subscription: {
-            data: {
-              session: {
-                id: '1'
-              }
-            }
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '1'
           }
-        }, {
-          subscription: {
-            data: {
-              session: {
-                id: '2'
-              }
-            }
+        }
+      }, {
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '2'
           }
-        },
-        {
-          subscription: {
-            data: {
-              session: {
-                id: '3'
-              }
+        }
+      }, {
+          data: {
+            action: 'SET',
+            path: '/set/some/data',
+            session: {
+              id: '3'
             }
           }
         }
@@ -622,7 +620,7 @@ describe('f8_publisher_service', function () {
 
       if (e) return done(e);
 
-      console.log(results);
+      //console.log(results);
 
     });
 
@@ -650,31 +648,30 @@ describe('f8_publisher_service', function () {
       },
       protocol: 'happn-1.0.0',
       recipients: [{
-          subscription: {
-            data: {
-              session: {
-                id: '1'
-              }
-            }
-          }
-        }, {
-          subscription: {
-            data: {
-              session: {
-                id: '2'
-              }
-            }
-          }
-        },
-        {
-          subscription: {
-            data: {
-              session: {
-                id: '3'
-              }
-            }
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '1'
           }
         }
+      }, {
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '2'
+          }
+        }
+      }, {
+        data: {
+          action: 'SET',
+          path: '/set/some/data',
+          session: {
+            id: '3'
+          }
+        }
+      }
       ],
       response: {
         "data": {
@@ -712,7 +709,7 @@ describe('f8_publisher_service', function () {
 
       if (e) return done(e);
 
-      console.log(results);
+      //console.log(results);
 
     });
 
@@ -754,31 +751,30 @@ describe('f8_publisher_service', function () {
         },
         protocol: 'happn-1.0.0',
         recipients: [{
-            subscription: {
-              data: {
-                session: {
-                  id: '1'
-                }
-              }
-            }
-          }, {
-            subscription: {
-              data: {
-                session: {
-                  id: '2'
-                }
-              }
-            }
-          },
-          {
-            subscription: {
-              data: {
-                session: {
-                  id: '3'
-                }
-              }
+          data: {
+            action: 'SET',
+            path: '/set/some/data',
+            session: {
+              id: '1'
             }
           }
+        }, {
+          data: {
+            action: 'SET',
+            path: '/set/some/data',
+            session: {
+              id: '2'
+            }
+          }
+        }, {
+          data: {
+            action: 'SET',
+            path: '/set/some/data',
+            session: {
+              id: '3'
+            }
+          }
+        }
         ],
         response: {
           "data": {
@@ -849,32 +845,30 @@ describe('f8_publisher_service', function () {
         },
         protocol: 'happn-1.0.0',
         recipients: [{
-            subscription: {
-              data: {
-                session: {
-                  id: '1'
-                }
-              }
-            }
-          }, {
-            subscription: {
-              data: {
-                session: {
-                  id: '2'
-                }
-              }
-            }
-          },
-          {
-            subscription: {
-              data: {
-                session: {
-                  id: '3'
-                }
-              }
+          data: {
+            action: 'SET',
+            path: '/set/some/data',
+            session: {
+              id: '1'
             }
           }
-        ],
+        }, {
+          data: {
+            action: 'SET',
+            path: '/set/some/data',
+            session: {
+              id: '2'
+            }
+          }
+        }, {
+          data: {
+            action: 'SET',
+            path: '/set/some/data',
+            session: {
+              id: '3'
+            }
+          }
+        }],
         response: {
           "data": {
             "data": {

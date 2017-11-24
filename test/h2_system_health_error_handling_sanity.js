@@ -185,10 +185,6 @@ describe(require('path').basename(__filename), function () {
 
   });
 
-  xit('tests failures in the security service', function (done) {
-
-  });
-
   it('tests failures in the protocol service', function (done) {
 
     serviceInstance.services.session.localClient({
@@ -213,8 +209,6 @@ describe(require('path').basename(__filename), function () {
           setTimeout(function () {
 
             var stats = serviceInstance.services.system.stats();
-
-            console.log(stats);
 
             expect(stats.HEALTH.lastError.message).to.be('Error: test protocol fail error');
             expect(stats.HEALTH.lastError.area).to.be('ProtocolService.__respondMessageIn');
@@ -241,7 +235,6 @@ describe(require('path').basename(__filename), function () {
       .catch(function (e) {
         if (e) return done(e);
       });
-
   });
 
 });

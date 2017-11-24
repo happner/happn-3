@@ -63,8 +63,6 @@ describe(filename, function () {
 
     remote.stdout.on('data', function (data) {
 
-      // console.log(data.toString());
-
       if (data.toString().match(/READY/)) {
 
         callback();
@@ -86,8 +84,6 @@ describe(filename, function () {
 
   var connectClients = function (callback) {
 
-    console.log('CONNECTING CLIENTS:::');
-
     Happn.client.create({
       config: {
         port: 55005
@@ -96,21 +92,15 @@ describe(filename, function () {
 
       if (e) return callback(e);
 
-      console.log('CONNECTED CLIENTS:::');
-
       webSocketsClient = instance;
 
       webSocketsClient.on('test/event/*', clientEventHandler, function (e) {
 
         if (e) return callback(e);
 
-        console.log('SUBSCRIBED:::');
-
         testEvent(function (e) {
 
           if (e) return callback(e);
-
-          console.log('TESTED:::');
 
           callback();
         });
@@ -146,8 +136,6 @@ describe(filename, function () {
   it('kills the server, then restarts it, then tests the subscriptions still exist and work', function (done) {
 
     webSocketsClient.onEvent('reconnect-successful', function (data) {
-
-      console.log('RECONNECT HAPPENED');
       testEvent(done);
     });
 

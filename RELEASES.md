@@ -353,3 +353,18 @@
   - Bearer token authorization header
   - moved getting session from req to security service
   - added happn_session property to req, for repeated calls of the sessionFromRequest method in one request
+
+4.0.0 2017-10-08
+----------------
+  - breaking changes, protocol 2.0.0:
+    - server
+      - set requests can not contain *'s
+    - doing away with integer listener ids
+    - off cannot take a string now, it is the reference not the path
+    - offPath takes in the path
+  - no more buckets, wild-pare integrated
+  
+5.0.0 2017-11-24
+----------------
+  - backward compatible protocol 1 & 2
+  - memory leak fixes in protocol service and checkpoint

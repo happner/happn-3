@@ -1,9 +1,5 @@
 describe('d3-security-tokens', function () {
 
-  // TODO:benchmarket stuff
-  //require('benchmarket').start();
-  //after(//require('benchmarket').store());
-
   var expect = require('expect.js');
   var happn = require('../lib/index');
   var service = happn.service;
@@ -11,15 +7,6 @@ describe('d3-security-tokens', function () {
   var uuid = require('uuid');
   var Logger = require('happn-logger');
   var CheckPoint = require('../lib/services/security/checkpoint');
-  /*
-   This test demonstrates starting up the happn service -
-   the authentication service will use authTokenSecret to encrypt web tokens identifying
-   the logon session. The utils setting will set the system to log non priority information
-   */
-
-  // after(function (done) {
-  //   happnInstance.stop(done);
-  // });
 
   var serviceConfig = {
     services: {
@@ -662,9 +649,6 @@ describe('d3-security-tokens', function () {
       },
       '/test/group/*': {
         action: ['*']
-      },
-      '/test/group/*': {
-        action: ['*']
       }
     };
 
@@ -937,10 +921,22 @@ describe('d3-security-tokens', function () {
         }
       };
 
+      var SessionService = require('../lib/services/session/service');
+      var sessionInstance = new SessionService({
+        logger: require('happn-logger')
+      });
+
+      sessionInstance.happn = {
+        services: {
+          utils: utils
+        }
+      };
+
       checkpoint.happn = {
         services: {
           utils: utils,
-          cache: cacheInstance
+          cache: cacheInstance,
+          session:sessionInstance
         }
       };
 
@@ -1033,10 +1029,22 @@ describe('d3-security-tokens', function () {
         }
       };
 
+      var SessionService = require('../lib/services/session/service');
+      var sessionInstance = new SessionService({
+        logger: require('happn-logger')
+      });
+
+      sessionInstance.happn = {
+        services: {
+          utils: utils
+        }
+      };
+
       checkpoint.happn = {
         services: {
           utils: utils,
-          cache: cacheInstance
+          cache: cacheInstance,
+          session:sessionInstance
         }
       };
 
@@ -1125,10 +1133,22 @@ describe('d3-security-tokens', function () {
         }
       };
 
+      var SessionService = require('../lib/services/session/service');
+      var sessionInstance = new SessionService({
+        logger: require('happn-logger')
+      });
+
+      sessionInstance.happn = {
+        services: {
+          utils: utils
+        }
+      };
+
       checkpoint.happn = {
         services: {
           utils: utils,
-          cache: cacheInstance
+          cache: cacheInstance,
+          session:sessionInstance
         }
       };
 
@@ -1215,10 +1235,22 @@ describe('d3-security-tokens', function () {
         }
       };
 
+      var SessionService = require('../lib/services/session/service');
+      var sessionInstance = new SessionService({
+        logger: require('happn-logger')
+      });
+
+      sessionInstance.happn = {
+        services: {
+          utils: utils
+        }
+      };
+
       checkpoint.happn = {
         services: {
           utils: utils,
-          cache: cacheInstance
+          cache: cacheInstance,
+          session:sessionInstance
         }
       };
 
@@ -1321,11 +1353,23 @@ describe('d3-security-tokens', function () {
       onDataChanged: function () {}
     };
 
+    var SessionService = require('../lib/services/session/service');
+    var sessionInstance = new SessionService({
+      logger: require('happn-logger')
+    });
+
+    sessionInstance.happn = {
+      services: {
+        utils: utils
+      }
+    };
+
     checkpoint.happn = {
       services: {
         utils: utils,
         cache: cacheInstance,
-        security: securityService
+        security: securityService,
+        session:sessionInstance
       }
     };
 
@@ -1417,11 +1461,23 @@ describe('d3-security-tokens', function () {
       onDataChanged: function () {}
     };
 
+    var SessionService = require('../lib/services/session/service');
+    var sessionInstance = new SessionService({
+      logger: require('happn-logger')
+    });
+
+    sessionInstance.happn = {
+      services: {
+        utils: utils
+      }
+    };
+
     checkpoint.happn = {
       services: {
         utils: utils,
         cache: cacheInstance,
-        security: securityService
+        security: securityService,
+        session:sessionInstance
       }
     };
 
@@ -1510,11 +1566,23 @@ describe('d3-security-tokens', function () {
       onDataChanged: function () {}
     };
 
+    var SessionService = require('../lib/services/session/service');
+    var sessionInstance = new SessionService({
+      logger: require('happn-logger')
+    });
+
+    sessionInstance.happn = {
+      services: {
+        utils: utils
+      }
+    };
+
     checkpoint.happn = {
       services: {
         utils: utils,
         cache: cacheInstance,
-        security: securityService
+        security: securityService,
+        session:sessionInstance
       }
     };
 
@@ -2077,8 +2145,4 @@ describe('d3-security-tokens', function () {
       });
     });
   });
-
-
-  //require('benchmarket').stop();
-
 });

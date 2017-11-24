@@ -22,12 +22,12 @@ describe('f9_publish_middleware', function () {
 
   it('should instantiate a service with a piece of middleware', function (done) {
 
-    var recipientFilterFunction = function (messsage, recipients, callback) {
+    var recipientFilterFunction = function (message, recipients, callback) {
 
       //filter recipients by message and recipient meta
       callback(null, recipients.filter(function (recipient) {
 
-        return recipient.subscription.data.options.meta.publish;
+        return recipient.data.options.meta.publish;
       }));
     };
 
@@ -119,25 +119,6 @@ describe('f9_publish_middleware', function () {
         expect(ran2).to.be(false);
 
       })
-      // .then(function () {
-      //
-      //   console.log('unsubscribing using:::', eventId1);
-      //
-      //   console.log('BEFORE BUCKETS:::');
-      //
-      //   console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[2].__subscribers.array, null, 2));
-      //
-      //   return clientInstance.off(eventId1, function(e){
-      //
-      //     console.log('BUCKETS:::');
-      //
-      //     console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[0].__subscribers.array, null, 2));
-      //     console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[1].__subscribers.array, null, 2));
-      //     console.log(JSON.stringify(serviceInstance.services.subscription.__buckets[2].__subscribers.array, null, 2));
-      //
-      //   });
-      //
-      // })
       .then(done)
       .catch(done)
 

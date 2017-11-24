@@ -128,6 +128,8 @@ describe('1_eventemitter_embedded_sanity', function () {
 
     try {
 
+      this.timeout(5000);
+
       //first listen for the change
       listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*', {
         event_type: 'set',
@@ -135,13 +137,45 @@ describe('1_eventemitter_embedded_sanity', function () {
       }, function (message) {
 
         expect(listenerclient.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(0);
-        callback();
+        setTimeout(callback, 2000);
 
       }, function (e) {
 
         if (!e) {
 
           expect(listenerclient.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
+
+          //then make the change
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/blah', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          }, null, function (e, result) {
+
+          });
+
+        } else callback(e);
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('the listener should pick up a single wildcard event, event type not specified', function (callback) {
+
+    try {
+
+      //first listen for the change
+      listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*', function (message) {
+
+        callback();
+
+      }, function (e) {
+
+        if (!e) {
+
+          expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
 
           //then make the change
           publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/blah', {
@@ -188,47 +222,30 @@ describe('1_eventemitter_embedded_sanity', function () {
     }).catch(callback);
   });
 
-  it('the listener should pick up a single wildcard event, event type not specified', function (callback) {
-
-    try {
-
-      //first listen for the change
-      listenerclient.on('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*', function (message) {
-
-        callback();
-
-      }, function (e) {
-
-        if (!e) {
-
-          expect(listenerclient.events['/ALL@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
-
-          //then make the change
-          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/blah', {
-            property1: 'property1',
-            property2: 'property2',
-            property3: 'property3'
-          }, null, function (e, result) {
-
-          });
-
-        } else callback(e);
-      });
-
-    } catch (e) {
-      callback(e);
-    }
-  });
-
   it('the publisher should get null for unfound data, exact path', function (callback) {
 
 
     var test_path_end = require('shortid').generate();
     publisherclient.get('1_eventemitter_embedded_sanity/' + test_id + '/unfound/exact/' + test_path_end, null, function (e, results) {
-      ////////////console.log('new data results');
 
       expect(e).to.be(null);
       expect(results).to.be(null);
+
+      callback(e);
+
+    });
+  });
+
+  it('the publisher should get [] for unfound data, wildcard path', function (callback) {
+
+
+    var test_path_end = require('shortid').generate();
+
+    publisherclient.get('1_eventemitter_embedded_sanity/' + test_id + '/unfound/wild/*' + test_path_end + '/*', null, function (e, results) {
+      ////////////console.log('new data results');
+
+      expect(e).to.be(null);
+      expect(results.length).to.be(0);
 
       callback(e);
 
@@ -324,9 +341,6 @@ describe('1_eventemitter_embedded_sanity', function () {
 
             if (e)
               return callback(e);
-
-            //////////////console.log('merge get results');
-            //////////////console.log(results);
 
             expect(results.property4).to.be('property4');
             expect(results.property1).to.be('property1');
@@ -503,7 +517,6 @@ describe('1_eventemitter_embedded_sanity', function () {
 
         if (e) return callback(e);
 
-        ////////////console.log('searching');
         publisherclient.get('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*', {
           criteria: criteria1,
           options: options1
@@ -531,8 +544,8 @@ describe('1_eventemitter_embedded_sanity', function () {
   it('tests sift', function (callback) {
 
     var array = [{
-        value: 0
-      },
+      value: 0
+    },
       {
         value: 1
       },
@@ -645,9 +658,6 @@ describe('1_eventemitter_embedded_sanity', function () {
           expect(e).to.be(null);
           expect(result._meta.status).to.be('ok');
 
-          ////////////////////console.log('DELETE RESULT');
-          ////////////////////console.log(result);
-
           callback();
         });
 
@@ -656,7 +666,54 @@ describe('1_eventemitter_embedded_sanity', function () {
     } catch (e) {
       callback(e);
     }
+  });
 
+  it('should delete multiple items', function (callback) {
+
+    try {
+
+      //We put the data we want to delete into the database
+      publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/1', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      }, {
+        noPublish: true
+      }, function (e, result) {
+
+        if (e) return callback(e);
+
+        //We put the data we want to delete into the database
+        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/2', {
+          property1: 'property1',
+          property2: 'property2',
+          property3: 'property3'
+        }, {
+          noPublish: true
+        }, function (e, result) {
+
+          if (e) return callback(e);
+
+          //We perform the actual delete
+          publisherclient.remove('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/delete_us/*', {
+            noPublish: true
+          }, function (e, result) {
+
+            expect(e).to.be(null);
+
+            expect(result._meta.status).to.be('ok');
+
+            expect(result.removed).to.be(2);
+
+            callback();
+          });
+        });
+
+      });
+
+    } catch (e) {
+      callback(e);
+    }
   });
 
   it('the publisher should set new data then update the data', function (callback) {
@@ -1261,6 +1318,8 @@ describe('1_eventemitter_embedded_sanity', function () {
 
   it('should search for a complex object with a data property', function (callback) {
 
+    this.timeout(10000);
+
     var test_path_end = require('shortid').generate();
 
     var complex_obj = {
@@ -1275,7 +1334,7 @@ describe('1_eventemitter_embedded_sanity', function () {
       }
     };
 
-    var from = Date.now();
+    var from = Date.now() - 1000;
     var to;
 
     publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
@@ -1284,7 +1343,7 @@ describe('1_eventemitter_embedded_sanity', function () {
 
       setTimeout(function () {
 
-        to = Date.now();
+        to = Date.now() + 1000;
 
         var criteria = {
           "data.data.timestamp": {
@@ -1316,11 +1375,13 @@ describe('1_eventemitter_embedded_sanity', function () {
           } else callback();
 
         });
-      }, 300);
+      }, 500);
     });
   });
 
   it('should search for a complex object with a data property, using _data', function (callback) {
+
+    this.timeout(10000);
 
     var test_path_end = require('shortid').generate();
 
@@ -1336,7 +1397,7 @@ describe('1_eventemitter_embedded_sanity', function () {
       }
     };
 
-    var from = Date.now();
+    var from = Date.now() - 1000;
     var to;
 
     publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
@@ -1345,7 +1406,7 @@ describe('1_eventemitter_embedded_sanity', function () {
 
       setTimeout(function () {
 
-        to = Date.now();
+        to = Date.now() + 1000;
 
         var criteria = {
           "_data.data.timestamp": {
@@ -1377,7 +1438,7 @@ describe('1_eventemitter_embedded_sanity', function () {
           } else callback();
 
         });
-      }, 300);
+      }, 500);
     });
   });
 
@@ -1419,6 +1480,63 @@ describe('1_eventemitter_embedded_sanity', function () {
         callback();
 
       }, 1500);
+    });
+  });
+
+  it('should unsubscribe from a specific event', function (done) {
+
+    var emitted = {};
+
+    var reference1;
+    var reference2;
+
+    var response1;
+    var response2;
+
+    var path = '/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/on_off_specific_test';
+
+    listenerclient.on(path, {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
+
+      if (!emitted[reference1]) emitted[reference1] = [];
+      emitted[reference1].push(message);
+
+    }, function (e, eventReference) {
+
+      reference1 = eventReference;
+
+      return listenerclient.on(path, {
+        event_type: 'set',
+        count: 0
+      }, function (message) {
+
+        if (!emitted[reference2]) emitted[reference2] = [];
+        emitted[reference2].push(message);
+
+      }, function (e, eventReference) {
+
+        reference2 = eventReference;
+
+        listenerclient.set(path, {test: 'data1'})
+          .then(function (response) {
+            response1 = response;
+            return listenerclient.set(path, {test: 'data2'});
+          }).then(function (response) {
+          response2 = response;
+          return listenerclient.off(reference2);
+        }).then(function () {
+          return listenerclient.set(path, {test: 'data3'});
+        }).then(function () {
+
+          expect(emitted[reference1].length).to.be(3);
+          expect(emitted[reference2].length).to.be(2);
+
+          done();
+        }).catch(done);
+
+      });
     });
   });
 
@@ -1498,11 +1616,11 @@ describe('1_eventemitter_embedded_sanity', function () {
 
       setTimeout(function () {
 
-        publisherclient.off('/1_eventemitter_embedded_sanity/*', function(e){
+        publisherclient.off('/1_eventemitter_embedded_sanity/*', function (e) {
 
           expect(e.toString()).to.be('Error: handle must be a number');
 
-          publisherclient.off(null, function(e){
+          publisherclient.off(null, function (e) {
 
             expect(e.toString()).to.be('Error: handle cannot be null');
 

@@ -4,9 +4,6 @@ var expect = require('expect.js');
 
 describe(filename, function () {
 
-  //require('benchmarket').start();
-  //after(//require('benchmarket').store({timeout:10000}));
-
   it('starts up system and app-land services', function (done) {
 
     var ServiceManager = require('../lib/services/manager');
@@ -105,9 +102,6 @@ describe(filename, function () {
       serviceManager.stop(done)
 
     });
-
   });
-
-  //require('benchmarket').stop();
 
 });

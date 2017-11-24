@@ -25,6 +25,8 @@ test-resources/c7a/test/*
 
 dump.rdb
 
+.scannerwork
+
 
 npm-debug.log
 node_modules
