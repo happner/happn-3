@@ -363,3 +363,8 @@
     - off cannot take a string now, it is the reference not the path
     - offPath takes in the path
   - no more buckets, wild-pare integrated
+  
+5.0.0 2017-11-24
+----------------
+  - backward compatible protocol 1 & 2
+  - memory leak fixes in protocol service and checkpoint
