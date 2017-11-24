@@ -221,7 +221,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
         if (e) return done(e);
 
-        expect(happnInstance.services.subscription.subscriptions.set.__allRecipients.length > 0).to.be(true);
+        expect(happnInstance.services.subscription.subscriptions.all.__allRecipients.length > 0).to.be(true);
 
         disconnectClients(null, function (e) {
 
@@ -229,7 +229,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
           setTimeout(function(){
 
-            expect(happnInstance.services.subscription.subscriptions.set.__allRecipients.length == 0).to.be(true);
+            expect(happnInstance.services.subscription.subscriptions.all.__allRecipients.length == 0).to.be(true);
 
             // Object.keys(happnInstance.services.subscription.subscriptions.set.__trunk[1]).forEach(function(branch){
             //
