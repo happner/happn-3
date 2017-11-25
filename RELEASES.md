@@ -368,3 +368,9 @@
 ----------------
   - backward compatible protocol 1 & 2
   - memory leak fixes in protocol service and checkpoint
+
+5.1.0 2017-11-25
+----------------
+  - integrated happn-stats
+
+
