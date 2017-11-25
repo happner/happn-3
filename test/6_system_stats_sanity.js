@@ -54,7 +54,7 @@ describe(filename, function () {
       .catch(done);
   });
 
-  before('start happn client and make variety of subscriptions and emit a bit', function (done) {
+  before('start happn client', function (done) {
     client.create({})
       .then(function (client) {
         happnClient = client;
@@ -78,7 +78,7 @@ describe(filename, function () {
   });
 
   after('stop the stats server', function (done) {
-    if (statsServer) return done();
+    if (!statsServer) return done();
     statsServer.stop()
       .then(function () { done() })
       .catch(done);
