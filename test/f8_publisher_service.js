@@ -22,6 +22,11 @@ describe('f8_publisher_service', function () {
     if (!publications) publications = [];
 
     return {
+      happn: {
+        services: {
+          stats: {}
+        }
+      },
       itemPushedHandler: itemPushedHandler,
       publicationPushedHandler: publicationPushedHandler,
       pushOutbound: function (message, callback) {
@@ -77,6 +82,7 @@ describe('f8_publisher_service', function () {
 
     publisherService.happn = {
       services: {
+        stats: {},
         utils: utilsService,
         queue: mockQueueService(queueItems, queuePushedHandler, publications, publicationPushedHandler)
       }
