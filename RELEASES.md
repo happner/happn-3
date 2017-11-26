@@ -368,9 +368,15 @@
 ----------------
   - backward compatible protocol 1 & 2
   - memory leak fixes in protocol service and checkpoint
+  
+5.0.1 2017-11-24
+----------------
+  - uses less memory for subscriptions, not storing the whole session
+  - tested subscriptions leaks on session disconnect
 
 5.1.0 2017-11-25
 ----------------
   - integrated happn-stats
 
 
+>>>>>>> release/5.1.0
