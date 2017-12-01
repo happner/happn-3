@@ -363,11 +363,13 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
     });
   });
 
-  it('should do an on, check we receive events, modify the on permission, wait a sec and see we no longer receive the events', function (done) {
+  it('should do an on, check we receive events, modify the on permission, wait a sec and see we no longer receive the events, also check security service events', function (done) {
 
     this.timeout(15000);
 
     var count = 0;
+
+    var securityServiceEventCount = 0;
 
     createTestClient(function (e, client) {
 
@@ -386,6 +388,14 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
         if (e) return done(e);
 
         expect(count).to.be(3);
+
+        serviceInstance.services.security.on('security-data-changed', function(){
+          securityServiceEventCount++;
+        });
+
+        serviceInstance.services.security.on('security-data-updated', function(){
+          securityServiceEventCount++;
+        });
 
         removePermission('/security_directory_changed/' + test_id + '/on/1', true, function (e) {
 
@@ -399,6 +409,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
               setTimeout(function(){//wait in case our events have not caught up
                 expect(count).to.be(3);//must stay the same
+                expect(securityServiceEventCount).to.be(2);
                 done();
               }, 1000);
             });
@@ -408,11 +419,13 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
     });
   });
 
-  it('should do an on, check we receive events, modify the on permission, wait a sec and see we no longer receive the events, negative test', function (done) {
+  it('should do an on, check we receive events, modify the on permission, wait a sec and see we no longer receive the events, also check security service events, negative test', function (done) {
 
     this.timeout(15000);
 
     var count = 0;
+
+    var securityServiceEventCount = 0;
 
     createTestClient(function (e, client) {
 
@@ -432,6 +445,14 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
         expect(count).to.be(3);
 
+        serviceInstance.services.security.on('security-data-changed', function(){
+          securityServiceEventCount++;
+        });
+
+        serviceInstance.services.security.on('security-data-updated', function(){
+          securityServiceEventCount++;
+        });
+
         removePermission('/security_directory_changed/' + test_id + '/on/1', false, function (e) {
 
           if (e) return done(e);
@@ -444,6 +465,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
               setTimeout(function(){//wait in case our events have not caught up
                 expect(count).to.be(6);//must be double, as we had not updated the sd change key in the db
+                expect(securityServiceEventCount).to.be(0);
                 done();
               }, 1000);
             });
@@ -451,10 +473,6 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
         });
       });
     });
-  });
-
-  it('should test the security directory changed events', function (done) {
-
   });
 
   after(function (done) {
