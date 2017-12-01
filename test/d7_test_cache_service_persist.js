@@ -380,7 +380,7 @@ describe('d7_test_cache_service_persisted', function () {
 
   it('times data out, specific cache', function (done) {
 
-    this.timeout(5000);
+    this.timeout(10000);
     var key = testId + 'test1';
 
     serviceInstance.clear('specific', function (e) {
@@ -416,7 +416,7 @@ describe('d7_test_cache_service_persisted', function () {
 
             });
 
-          }, 2000);
+          }, 3000);
 
         });
       });
