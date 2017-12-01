@@ -359,6 +359,7 @@ describe('d5_test_cache_service', function () {
           specific.get(key, function (e, data) {
 
             if (e) return done(e);
+
             expect(data).to.be(null);
 
             serviceInstance.clear('specific');
@@ -367,7 +368,7 @@ describe('d5_test_cache_service', function () {
 
           });
 
-        }, 2000);
+        }, 3000);
 
       });
     });
