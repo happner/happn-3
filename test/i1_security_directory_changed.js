@@ -443,7 +443,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
               if (e) return done(e);
 
               setTimeout(function(){//wait in case our events have not caught up
-                expect(count).to.be(6);//must stay the same
+                expect(count).to.be(6);//must be double, as we had not updated the sd change key in the db
                 done();
               }, 1000);
             });
@@ -451,6 +451,10 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
         });
       });
     });
+  });
+
+  it('should test the security directory changed events', function (done) {
+
   });
 
   after(function (done) {
