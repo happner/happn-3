@@ -13,7 +13,14 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
   this.timeout(5000);
 
   var serviceConfig = {
-    secure: true
+    secure: true,
+    services: {
+      security: {
+        config: {
+          securityDirectoryChangedCheckInterval: 100,
+        }
+      }
+    }
   };
 
   before('should initialize the service', function (callback) {
@@ -66,6 +73,9 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
       actions: ['set']
     };
     testGroup.permissions['/security_directory_changed/' + test_id + '/on/1'] = {
+      actions: ['on']
+    };
+    testGroup.permissions['/security_directory_changed/' + test_id + '/on/2'] = {
       actions: ['on']
     };
     testGroup.permissions['/security_directory_changed/' + test_id + '/on/*'] = {
@@ -218,7 +228,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
     }, options, callback);
   };
 
-  var doSetOperationsForOn = function (client, options, callback) {
+  var doSetOperationsForOn1 = function (client, options, callback) {
 
     client.set('/security_directory_changed/' + test_id + '/on/1', {
       property1: 'property1',
@@ -237,6 +247,33 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
         if (e) return callback(e);
 
         client.set('/security_directory_changed/' + test_id + '/on/1', {
+          property1: 'property1',
+          property2: 'property2',
+          property3: 'property3'
+        }, options, callback);
+      });
+    });
+  };
+
+  var doSetOperationsForOn2 = function (client, options, callback) {
+
+    client.set('/security_directory_changed/' + test_id + '/on/2', {
+      property1: 'property1',
+      property2: 'property2',
+      property3: 'property3'
+    }, options, function (e) {
+
+      if (e) return callback(e);
+
+      client.set('/security_directory_changed/' + test_id + '/on/2', {
+        property1: 'property1',
+        property2: 'property2',
+        property3: 'property3'
+      }, options, function (e) {
+
+        if (e) return callback(e);
+
+        client.set('/security_directory_changed/' + test_id + '/on/2', {
           property1: 'property1',
           property2: 'property2',
           property3: 'property3'
@@ -271,7 +308,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
               done();
             });
-          }, 3000);
+          }, 300);
         });
       });
     });
@@ -303,7 +340,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
               done();
             });
-          }, 3000);
+          }, 300);
         });
       });
     });
@@ -330,7 +367,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
           setTimeout(function () {
 
             doOperations(client, null, done);
-          }, 3000);
+          }, 300);
         });
       });
     });
@@ -357,7 +394,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
           setTimeout(function () {
 
             doSetOperation(client, null, done);
-          }, 3000);
+          }, 300);
         });
       });
     });
@@ -383,7 +420,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
         if (e) return done(e);
       });
 
-      doSetOperationsForOn(client, null, function (e) {
+      doSetOperationsForOn1(client, null, function (e) {
 
         if (e) return done(e);
 
@@ -403,7 +440,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
           setTimeout(function () {
 
-            doSetOperationsForOn(client, null, function (e) {
+            doSetOperationsForOn1(client, null, function (e) {
 
               if (e) return done(e);
 
@@ -411,9 +448,65 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
                 expect(count).to.be(3);//must stay the same
                 expect(securityServiceEventCount).to.be(2);
                 done();
-              }, 1000);
+              }, 300);
             });
-          }, 3000);
+          }, 300);
+        });
+      });
+    });
+  });
+
+  it('should do an on, check we receive events, modify the on permission, wait a sec and see we still have access to events we should', function (done) {
+
+    this.timeout(15000);
+
+    var count = 0;
+
+    var securityServiceEventCount = 0;
+
+    createTestClient(function (e, client) {
+
+      if (e) return done(e);
+
+      currentClient = client;
+
+      client.on('/security_directory_changed/' + test_id + '/on/2', function (message) {
+        count++;
+      }, function (e) {
+        if (e) return done(e);
+      });
+
+      doSetOperationsForOn2(client, null, function (e) {
+
+        if (e) return done(e);
+
+        expect(count).to.be(3);
+
+        serviceInstance.services.security.on('security-data-changed', function(){
+          securityServiceEventCount++;
+        });
+
+        serviceInstance.services.security.on('security-data-updated', function(){
+          securityServiceEventCount++;
+        });
+
+        removePermission('/security_directory_changed/' + test_id + '/on/1', true, function (e) {
+
+          if (e) return done(e);
+
+          setTimeout(function () {
+
+            doSetOperationsForOn2(client, null, function (e) {
+
+              if (e) return done(e);
+
+              setTimeout(function(){
+                expect(count).to.be(6);
+                expect(securityServiceEventCount).to.be(2);
+                done();
+              }, 300);
+            });
+          }, 300);
         });
       });
     });
@@ -439,7 +532,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
         if (e) return done(e);
       });
 
-      doSetOperationsForOn(client, null, function (e) {
+      doSetOperationsForOn1(client, null, function (e) {
 
         if (e) return done(e);
 
@@ -459,7 +552,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
           setTimeout(function () {
 
-            doSetOperationsForOn(client, null, function (e) {
+            doSetOperationsForOn1(client, null, function (e) {
 
               if (e) return done(e);
 
@@ -467,9 +560,9 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
                 expect(count).to.be(6);//must be double, as we had not updated the sd change key in the db
                 expect(securityServiceEventCount).to.be(0);
                 done();
-              }, 1000);
+              }, 300);
             });
-          }, 3000);
+          }, 300);
         });
       });
     });
