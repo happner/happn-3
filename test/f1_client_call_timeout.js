@@ -109,5 +109,3 @@ describe('f1_client_call_timeout', function () {
     });
   });
 });
-
-//require('benchmarket').stop();
