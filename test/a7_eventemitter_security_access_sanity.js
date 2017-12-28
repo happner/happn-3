@@ -78,7 +78,6 @@ describe('a7_eventemitter_security_access', function () {
         });
 
     });
-
   });
 
   context('resources access testing', function () {

@@ -383,3 +383,8 @@
   - fixed use of undefined variable in property
   - added happn-stats and dependency
   - only test master and PR in travis 
+  
+6.1.0 2017-12-28
+----------------
+  - fixed 401 issue with auth invalid credentials failure
+  - merge only subscriptions
