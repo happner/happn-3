@@ -589,6 +589,31 @@ my_client_instance.set('e2e_test1/testsubscribe/data/', {property1:'property1',p
 
 ```
 
+MERGE SUBSCRIPTIONS
+-----------------------
+
+*you can subscribe to data changes on set/remove and specify only to recieve the merge data as posted in the set operation with the merge:true option, NB: this is not a true delta, as you may receive some duplicate input fields*
+
+```javascript
+
+ my_client_instance.on('/merge/only/path', {
+        event_type: 'set',
+        merge: true
+      }, function (message) {
+        console.log('emit happened - message is {some:"data"}');
+      }, function (e) {
+        console.log('subscription happened');
+      });
+      
+my_client_instance.set('/merge/only/path', 
+                      {some:"data"}, 
+                      {merge:true}, 
+                      function (e) {
+                        console.log('set happened');
+                      });
+
+```
+
 SECURITY SERVER
 ---------------
 
