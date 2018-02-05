@@ -128,7 +128,7 @@ describe(filename, function () {
 
     Promise.all([
       happnClient.onAsync('/some/path', function () {}),
-      happnClient.setAsync('/some/path', function () {})
+      happnClient.setAsync('/some/path', {})
     ])
       .then(function () {
 
@@ -150,7 +150,7 @@ describe(filename, function () {
 
     var interval = setInterval(function () {
 
-      happnClient.setAsync('/some/path', function () {}).catch(function (e) {
+      happnClient.setAsync('/some/path', {}).catch(function (e) {
         console.log(e);
       });
 
