@@ -382,4 +382,8 @@
 ----------------
   - fixed use of undefined variable in property
   - added happn-stats and dependency
-  - only test master and PR in travis 
+  - only test master and PR in travis
+
+5.2.0 2018-02-05
+----------------
+  - expand stats to include queue messages/second (rate)
