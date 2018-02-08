@@ -7,17 +7,10 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
   var async = require('async');
 
   var test_secret = 'test_secret';
-  var mode = "embedded";
   var happnInstance = null;
   var test_id;
 
   this.timeout(5000);
-
-  /*
-   This test demonstrates starting up the happn service -
-   the authentication service will use authTokenSecret to encrypt web tokens identifying
-   the logon session. The utils setting will set the system to log non priority information
-   */
 
   before('should initialize the service', function (callback) {
 
@@ -43,7 +36,6 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
   var publisherclient;
   var listenerclient;
-  var disconnectclient;
 
   before('should initialize the clients', function (callback) {
 

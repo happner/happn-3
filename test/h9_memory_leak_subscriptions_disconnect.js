@@ -12,15 +12,36 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
   var test_id;
 
   this.timeout(5000);
-
-  /*
-   This test demonstrates starting up the happn service -
-   the authentication service will use authTokenSecret to encrypt web tokens identifying
-   the logon session. The utils setting will set the system to log non priority information
-   */
-
+  
   var serviceConfig = {
-    secure:true
+    services: {
+      security: {
+        config: {
+          profiles: [ //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
+            {
+              name: "test",
+              session: {
+                $and: [{
+                  user: {
+                    username: {
+                      $eq: '_ADMIN'
+                    }
+                  },
+                  type: {
+                    $eq: 0
+                  }
+                }]
+              },
+              policy: {
+                ttl: '4 seconds',
+                inactivity_threshold: '20 seconds' //this is costly, as we need to store state on the server side
+              }
+            }
+          ]
+        }
+      }
+    },
+    secure: true
   };
 
   before('should initialize the service', function (callback) {
@@ -196,7 +217,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
           if (e) return done(e);
 
-          setTimeout(function(){
+          setTimeout(function () {
 
             expect(happnInstance.services.subscription.subscriptions.set.__allRecipients.length == 0).to.be(true);
 
@@ -227,7 +248,7 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
 
           if (e) return done(e);
 
-          setTimeout(function(){
+          setTimeout(function () {
 
             expect(happnInstance.services.subscription.subscriptions.all.__allRecipients.length == 0).to.be(true);
 

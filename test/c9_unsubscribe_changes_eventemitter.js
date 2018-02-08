@@ -387,7 +387,7 @@ describe(require('path').basename(__filename), function () {
 
       .spread(function (result1, result2, result3) {
 
-        console.log('1,2,3',result1[0], result2[0], result3[0]);
+        //console.log('1,2,3',result1[0], result2[0], result3[0]);
 
         listenerId1 = result1[0];
         listenerId2 = result2[0];

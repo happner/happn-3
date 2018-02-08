@@ -556,7 +556,7 @@ describe(require('path').basename(__filename), function () {
             token: token,
             port: 10001
           }, function (e) {
-            expect(e.toString()).to.be('AccessDenied: invalid credentials: this token is locked to a different origin by policy');
+            expect(e.toString()).to.be('AccessDenied: Invalid credentials: this token is locked to a different origin by policy');
             done();
           });
         });
@@ -636,7 +636,7 @@ describe(require('path').basename(__filename), function () {
             token: token,
             port: 10000
           }, function (e) {
-            expect(e.toString()).to.be('AccessDenied: invalid credentials: logins with this token are disallowed by policy');
+            expect(e.toString()).to.be('AccessDenied: Invalid credentials: logins with this token are disallowed by policy');
             done();
           });
         });
