@@ -42,7 +42,7 @@ describe(filename, function () {
               debug: true,
               statsServer: '127.0.0.1',
               statsPort: 49494,
-              statsInterval: 500
+              interval: 500
             }
           }
         }
@@ -128,7 +128,7 @@ describe(filename, function () {
 
     Promise.all([
       happnClient.onAsync('/some/path', function () {}),
-      happnClient.setAsync('/some/path', function () {})
+      happnClient.setAsync('/some/path', {})
     ])
       .then(function () {
 
@@ -141,6 +141,31 @@ describe(filename, function () {
 
       })
       .catch(done);
+
+  });
+
+  it('gets queue speeds', function (done) {
+
+    this.timeout(10000);
+
+    var interval = setInterval(function () {
+
+      happnClient.setAsync('/some/path', {}).catch(function (e) {
+        console.log(e);
+      });
+
+    }, 1000 / 100);
+
+    setTimeout(function () {
+
+      expect(lastMetrics.gauges['happn.queue.publication.rate']).to.be.greaterThan(50);
+      expect(lastMetrics.gauges['happn.queue.inbound.rate']).to.be.greaterThan(50);
+
+      clearInterval(interval);
+      done();
+
+    }, 1020);
+
 
   });
 

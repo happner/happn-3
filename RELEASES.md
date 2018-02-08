@@ -91,7 +91,7 @@
 0.6.6 2016-11-27
 ----------------
 
- - update to __getConnection
+ - update to \_\_getConnection
 
 0.6.7 2016-11-28
 ----------------
@@ -132,7 +132,7 @@
 ----------------
 
  - protocol update!: error in message now has separate name and message, ie: {error:{name:'AccessDenied', message:'unauthorised'}} previous {error:{name:'AccessDenied: unauthorised'}}
- - updated __createResponse to include the message of the error (was previously looping through the properties - 'message' was non-iterable)
+ - updated \_\_createResponse to include the message of the error (was previously looping through the properties - 'message' was non-iterable)
 
 1.0.1 2016-12-13
 ----------------
@@ -142,7 +142,7 @@
 1.0.2 2016-12-13
 ----------------
 
- - fixed persisted cache does not set __sync flag, when db is empty
+ - fixed persisted cache does not set \_\_sync flag, when db is empty
 
 1.0.3 2016-12-15
 ----------------
@@ -177,7 +177,7 @@
 
 1.3.0 2017-02-08
 ------------------
- - added support for passing custom _meta into `set()` options
+ - added support for passing custom \_meta into `set()` options
 
 1.4.0 2017-02-08
 ----------------
@@ -269,7 +269,7 @@
 
 1.8.6 2017-03-29
 ----------------
-  - __ensureCryptoLibrary only happens if encryptPayloads || loginType === 'digest'
+  - \_\_ensureCryptoLibrary only happens if encryptPayloads || loginType === 'digest'
 
 1.8.7 2017-03-30
 ----------------
@@ -341,7 +341,7 @@
 
 2.1.0 2017-07-29
 ----------------
-  - released changes _data.
+  - released changes \_data.
 
 3.0.0 2017-07-30
 ----------------
@@ -358,7 +358,7 @@
 ----------------
   - breaking changes, protocol 2.0.0:
     - server
-      - set requests can not contain *'s
+      - set requests can not contain \*'s
     - doing away with integer listener ids
     - off cannot take a string now, it is the reference not the path
     - offPath takes in the path
@@ -382,8 +382,12 @@
 ----------------
   - fixed use of undefined variable in property
   - added happn-stats and dependency
-  - only test master and PR in travis 
-  
+  - only test master and PR in travis
+
+5.2.0 2018-02-05
+----------------
+  - expand stats to include queue messages/second (rate)
+
 6.0.0 2017-12-28
 ----------------
   - fixed 401 issue with auth invalid credentials failure
