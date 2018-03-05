@@ -1,8 +1,5 @@
 describe('a7_eventemitter_security_access', function () {
 
-  //require('benchmarket').start();
-  //after(//require('benchmarket').store());
-
   var happn = require('../lib/index');
   var serviceInstance;
   var adminClient;
@@ -78,7 +75,6 @@ describe('a7_eventemitter_security_access', function () {
         });
 
     });
-
   });
 
   context('resources access testing', function () {
@@ -209,7 +205,8 @@ describe('a7_eventemitter_security_access', function () {
 
     it('checks allowed on, and prevented from on', function (done) {
 
-      testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/on', {}, function (message) {}, function (e) {
+      testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/on', {}, function (message) {
+      }, function (e) {
 
         if (e) return done(e);
 
@@ -299,7 +296,8 @@ describe('a7_eventemitter_security_access', function () {
           if (e) return done(e);
           expect(result._meta.path).to.be('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on');
 
-          testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {}, function (message) {}, function (e) {
+          testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {}, function (message) {
+          }, function (e) {
 
             if (e) return done(e);
 
@@ -329,7 +327,8 @@ describe('a7_eventemitter_security_access', function () {
           if (e) return done(e);
           expect(result._meta.path).to.be('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on');
 
-          testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {}, function (message) {}, function (e) {
+          testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {}, function (message) {
+          }, function (e) {
 
             if (!e) return done(new Error('this should not have been allowed...'));
             expect(e.toString()).to.be('AccessDenied: unauthorized');
@@ -352,7 +351,8 @@ describe('a7_eventemitter_security_access', function () {
           if (!e) return done(new Error('this should not have been allowed...'));
           expect(e.toString()).to.be('AccessDenied: unauthorized');
 
-          testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {}, function (message) {}, done);
+          testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {}, function (message) {
+          }, done);
 
         });
       });
@@ -383,7 +383,8 @@ describe('a7_eventemitter_security_access', function () {
 
 
         if (e) return done(e);
-        testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {}, function (message) {}, function (e) {
+        testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {}, function (message) {
+        }, function (e) {
 
           if (!e) return done(new Error('this should not have been allowed...'));
           expect(e.toString()).to.be('AccessDenied: unauthorized');
@@ -398,7 +399,8 @@ describe('a7_eventemitter_security_access', function () {
     });
 
     it('checks allowed on all', function (done) {
-      testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/on_all/' + test_id, {}, function (message) {}, done);
+      testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/on_all/' + test_id, {}, function (message) {
+      }, done);
     });
 
     it('checks allowed set all', function (done) {
@@ -418,57 +420,62 @@ describe('a7_eventemitter_security_access', function () {
     });
 
     it('unlinks the test group from the user, checks that the user no longer has access', function (done) {
+
+      this.timeout(5000);
+
       serviceInstance.services.security.users.unlinkGroup(addedTestGroup, addedTestuser, function (e) {
-
-        testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/set', {
-          test: 'data'
-        }, {}, function (e, result) {
-
-          if (!e) return done(new Error('this should not have been allowed...'));
-          expect(e.toString()).to.be('AccessDenied: unauthorized');
-          done();
-
-        });
-
-      });
-    });
-
-    it('re-links the test group to the test user, tests we have access again', function (done) {
-      serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function (e) {
 
         if (e) return done(e);
 
-        testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/set', {
-          test: 'data'
-        }, {}, done);
-
-      });
-    });
-
-    var didSystemMessage = false;
-
-    it('deletes the test user, tests we are notified about the session closure, then have no access', function (done) {
-
-      testClient.onSystemMessage(function (eventType, data) {
-
-        if (didSystemMessage) return;
-        else {
-          didSystemMessage = true;
-        }
-
-        if (eventType == 'server-side-disconnect') {
-
-          expect(data).to.be('security directory update: user deleted');
+        setTimeout(function () {
 
           testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/set', {
             test: 'data'
           }, {}, function (e, result) {
 
             if (!e) return done(new Error('this should not have been allowed...'));
-
-            expect(e.toString()).to.be('Error: client is disconnected');
+            expect(e.toString()).to.be('AccessDenied: unauthorized');
             done();
 
+          });
+
+        }, 2000);
+      });
+    });
+
+    it('re-links the test group to the test user, tests we have access again', function (done) {
+
+      this.timeout(5000);
+
+      serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function (e) {
+
+        if (e) return done(e);
+
+        setTimeout(function () {
+
+          testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/set', {
+            test: 'data'
+          }, {}, done);
+
+        }, 2000);
+      });
+    });
+
+    it('deletes the test user, tests we are notified about the session closure, then have no access', function (done) {
+
+      testClient.onSystemMessage(function (eventType, data) {
+
+        if (eventType == 'server-side-disconnect') {
+
+          testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/set', {
+            test: 'data'
+          }, {}, function (e) {
+
+            if (!e) return done(new Error('this should not have been allowed...'));
+
+            expect(e.toString()).to.be('Error: client is disconnected');
+
+            done();
           });
         }
       });
@@ -477,11 +484,6 @@ describe('a7_eventemitter_security_access', function () {
 
         if (e) return done(e);
       });
-
     });
-
   });
-
-  //require('benchmarket').stop();
-
 });

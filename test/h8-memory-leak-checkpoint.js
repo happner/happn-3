@@ -35,11 +35,12 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
                     }
                   },
                   type: {
-                    $eq: 0
+                    $eq: 1
                   }
                 }]
               },
               policy: {
+                usage_limit:10,
                 ttl: '4 seconds',
                 inactivity_threshold: '20 seconds' //this is costly, as we need to store state on the server side
               }

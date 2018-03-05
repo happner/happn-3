@@ -387,3 +387,7 @@
 5.2.0 2018-02-05
 ----------------
   - expand stats to include queue messages/second (rate)
+  
+5.2.1 2018-02-26
+----------------
+  - fixed invalid credentials error code to 401
