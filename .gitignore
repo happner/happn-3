@@ -8,7 +8,7 @@ lib-cov
 *.gz
 *.log.*
 *.nedb
-*test/tmp*
+tmp
 test/test-browser/browser_client.js
 *test/test-tmp*
 test/test-temp/*
