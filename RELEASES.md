@@ -391,3 +391,10 @@
 5.2.1 2018-02-26
 ----------------
   - fixed invalid credentials error code to 401
+  
+5.3.0 2018-03-13
+----------------
+  - all tests refactored
+  - able to add custom data to groups, tested
+  - fixed browser tests
+  - fixed prepareOptions in client for redundant connections

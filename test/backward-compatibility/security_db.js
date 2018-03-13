@@ -1,9 +1,8 @@
-describe(require('path').basename(__filename), function () {
+describe(require('../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   this.timeout(30000);
 
-  var expect = require('expect.js');
-  var happn = require('../lib/index');
+  var happn = require('../../lib/index');
   var service = happn.service;
 
   var path = require('path');
@@ -18,7 +17,7 @@ describe(require('path').basename(__filename), function () {
     services: {
       data: {
         config: {
-          filename: __dirname + path.sep + 'fixtures' + path.sep + 'old_db.nedb'
+          filename: path.resolve(__dirname, '..', '__fixtures', 'test', 'integration', 'security', 'backward_compatibility.nedb')
         }
       }
     }

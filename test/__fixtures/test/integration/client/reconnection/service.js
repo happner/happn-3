@@ -1,6 +1,6 @@
 var path = require('path');
 
-var Happn = require(path.join('..', '..', '..'));
+var Happn = require(path.join('..', '..', '..', '..', '..', '..'));
 
 var server;
 

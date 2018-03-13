@@ -1,11 +1,10 @@
-var Happn = require('..')
 expect = require('expect.js');
 
-describe('g3_error_service', function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   it('tests the various error types', function (done) {
 
-    var ErrorService = require('../lib/services/error/service.js');
+    var ErrorService = require('../../../lib/services/error/service.js');
 
     var errorService = new ErrorService();
 

@@ -1,6 +1,6 @@
-describe(require('path').basename(__filename), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
-  var happn = require('../lib/index');
+  var happn = require('../../../lib/index');
   var expect = require('expect.js');
   var serviceInstance;
 

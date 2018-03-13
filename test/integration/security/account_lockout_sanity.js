@@ -1,7 +1,7 @@
 //checks info is stored next to login
-describe(require('path').basename(__filename), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
-  var Happn = require('../');
+  var Happn = require('../../..');
   var expect = require('expect.js');
   var Promise = require('bluebird');
   var async = require('async');
@@ -81,6 +81,7 @@ describe(require('path').basename(__filename), function () {
   }
 
   function stopService() {
+
     return new Promise(function (resolve) {
 
       if (!server1) resolve();
@@ -104,119 +105,16 @@ describe(require('path').basename(__filename), function () {
     });
   }
 
-  xit('fails to login twice, we then get an account locked out, then login successfully after 3 seconds', function (done) {
+  after('stops the service if it exists', function (done) {
 
-    this.timeout(10000);
-
-    activeClient = null;
-
-    async.series([
-      function (itemCB) {
-        createService({
-            services: {
-              security: {
-                config: {
-                  accountLockout: {
-                    enabled: true,
-                    attempts: 2,
-                    retryInterval: 3000
-                  }
-                }
-              }
-            }
-          })
-          .then(function () {
-            console.log('created service:::');
-            itemCB();
-          })
-          .catch(function (e) {
-            itemCB(e);
-          })
-      },
-      function (itemCB) {
-
-        console.log('trying login 1:::');
-
-        Happn.client.create({
-            config: {
-              username: testUser2.username,
-              password: 'BAD...',
-              port: testPort
-            }
-          })
-          .catch(function (e) {
-            expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-            console.log('got expected error 1:::');
-            itemCB();
-          });
-      },
-      function (itemCB) {
-
-        console.log('trying login 2:::');
-
-        Happn.client.create({
-            config: {
-              username: testUser2.username,
-              password: 'BAD...',
-              port: testPort
-            }
-          })
-          .catch(function (e) {
-            expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-            console.log('got expected error 2:::');
-            itemCB();
-          });
-      },
-      function (itemCB) {
-
-        console.log('trying login 3:::');
-
-        Happn.client.create({
-            config: {
-              username: testUser2.username,
-              password: 'BAD...',
-              port: testPort
-            }
-          })
-          .catch(function (e) {
-            expect(e.toString()).to.be('AccessDenied: Account locked out');
-            console.log('got expected error 3:::');
-            setTimeout(itemCB, 3000); //wait 3 seconds
-          });
-      },
-      function (itemCB) {
-
-        console.log('trying login 4:::');
-
-        Happn.client.create({
-            config: {
-              username: testUser2.username,
-              password: testUser2.password,
-              port: testPort
-            }
-          })
-          .then(function (client) {
-            activeClient = client;
-            console.log('succeeded login 4:::');
-            itemCB();
-          })
-          .catch(function (e) {
-            itemCB(e);
-          });
-      },
-      function (itemCB) {
-        stopService()
-          .then(function () {
-            itemCB();
-          })
-          .catch(function (e) {
-            itemCB(e);
-          })
-      }
-    ], done);
+    stopService()
+      .then(done)
+      .catch(function (e) {
+        done();
+      });
   });
 
-  xit('does 2 unsuccessful logins out of 3, we wait the ttl and we no longer have a lock record', function (done) {
+  it('does 2 unsuccessful logins out of 3, we wait the ttl and we no longer have a lock record', function (done) {
 
     this.timeout(10000);
 
@@ -238,7 +136,6 @@ describe(require('path').basename(__filename), function () {
             }
           })
           .then(function () {
-            console.log('created service:::');
             itemCB();
           })
           .catch(function (e) {
@@ -247,8 +144,6 @@ describe(require('path').basename(__filename), function () {
       },
       function (itemCB) {
 
-        console.log('trying login 1:::');
-
         Happn.client.create({
             config: {
               username: testUser2.username,
@@ -258,14 +153,11 @@ describe(require('path').basename(__filename), function () {
           })
           .catch(function (e) {
             expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-            console.log('got expected error 1:::');
             itemCB();
           });
       },
       function (itemCB) {
 
-        console.log('trying login 2:::');
-
         Happn.client.create({
             config: {
               username: testUser2.username,
@@ -276,8 +168,6 @@ describe(require('path').basename(__filename), function () {
           .catch(function (e) {
 
             expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-
-            console.log('got expected error 2:::');
 
             server1.services.security.__locks.get(testUser2.username, function (e, lock) {
 
@@ -299,8 +189,6 @@ describe(require('path').basename(__filename), function () {
       },
       function (itemCB) {
 
-        console.log('trying login 3:::');
-
         Happn.client.create({
             config: {
               username: testUser2.username,
@@ -310,7 +198,6 @@ describe(require('path').basename(__filename), function () {
           })
           .then(function (client) {
             activeClient = client;
-            console.log('succeeded login 3:::');
             itemCB();
           })
           .catch(function (e) {
@@ -328,5 +215,285 @@ describe(require('path').basename(__filename), function () {
       }
     ], done);
 
+  });
+
+  it('fails to login twice, we then get an account locked out, then login successfully after 3 seconds', function (done) {
+
+    this.timeout(10000);
+
+    activeClient = null;
+
+    async.series([
+      function (itemCB) {
+        createService({
+            services: {
+              security: {
+                config: {
+                  accountLockout: {
+                    enabled: true,
+                    attempts: 2,
+                    retryInterval: 3000
+                  }
+                }
+              }
+            }
+          })
+          .then(function () {
+            itemCB();
+          })
+          .catch(function (e) {
+            itemCB(e);
+          })
+      },
+      function (itemCB) {
+
+        Happn.client.create({
+            config: {
+              username: testUser2.username,
+              password: 'BAD...',
+              port: testPort
+            }
+          })
+          .catch(function (e) {
+            expect(e.toString()).to.be('AccessDenied: Invalid credentials');
+            itemCB();
+          });
+      },
+      function (itemCB) {
+
+        Happn.client.create({
+            config: {
+              username: testUser2.username,
+              password: 'BAD...',
+              port: testPort
+            }
+          })
+          .catch(function (e) {
+            expect(e.toString()).to.be('AccessDenied: Invalid credentials');
+            itemCB();
+          });
+      },
+      function (itemCB) {
+
+        Happn.client.create({
+            config: {
+              username: testUser2.username,
+              password: 'BAD...',
+              port: testPort
+            }
+          })
+          .catch(function (e) {
+            expect(e.toString()).to.be('AccessDenied: Account locked out');
+            setTimeout(itemCB, 3000); //wait 3 seconds
+          });
+      },
+      function (itemCB) {
+
+        Happn.client.create({
+            config: {
+              username: testUser2.username,
+              password: testUser2.password,
+              port: testPort
+            }
+          })
+          .then(function (client) {
+            activeClient = client;
+            itemCB();
+          })
+          .catch(function (e) {
+            itemCB(e);
+          });
+      },
+      function (itemCB) {
+        stopService()
+          .then(function () {
+            itemCB();
+          })
+          .catch(function (e) {
+            itemCB(e);
+          })
+      }
+    ], done);
+  });
+
+  it('fails to login thrice, we then get an account locked out twice, then login successfully after 5 seconds', function (done) {
+
+    this.timeout(10000);
+
+    activeClient = null;
+
+    async.series([
+      function (itemCB) {
+        createService({
+            services: {
+              security: {
+                config: {
+                  accountLockout: {
+                    enabled: true,
+                    attempts: 3,
+                    retryInterval: 5000
+                  }
+                }
+              }
+            }
+          })
+          .then(function () {
+            itemCB();
+          })
+          .catch(function (e) {
+            itemCB(e);
+          })
+      },
+      function (itemCB) {
+
+        Happn.client.create({
+            config: {
+              username: testUser2.username,
+              password: 'BAD...',
+              port: testPort
+            }
+          })
+          .catch(function (e) {
+            expect(e.toString()).to.be('AccessDenied: Invalid credentials');
+            itemCB();
+          });
+      },
+      function (itemCB) {
+
+        //console.log('trying login 2:::');
+
+        Happn.client.create({
+            config: {
+              username: testUser2.username,
+              password: 'BAD...',
+              port: testPort
+            }
+          })
+          .catch(function (e) {
+            expect(e.toString()).to.be('AccessDenied: Invalid credentials');
+            //console.log('got expected error 2:::');
+            itemCB();
+          });
+      },
+      function (itemCB) {
+
+        //console.log('trying login 3:::');
+
+        Happn.client.create({
+            config: {
+              username: testUser2.username,
+              password: 'BAD...',
+              port: testPort
+            }
+          })
+          .catch(function (e) {
+            expect(e.toString()).to.be('AccessDenied: Invalid credentials');
+            //console.log('got expected error 2:::');
+            itemCB();
+          });
+      },
+      function (itemCB) {
+
+        //console.log('trying login 4:::');
+
+        Happn.client.create({
+            config: {
+              username: testUser2.username,
+              password: 'BAD...',
+              port: testPort
+            }
+          })
+          .catch(function (e) {
+            expect(e.toString()).to.be('AccessDenied: Account locked out');
+            //console.log('got expected error 4:::');
+            setTimeout(itemCB, 3000); //wait 3 seconds
+          });
+      },
+      function (itemCB) {
+
+        //console.log('trying login 5:::');
+
+        Happn.client.create({
+            config: {
+              username: testUser2.username,
+              password: 'BAD...',
+              port: testPort
+            }
+          })
+          .catch(function (e) {
+            expect(e.toString()).to.be('AccessDenied: Account locked out');
+            //console.log('got expected error 5:::');
+            setTimeout(itemCB, 2000); //wait 2 seconds
+          });
+      },
+      function (itemCB) {
+
+        //console.log('trying login 6:::');
+
+        Happn.client.create({
+            config: {
+              username: testUser2.username,
+              password: testUser2.password,
+              port: testPort
+            }
+          })
+          .then(function (client) {
+            activeClient = client;
+            //console.log('succeeded login 6:::');
+            itemCB();
+          })
+          .catch(function (e) {
+            itemCB(e);
+          });
+      },
+      function (itemCB) {
+        stopService()
+          .then(function () {
+            itemCB();
+          })
+          .catch(function (e) {
+            itemCB(e);
+          })
+      }
+    ], done);
+
+  });
+
+  it('starts up the service ensures we have the correct defaults for the security config', function (done) {
+
+    this.timeout(10000);
+
+    activeClient = null;
+
+    async.series([
+      function (itemCB) {
+        createService({
+            services: {
+              security: {
+                config: {}
+              }
+            }
+          })
+          .then(function () {
+            //console.log('created service:::');
+            expect(server1.services.security.config.accountLockout.enabled).to.be(true);
+            expect(server1.services.security.config.accountLockout.attempts).to.be(4);
+            expect(server1.services.security.config.accountLockout.retryInterval).to.be(10 * 60 * 1000);
+            itemCB();
+          })
+          .catch(function (e) {
+            itemCB(e);
+          })
+      },
+      function (itemCB) {
+        stopService()
+          .then(function () {
+            itemCB();
+          })
+          .catch(function (e) {
+            itemCB(e);
+          })
+      }
+    ], done);
   });
 });

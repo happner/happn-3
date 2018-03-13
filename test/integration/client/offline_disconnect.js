@@ -1,7 +1,7 @@
-describe('g4_client_offline_disconnect', function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var expect = require('expect.js');
-  var Happn = require('../lib/index');
+  var Happn = require('../../../lib/index');
   var server, client;
 
   var startServer = function (done) {
@@ -98,9 +98,6 @@ describe('g4_client_offline_disconnect', function () {
         server = undefined;
 
       });
-
     });
-
   });
-
 });

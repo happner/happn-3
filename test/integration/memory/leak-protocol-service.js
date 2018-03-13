@@ -1,7 +1,7 @@
-describe(require('./__fixtures/utils/test_helper').create().testName(__filename), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var expect = require('expect.js');
-  var happn = require('../lib/index');
+  var happn = require('../../../lib/index');
   var service = happn.service;
   var happn_client = happn.client;
   var async = require('async');
@@ -12,12 +12,6 @@ describe(require('./__fixtures/utils/test_helper').create().testName(__filename)
   var test_id;
 
   this.timeout(5000);
-
-  /*
-   This test demonstrates starting up the happn service -
-   the authentication service will use authTokenSecret to encrypt web tokens identifying
-   the logon session. The utils setting will set the system to log non priority information
-   */
 
   before('should initialize the service', function (callback) {
 

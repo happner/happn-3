@@ -1,4 +1,4 @@
-describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
+describe('embedded_sanity_encryptedpayloads', function () {
 
   if (typeof window == 'undefined') {
     var chai = require('chai'),
@@ -670,7 +670,7 @@ describe('c2_websockets_embedded_sanity_encryptedpayloads', function () {
 
       //we detach all listeners from the path here
       ////console.log('ABOUT OFF PATH');
-      socketClient.off('/e2e_test1/testsubscribe/data/on_off_test', function (e) {
+      socketClient.offPath('/e2e_test1/testsubscribe/data/on_off_test', function (e) {
 
         if (e)
           return callback(new Error(e));

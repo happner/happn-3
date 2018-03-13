@@ -1,11 +1,12 @@
-describe(require('path').basename(__filename), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3),  function () {
 
-  var happn = require('../lib/index');
+  var happn = require('../../../lib/index');
   var serviceInstance;
   var expect = require('expect.js');
   var constants = happn.constants;
 
   var getService = function (config, callback) {
+
     happn.service.create(config,
       callback
     );
@@ -230,6 +231,7 @@ describe(require('path').basename(__filename), function () {
               }
 
               expect(e).to.be(null);
+              client.disconnect();
               done();
             });
 

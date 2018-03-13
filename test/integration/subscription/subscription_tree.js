@@ -1,9 +1,8 @@
-var Happn = require('..'),
-  expect = require('expect.js'),
+var expect = require('expect.js'),
   async = require('async'),
   shortid = require('shortid');
 
-describe(require('path').basename(__filename), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   context('functional subscription tree', function () {
 
@@ -322,11 +321,11 @@ describe(require('path').basename(__filename), function () {
 
   function mockSubscriptionService(config, testItems, callback) {
 
-    var UtilsService = require('../lib/services/utils/service');
+    var UtilsService = require('../../../lib/services/utils/service');
 
     var utilsService = new UtilsService();
 
-    var SubscriptionService = require('../lib/services/subscription/service');
+    var SubscriptionService = require('../../../lib/services/subscription/service');
 
     var subscriptionService = new SubscriptionService({
       logger: {

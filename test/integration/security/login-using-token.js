@@ -1,9 +1,9 @@
-describe(require('path').basename(__filename), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   this.timeout(30000);
 
   var expect = require('expect.js');
-  var happn = require('../lib/index');
+  var happn = require('../../../lib/index');
   var service = happn.service;
   var async = require('async');
 
@@ -19,7 +19,6 @@ describe(require('path').basename(__filename), function () {
   var serviceConfig1 = {
     port: 10000,
     secure: true,
-    encryptPayloads: true,
     services: {
       security: {
         config: {
@@ -131,7 +130,6 @@ describe(require('path').basename(__filename), function () {
   var serviceConfig2 = {
     port: 10001,
     secure: true,
-    encryptPayloads: true,
     services: {
       security: {
         config: {
@@ -267,13 +265,9 @@ describe(require('path').basename(__filename), function () {
     if (happnInstance1) happnInstance1.stop()
 
       .then(function () {
-
-        if (happnInstance2) happnInstance2.stop()
-          .then(done)
-          .catch(done)
-        else done();
-
+        return happnInstance2.stop();
       })
+      .then(done)
       .catch(done);
 
     else done();
@@ -473,7 +467,10 @@ describe(require('path').basename(__filename), function () {
             getClient({
               token: token,
               port: 10000
-            }, done);
+            }, function(e, instance){
+              if (instance) instance.disconnect({reconnect:false});
+              done(e);
+            });
 
           }, 2010);
         });
@@ -597,7 +594,10 @@ describe(require('path').basename(__filename), function () {
             getClient({
               token: token,
               port: 10001
-            }, done);
+            }, function(e, instance){
+              if (instance) instance.disconnect({reconnect:false});
+              done(e);
+            });
 
           }, 2010);
         });

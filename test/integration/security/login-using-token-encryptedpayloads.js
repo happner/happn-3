@@ -1,9 +1,9 @@
-describe(require('path').basename(__filename), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   this.timeout(30000);
 
   var expect = require('expect.js');
-  var happn = require('../lib/index');
+  var happn = require('../../../lib/index');
   var service = happn.service;
   var async = require('async');
 
@@ -19,6 +19,7 @@ describe(require('path').basename(__filename), function () {
   var serviceConfig1 = {
     port: 10000,
     secure: true,
+    encryptPayloads: true,
     services: {
       security: {
         config: {
@@ -130,6 +131,7 @@ describe(require('path').basename(__filename), function () {
   var serviceConfig2 = {
     port: 10001,
     secure: true,
+    encryptPayloads: true,
     services: {
       security: {
         config: {

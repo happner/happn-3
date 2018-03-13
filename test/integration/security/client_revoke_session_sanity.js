@@ -1,10 +1,17 @@
-describe(require('path').basename(__filename), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
-  var happn = require('../lib/index');
+  var happn = require('../../../lib/index');
   var serviceInstance;
   var expect = require('expect.js');
 
   var getService = function (config, callback) {
+
+    if (serviceInstance) return serviceInstance.stop(function(){
+      happn.service.create(config,
+        callback
+      );
+    });
+
     happn.service.create(config,
       callback
     );
@@ -301,6 +308,8 @@ describe(require('path').basename(__filename), function () {
             doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
 
               expect(response.statusCode).to.equal(403);
+
+              testClient.disconnect({reconnect:false});
 
               done();
             });

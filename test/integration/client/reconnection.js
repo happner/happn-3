@@ -1,18 +1,12 @@
 var path = require('path');
 
-var filename = path.basename(__filename);
-
-var Promise = require('bluebird');
-
 var expect = require('expect.js');
 
-var Happn = require('../');
+var Happn = require('../../../');
 
 var shortid = require('shortid');
 
-var Promise = require('bluebird');
-
-describe(filename, function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var remote;
 
@@ -22,7 +16,7 @@ describe(filename, function () {
 
   var spawn = require('child_process').spawn;
 
-  var libFolder = path.join(__dirname, 'test-resources', 'g6');
+  var libFolder = path.resolve(__dirname, '..','..','__fixtures', 'test', 'integration', 'client', 'reconnection');
 
   var events = [];
 
