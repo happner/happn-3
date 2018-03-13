@@ -8,12 +8,12 @@ lib-cov
 *.gz
 *.log.*
 *.nedb
-*test/tmp*
+tmp
 test/test-browser/browser_client.js
 *test/test-tmp*
 test/test-temp/*
 !test/test-temp/.tests.use.this
-!test/fixtures/old_db.nedb
+!backward_compatibility.nedb
 *.db
 *test/test-resources/c7a/test/**
 *test/test-resources/c7/test/**
