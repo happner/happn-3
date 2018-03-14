@@ -20,7 +20,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var request = require('request');
 
     var options = {
-      url: 'http://127.0.0.1:55000' + path,
+      url: 'http://127.0.0.1:55000' + path
     };
 
     if (!excludeToken) {
@@ -326,6 +326,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('updates the group associated with the test user to allow gets to the path, the user should succeed in connecting to the url', function (callback) {
 
+    this.timeout(10000);
+
     try {
 
       testGroup.permissions = {
@@ -335,7 +337,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       };
 
       happnInstance.services.security.users.upsertGroup(testGroup, {}, function (e, group) {
-        if (e) return done(e);
+
+        if (e) return callback(e);
+
         expect(group.permissions['/@HTTP/secure/route/test']).to.eql({
           actions: ['get']
         });

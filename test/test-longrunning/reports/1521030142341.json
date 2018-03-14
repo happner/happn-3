@@ -1,0 +1,666 @@
+{
+  "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/001_db_compaction.js": {
+    "task": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/001_db_compaction.js",
+    "success": true,
+    "results": {
+      "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/001_db_compaction.js",
+      "suites": [
+        {
+          "suite": "longrunning/001_db_compaction",
+          "suites": [],
+          "tests": [
+            {
+              "test": {
+                "title": "for testfile1 creates data, measures the db size, compacts the db, checks the new db filesize is smaller than the original db",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/001_db_compaction.js",
+                "duration": 2356,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "starts a db configured to compact, does a replay of random activity1, then verifies the data is smaller than the initial size of the uncompacted file",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/001_db_compaction.js",
+                "duration": 8335,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "starts a db with 2 files, does some random activity, compacts the db, checks that both files have been compacted",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/001_db_compaction.js",
+                "duration": 2373,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "starts compaction for every n seconds, then do random inserts and deletes, then verify the data",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/001_db_compaction.js",
+                "duration": 10235,
+                "status": "passed"
+              },
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    "duration": 24864
+  },
+  "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/002_session_management_stress.js": {
+    "task": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/002_session_management_stress.js",
+    "success": true,
+    "results": {
+      "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/002_session_management_stress.js",
+      "suites": [
+        {
+          "suite": "longrunning/002_session_management_sanity",
+          "suites": [],
+          "tests": [
+            {
+              "test": {
+                "title": "tests session management, multiple clients in series",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/002_session_management_stress.js",
+                "duration": 49266,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "tests session management, multiple clients in parallel",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/002_session_management_stress.js",
+                "duration": 20251,
+                "status": "passed"
+              },
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    "duration": 70002
+  },
+  "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/003-network-outage.js": {
+    "task": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/003-network-outage.js",
+    "success": true,
+    "results": {
+      "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/003-network-outage.js",
+      "suites": [
+        {
+          "suite": "003-network-outage.js",
+          "suites": [
+            {
+              "suite": "subscriptions",
+              "suites": [],
+              "tests": [
+                {
+                  "test": {
+                    "title": "subscriptions are resumed without duplication after network outage",
+                    "async": 1,
+                    "sync": false,
+                    "timedOut": false,
+                    "pending": false,
+                    "type": "test",
+                    "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/003-network-outage.js",
+                    "duration": 35824,
+                    "status": "passed"
+                  },
+                  "error": null
+                }
+              ]
+            }
+          ],
+          "tests": []
+        }
+      ]
+    },
+    "duration": 37058
+  },
+  "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/004_cluster_ready.js": {
+    "task": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/004_cluster_ready.js",
+    "success": true,
+    "results": {
+      "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/004_cluster_ready.js",
+      "suites": [
+        {
+          "suite": "longrunning/004_cluster_ready",
+          "suites": [],
+          "tests": [
+            {
+              "test": {
+                "title": "starts 10 instances",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/004_cluster_ready.js",
+                "duration": 14288,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "stops 10 instances",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/004_cluster_ready.js",
+                "duration": 6899,
+                "status": "passed"
+              },
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    "duration": 21601
+  },
+  "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js": {
+    "task": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+    "success": true,
+    "results": {
+      "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+      "suites": [
+        {
+          "suite": "longrunning/005_redundant_connections",
+          "suites": [],
+          "tests": [
+            {
+              "test": {
+                "title": "random connections, should connect to the first service, then service to be switched off - fallback to second service",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 180,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "random connections, should connect to the first service, then service to be switched off - fallback to second service",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 44,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "ordered connections, should connect to the first service, then service to be switched off - fallback to second service",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 131,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "invalid connections, should fail to connect",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 142,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "initial invalid connections, should fall back to the last available connection",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 106,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "infinite poolReconnectAttempts",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 129,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "infinite poolReconnectAttempts failing, then service started after random period",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 11057,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "port range",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 47,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "ip range",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 49,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "invalid ip range",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 1,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "invalid port range",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 0,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "invalid ip and port range",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/005_redundant_connections.js",
+                "duration": 1,
+                "status": "passed"
+              },
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    "duration": 17791
+  },
+  "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js": {
+    "task": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+    "success": true,
+    "results": {
+      "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+      "suites": [
+        {
+          "suite": "longrunning/006_redundant_connections",
+          "suites": [],
+          "tests": [
+            {
+              "test": {
+                "title": "random connections, should connect to the first service, then service to be switched off - fallback to second service",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 184,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "random connections, should connect to the first service, then service to be switched off - fallback to second service",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 198,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "ordered connections, should connect to the first service, then service to be switched off - fallback to second service",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 176,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "invalid connections, should fail to connect",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 169,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "initial invalid connections, should fall back to the last available connection",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 169,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "infinite poolReconnectAttempts",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 178,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "port range",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 68,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "ip range",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 58,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "invalid ip range",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 2,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "invalid port range",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 0,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "invalid ip and port range",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/006_redundant_connections_secure.js",
+                "duration": 1,
+                "status": "passed"
+              },
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    "duration": 26372
+  },
+  "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/007-login-failures-reconnect.js": {
+    "task": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/007-login-failures-reconnect.js",
+    "success": true,
+    "results": {
+      "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/007-login-failures-reconnect.js",
+      "suites": [
+        {
+          "suite": "007-login-failures-reconnect.js",
+          "suites": [],
+          "tests": [
+            {
+              "test": {
+                "title": "logs in normally",
+                "async": 0,
+                "sync": true,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/007-login-failures-reconnect.js",
+                "duration": 56,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "tests login retries",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/007-login-failures-reconnect.js",
+                "duration": 4481,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "can login again if a login attempt failed on reconnect",
+                "async": 0,
+                "sync": true,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/007-login-failures-reconnect.js",
+                "duration": 4278,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "does not retry if we are connected",
+                "async": 0,
+                "sync": true,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/007-login-failures-reconnect.js",
+                "duration": 23006,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "will not reconnect after shutdown",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/007-login-failures-reconnect.js",
+                "duration": 20142,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "kills a client that is started with \"create\" and fails to login",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/007-login-failures-reconnect.js",
+                "duration": 14116,
+                "status": "passed"
+              },
+              "error": null
+            },
+            {
+              "test": {
+                "title": "only calls the create callback once",
+                "async": 1,
+                "sync": false,
+                "timedOut": false,
+                "pending": false,
+                "type": "test",
+                "file": "/Users/simonbishop/Documents/Projects/happn-3/test/test-longrunning/007-login-failures-reconnect.js",
+                "duration": 30048,
+                "status": "passed"
+              },
+              "error": null
+            }
+          ]
+        }
+      ]
+    },
+    "duration": 97447
+  }
+}

@@ -904,7 +904,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         },
         cacheService: cacheInstance,
-        onDataChanged: function () {}
+        onDataChanged: function () {
+        }
       };
 
       var testSession = {
@@ -936,7 +937,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         services: {
           utils: utils,
           cache: cacheInstance,
-          session:sessionInstance
+          session: sessionInstance
         }
       };
 
@@ -1010,7 +1011,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         },
         cacheService: cacheInstance,
-        onDataChanged: function () {}
+        onDataChanged: function () {
+        }
       };
 
       var testSession = {
@@ -1044,7 +1046,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         services: {
           utils: utils,
           cache: cacheInstance,
-          session:sessionInstance
+          session: sessionInstance
         }
       };
 
@@ -1114,7 +1116,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         },
         cacheService: cacheInstance,
-        onDataChanged: function () {}
+        onDataChanged: function () {
+        }
       };
 
       var testSession = {
@@ -1148,7 +1151,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         services: {
           utils: utils,
           cache: cacheInstance,
-          session:sessionInstance
+          session: sessionInstance
         }
       };
 
@@ -1218,7 +1221,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         },
         cacheService: cacheInstance,
-        onDataChanged: function () {}
+        onDataChanged: function () {
+        }
       };
 
       var testSession = {
@@ -1250,7 +1254,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         services: {
           utils: utils,
           cache: cacheInstance,
-          session:sessionInstance
+          session: sessionInstance
         }
       };
 
@@ -1350,7 +1354,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       },
       cacheService: cacheInstance,
-      onDataChanged: function () {}
+      onDataChanged: function () {
+      }
     };
 
     var SessionService = require('../../../lib/services/session/service');
@@ -1369,7 +1374,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         utils: utils,
         cache: cacheInstance,
         security: securityService,
-        session:sessionInstance
+        session: sessionInstance
       }
     };
 
@@ -1458,7 +1463,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       },
       cacheService: cacheInstance,
-      onDataChanged: function () {}
+      onDataChanged: function () {
+      }
     };
 
     var SessionService = require('../../../lib/services/session/service');
@@ -1477,7 +1483,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         utils: utils,
         cache: cacheInstance,
         security: securityService,
-        session:sessionInstance
+        session: sessionInstance
       }
     };
 
@@ -1563,7 +1569,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       },
       cacheService: cacheInstance,
-      onDataChanged: function () {}
+      onDataChanged: function () {
+      }
     };
 
     var SessionService = require('../../../lib/services/session/service');
@@ -1582,7 +1589,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         utils: utils,
         cache: cacheInstance,
         security: securityService,
-        session:sessionInstance
+        session: sessionInstance
       }
     };
 
@@ -2017,17 +2024,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    securityService.__initializeProfiles(serviceConfig.services.security.config, function (e) {
-
-      if (e) return done(e);
-
-      expect(securityService.__cache_Profiles[0].policy.ttl).to.be(4000);
-      expect(securityService.__cache_Profiles[0].policy.inactivity_threshold).to.be(2000);
-      expect(securityService.__cache_Profiles[1].policy.inactivity_threshold).to.be(60000 * 60 * 48);
-
-      done();
-
-    })
+    securityService.__initializeProfiles(serviceConfig.services.security.config)
+      .then(function () {
+        expect(securityService.__cache_Profiles[0].policy.ttl).to.be(4000);
+        expect(securityService.__cache_Profiles[0].policy.inactivity_threshold).to.be(2000);
+        expect(securityService.__cache_Profiles[1].policy.inactivity_threshold).to.be(60000 * 60 * 48);
+        done();
+      })
+      .catch(done)
   });
 
   it('should create a user and login, getting a token - then should be able to use the token to log in again', function (done) {

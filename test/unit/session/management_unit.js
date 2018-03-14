@@ -75,7 +75,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       .then(mockService(happn, 'Error'))
       .then(mockService(happn, 'Session', false))
       .then(mockService(happn, 'Protocol'))
-      .then(mockService(happn, 'Subscription'))
       .then(mockService(happn, 'Publisher'))
       .then(mockService(happn, 'Queue'))
       .then(mockService(happn, 'Data'))
@@ -87,6 +86,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         sessionActivityTTL: 3000,
         secure: true
       }))
+      .then(mockService(happn, 'Subscription'))
       .then(mockService(happn, 'Layer'))
       .then(function () {
         setTimeout(function () {
