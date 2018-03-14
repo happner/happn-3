@@ -85,7 +85,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('creates a group and a user, adds the group to the user, logs in with test user', function (done) {
 
-    serviceInstance.services.security.users.upsertGroup(testGroup, {
+    serviceInstance.services.security.groups.upsertGroup(testGroup, {
       overwrite: false
     }, function (e, result) {
 
@@ -99,14 +99,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         if (e) return done(e);
         addedTestuser = result;
 
-        serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function (e) {
+        serviceInstance.services.security.groups.linkGroup(addedTestGroup, addedTestuser, function (e) {
 
           if (e) return done(e);
 
           //clear the groups cache in the users module
-          serviceInstance.services.security.users.__cache_groups.clear();
+          serviceInstance.services.security.groups.__cache_groups.clear();
 
-          serviceInstance.services.security.users.getGroup(testGroup.name, function(e, groupData){
+          serviceInstance.services.security.groups.getGroup(testGroup.name, function(e, groupData){
 
             if (e) return done(e);
 
