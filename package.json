@@ -61,7 +61,7 @@
     "underscore.string": "3.3.4",
     "user-home": "2.0.0",
     "uuid": "2.0.2",
-    "wild-pare": "4.2.2",
+    "wild-pare": "5.0.0",
     "ws": "1.0.1"
   },
   "devDependencies": {
