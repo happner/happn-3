@@ -1,6 +1,6 @@
 describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
-  this.timeout(60000);
+  this.timeout(5000);
 
   var expect = require('expect.js');
   var happn = require('../../../lib/index')
@@ -110,7 +110,7 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     })
   });
 
-  it('tests adding a group, fails to attach invalid actions', function (done) {
+  it('fails adding a group, fails to attach permissions, invalid actions', function (done) {
 
     mockServices(function (e, happn) {
 
@@ -133,7 +133,7 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     })
   });
 
-  it('tests adding a group with valid actions', function (done) {
+  it('adds a group with valid permissions', function (done) {
 
     mockServices(function (e, happn) {
 
@@ -151,7 +151,7 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
 
         if (e) return done(e);
 
-        happn.services.security.groups.getGroup(testGroup.name, function(e, fetchedGroup){
+        happn.services.security.groups.getGroup(testGroup.name, function (e, fetchedGroup) {
 
           if (e) return done(e);
 
@@ -163,5 +163,100 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         });
       })
     })
+  });
+
+  it('adds a group with valid permissions, then adds further permissions, we check that the permissions have been merged in the fetched group', function (done) {
+
+    mockServices(function (e, happn) {
+
+      if (e) return done(e);
+
+      var testGroup = {
+        name: 'TEST_GR_4',
+        permissions: {
+          '/test/path/1': {actions: ['*']},
+          '/test/path/2': {actions: ['get', 'on']}
+        }
+      };
+
+      happn.services.security.groups.upsertGroup(testGroup, function (e) {
+
+        if (e) return done(e);
+
+        happn.services.security.groups.upsertPermission(testGroup.name, '/test/path/*', 'get')
+          .then(function () {
+
+            happn.services.security.groups.getGroup(testGroup.name, function (e, fetchedGroup) {
+
+              if (e) return done(e);
+
+              expect(fetchedGroup.permissions['/test/path/1'].actions).to.eql(['*']);
+              expect(fetchedGroup.permissions['/test/path/2'].actions).to.eql(['get', 'on']);
+              expect(fetchedGroup.permissions['/test/path/*'].actions).to.eql(['get']);
+
+              done();
+
+            });
+          })
+          .catch(done);
+      });
+    });
+  });
+
+  it('does a whole bunch of edits to the same group in parallel, we then check all the correct permissions exist in the group', function(done){
+
+    var permissionCount = 10000;
+
+    this.timeout(permissionCount * 10);
+
+    mockServices(function (e, happn) {
+
+      if (e) return done(e);
+
+      var testGroup = {
+        name: 'TEST_GR_5',
+        permissions: {
+          '/test/path/test': {actions: ['*']},
+          '/test/path/*': {actions: ['get', 'on']}
+        }
+      };
+
+      happn.services.security.groups.upsertGroup(testGroup, function (e) {
+
+        if (e) return done(e);
+
+        var permissions = [];
+
+        for (var permCounter = 0; permCounter < permissionCount; permCounter++)
+          permissions.push('/test/path/' + permCounter.toString());
+
+        async.each(permissions, function(permission, permissionCB){
+
+          happn.services.security.groups.upsertPermission(testGroup.name, permission, 'get')
+            .then(function(){
+              permissionCB();
+            })
+            .catch(done);
+
+        }, function(e){
+
+          if (e) return done(e);
+
+          happn.services.security.groups.getGroup(testGroup.name, function (e, fetchedGroup) {
+
+            if (e) return done(e);
+
+            expect(fetchedGroup.permissions['/test/path/test'].actions).to.eql(['*']);
+            expect(fetchedGroup.permissions['/test/path/*'].actions).to.eql(['get', 'on']);
+
+            for (var permCounter = 0; permCounter < permissionCount; permCounter++)
+              expect(fetchedGroup.permissions['/test/path/' + permCounter.toString()].actions).to.eql(['get']);
+
+            done();
+
+          });
+        });
+      });
+    });
   });
 });
