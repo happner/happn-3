@@ -126,7 +126,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       happn.services.security.groups.upsertGroup(testGroup, function (e, result) {
 
-        expect(e.toString()).to.be('Error: group permissions invalid: missing actions: /test/path/2');
+        expect(e.toString()).to.be('Error: group permissions invalid: missing allowed actions or prohibit rules: /test/path/2');
 
         done();
       })
@@ -433,7 +433,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('adds a group with valid permissions, the updates the group, prohibiting some actions - we check trhe prohibited permissions have been removed', function (done) {
+  it('adds a group with valid permissions, the updates the group, prohibiting some actions - we check the prohibited permissions have been removed', function (done) {
 
     mockServices(function (e, happn) {
 
