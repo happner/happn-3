@@ -175,13 +175,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     this.timeout(15000);
 
-    adminClient.disconnect({reconnect:false}, function (e) {
+    adminClient.disconnect({reconnect: false}, function (e) {
       if (e) return done(e);
-      testClient.disconnect({reconnect:false}, function (e) {
+      testClient.disconnect({reconnect: false}, function (e) {
         if (e) return done(e);
-        testClient1.disconnect({reconnect:false}, function (e) {
+        testClient1.disconnect({reconnect: false}, function (e) {
           if (e) return done(e);
-          testClient2.disconnect({reconnect:false}, function (e) {
+          testClient2.disconnect({reconnect: false}, function (e) {
             if (e) return done(e);
             happnInstance.stop(done);
           });
@@ -513,21 +513,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
                 expect(response.statusCode).to.equal(200);
 
-                delete addedTestGroup1.permissions['/@HTTP/secure/test/removed/group'];
+                happnInstance.services.security.groups.removePermission(testGroup1.name, '/@HTTP/secure/test/removed/group', 'get')
+                  .then(function () {
 
-                happnInstance.services.security.users.upsertGroup(addedTestGroup1, {
-                  overwrite: true
-                }, function (e) {
+                    console.log('removed permission:::');
 
-                  if (e) return done(e);
+                    doRequest('/secure/test/removed/group', testClient1.session.token, false, function (response) {
 
-                  doRequest('/secure/test/removed/group', testClient1.session.token, false, function (response) {
+                      expect(response.statusCode).to.equal(403);
+                      callback();
 
-                    expect(response.statusCode).to.equal(403);
-                    callback();
-
-                  });
-                });
+                    });
+                  }).catch(callback);
               });
             })
 
