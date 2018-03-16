@@ -1,4 +1,4 @@
-describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   this.timeout(5000);
 
@@ -203,7 +203,7 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     });
   });
 
-  it('does a whole bunch of edits to the same permissions in parallel, we then check all the correct permissions exist in the group', function(done){
+  it('does a whole bunch of edits to the same permissions in parallel, we then check all the correct permissions exist in the group', function (done) {
 
     var permissionCount = 1000;
 
@@ -230,15 +230,15 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         for (var permCounter = 0; permCounter < permissionCount; permCounter++)
           permissions.push('/test/path/' + permCounter.toString());
 
-        async.each(permissions, function(permission, permissionCB){
+        async.each(permissions, function (permission, permissionCB) {
 
           happn.services.security.groups.upsertPermission(testGroup.name, permission, 'get')
-            .then(function(){
+            .then(function () {
               permissionCB();
             })
             .catch(done);
 
-        }, function(e){
+        }, function (e) {
 
           if (e) return done(e);
 
@@ -260,7 +260,7 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     });
   });
 
-  it('does a whole bunch of edits to the same group in parallel, we then check all the correct permissions exist in the group', function(done){
+  it('does a whole bunch of edits to the same group in parallel, we then check all the correct permissions exist in the group', function (done) {
 
     var permissionCount = 1000;
 
@@ -287,7 +287,7 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         for (var permCounter = 0; permCounter < permissionCount; permCounter++)
           permissions.push('/test/path/' + permCounter.toString());
 
-        async.each(permissions, function(permission, permissionCB){
+        async.each(permissions, function (permission, permissionCB) {
 
           var updateGroup = {
             name: 'TEST_GR_5',
@@ -301,7 +301,7 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
 
           happn.services.security.groups.upsertGroup(updateGroup, permissionCB);
 
-        }, function(e){
+        }, function (e) {
 
           if (e) return done(e);
 
@@ -342,10 +342,10 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         if (e) return done(e);
 
         happn.services.security.groups.upsertPermission(testGroup.name, '/test/path/*', 'get')
-          .then(function(){
+          .then(function () {
             return happn.services.security.groups.removePermission(testGroup.name, '/test/path/*', 'get');
           })
-          .then(function(){
+          .then(function () {
 
             return happn.services.security.groups.removePermission(testGroup.name, '/test/path/2', 'on');
           })
@@ -364,6 +364,115 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
           })
           .catch(done);
       });
+    });
+  });
+
+  it('lists a bunch of groups', function (done) {
+
+    mockServices(function (e, happn) {
+
+      if (e) return done(e);
+
+      var testGroup1 = {
+        name: 'TEST_ALL_GR_10',
+        permissions: {
+          '/test/path/1': {actions: ['*']},
+          '/test/path/2': {actions: ['get', 'on']}
+        }
+      };
+
+      var testGroup2 = {
+        name: 'TEST_ALL_GR_20',
+        permissions: {
+          '/test/path/1': {actions: ['*']},
+          '/test/path/2': {actions: ['get', 'on']}
+        }
+      };
+
+      var testGroup3 = {
+        name: 'TEST_ALL_GR_30',
+        permissions: {
+          '/test/path/1': {actions: ['*']},
+          '/test/path/2': {actions: ['get', 'on']}
+        }
+      };
+
+      var testGroup4 = {
+        name: 'TEST_ALL_GR_40',
+        permissions: {
+          '/test/path/1': {actions: ['*']},
+          '/test/path/2': {actions: ['get', 'on']}
+        }
+      };
+
+      happn.services.security.groups.upsertGroup(testGroup1)
+        .then(function () {
+          return happn.services.security.groups.upsertGroup(testGroup2);
+        })
+        .then(function () {
+          return happn.services.security.groups.upsertGroup(testGroup3);
+        })
+        .then(function () {
+          return happn.services.security.groups.upsertGroup(testGroup4);
+        })
+        .then(function () {
+
+          happn.services.security.groups.listGroups('TEST_ALL_GR_*', function (e, fetchedGroups) {
+
+            if (e) return done(e);
+
+            expect(fetchedGroups.length).to.be(4);
+            expect(fetchedGroups[0].name).to.not.be(null);
+            expect(fetchedGroups[0].name).to.not.be(undefined);
+
+            done();
+
+          });
+        })
+        .catch(done);
+    });
+  });
+
+  it('adds a group with valid permissions, the updates the group, prohibiting some actions - we check trhe prohibited permissions have been removed', function (done) {
+
+    mockServices(function (e, happn) {
+
+      if (e) return done(e);
+
+      var testGroup = {
+        name: 'TEST_GR_3',
+        permissions: {
+          '/test/path/1': {actions: ['*']},
+          '/test/path/2': {actions: ['get', 'on']}
+        }
+      };
+
+      var testGroup1 = {
+        name: 'TEST_GR_3',
+        permissions: {
+          '/test/path/1': {actions: ['*']},
+          '/test/path/2': {prohibit: ['on']}
+        }
+      };
+
+      happn.services.security.groups.upsertGroup(testGroup)
+        .then(function () {
+          return happn.services.security.groups.getGroup(testGroup.name);
+        })
+        .then(function (fetched) {
+          expect(fetched.permissions['/test/path/1'].actions).to.eql(['*']);
+          expect(fetched.permissions['/test/path/2'].actions).to.eql(['get', 'on']);
+          return happn.services.security.groups.upsertGroup(testGroup1);
+        })
+        .then(function () {
+          return happn.services.security.groups.getGroup(testGroup.name);
+        })
+        .then(function (fetched) {
+          expect(fetched.permissions['/test/path/1'].actions).to.eql(['*']);
+          expect(fetched.permissions['/test/path/2'].actions).to.eql(['get']);
+          done();
+        });
+
     });
   });
 });

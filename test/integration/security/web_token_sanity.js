@@ -516,8 +516,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                 happnInstance.services.security.groups.removePermission(testGroup1.name, '/@HTTP/secure/test/removed/group', 'get')
                   .then(function () {
 
-                    console.log('removed permission:::');
-
                     doRequest('/secure/test/removed/group', testClient1.session.token, false, function (response) {
 
                       expect(response.statusCode).to.equal(403);
