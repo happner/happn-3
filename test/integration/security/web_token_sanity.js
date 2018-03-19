@@ -38,6 +38,31 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   }
 
+  function doPost(path, token, query, callback, excludeToken) {
+
+    var request = require('request');
+
+    var options = {
+      url: 'http://127.0.0.1:55000' + path,
+      method:'POST',
+      data:{post:'data'}
+    };
+
+    if (!excludeToken) {
+      if (!query)
+        options.headers = {
+          'Cookie': ['happn_token=' + token]
+        }
+      else
+        options.url += '?happn_token=' + token;
+    }
+
+    request(options, function (error, response, body) {
+      callback(response, body);
+    });
+
+  }
+
   function doBearerTokenRequest(path, token, callback, excludeToken) {
 
     var request = require('request');
@@ -161,6 +186,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             "secure": "value"
           }));
 
+        });
+
+        happnInstance.connect.use('/secure/route/post', function (req, res, next) {
+
+          res.setHeader('Content-Type', 'application/json');
+
+          res.end(JSON.stringify({
+            "secure": "value"
+          }));
         });
 
         callback();
@@ -378,6 +412,44 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(response.statusCode).to.equal(200);
           callback();
 
+        });
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('updates the group associated with the test user to allow posts to the a post path, the user should succeed in connecting to the url with the query string', function (callback) {
+
+    try {
+
+      doPost('/secure/route/post', testClient.session.token, true, function (response) {
+
+        expect(response.statusCode).to.equal(403);
+
+        testGroup.permissions = {
+          '/@HTTP/secure/route/post': {
+            actions: ['post'],
+            prohibit:['get']
+          }
+        };
+
+        happnInstance.services.security.users.upsertGroup(testGroup, {}, function (e, group) {
+
+          if (e) return callback(e);
+
+          doPost('/secure/route/post', testClient.session.token, true, function (response) {
+
+            expect(response.statusCode).to.equal(200);
+
+            doRequest('/secure/route/post', testClient.session.token, true, function (response) {
+
+              expect(response.statusCode).to.equal(403);
+
+              callback();
+            });
+          });
         });
       });
 
