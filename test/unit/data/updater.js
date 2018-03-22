@@ -1,4 +1,4 @@
-describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   this.timeout(5000);
 
@@ -173,15 +173,20 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
 
     var Updater = require('../../../lib/services/data/versions/updater');
 
-    var updater = new Updater(mockDataService(false, null), mockSystemService("3"), {updatesDirectory: path.resolve(__dirname,'../../__fixtures/test/unit/data/updater/updates')});
+    var updater = new Updater(mockDataService(false, null), mockSystemService("4"), {updatesDirectory: path.resolve(__dirname,'../../__fixtures/test/unit/data/updater/updates')});
 
     updater.analyzeDB(function (e, analysis) {
 
       if (e) return done(e);
 
-      updater.updateDB(analysis, function(log){
+      updater.updateDB(analysis, function(){
 
-        expect(log.length).to.be(9);
+        done(new Error('this was not meant to be...'));
+
+      }, function(e, log, rollBackSuccessful){
+
+        expect(e.toString()).to.be('Error: test error');
+        expect(rollBackSuccessful).to.be(true);
 
         expect(log[0].message).to.be('Update1 getUpdateRecords ran ok');
         expect(log[1].message).to.be('Update1 backup ran ok');
@@ -199,9 +204,15 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         expect(log[7].message).to.be('Update3 backup ran ok');
         expect(log[8].message).to.be('Update3 update ran ok');
 
-        done();
+        expect(log[9].message).to.be('Update4 getUpdateRecords ran ok');
+        expect(log[10].message).to.be('Update4 backup ran ok');
+        expect(log[11].message).to.be('Update4 rollback ran ok');
+        expect(log[12].message).to.be('Update3 rollback ran ok');
+        expect(log[13].message).to.be('Update2 rollback ran ok');
+        expect(log[14].message).to.be('Update1 rollback ran ok');
 
-      }, done);
+        done();
+      });
     });
   });
 

@@ -37,12 +37,9 @@ Update4.prototype.backup = function(records){
 
 Update4.prototype.update = function(records){
 
-  var _this = this;
-
   return new Promise(function(resolve, reject){
 
-    _this.updater.log('Update4 update ran ok');
-    resolve(records);
+    reject(new Error('test error'));
   });
 };
 
