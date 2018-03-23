@@ -199,7 +199,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
 
     var happnMock = {
-      services: {}
+      services: {
+        system: {
+          package: require('../../../package.json')
+        }
+      }
     };
 
     if (servicesConfig) testConfig = servicesConfig;

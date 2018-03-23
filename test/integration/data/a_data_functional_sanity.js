@@ -20,7 +20,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     serviceInstance.happn = {
       services: {
-        utils: utils
+        utils: utils,
+        system:{
+          package:require('../../../package.json')
+        }
       }
     };
 

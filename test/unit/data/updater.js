@@ -42,19 +42,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   }
 
-  function mockSystemService(dbVersion) {
-
-    var systemService = {};
-
-    if (!dbVersion) return systemService;
-
-    systemService.package = {};
-
-    systemService.package.database = dbVersion;
-
-    return systemService;
-  }
-
   it('tests analyzing an old db', function (done) {
 
     var Updater = require('../../../lib/services/data/versions/updater');

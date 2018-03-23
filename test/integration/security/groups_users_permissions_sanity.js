@@ -40,7 +40,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var initializeMockServices = function (callback) {
 
       var happnMock = {
-        services: {}
+        services: {
+          system:{
+            package:require('../../../package.json')
+          }
+        }
       };
 
       async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function (serviceName, eachServiceCB) {
@@ -48,12 +52,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         testServices[serviceName] = new testServices[serviceName]({
           logger: Logger
         });
+
         testServices[serviceName].happn = happnMock;
 
         happnMock.services[serviceName] = testServices[serviceName];
 
         if (serviceName == 'error') happnMock.services[serviceName].handleFatal = function (message, e) {
-          console.log('FATAL FAILURE:::', message);
           throw e;
         };
 

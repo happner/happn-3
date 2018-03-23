@@ -31,7 +31,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var initializeMockServices = function (callback) {
 
     var happnMock = {
-      services: {}
+      services: {
+        system: {
+          package: require('../../../package.json')
+        }
+      }
     };
 
     async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function (serviceName, eachServiceCB) {
@@ -93,7 +97,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       if (!response) return callback(new Error('admin group doesnt exist in database'));
 
-      testServices.security.groups.getGroup('_ADMIN', function(e, group){
+      testServices.security.groups.getGroup('_ADMIN', function (e, group) {
 
         if (e) return callback(e);
 

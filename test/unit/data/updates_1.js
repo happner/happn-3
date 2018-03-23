@@ -93,11 +93,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  xit('tests updating an old with a rollback', function (done) {
+  it('tests updating an old with a rollback', function (done) {
 
     var Updater = require('../../../lib/services/data/versions/updater');
 
-    var updater = new Updater(mockDataService(false, null), mockSystemService("1"), {updatesDirectory: path.resolve(__dirname,'../../__fixtures/test/unit/data/updater/updates')});
+    var updater = new Updater(mockDataService(false, null), mockSystemService("1"), {});
+
+    updater.updateModules["1.js"].update = function(records){
+      return new Promise(function(resolve, reject){
+
+        reject(new Error('test error'));
+      });
+    };
 
     updater.analyzeDB(function (e, analysis) {
 
