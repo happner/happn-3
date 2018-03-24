@@ -1,10 +1,10 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
-  "version": "5.4.0-alpha.5",
+  "version": "5.4.0-alpha.6",
   "main": "./lib/index",
   "protocol": "2",
-  "database":"1",
+  "database": "1",
   "scripts": {
     "test": "mocha silence.js test/integration/**",
     "test-unit": "mocha silence.js test/unit/**",
