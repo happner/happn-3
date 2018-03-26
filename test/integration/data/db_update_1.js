@@ -3,7 +3,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var path = require('path');
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
-  var happn_client = happn.client;
   var async = require('async');
   var fs = require('fs-extra');
   var Promise = require('bluebird');
