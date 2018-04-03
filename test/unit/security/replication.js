@@ -20,6 +20,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   }
 
   var replicationSubscriptions = {};
+  var replicatedData = {};
 
   function createMockHappn(obj) {
     obj.happn = {};
@@ -31,44 +32,70 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     obj.happn.services.data = {};
 
+    obj.happn.services.error = {
+      handleFatal: function (str, e) {
+        console.error(str, e);
+      }
+    }
+
     obj.happn.services.replicator = {
       on: function (eventName, handler) {
         replicationSubscriptions[eventName] = handler;
+      },
+      send: function (eventName, payload, callback) {
+        replicatedData[eventName] = payload;
+        callback();
       }
     };
   }
 
   function stubInitializationSteps(obj) {
-
-    // initialization mocks
     obj.__initializeGroups = function () {
       return Promise.resolve();
     };
 
     obj.__initializeUsers = function () {
-      return Promise.resolve();
     };
 
     obj.__initializeProfiles = function () {
-      return Promise.resolve();
     };
 
     obj.__ensureKeyPair = function () {
-      return Promise.resolve();
     };
 
     obj.__initializeCheckPoint = function () {
-      return Promise.resolve();
     };
 
     obj.__initializeSessionManagement = function () {
-      return Promise.resolve();
     };
 
     obj.__ensureAdminUser = function () {
-      return Promise.resolve();
+    };
+  }
+
+  function stubDataChangedSteps(obj) {
+
+    obj.users = {
+      clearCaches: function () {
+        return Promise.resolve();
+      }
     };
 
+    obj.groups = {
+      clearCaches: function () {
+      }
+    };
+
+    obj.resetSessionPermissions = function () {
+    };
+
+    obj.checkpoint = {
+      clearCaches: function () {
+      }
+    };
+
+    obj.emitChanges = function () {
+    };
   }
 
   it('subscribes to replication service security updates', function (done) {
@@ -92,6 +119,34 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   });
 
-  it('replicates the security updates');
+  it('replicates the security updates', function (done) {
+
+    replicatedData = {};
+
+    var security = new SecurityService(opts);
+
+    createMockHappn(security);
+    stubDataChangedSteps(security);
+
+    security.dataChanged('whatHappnd', 'changedData', 'additionalInfo', function (e) {
+
+      if (e) return done(e);
+
+      try {
+        expect(replicatedData).to.eql({
+          '/security/dataChanged': {
+            additionalInfo: 'additionalInfo',
+            changedData: 'changedData',
+            whatHappnd: 'whatHappnd'
+          }
+        });
+        done();
+      } catch (e) {
+        done(e);
+      }
+
+    });
+
+  });
 
 });
