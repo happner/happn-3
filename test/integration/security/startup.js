@@ -8,9 +8,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var testConfigs = {};
 
-  testConfigs.data = {}
+  testConfigs.data = {};
 
-  testConfigs.security = {}
+  testConfigs.security = {};
 
   var testServices = {};
 
@@ -22,6 +22,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   testServices.utils = require('../../../lib/services/utils/service');
   testServices.error = require('../../../lib/services/error/service');
   testServices.log = require('../../../lib/services/log/service');
+  testServices.subscription = require('../../../lib/services/subscription/service');
 
   var checkpoint = require('../../../lib/services/security/checkpoint');
   testServices.checkpoint = new checkpoint({
@@ -38,7 +39,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function (serviceName, eachServiceCB) {
+    async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security', 'subscription'], function (serviceName, eachServiceCB) {
 
       testServices[serviceName] = new testServices[serviceName]({
         logger: Logger
