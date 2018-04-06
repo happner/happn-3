@@ -20,7 +20,32 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var request = require('request');
 
     var options = {
+      url: 'http://127.0.0.1:55000' + path
+    };
+
+    if (!excludeToken) {
+      if (!query)
+        options.headers = {
+          'Cookie': ['happn_token=' + token]
+        }
+      else
+        options.url += '?happn_token=' + token;
+    }
+
+    request(options, function (error, response, body) {
+      callback(response, body);
+    });
+
+  }
+
+  function doPost(path, token, query, callback, excludeToken) {
+
+    var request = require('request');
+
+    var options = {
       url: 'http://127.0.0.1:55000' + path,
+      method:'POST',
+      data:{post:'data'}
     };
 
     if (!excludeToken) {
@@ -163,6 +188,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         });
 
+        happnInstance.connect.use('/secure/route/post', function (req, res, next) {
+
+          res.setHeader('Content-Type', 'application/json');
+
+          res.end(JSON.stringify({
+            "secure": "value"
+          }));
+        });
+
         callback();
 
       });
@@ -175,13 +209,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     this.timeout(15000);
 
-    adminClient.disconnect({reconnect:false}, function (e) {
+    adminClient.disconnect({reconnect: false}, function (e) {
       if (e) return done(e);
-      testClient.disconnect({reconnect:false}, function (e) {
+      testClient.disconnect({reconnect: false}, function (e) {
         if (e) return done(e);
-        testClient1.disconnect({reconnect:false}, function (e) {
+        testClient1.disconnect({reconnect: false}, function (e) {
           if (e) return done(e);
-          testClient2.disconnect({reconnect:false}, function (e) {
+          testClient2.disconnect({reconnect: false}, function (e) {
             if (e) return done(e);
             happnInstance.stop(done);
           });
@@ -326,6 +360,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('updates the group associated with the test user to allow gets to the path, the user should succeed in connecting to the url', function (callback) {
 
+    this.timeout(10000);
+
     try {
 
       testGroup.permissions = {
@@ -335,7 +371,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       };
 
       happnInstance.services.security.users.upsertGroup(testGroup, {}, function (e, group) {
-        if (e) return done(e);
+
+        if (e) return callback(e);
+
         expect(group.permissions['/@HTTP/secure/route/test']).to.eql({
           actions: ['get']
         });
@@ -374,6 +412,44 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(response.statusCode).to.equal(200);
           callback();
 
+        });
+      });
+
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('updates the group associated with the test user to allow posts to the a post path, the user should succeed in connecting to the url with the query string', function (callback) {
+
+    try {
+
+      doPost('/secure/route/post', testClient.session.token, true, function (response) {
+
+        expect(response.statusCode).to.equal(403);
+
+        testGroup.permissions = {
+          '/@HTTP/secure/route/post': {
+            actions: ['post'],
+            prohibit:['get']
+          }
+        };
+
+        happnInstance.services.security.users.upsertGroup(testGroup, {}, function (e, group) {
+
+          if (e) return callback(e);
+
+          doPost('/secure/route/post', testClient.session.token, true, function (response) {
+
+            expect(response.statusCode).to.equal(200);
+
+            doRequest('/secure/route/post', testClient.session.token, true, function (response) {
+
+              expect(response.statusCode).to.equal(403);
+
+              callback();
+            });
+          });
         });
       });
 
@@ -509,21 +585,16 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
                 expect(response.statusCode).to.equal(200);
 
-                delete addedTestGroup1.permissions['/@HTTP/secure/test/removed/group'];
+                happnInstance.services.security.groups.removePermission(testGroup1.name, '/@HTTP/secure/test/removed/group', 'get')
+                  .then(function () {
 
-                happnInstance.services.security.users.upsertGroup(addedTestGroup1, {
-                  overwrite: true
-                }, function (e) {
+                    doRequest('/secure/test/removed/group', testClient1.session.token, false, function (response) {
 
-                  if (e) return done(e);
+                      expect(response.statusCode).to.equal(403);
+                      callback();
 
-                  doRequest('/secure/test/removed/group', testClient1.session.token, false, function (response) {
-
-                    expect(response.statusCode).to.equal(403);
-                    callback();
-
-                  });
-                });
+                    });
+                  }).catch(callback);
               });
             })
 

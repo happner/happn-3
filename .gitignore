@@ -14,6 +14,8 @@ test/test-browser/browser_client.js
 test/test-temp/*
 !test/test-temp/.tests.use.this
 !backward_compatibility.nedb
+!version_0.nedb
+!version_1.nedb
 *.db
 *test/test-resources/c7a/test/**
 *test/test-resources/c7/test/**
