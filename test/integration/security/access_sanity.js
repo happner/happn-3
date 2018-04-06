@@ -32,12 +32,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     this.timeout(15000);
 
-    if (testClient) testClient.disconnect({reconnect:false});
+    if (testClient) testClient.disconnect({reconnect: false});
 
-    if (adminClient) adminClient.disconnect({reconnect:false});
+    if (adminClient) adminClient.disconnect({reconnect: false});
 
-    setTimeout(function(){
-      serviceInstance.stop(function(){
+    setTimeout(function () {
+      serviceInstance.stop(function () {
         callback();
       });
     }, 3000);
@@ -137,6 +137,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       actions: ['set']
     };
     testGroup.permissions['/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on'] = {
+      actions: ['set']
+    };
+    testGroup.permissions['/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission'] = {
+      actions: ['set']
+    };
+    testGroup.permissions['/TEST/a7_eventemitter_security_access/' + test_id + '/prohibit-permission'] = {
       actions: ['set']
     };
 
@@ -463,6 +469,70 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }, {}, done);
 
         }, 2000);
+      });
+    });
+
+    it('tests the remove permission', function (done) {
+
+      testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission', {
+        test: 'data'
+      }, function (e, result) {
+
+        if (e) return done(e);
+
+        //groupName, path, action
+        serviceInstance.services.security.groups.removePermission(addedTestGroup.name, '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission', 'set')
+          .then(function () {
+
+            testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission', {
+              test: 'data'
+            }, function (e, result) {
+              expect(e.toString()).to.be('AccessDenied: unauthorized');
+              done();
+            });
+          })
+          .catch(done);
+      });
+    });
+
+    it('tests the upsert permission', function (done) {
+
+      serviceInstance.services.security.groups.upsertPermission(addedTestGroup.name, '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission', 'set')
+        .then(function () {
+
+          testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission', {
+            test: 'data'
+          }, done);
+        })
+        .catch(done);
+    });
+
+
+    it('tests the prohibit permission', function (done) {
+
+      var prohibitPath = '/TEST/a7_eventemitter_security_access/' + test_id + '/prohibit-permission';
+
+      testClient.set(prohibitPath, {
+        test: 'data'
+      }, function (e, result) {
+
+        if (e) return done(e);
+
+        delete addedTestGroup.permissions[prohibitPath].actions;
+        addedTestGroup.permissions[prohibitPath].prohibit = ['set'];
+
+        //groupName, path, action
+        serviceInstance.services.security.groups.upsertGroup(addedTestGroup)
+          .then(function () {
+
+            testClient.set(prohibitPath, {
+              test: 'data'
+            }, function (e, result) {
+              expect(e.toString()).to.be('AccessDenied: unauthorized');
+              done();
+            });
+          })
+          .catch(done);
       });
     });
 

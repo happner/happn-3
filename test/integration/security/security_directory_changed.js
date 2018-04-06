@@ -314,8 +314,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
             doSetOperation(client, null, function (e) {
 
-              console.log('did set op:::', e);
-
               expect(e.toString()).to.be('AccessDenied: unauthorized');
 
               done();

@@ -14,7 +14,7 @@ Happn stores its data in a collection called 'happn' by default on your mongodb/
 
 A paid for alternative to happn would be [firebase](https://www.firebase.com)
 
-Technologies used:
+Key technologies used:
 Happn uses [Primus](https://github.com/primus/primus) to power websockets for its pub/sub framework and mongo or nedb depending on the mode it is running in as its data store, the API uses [connect](https://github.com/senchalabs/connect).
 [nedb](https://github.com/louischatriot/nedb) as the embedded database, although we have forked it happn's purposes [here](https://github.com/happner/happn-nedb)
 
@@ -30,6 +30,7 @@ changes are:
 3. introduction of a protocol service, this allows for the creation of protocol plugins that take messages of the inbound and outbound queues and convert them into happn messages, essentially means we are able to use different protocols to talk to happn (ie. MQTT)
 4. simplified intra process client instantiation
 5. intra process client shares the same code as the websockets client, using a special intra-proc socket, instead of a primus spark
+6. database is now versioned and must be in sync with package.json
 
 [Migration plan from happn 2 to happn-3](https://github.com/happner/happn-3/blob/master/docs/migration-plan.md)
 --------------------------------------
@@ -626,6 +627,179 @@ SECURITY CLIENT
 var happn = require('happn');
 happn.client.create({username:'_ADMIN', password:'testPWD', secure:true},function(e, instance) {
 
+
+```
+
+SECURITY USERS AND GROUPS
+-------------------------
+
+*to modify users and groups, a direct code based connection to the happn-3 security service is required, thus users and groups should not be modified in any way over the wire*
+
+### add a group
+
+```javascript
+
+var happn = require('happn')
+var happnInstance; //this will be your server instance
+
+happn.service.create({secure:true, adminUser:{password:'testPWD'}},
+function (e, myHappn3Instance) {
+
+  var myGroup = {
+    name:'TEST',
+    permissions:{
+      '/test/path/*':{actions:['get', 'set']}, //allow only gets and sets to this path
+      '/test/allow/all':{actions:['*']} //allow all actions to this path
+    },
+    custom_data:{//any custom data you want
+      test:'data'
+    }
+  };
+  
+  //NB! permissions are stored separately to the group, so when upserting the group and it allready exists 
+  //with other permissions the current upserts permissions are merged with the existing ones, down to action level
+
+  myHappn3Instance.services.security.groups.upsertGroup(myGroup)
+  .then(function(upserted){
+    //group added
+  })
+
+});
+```
+
+#### NB! permissions are separate to the group, so when upserting the group and it allready exists with other permissions the current upserts permissions are merged with the existing ones, down to action level
+
+### add a user
+
+```javascript
+
+var happn = require('happn')
+var happnInstance; //this will be your server instance
+
+happn.service.create({secure:true, adminUser:{password:'testPWD'}},
+function (e, myHappn3Instance) {
+
+  var myUser = {
+        username: 'TEST',
+        password: 'TEST PWD',
+        custom_data: {
+          something: 'usefull'
+        }
+      };
+  
+  myHappn3Instance.services.security.users.upsertUser(myUser)
+  .then(function(upserted){
+    //user added, with no permissions yet - permissions must be assigned to the user by linking the user to a group
+  })
+
+});
+```
+
+### link a user to a group
+
+```javascript
+
+var happn = require('happn')
+var happnInstance; //this will be your server instance
+
+happn.service.create({secure:true, adminUser:{password:'testPWD'}},
+function (e, myHappn3Instance) {
+
+  var myUser, myGroup;
+  
+  myHappn3Instance.services.security.users.getUser('TEST')
+  .then(function(user){
+    myUser = user;
+    return myHappn3Instance.services.security.groups.getGroup('TEST');
+  })
+  .then(function(group){
+    myGroup = group;
+    return myHappn3Instance.services.security.groups.linkGroup(myGroup, myUser);
+  })
+  .then(function(){
+    //your TEST user now has the permissions assigned by your TEST group
+  });
+
+});
+
+
+```
+
+### upsert a permission
+
+*permissions can be merged by saving a group, or permissions can be added to a group piecemeal in the following way:*
+
+```javascript
+
+var happn = require('happn')
+var happnInstance; //this will be your server instance
+
+happn.service.create({secure:true, adminUser:{password:'testPWD'}},
+  function (e, myHappn3Instance) {
+  
+    myHappn3Instance.services.security.groups.upsertPermission('TEST'/* group name*/, '/test/path/*' /* permission path */, 'on' /* action */, true /* allow (default) - if false the permission is removed */)
+     .then(function () {
+        
+        //users belonging to the TEST group can now do "set", "get" AND "on" operations as opposed to only set and get (check above addGroup example to double check the pre-existing permissions)
+        
+     });
+  });
+  
+```
+
+
+### remove a permission
+
+*permissions can be removed piecemeal as follows:*
+
+```javascript
+
+var happn = require('happn')
+var happnInstance; //this will be your server instance
+
+happn.service.create({secure:true, adminUser:{password:'testPWD'}},
+function (e, myHappn3Instance) {
+
+  myHappn3Instance.services.security.groups.removePermission('TEST'/* group name*/, '/test/path/*' /* permission path */, 'on' /* action */)
+    .then(function () {
+      
+      //users belonging to the TEST group can now only do "set" and "get" operations, the right to do "on" has been revoked
+      
+    })
+    .catch(done);
+});
+
+```
+
+### remove a permission by upserting a group
+
+* a group can be upserted with a set of permissions which are merged into the permissions tree, permissions that have "prohibit" actions are removed *
+
+```javascript
+
+var happn = require('happn')
+var happnInstance; //this will be your server instance
+
+happn.service.create({secure:true, adminUser:{password:'testPWD'}},
+function (e, myHappn3Instance) {
+
+  var myGroup = {
+    name:'TEST',
+    permissions:{
+      '/test/path/*':{actions:['get', 'set']}, //allow only gets and sets to this path
+      '/test/allow/all':{actions:['*']} //allow all actions to this path
+      '/test/do/not/subscribe':{prohibit:['on']} //prohibit "on" requests to this path
+    },
+    custom_data:{//any custom data you want
+      test:'data'
+    }
+  };
+  
+  myHappn3Instance.services.security.groups.upsertGroup(myGroup)
+  .then(function(upserted){
+    //group updated, "on" permissions to "/test/do/not/subscribe" have been deleted if they existed previously
+  });
+ });
 
 ```
 

@@ -1,12 +1,25 @@
 SERVER MIGRATION
 -----------------
 
-##configuration
+## configuration
 
-###services 
+### services 
 *we have broken up services a bit more, and added some new ones, what follows are key services whoes config has changed from happn2*
 
-####transport service
+#### database
+*the database is now versioned in the package.json, if you try and run happn-3 on an old database (mongo or nedb) startup will fail, unless you configure the data service setting autoUpdateDBVersion:true*
+```javascript
+var config = {
+  services: {
+    database:{
+      config:{
+        autoUpdateDBVersion:true
+      }
+    }
+  }
+}
+```
+#### transport service
 *of note here is how to now configure your server for https mode:*
 ```javascript
 var config = {
