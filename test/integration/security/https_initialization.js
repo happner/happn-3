@@ -65,8 +65,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       if (e) return done(e);
 
-      console.log('got service:::');
-
       getClient(clientConfig, done);
 
     });

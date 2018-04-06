@@ -1301,7 +1301,7 @@ TESTING WITH KARMA
 ------------------
 
 testing payload encryption on the browser:
-gulp --gulpfile test/test-browser/gulp-01.js
+gulp --gulpfile test/browser/gulp-01.js
 
 
 OTHER PLACES WHERE HAPPN-3 IS USED:
