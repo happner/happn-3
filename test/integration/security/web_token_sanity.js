@@ -209,19 +209,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     this.timeout(15000);
 
-    adminClient.disconnect({reconnect: false}, function (e) {
-      if (e) return done(e);
-      testClient.disconnect({reconnect: false}, function (e) {
-        if (e) return done(e);
-        testClient1.disconnect({reconnect: false}, function (e) {
-          if (e) return done(e);
-          testClient2.disconnect({reconnect: false}, function (e) {
-            if (e) return done(e);
-            happnInstance.stop(done);
-          });
-        });
-      });
-    });
+    if (adminClient) adminClient.disconnect({reconnect: false});
+    if (testClient) testClient.disconnect({reconnect: false});
+    if (testClient1) testClient1.disconnect({reconnect: false});
+    if (testClient2) testClient2.disconnect({reconnect: false});
+
+    setTimeout(function(){
+      happnInstance.stop(done);
+    }, 3000);
   });
 
   /*
@@ -607,7 +602,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('removes the user associated with the token - we ensure we can not access the resource with the token', function (callback) {
+  it('removes the user associated with the token - we ensure we can not access the resource with the token', function (done) {
 
     var testGroup2 = {
       name: 'TEST GROUP2' + test_id,
@@ -678,7 +673,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                   doRequest('/secure/test/removed/user', testClient2.session.token, false, function (response) {
 
                     expect(response.statusCode).to.equal(403);
-                    callback();
+                    done();
 
                   });
                 });
@@ -688,7 +683,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             .catch(function (e) {
               done(e);
             });
-
         });
       });
     });

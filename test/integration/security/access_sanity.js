@@ -196,7 +196,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
 
-    it('adds new permissions to the upserted group', function (done) {
+    before('adds new permissions to the upserted group', function (done) {
 
       testGroup.permissions['/TEST/a7_eventemitter_security_access/' + test_id + '/new_permission'] = {
         actions: ['get', 'set']
@@ -211,7 +211,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         return done();
 
       });
-
     });
 
     it('checks allowed on, and prevented from on', function (done) {

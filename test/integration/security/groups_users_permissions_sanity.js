@@ -86,7 +86,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             'test2': 'test2'
           }
         });
-        expect(permissionSetKey).to.be('/test1//test2/');
+        expect(permissionSetKey).to.be(require('crypto').createHash('sha1').update('test1/test2').digest('base64'));
         callback();
 
       });

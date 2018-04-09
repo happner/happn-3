@@ -1,7 +1,7 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
-  "version": "6.0.0-beta.5",
+  "version": "6.0.0-beta.6",
   "main": "./lib/index",
   "protocol": "2",
   "database": "1",
@@ -12,7 +12,8 @@
     "test-browser": "gulp --gulpfile test/browser/gulp-01.js",
     "test-longrunning": "node test/test-longrunning/serial-run.js",
     "test-sanity": "mocha silence.js test/integration/**/*sanity.js",
-    "test-release": "rm -rf node_modules && rm -f package-lock.json && npm install && npm test"
+    "test-release": "rm -rf node_modules && rm -f package-lock.json && npm install && npm test",
+    "test-010": "source ~/.nvm/nvm.sh && nvm use 0.10 && rm -rf node_modules && npm install && node_modules/mocha/bin/_mocha test/integration/**"
   },
   "author": "Tenacious and NSOFT",
   "license": "MIT",
