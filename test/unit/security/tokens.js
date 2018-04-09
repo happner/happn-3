@@ -712,6 +712,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         }
       },
+      groups: {
+        getGroup: function (groupName, opts, callback) {
+
+          if (groups[groupName]) callback(null, groups[groupName]);
+
+        }
+      },
       happn: {
         services: {
           utils: utils
@@ -774,6 +781,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     checkpoint.securityService = {
       users: {
+        getGroup: function (groupName, opts, callback) {
+
+          if (groups[groupName]) callback(null, groups[groupName]);
+
+        }
+      },
+      groups: {
         getGroup: function (groupName, opts, callback) {
 
           if (groups[groupName]) callback(null, groups[groupName]);
@@ -902,6 +916,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (groups[groupName]) callback(null, groups[groupName]);
           }
         },
+        groups: {
+          getGroup: function (groupName, opts, callback) {
+
+            if (groups[groupName]) callback(null, groups[groupName]);
+
+          }
+        },
         happn: {
           services: {
             utils: utils
@@ -1009,6 +1030,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (groups[groupName]) callback(null, groups[groupName]);
           }
         },
+        groups: {
+          getGroup: function (groupName, opts, callback) {
+
+            if (groups[groupName]) callback(null, groups[groupName]);
+
+          }
+        },
         happn: {
           services: {
             utils: utils
@@ -1114,6 +1142,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (groups[groupName]) callback(null, groups[groupName]);
           }
         },
+        groups: {
+          getGroup: function (groupName, opts, callback) {
+
+            if (groups[groupName]) callback(null, groups[groupName]);
+
+          }
+        },
         happn: {
           services: {
             utils: utils
@@ -1217,6 +1252,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         users: {
           getGroup: function (groupName, opts, callback) {
             if (groups[groupName]) callback(null, groups[groupName]);
+          }
+        },
+        groups: {
+          getGroup: function (groupName, opts, callback) {
+
+            if (groups[groupName]) callback(null, groups[groupName]);
+
           }
         },
         happn: {
@@ -1352,6 +1394,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           if (groups[groupName]) callback(null, groups[groupName]);
         }
       },
+      groups: {
+        getGroup: function (groupName, opts, callback) {
+
+          if (groups[groupName]) callback(null, groups[groupName]);
+
+        }
+      },
       happn: {
         services: {
           utils: utils
@@ -1461,6 +1510,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           if (groups[groupName]) callback(null, groups[groupName]);
         }
       },
+      groups: {
+        getGroup: function (groupName, opts, callback) {
+
+          if (groups[groupName]) callback(null, groups[groupName]);
+
+        }
+      },
       happn: {
         services: {
           utils: utils
@@ -1565,6 +1621,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       users: {
         getGroup: function (groupName, opts, callback) {
           if (groups[groupName]) callback(null, groups[groupName]);
+        }
+      },
+      groups: {
+        getGroup: function (groupName, opts, callback) {
+
+          if (groups[groupName]) callback(null, groups[groupName]);
+
         }
       },
       happn: {
