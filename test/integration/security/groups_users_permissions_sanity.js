@@ -622,7 +622,58 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         });
       });
+
+      it('deletes a group that belongs to a user without un-linking it, then is able to fetch the user', function (done) {
+
+        var thisUser = {
+          username:"thisUser1",
+          password:"thisUser1"
+        };
+
+        var thisGroup = {
+          name:"thisGroup1",
+          permissions:{}
+        };
+
+        thisGroup.permissions['/*' + test_id + '/remove_group'] = {
+          actions: ['set', 'get']
+        };
+
+        var fetchedGroup;
+
+        testServices.security.groups.upsertGroup(thisGroup)
+          .then(function(){
+            return testServices.security.users.upsertUser(thisUser);
+          })
+          .then(function(){
+            return testServices.security.groups.getGroup('thisGroup1');
+          })
+          .then(function(gotGroup){
+            fetchedGroup = gotGroup;
+            return testServices.security.users.getUser('thisUser1');
+          })
+          .then(function(fetchedUser){
+            return testServices.security.groups.linkGroup(fetchedGroup, fetchedUser);
+          })
+          .then(function(){
+            return testServices.security.users.getUser('thisUser1');
+          })
+          .then(function(user){
+
+            expect(user.groups['thisGroup1']).to.not.be(null);
+            expect(user.groups['thisGroup1']).to.not.be(undefined);
+            return testServices.security.groups.deleteGroup(fetchedGroup);
+          })
+          .then(function(){
+            return testServices.security.users.getUser('thisUser1');
+          })
+          .then(function(user){
+
+            expect(user.groups['thisGroup1']).to.be(undefined);
+            done();
+          })
+          .catch(done);
+      });
     });
   });
-
 });
