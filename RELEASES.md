@@ -402,3 +402,8 @@
 6.0.0
 ----------------
   - replicate security changes where happn-cluster is present
+  
+6.1.0
+----------------
+  - fixed 401 issue with auth invalid credentials failure
+  - merge only subscriptions
