@@ -46,6 +46,7 @@ var serverConfig = {
 
     data: {
       config: {
+        autoUpdateDBVersion:false, //if your db version is 0 and the db version in package.json is 1 the db will automatically be updated
         datastores: [//you can choose where you want the data persisted depending on the key
           {
             name: 'memory',

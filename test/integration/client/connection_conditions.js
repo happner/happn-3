@@ -1,5 +1,8 @@
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
+  //how I found where our possible memory leak on process.on
+  //process.on('warning', e => console.warn(e.stack));
+
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
   var service = happn.service;

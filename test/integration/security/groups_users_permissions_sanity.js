@@ -40,7 +40,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var initializeMockServices = function (callback) {
 
       var happnMock = {
-        services: {}
+        services: {
+          system:{
+            package:require('../../../package.json')
+          }
+        }
       };
 
       async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function (serviceName, eachServiceCB) {
@@ -48,12 +52,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         testServices[serviceName] = new testServices[serviceName]({
           logger: Logger
         });
+
         testServices[serviceName].happn = happnMock;
 
         happnMock.services[serviceName] = testServices[serviceName];
 
         if (serviceName == 'error') happnMock.services[serviceName].handleFatal = function (message, e) {
-          console.log('FATAL FAILURE:::', message);
           throw e;
         };
 
@@ -82,7 +86,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             'test2': 'test2'
           }
         });
-        expect(permissionSetKey).to.be('/test1//test2/');
+        expect(permissionSetKey).to.be(require('crypto').createHash('sha1').update('test1/test2').digest('base64'));
         callback();
 
       });
@@ -210,19 +214,19 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         callback();
 
       });
-
     });
 
     it('gets a specific group', function (callback) {
 
       testServices.security.users.getGroup(testGroup.name, function (e, group) {
+
         if (e) return callback(e);
 
         expect(group.name).to.be(testGroup.name);
+
         callback();
 
       });
-
     });
 
     it('should add permissions to a group', function (callback) {
@@ -231,62 +235,64 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       //add set permissions to a group
       testGroup.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_set'] = {
-        action: ['set']
+        actions: ['set']
       };
 
       //add get permissions to a group
       testGroup.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_get'] = {
-        action: ['get']
+        actions: ['get']
       };
 
       //add on permissions to a group
       testGroup.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_on'] = {
-        action: ['on']
+        actions: ['on']
       };
 
       //add remove permissions to a group
       testGroup.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_remove'] = {
-        action: ['remove']
+        actions: ['remove']
       };
 
       //add all permissions to a group
       testGroup.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_all'] = {
-        action: ['*']
+        actions: ['*']
       };
 
       //add all permissions to a wildcard group
       testGroup.permissions['/*' + test_id + '/permission_wildcard/all/*'] = {
-        action: ['*']
+        actions: ['*']
       };
 
       //add set permissions to a wildcard group
       testGroup.permissions['/*' + test_id + '/permission_wildcard/set/*'] = {
-        action: ['set']
+        actions: ['set']
       };
 
       //add multiple permissions to a wildcard group
       testGroup.permissions['/*' + test_id + '/permission_wildcard/multiple/*'] = {
-        action: ['set', 'get']
+        actions: ['set', 'get']
       };
 
       //add multiple permissions to a group
       testGroup.permissions['/' + test_id + '/permission_wildcard/multiple'] = {
-        action: ['set', 'on']
+        actions: ['set', 'on']
       };
 
       testServices.security.users.upsertGroup(testGroup, function (e, result) {
 
-        expect(result.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_set'].action[0]).to.be('set');
-        expect(result.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_get'].action[0]).to.be('get');
-        expect(result.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_on'].action[0]).to.be('on');
-        expect(result.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_remove'].action[0]).to.be('remove');
-        expect(result.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_all'].action[0]).to.be('*');
+        if (e) return callback(e);
 
-        expect(result.permissions['/*' + test_id + '/permission_wildcard/multiple/*'].action[0]).to.be('set');
-        expect(result.permissions['/' + test_id + '/permission_wildcard/multiple'].action[0]).to.be('set');
+        expect(result.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_set'].actions[0]).to.be('set');
+        expect(result.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_get'].actions[0]).to.be('get');
+        expect(result.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_on'].actions[0]).to.be('on');
+        expect(result.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_remove'].actions[0]).to.be('remove');
+        expect(result.permissions['/a5_eventemitter_security_groups/' + test_id + '/permission_all'].actions[0]).to.be('*');
 
-        expect(result.permissions['/*' + test_id + '/permission_wildcard/multiple/*'].action[1]).to.be('get');
-        expect(result.permissions['/' + test_id + '/permission_wildcard/multiple'].action[1]).to.be('on');
+        expect(result.permissions['/*' + test_id + '/permission_wildcard/multiple/*'].actions[0]).to.be('set');
+        expect(result.permissions['/' + test_id + '/permission_wildcard/multiple'].actions[0]).to.be('set');
+
+        expect(result.permissions['/*' + test_id + '/permission_wildcard/multiple/*'].actions[1]).to.be('get');
+        expect(result.permissions['/' + test_id + '/permission_wildcard/multiple'].actions[1]).to.be('on');
 
         callback();
 
@@ -616,7 +622,58 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         });
       });
+
+      it('deletes a group that belongs to a user without un-linking it, then is able to fetch the user', function (done) {
+
+        var thisUser = {
+          username:"thisUser1",
+          password:"thisUser1"
+        };
+
+        var thisGroup = {
+          name:"thisGroup1",
+          permissions:{}
+        };
+
+        thisGroup.permissions['/*' + test_id + '/remove_group'] = {
+          actions: ['set', 'get']
+        };
+
+        var fetchedGroup;
+
+        testServices.security.groups.upsertGroup(thisGroup)
+          .then(function(){
+            return testServices.security.users.upsertUser(thisUser);
+          })
+          .then(function(){
+            return testServices.security.groups.getGroup('thisGroup1');
+          })
+          .then(function(gotGroup){
+            fetchedGroup = gotGroup;
+            return testServices.security.users.getUser('thisUser1');
+          })
+          .then(function(fetchedUser){
+            return testServices.security.groups.linkGroup(fetchedGroup, fetchedUser);
+          })
+          .then(function(){
+            return testServices.security.users.getUser('thisUser1');
+          })
+          .then(function(user){
+
+            expect(user.groups['thisGroup1']).to.not.be(null);
+            expect(user.groups['thisGroup1']).to.not.be(undefined);
+            return testServices.security.groups.deleteGroup(fetchedGroup);
+          })
+          .then(function(){
+            return testServices.security.users.getUser('thisUser1');
+          })
+          .then(function(user){
+
+            expect(user.groups['thisGroup1']).to.be(undefined);
+            done();
+          })
+          .catch(done);
+      });
     });
   });
-
 });

@@ -387,14 +387,23 @@
 5.2.0 2018-02-05
 ----------------
   - expand stats to include queue messages/second (rate)
-  
+
 5.2.1 2018-02-26
 ----------------
   - fixed invalid credentials error code to 401
-  
+
 5.3.0 2018-03-13
 ----------------
   - all tests refactored
   - able to add custom data to groups, tested
   - fixed browser tests
   - fixed prepareOptions in client for redundant connections
+
+6.0.0
+----------------
+  - replicate security changes where happn-cluster is present
+  
+6.1.0
+----------------
+  - fixed 401 issue with auth invalid credentials failure
+  - merge only subscriptions
