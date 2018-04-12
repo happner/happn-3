@@ -102,7 +102,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(lastMetrics.gauges['happn.system.memory.heapUsed']).to.not.be(undefined);
       expect(lastMetrics.gauges['happn.system.memory.external']).to.not.be(undefined);
 
-      expect(lastMetrics.gauges['happn.session.sessions']).to.be(1);
+      expect(lastMetrics.gauges['happn.session.sessions'] > 0).to.be(true);
 
       expect(lastMetrics.gauges['happn.queue.publication.length']).to.not.be(undefined);
       expect(lastMetrics.gauges['happn.queue.inbound.length']).to.not.be(undefined);

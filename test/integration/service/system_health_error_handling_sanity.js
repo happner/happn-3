@@ -226,7 +226,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               if (!didGet) didGet = true;
               else {
                 //TODO: figure this one out
-                console.warn('get happened twice:::');
+                //console.warn('get happened twice:::');
                 return;
               }
 

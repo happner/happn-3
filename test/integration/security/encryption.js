@@ -17,17 +17,20 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var testServices = {};
 
-  testServices.data = require('../../../lib/services/data/service');
   testServices.crypto = require('../../../lib/services/crypto/service');
   testServices.utils = require('../../../lib/services/utils/service');
 
   before('should initialize the service', function (callback) {
 
     var happnMock = {
-      services: {}
+      services: {
+        system:{
+          package:require('../../../package.json')
+        }
+      }
     };
 
-    async.eachSeries(['utils', 'data', 'crypto'], function (serviceName, eachServiceCB) {
+    async.eachSeries(['utils', 'crypto'], function (serviceName, eachServiceCB) {
 
       testServices[serviceName] = new testServices[serviceName]({
         logger: Logger

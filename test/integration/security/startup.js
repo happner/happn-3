@@ -8,9 +8,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var testConfigs = {};
 
-  testConfigs.data = {}
+  testConfigs.data = {};
 
-  testConfigs.security = {}
+  testConfigs.security = {};
 
   var testServices = {};
 
@@ -22,6 +22,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   testServices.utils = require('../../../lib/services/utils/service');
   testServices.error = require('../../../lib/services/error/service');
   testServices.log = require('../../../lib/services/log/service');
+  testServices.subscription = require('../../../lib/services/subscription/service');
 
   var checkpoint = require('../../../lib/services/security/checkpoint');
   testServices.checkpoint = new checkpoint({
@@ -31,10 +32,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var initializeMockServices = function (callback) {
 
     var happnMock = {
-      services: {}
+      services: {
+        system: {
+          package: require('../../../package.json')
+        }
+      }
     };
 
-    async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function (serviceName, eachServiceCB) {
+    async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security', 'subscription'], function (serviceName, eachServiceCB) {
 
       testServices[serviceName] = new testServices[serviceName]({
         logger: Logger
@@ -83,21 +88,24 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       callback();
 
     });
-
   });
 
   it('should have a default admin group', function (callback) {
+
     testServices.data.get('/_SYSTEM/_SECURITY/_GROUP/_ADMIN', {}, function (e, response) {
 
       if (e) return callback(e);
 
       if (!response) return callback(new Error('admin group doesnt exist in database'));
 
-      expect(response._meta.path).to.be('/_SYSTEM/_SECURITY/_GROUP/_ADMIN');
-      expect(response.data.permissions['*'].actions[0]).to.be('*');
+      testServices.security.groups.getGroup('_ADMIN', function (e, group) {
 
-      callback();
+        if (e) return callback(e);
 
+        expect(group.permissions['*'].actions[0]).to.be('*');
+
+        callback();
+      });
     });
   });
 
