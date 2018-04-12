@@ -70,8 +70,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           .then(function (client) {
 
             clientInstance = client;
-
-            console.log('logged in???');
             return clientInstance.get('/mesh/schema/*');
 
           })
