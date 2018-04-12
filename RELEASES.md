@@ -402,6 +402,10 @@
 6.0.0
 ----------------
   - replicate security changes where happn-cluster is present
+  - db is versioned, and can be upgraded
+  - cookie token permissionSetKey removed
+  - fixed group deleted but not unlinked properly
+  - updated 401 return on http calls
   
 6.1.0
 ----------------
