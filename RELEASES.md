@@ -406,3 +406,8 @@
   - cookie token permissionSetKey removed
   - fixed group deleted but not unlinked properly
   - updated 401 return on http calls
+  
+6.1.0
+----------------
+  - fixed 401 issue with auth invalid credentials failure
+  - merge only subscriptions
