@@ -411,3 +411,8 @@
 ----------------
   - fixed 401 issue with auth invalid credentials failure
   - merge only subscriptions
+  
+6.2.0
+----------------
+  - local admin login
+  - tested _ADMIN password can be changed
