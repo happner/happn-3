@@ -81,8 +81,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
   });
-
-
+  
   it('does an admin login, should modify the admin password, restart the service and do an admin login, then pull data from a restricted path', function (callback) {
 
     this.timeout(default_timeout);
@@ -113,13 +112,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
                 expect(records.length > 0).to.be(true);
 
-                expect(currentService.services.session.__sessions.length).to.be(1);
+                expect(Object.keys(currentService.services.session.__sessions).length).to.be(1);
 
                 client.disconnect({reconnect:false});
 
                 setTimeout(function(){
 
-                  expect(currentService.services.session.__sessions.length).to.be(0);
+                  expect(Object.keys(currentService.services.session.__sessions).length).to.be(0);
 
                   callback();
                 }, 3000);
