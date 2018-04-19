@@ -124,20 +124,43 @@ HappnClient.create([options], function(e, instance) {
 
 </script>
 ```
-Intra-process client:
+Intra-process / local client:
 ---------------------
-
+*although we have direct access to the services (security included) - this method still requires a username and password if the happn instance is secure*
 ```javascript
 
 service.create(function (e, happnInst) {
 
-    if (e) return callback(e);
+    if (e) throw e;
 
     happnInstance = happnInst;
     
-    happnInstance.services.session.localClient(function(e, instance){
+    happnInstance.services.session.localClient(/*credentials argument only necessary if secure*/{username:'test', password:'test'}, function(e, instance){
     
       var myLocalClient = instance;
+      
+      //myLocalClient.set(...)
+    
+    });
+    
+  });
+
+```
+
+Intra-process / local admin client:
+-----------------------------------------------------
+*will pass back a client with admin rights no username or password necessary, this is because we have direct access to the services, security included*
+```javascript
+
+service.create(function (e, happnInst) {
+
+    if (e) throw e;
+
+    happnInstance = happnInst;
+    
+    happnInstance.services.session.localAdminClient(function(e, instance){
+    
+      var myLocalAdminClient = instance;
       
       //myLocalClient.set(...)
     

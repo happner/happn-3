@@ -346,7 +346,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('times data out, specific cache', function (done) {
 
-    this.timeout(5000);
+    this.timeout(10000);
     var key = testId + 'test1';
 
     serviceInstance.clear('specific');
@@ -380,8 +380,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           });
 
-        }, 2000);
-
+        }, 3000);
       });
     });
   });
