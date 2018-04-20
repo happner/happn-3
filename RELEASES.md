@@ -399,7 +399,7 @@
   - fixed browser tests
   - fixed prepareOptions in client for redundant connections
 
-6.0.0
+6.0.0 2018-03-13
 ----------------
   - replicate security changes where happn-cluster is present
   - db is versioned, and can be upgraded
@@ -407,12 +407,16 @@
   - fixed group deleted but not unlinked properly
   - updated 401 return on http calls
   
-6.1.0
+6.1.0 2018-03-18
 ----------------
   - fixed 401 issue with auth invalid credentials failure
   - merge only subscriptions
   
-6.2.0
+6.2.0 2018-03-19
 ----------------
   - local admin login
   - tested _ADMIN password can be changed
+  
+6.2.1 2018-03-20
+----------------
+  - activate session management no longer calls dataChanged
