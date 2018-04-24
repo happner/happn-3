@@ -264,6 +264,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     this.timeout(15000);
 
+    var groupUnlinkedChangedData;
+
+    serviceInstance.services.security.on('security-data-changed', function(changed){
+      if (changed.whatHappnd == 'unlink-group') groupUnlinkedChangedData = changed.changedData;
+    });
+
     createTestClient(function (e, client) {
 
       if (e) return done(e);
@@ -283,6 +289,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             doOperations(client, null, function (e) {
 
               expect(e.toString()).to.be('AccessDenied: unauthorized');
+
+              expect(groupUnlinkedChangedData).to.eql({ path: '/_SYSTEM/_SECURITY/_USER/TEST USER@blah.com0/_USER_GROUP/TEST GROUP' + test_id });
 
               done();
             });
@@ -509,10 +517,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expect(count).to.be(3);
 
         serviceInstance.services.security.on('security-data-changed', function(){
-          securityServiceEventCount++;
-        });
-
-        serviceInstance.services.security.on('security-data-updated', function(){
           securityServiceEventCount++;
         });
 
