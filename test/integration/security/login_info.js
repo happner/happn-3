@@ -112,6 +112,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var sessionId;
 
     it('login info is carried across login', function (done) {
+
       var events = {};
 
       server2.services.session.on('authentic', function (evt) {
@@ -137,7 +138,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           "KEY": "VALUE"
         }
       }).then(function (client) {
+
+        expect(server2.services.security.decodeToken(client.session.token).info._browser).to.be(false);
+
         client.disconnect();
+
       }).catch(done);
 
       setTimeout(function RunAfterClientHasLoggedInAndOut() {
