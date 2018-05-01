@@ -14,6 +14,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var tempFile = __dirname + '/tmp/testdata_secur_' + require('shortid').generate() + '.db';
 
+    this.timeout(10000);
+
     testConfigs.data = {
       persist: true,
       filename: tempFile

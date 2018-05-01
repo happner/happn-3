@@ -407,16 +407,26 @@
   - fixed group deleted but not unlinked properly
   - updated 401 return on http calls
   
-6.1.0 2018-03-18
+6.1.0 2018-04-18
 ----------------
   - fixed 401 issue with auth invalid credentials failure
   - merge only subscriptions
   
-6.2.0 2018-03-19
+6.2.0 2018-04-19
 ----------------
   - local admin login
   - tested _ADMIN password can be changed
   
-6.2.1 2018-03-20
+6.2.1 2018-04-20
 ----------------
   - activate session management no longer calls dataChanged
+  
+6.3.0 2018-04-25
+----------------
+  - lisUsers optimised
+  - listUsers criteria
+  
+6.3.1 2018-05-01
+----------------
+  - removed unnecessary bindings
+  - removed unnecessary try catch blocks

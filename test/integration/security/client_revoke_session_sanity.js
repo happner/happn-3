@@ -221,7 +221,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
   });
 
-  it('logs in with the ws user - we then test a call to a web-method, then disconnects with the revokeToken flag set to true, we try and reuse the token and ensure that it fails, then wait longer and ensure even after the token is revoked it still fails', function (done) {
+  it('logs in with the ws user - we then test a call to a web-method, then disconnects with the revokeToken flag set to true, we try and reuse the token and ensure that it fails, then wait longer and ensure even after the token is times out it still fails', function (done) {
 
     this.timeout(10000);
 
@@ -260,7 +260,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
                   serviceInstance.services.security.__cache_revoked_sessions.get(sessionId, function (e, cachedToken) {
 
-                    expect(cachedToken).to.be(undefined);
+                    expect(cachedToken).to.be(null);
 
                     doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
 
@@ -268,8 +268,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
                       done();
                     });
-                  }, 4010);
-                });
+                  });
+                }, 4010);
               });
             }, 2000);
           });
