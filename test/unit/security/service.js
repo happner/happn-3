@@ -8,6 +8,72 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var Logger = require('happn-logger');
   var CheckPoint = require('../../../lib/services/security/checkpoint');
 
+  var initializeCheckpoint = function (callback, config) {
+
+    if (!config) config = {};
+
+    var Checkpoint = require('../../../lib/services/security/checkpoint');
+
+    var checkpoint = new Checkpoint({
+      logger: Logger
+    });
+
+    var CacheService = require('../../../lib/services/cache/service');
+    var UtilsService = require('../../../lib/services/utils/service');
+
+    var cacheServiceInst = new CacheService();
+    var utilsServiceInst = new UtilsService();
+
+    cacheServiceInst.initialize(function () {
+
+      var happn = {
+        services: {
+          session: new EventEmitter(),
+          utils: utilsServiceInst,
+          security: {
+            happn: {
+              services: {
+                utils: new UtilsService()
+              }
+            },
+            users: {
+              getUser: function (name, callback) {
+                return callback(null, {
+                  username: name,
+                  groups: {}
+                });
+              }
+            },
+            groups: {
+              getGroup: function (name, opts, callback) {
+                return callback(null, {
+                  name: name,
+                  permissions: {}
+                });
+              }
+            }
+          },
+          cache: cacheServiceInst
+        }
+      };
+
+      Object.defineProperty(checkpoint, 'happn', {
+        value: happn
+      });
+
+      Object.defineProperty(cacheServiceInst, 'happn', {
+        value: happn
+      });
+
+      checkpoint.initialize(config, happn.services.security, function (e) {
+
+        if (e) return callback(e);
+
+        callback(null, checkpoint);
+      });
+    });
+  };
+
   var serviceConfig = {
     services: {
       security: {
@@ -620,204 +686,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       });
     }
-  });
-
-  it("tests the security checkpoints __createPermissionSet function", function (done) {
-
-    var checkpoint = new CheckPoint({
-      logger: require('happn-logger')
-    });
-
-    var Utils = require('../../../lib/services/utils/service.js');
-
-    var utils = new Utils({
-      logger: require('happn-logger')
-    });
-
-    checkpoint.securityService = {
-      getGroup: function (groupName, opts, callback) {
-
-        if (groups[groupName]) callback(null, groups[groupName]);
-
-      },
-      happn: {
-        services: {
-          utils: utils
-        }
-      }
-    };
-
-    var permissions = {
-      '/test/group/explicit': {
-        action: ['set']
-      },
-      '/test/group/*': {
-        action: ['*']
-      }
-    };
-
-    var permissionSet = checkpoint.__createPermissionSet(permissions);
-
-    expect(permissionSet.explicit['/test/group/explicit'].action[0]).to.be('set');
-    expect(permissionSet.wildcard['/test/group/*'].action[0]).to.be('*');
-    expect(Object.keys(permissionSet.wildcard).length).to.be(1);
-
-    done();
-
-  });
-
-  it("tests the security checkpoints __loadPermissionSet function", function (done) {
-
-    var groups = {
-      'TEST_GROUP': {
-        permissions: {
-          '/test/group/explicit': {
-            action: ['set']
-          },
-          '/test/group/*': {
-            action: ['*']
-          }
-        }
-      },
-      'TEST_GROUP_1': {
-        permissions: {
-          '/test/group/*': {
-            action: ['*']
-          }
-        }
-      }
-    };
-
-    var identity = {
-      user: {
-        groups: groups
-      }
-    };
-
-    var checkpoint = new CheckPoint({
-      logger: require('happn-logger')
-    });
-
-    var Utils = require('../../../lib/services/utils/service.js');
-
-    var utils = new Utils({
-      logger: require('happn-logger')
-    });
-
-    checkpoint.securityService = {
-      users: {
-        getGroup: function (groupName, opts, callback) {
-
-          if (groups[groupName]) callback(null, groups[groupName]);
-
-        }
-      },
-      groups: {
-        getGroup: function (groupName, opts, callback) {
-
-          if (groups[groupName]) callback(null, groups[groupName]);
-
-        }
-      },
-      happn: {
-        services: {
-          utils: utils
-        }
-      }
-    };
-
-    checkpoint.__loadPermissionSet(identity, function (e, permissionSet) {
-
-      if (e) return done(e);
-
-      expect(permissionSet.explicit['/test/group/explicit'].action[0]).to.be('set');
-      expect(permissionSet.wildcard['/test/group/*'].action[0]).to.be('*');
-      expect(Object.keys(permissionSet.wildcard).length).to.be(1);
-
-      done();
-
-
-    });
-
-  });
-
-  it("tests the security checkpoints __authorized function", function (done) {
-
-    var groups = {
-      'TEST_GROUP': {
-        permissions: {
-          '/test/explicit': {
-            actions: ['set']
-          },
-          '/test/wild/*': {
-            actions: ['*']
-          }
-        }
-      },
-      'TEST_GROUP_1': {
-        permissions: {
-          '/test/wild/*': {
-            actions: ['*']
-          }
-        }
-      }
-    };
-
-    var identity = {
-      user: {
-        groups: groups
-      }
-    };
-
-    var checkpoint = new CheckPoint({
-      logger: require('happn-logger')
-    });
-
-    var Utils = require('../../../lib/services/utils/service.js');
-
-    var utils = new Utils({
-      logger: require('happn-logger')
-    });
-
-    checkpoint.securityService = {
-      users: {
-        getGroup: function (groupName, opts, callback) {
-
-          if (groups[groupName]) callback(null, groups[groupName]);
-
-        }
-      },
-      groups: {
-        getGroup: function (groupName, opts, callback) {
-
-          if (groups[groupName]) callback(null, groups[groupName]);
-
-        }
-      },
-      happn: {
-        services: {
-          utils: utils
-        }
-      }
-    };
-
-    checkpoint.__loadPermissionSet(identity, function (e, permissionSet) {
-
-      if (e) return done(e);
-
-      expect(permissionSet.explicit['/test/explicit'].actions[0]).to.be('set');
-      expect(permissionSet.wildcard['/test/wild/*'].actions[0]).to.be('*');
-      expect(Object.keys(permissionSet.wildcard).length).to.be(1);
-
-
-      expect(checkpoint.__authorized(permissionSet, '/test/explicit', 'set')).to.be(true);
-      expect(checkpoint.__authorized(permissionSet, '/test/wild/blah', 'on')).to.be(true);
-      expect(checkpoint.__authorized(permissionSet, '/test/explicit/1', 'set')).to.be(false);
-      expect(checkpoint.__authorized(permissionSet, '/test', 'get')).to.be(false);
-
-      done();
-
-    });
   });
 
   it('tests the security services __profileSession method, default profiles', function (done) {

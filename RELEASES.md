@@ -430,3 +430,11 @@
 ----------------
   - removed unnecessary bindings
   - removed unnecessary try catch blocks
+  
+6.3.2 2018-05-03
+----------------
+  - security caches refactor
+  - security caches extended tests
+  - lru cache now has getSync and setSync methods
+  - lru cache now has values method
+  - security users and groups refactor

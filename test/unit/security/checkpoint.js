@@ -6,57 +6,258 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var happn = require('../../../lib/index');
   var async = require('async');
   var Logger = require('happn-logger');
+  var EventEmitter = require('events');
+  var Checkpoint = require('../../../lib/services/security/checkpoint');
 
+  var initializeCheckpoint = function (callback, config) {
 
-  it('tests caching in checkpoint, __permissionCache', function (done) {
-
-    var Checkpoint = require('../../../lib/services/security/checkpoint');
+    if (!config) config = {};
 
     var checkpoint = new Checkpoint({
       logger: Logger
     });
 
+    var CacheService = require('../../../lib/services/cache/service');
     var UtilsService = require('../../../lib/services/utils/service');
 
-    var happn = {
-      services:{
-        security:{
-          happn:{
-            services:{
-              utils:new UtilsService()
+    var cacheServiceInst = new CacheService();
+    var utilsServiceInst = new UtilsService();
+
+    cacheServiceInst.initialize(function () {
+
+      var happn = {
+        services: {
+          session: new EventEmitter(),
+          utils: utilsServiceInst,
+          security: {
+            happn: {
+              services: {
+                utils: new UtilsService()
+              }
+            },
+            users: {
+              getUser: function (name, callback) {
+                return callback(null, {
+                  username: name,
+                  groups: {}
+                });
+              }
+            },
+            groups: {
+              getGroup: function (name, opts, callback) {
+
+                var returnGroup = {
+                  name: name,
+                  permissions: {}
+                };
+
+                if (name == 'TEST_GROUP')
+                  returnGroup = {
+                    name:'TEST_GROUP',
+                    permissions: {
+                      '/test/group/explicit': {
+                        action: ['set']
+                      },
+                      '/test/group/*': {
+                        action: ['*']
+                      }
+                    }
+                  };
+
+
+                if (name == 'TEST_GROUP_1')
+                  returnGroup = {
+                    name:'TEST_GROUP_1',
+                    permissions: {
+                      '/test/group/*': {
+                        action: ['*']
+                      }
+                    }
+                  };
+
+
+                if (name == 'TEST_GROUP_2')
+                  returnGroup = {
+                    name:'TEST_GROUP_2',
+                    permissions: {
+                      '/test/explicit': {
+                        actions: ['set']
+                      },
+                      '/test/wild/*': {
+                        actions: ['*']
+                      }
+                    }
+                  };
+
+                if (name == 'TEST_GROUP_3')
+                  returnGroup = {
+                    name:'TEST_GROUP_3',
+                    permissions: {
+                      '/test/wild/*': {
+                        actions: ['*']
+                      }
+                    }
+                  };
+
+                return callback(null, returnGroup);
+              }
             }
           },
-          users:{
-            getUser:function(name, callback){
-              return callback(null, {
-                username:name,
-                groups:{
+          cache: cacheServiceInst
+        }
+      };
 
-                }
-              });
-            }
+      Object.defineProperty(checkpoint, 'happn', {
+        value: happn
+      });
+
+      Object.defineProperty(cacheServiceInst, 'happn', {
+        value: happn
+      });
+
+      checkpoint.initialize(config, happn.services.security, function (e) {
+
+        if (e) return callback(e);
+
+        callback(null, checkpoint);
+      });
+    });
+  };
+
+  it("tests the security checkpoints __loadPermissionSet function", function (done) {
+
+    var groups = {
+      'TEST_GROUP': {
+        permissions: {
+          '/test/group/explicit': {
+            action: ['set']
           },
-          groups:{
-            getGroup:function(name, opts, callback){
-              return callback(null, {
-                name:name,
-                permissions:{
-
-                }
-              });
-            }
+          '/test/group/*': {
+            action: ['*']
+          }
+        }
+      },
+      'TEST_GROUP_1': {
+        permissions: {
+          '/test/group/*': {
+            action: ['*']
           }
         }
       }
     };
 
-    checkpoint.initialize({}, happn.services.security, function () {
+    var identity = {
+      user: {
+        groups: groups
+      }
+    };
 
-      expect(checkpoint.__permissionCache.get('TEST-SESSION-ID' + '/test/path' + 'set')).to.be(undefined);
+    initializeCheckpoint(function (e, checkpoint) {
+
+      if (e) return done(e);
+
+      checkpoint.__loadPermissionSet(identity, function (e, permissionSet) {
+
+        if (e) return done(e);
+
+        expect(permissionSet.explicit['/test/group/explicit'].action[0]).to.be('set');
+        expect(permissionSet.wildcard['/test/group/*'].action[0]).to.be('*');
+        expect(Object.keys(permissionSet.wildcard).length).to.be(1);
+
+        done();
+      });
+    });
+  });
+
+  it("tests the security checkpoints __createPermissionSet function", function (done) {
+
+    var permissions = {
+      '/test/group/explicit': {
+        action: ['set']
+      },
+      '/test/group/*': {
+        action: ['*']
+      }
+    };
+
+    initializeCheckpoint(function (e, checkpoint) {
+
+      if (e) return done(e);
+
+      var permissionSet = checkpoint.__createPermissionSet(permissions);
+
+      expect(permissionSet.explicit['/test/group/explicit'].action[0]).to.be('set');
+      expect(permissionSet.wildcard['/test/group/*'].action[0]).to.be('*');
+      expect(Object.keys(permissionSet.wildcard).length).to.be(1);
+
+      done();
+
+    });
+  });
+
+  it("tests the security checkpoints __authorized function", function (done) {
+
+    var groups = {
+      'TEST_GROUP_2': {
+        permissions: {
+          '/test/explicit': {
+            actions: ['set']
+          },
+          '/test/wild/*': {
+            actions: ['*']
+          }
+        }
+      },
+      'TEST_GROUP_3': {
+        permissions: {
+          '/test/wild/*': {
+            actions: ['*']
+          }
+        }
+      }
+    };
+
+    var identity = {
+      user: {
+        groups: groups
+      }
+    };
+
+    initializeCheckpoint(function (e, checkpoint) {
+
+      if (e) return done(e);
+
+      checkpoint.__loadPermissionSet(identity, function (e, permissionSet) {
+
+        if (e) return done(e);
+
+        expect(permissionSet.explicit['/test/explicit'].actions[0]).to.be('set');
+        expect(permissionSet.wildcard['/test/wild/*'].actions[0]).to.be('*');
+        expect(Object.keys(permissionSet.wildcard).length).to.be(1);
+
+
+        expect(checkpoint.__authorized(permissionSet, '/test/explicit', 'set')).to.be(true);
+        expect(checkpoint.__authorized(permissionSet, '/test/wild/blah', 'on')).to.be(true);
+        expect(checkpoint.__authorized(permissionSet, '/test/explicit/1', 'set')).to.be(false);
+        expect(checkpoint.__authorized(permissionSet, '/test', 'get')).to.be(false);
+
+        done();
+
+      });
+    });
+  });
+
+  it('tests caching in checkpoint, __permissionCache', function (done) {
+
+    initializeCheckpoint(function (e, checkpoint) {
+
+      if (e) return done(e);
+
+      expect(checkpoint.__cache_checkpoint_authorization.getSync('TEST-SESSION-ID' + '/test/path' + 'set')).to.be(undefined);
 
       //session, path, action, callback
       checkpoint._authorizeUser({
-        id:'TEST-SESSION-ID',
+        id: 'TEST-SESSION-ID',
         username: 'TEST',
         user: {
           groups: {
@@ -74,13 +275,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         expect(authorized).to.be(false);
 
-        var cached = checkpoint.__permissionCache.get('TEST-SESSION-ID' + '/test/path' + 'set');
+        var cached = checkpoint.__cache_checkpoint_authorization.getSync('TEST-SESSION-ID' + '/test/path' + 'set');
 
         expect(cached === false).to.be(true);
 
         checkpoint.clearCaches();
 
-        expect(checkpoint.__permissionCache.get('TEST-SESSION-ID' + '/test/path' + 'set')).to.be(undefined);
+        expect(checkpoint.__cache_checkpoint_authorization.getSync('TEST-SESSION-ID' + '/test/path' + 'set')).to.be(undefined);
 
         done();
       });
@@ -89,56 +290,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests caching in checkpoint, __permissionSets', function (done) {
 
-    var testPermissionSetKey = require('crypto').createHash('sha1').update(['TEST1','TEST2'].join('/')).digest('base64');
+    var testPermissionSetKey = require('crypto').createHash('sha1').update(['TEST1', 'TEST2'].join('/')).digest('base64');
 
-    var Checkpoint = require('../../../lib/services/security/checkpoint');
+    initializeCheckpoint(function (e, checkpoint) {
 
-    var checkpoint = new Checkpoint({
-      logger: Logger
-    });
+      if (e) return done(e);
 
-    expect(checkpoint.__permissionSets.get(testPermissionSetKey)).to.be(undefined);
-
-    var UtilsService = require('../../../lib/services/utils/service');
-
-    var happn = {
-      services:{
-        security:{
-          happn:{
-            services:{
-              utils:new UtilsService()
-            }
-          },
-          users:{
-            getUser:function(name, callback){
-              return callback(null, {
-                username:name,
-                groups:{
-
-                }
-              });
-            }
-          },
-          groups:{
-            getGroup:function(name, opts, callback){
-              return callback(null, {
-                name:name,
-                permissions:{
-
-                }
-              });
-            }
-          }
-        }
-      }
-    };
-
-    checkpoint.initialize({}, happn.services.security, function () {
+      expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(undefined);
 
       //session, path, action, callback
       checkpoint._authorizeUser({
-        permissionSetKey: require('crypto').createHash('sha1').update(['TEST1','TEST2'].join('/')).digest('base64'),
-        id:'TEST-SESSION-ID',
+        permissionSetKey: require('crypto').createHash('sha1').update(['TEST1', 'TEST2'].join('/')).digest('base64'),
+        id: 'TEST-SESSION-ID',
         username: 'TEST',
         user: {
           groups: {
@@ -156,13 +319,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         expect(authorized).to.be(false);
 
-        var cached = checkpoint.__permissionSets.get(testPermissionSetKey);
+        var cached = checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey);
 
         expect(cached).to.not.be(null);
 
         checkpoint.clearCaches();
 
-        expect(checkpoint.__permissionSets.get(testPermissionSetKey)).to.be(undefined);
+        expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(undefined);
 
         done();
       });
@@ -171,60 +334,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests caching in checkpoint, cache size 5', function (done) {
 
-    var Checkpoint = require('../../../lib/services/security/checkpoint');
+    initializeCheckpoint(function (e, checkpoint) {
 
-    var checkpoint = new Checkpoint({
-      logger: Logger,
-      permissionCache: {
-        max: 5,
-        maxAge: 0
-      }
-    });
+      if (e) return done(e);
 
-    var UtilsService = require('../../../lib/services/utils/service');
+      async.timesSeries(10, function (time, timeCB) {
 
-    var happn = {
-      services:{
-        security:{
-          happn:{
-            services:{
-              utils:new UtilsService()
-            }
-          },
-          users:{
-            getUser:function(name, callback){
-              return callback(null, {
-                username:name,
-                groups:{
-
-                }
-              });
-            }
-          },
-          groups:{
-            getGroup:function(name, opts, callback){
-              return callback(null, {
-                name:name,
-                permissions:{
-
-                }
-              });
-            }
-          }
-        }
-      }
-    };
-
-    checkpoint.initialize({}, happn.services.security, function () {
-
-      async.timesSeries(10, function(time, timeCB){
-
-        var testPermissionSetKey = require('crypto').createHash('sha1').update(['TEST1','TEST2', 'TEST_TIME' + time].join('/')).digest('base64');
+        var testPermissionSetKey = require('crypto').createHash('sha1').update(['TEST1', 'TEST2', 'TEST_TIME' + time].join('/')).digest('base64');
 
         //session, path, action, callback
         checkpoint._authorizeUser({
           permissionSetKey: testPermissionSetKey,
-          id:'TEST-SESSION-ID' + time,
+          id: 'TEST-SESSION-ID' + time,
           username: 'TEST' + time,
           user: {
             groups: {
@@ -242,82 +363,46 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           expect(authorized).to.be(false);
 
-          var cached = checkpoint.__permissionSets.get(testPermissionSetKey);
+          var cached = checkpoint.__cache_checkpoint_permissionset.get(testPermissionSetKey);
 
           expect(cached).to.not.be(null);
 
           timeCB();
         });
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return done(e);
 
-        expect(checkpoint.__permissionSets.values().length).to.be(5);
-        expect(checkpoint.__permissionCache.values().length).to.be(5);
+        expect(checkpoint.__cache_checkpoint_permissionset.values().length).to.be(5);
+        expect(checkpoint.__cache_checkpoint_authorization.values().length).to.be(5);
 
         done();
-
       });
+    }, {
+      __cache_checkpoint_permissionset: {
+        max: 5
+      },
+      __cache_checkpoint_authorization: {
+        max: 5
+      }
     });
   });
 
   it('tests caching in checkpoint, cache size 10', function (done) {
 
-    var Checkpoint = require('../../../lib/services/security/checkpoint');
+    initializeCheckpoint(function (e, checkpoint) {
 
-    var checkpoint = new Checkpoint({
-      logger: Logger,
-      permissionCache: {
-        max: 10,
-        maxAge: 0
-      }
-    });
+      if (e) return done(e);
 
-    var UtilsService = require('../../../lib/services/utils/service');
+      async.timesSeries(10, function (time, timeCB) {
 
-    var happn = {
-      services:{
-        security:{
-          happn:{
-            services:{
-              utils:new UtilsService()
-            }
-          },
-          users:{
-            getUser:function(name, callback){
-              return callback(null, {
-                username:name,
-                groups:{
-
-                }
-              });
-            }
-          },
-          groups:{
-            getGroup:function(name, opts, callback){
-              return callback(null, {
-                name:name,
-                permissions:{
-
-                }
-              });
-            }
-          }
-        }
-      }
-    };
-
-    checkpoint.initialize({}, happn.services.security, function () {
-
-      async.timesSeries(20, function(time, timeCB){
-
-        var testPermissionSetKey = require('crypto').createHash('sha1').update(['TEST1','TEST2', 'TEST_TIME' + time].join('/')).digest('base64');
+        var testPermissionSetKey = require('crypto').createHash('sha1').update(['TEST1', 'TEST2', 'TEST_TIME' + time].join('/')).digest('base64');
 
         //session, path, action, callback
         checkpoint._authorizeUser({
           permissionSetKey: testPermissionSetKey,
-          id:'TEST-SESSION-ID' + time,
+          id: 'TEST-SESSION-ID' + time,
           username: 'TEST' + time,
           user: {
             groups: {
@@ -335,23 +420,29 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           expect(authorized).to.be(false);
 
-          var cached = checkpoint.__permissionSets.get(testPermissionSetKey);
+          var cached = checkpoint.__cache_checkpoint_permissionset.get(testPermissionSetKey);
 
           expect(cached).to.not.be(null);
 
           timeCB();
         });
 
-      }, function(e){
+      }, function (e) {
 
         if (e) return done(e);
 
-        expect(checkpoint.__permissionSets.values().length).to.be(10);
-        expect(checkpoint.__permissionCache.values().length).to.be(10);
+        expect(checkpoint.__cache_checkpoint_permissionset.values().length).to.be(10);
+        expect(checkpoint.__cache_checkpoint_authorization.values().length).to.be(10);
 
         done();
-
       });
+    }, {
+      __cache_checkpoint_permissionset: {
+        max: 10
+      },
+      __cache_checkpoint_authorization: {
+        max: 10
+      }
     });
   });
 });
