@@ -6,7 +6,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var happn = require('../../../lib/index');
   var async = require('async');
   var Logger = require('happn-logger');
-  var EventEmitter = require('events');
+  var EventEmitter = require('events').EventEmitter;
   var Checkpoint = require('../../../lib/services/security/checkpoint');
 
   var initializeCheckpoint = function (callback, config) {
