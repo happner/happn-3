@@ -1628,4 +1628,57 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }, 1500);
     });
   });
+
+  it('fails to set data with a wildcard', function (done) {
+
+    publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/*', {
+      property1: 'property1',
+      property2: 'property2',
+      property3: 'property3'
+    }, function (e) {
+
+      expect(e.toString()).to.be('Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
+
+      done();
+    });
+  });
+
+  it('fails to set data with a wildcard, fails on server', function (done) {
+
+    publisherclient.__oldUtils = publisherclient.utils;
+
+    publisherclient.utils = {
+      checkPath:function(){
+
+      }
+    };
+
+    publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/*', {
+      property1: 'property1',
+      property2: 'property2',
+      property3: 'property3'
+    }, function (e) {
+
+      expect(e.toString()).to.be('Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
+
+      //set back in case there are follow on tests
+      publisherclient.utils = publisherclient.__oldUtils;
+
+      done();
+    });
+  });
+
+  it('fails to set data with a wildcard, again - check utils reset worked', function (done) {
+
+    publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/off-handle/2/*', {
+      property1: 'property1',
+      property2: 'property2',
+      property3: 'property3'
+    }, function (e) {
+
+      expect(e.toString()).to.be('Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
+
+      done();
+    });
+  })
 });

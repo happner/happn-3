@@ -416,7 +416,7 @@
 ----------------
   - local admin login
   - tested _ADMIN password can be changed
-  
+  s
 6.2.1 2018-04-20
 ----------------
   - activate session management no longer calls dataChanged
@@ -438,3 +438,9 @@
   - lru cache now has getSync and setSync methods
   - lru cache now has values method
   - security users and groups refactor
+  
+7.0.0 2018-05-10
+----------------
+  - allowed set and on paths are more permissive with regards to special characters '(' ')' '&'
+  - set paths are not allowed to contain the * character
+  - server side path checking

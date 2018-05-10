@@ -142,5 +142,32 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(sharedUtils.wildcardMatch('/test*/short', '/test/complex/and/short/')).to.be(false);
 
     done();
-  })
+  });
+
+  it('tests wildcard stuff', function (done) {
+
+    var sharedUtils = require('../../../lib/services/utils/shared');
+
+    var checkPathTest = function(path, action){
+
+      try{
+
+        sharedUtils.checkPath(path, action);
+
+        return 'ok';
+      }catch(e){
+        return e.toString();
+      }
+    };
+
+    var notOk = 'Bad path, can only contain characters a-z A-Z 0-9 / & @ * ( ), ie: factory1@I&J(western-cape)/conveyer_2/stats/*';
+
+    expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*')).to.be('ok');
+    expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*', 'set')).to.be('Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
+    expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*{3}')).to.be(notOk);
+    expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/$set')).to.be(notOk);
+    expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/%')).to.be(notOk);
+
+    done();
+  });
 });
