@@ -416,7 +416,7 @@
 ----------------
   - local admin login
   - tested _ADMIN password can be changed
-  s
+  
 6.2.1 2018-04-20
 ----------------
   - activate session management no longer calls dataChanged
