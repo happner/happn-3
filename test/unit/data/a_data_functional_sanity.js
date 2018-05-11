@@ -14,27 +14,20 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var testId = require('shortid').generate();
 
-  var nedb_config = {
-    datastores: [{
-      name: 'default',
-      provider: 'nedb',
-      isDefault: true,
-      settings: {}
-    }]
-  };
+  var empty_config = {};
 
   before('should initialize the service', function (callback) {
 
     serviceInstance.happn = {
       services: {
         utils: utils,
-        system:{
-          package:require('../../../package.json')
+        system: {
+          package: require('../../../package.json')
         }
       }
     };
 
-    serviceInstance.initialize(nedb_config, callback);
+    serviceInstance.initialize(empty_config, callback);
   });
 
   after(function (done) {
@@ -68,6 +61,35 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   });
 
+  it('sets data and gets an error from __upsertInternal', function (callback) {
+
+    setTimeout(function () {
+
+      var db = serviceInstance.db('/set/' + testId);
+
+      db.__oldUpsert = db.upsert;
+
+      db.upsert = function (path, setData, options, dataWasMerged, callback) {
+
+        return callback(new Error('test error'));
+      };
+
+      serviceInstance.upsert('/set/' + testId, {"test": "data"}, {}, function (e, response) {
+
+        expect(e).to.not.be(null);
+
+        expect(e.toString()).to.be('Error: test error');
+
+        db.upsert = db.__oldUpsert.bind(db);
+
+        callback();
+
+      });
+
+    }, 100);
+
+  });
+
   it('gets data', function (callback) {
 
     serviceInstance.upsert('/get/' + testId, {
@@ -88,9 +110,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         callback();
 
       });
-
     });
-
   });
 
   it('gets no data', function (callback) {
@@ -280,10 +300,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var criteria1 = {
       $or: [{
-          "regions": {
-            $in: ['North', 'South', 'East', 'West']
-          }
-        },
+        "regions": {
+          $in: ['North', 'South', 'East', 'West']
+        }
+      },
         {
           "towns": {
             $in: ['North.Cape Town', 'South.East London']
@@ -529,4 +549,110 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     );
   });
 
+  it('increments a value', function (done) {
+
+    var async = require('async');
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/' + testId + '/' + test_string;
+
+    async.timesSeries(10, function (time, timeCB) {
+
+      serviceInstance.upsert(test_base_url, 'counter', {increment: 1, noPublish: true}, timeCB);
+
+    }, function (e) {
+
+      if (e) return done(e);
+
+      serviceInstance.get(test_base_url, null, function (e, result) {
+
+        if (e) return done(e);
+
+        expect(result.data.counter.value).to.be(10);
+
+        done();
+      });
+    });
+  });
+
+  it('fails to increment a value, bad provider', function (done) {
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/bad/provider/' + testId + '/' + test_string;
+
+    var provider = serviceInstance.db(test_base_url);
+
+    provider.__oldIncrement = provider.increment;
+
+    provider.increment = undefined;
+
+    serviceInstance.upsert(test_base_url, 'counter', {increment: 1, noPublish: true}, function(e){
+
+      expect(e.toString()).to.be('Error: db provider does not have an increment function');
+
+      provider.increment = provider.__oldIncrement;
+
+      done();
+    });
+  });
+
+  it('fails to increment a value, null fieldname', function (done) {
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/bad/provider/' + testId + '/' + test_string;
+
+    var provider = serviceInstance.db(test_base_url);
+
+    serviceInstance.upsert(test_base_url, null, {increment: 1, noPublish: true}, function(e){
+
+      expect(e.toString()).to.be('Error: invalid increment counter field name, must be a string');
+
+      done();
+    });
+  });
+
+  it('fails to increment a value, undefined fieldname', function (done) {
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/bad/provider/' + testId + '/' + test_string;
+
+    var provider = serviceInstance.db(test_base_url);
+
+    serviceInstance.upsert(test_base_url, undefined, {increment: 1, noPublish: true}, function(e){
+
+      expect(e.toString()).to.be('Error: invalid increment counter field name, must be a string');
+
+      done();
+    });
+  });
+
+  it('fails to increment a value, object fieldname', function (done) {
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/bad/provider/' + testId + '/' + test_string;
+
+    var provider = serviceInstance.db(test_base_url);
+
+    serviceInstance.upsert(test_base_url, {test:'fieldname'}, {increment: 1, noPublish: true}, function(e){
+
+      expect(e.toString()).to.be('Error: invalid increment counter field name, must be a string');
+
+      done();
+    });
+  });
+
+  it('fails to increment a value, bad increment argument in options', function (done) {
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/bad/provider/' + testId + '/' + test_string;
+
+    var provider = serviceInstance.db(test_base_url);
+
+    serviceInstance.upsert(test_base_url, 'counter', {increment: 'blah', noPublish: true}, function(e){
+
+      expect(e.toString()).to.be('Error: increment option value must be a number');
+
+      done();
+    });
+  });
 });

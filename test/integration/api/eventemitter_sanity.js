@@ -1680,5 +1680,33 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       done();
     });
-  })
+  });
+
+  it('increments a value on a path', function (done) {
+
+    var async = require('async');
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/' + test_id + '/' + test_string;
+
+    async.timesSeries(10, function (time, timeCB) {
+
+      publisherclient.set(test_base_url, 'counter', {increment: 1, noPublish: true}, function(e, result){
+        timeCB(e);
+      });
+
+    }, function (e) {
+
+      if (e) return done(e);
+
+      listenerclient.get(test_base_url, function (e, result) {
+
+        if (e) return done(e);
+
+        expect(result.counter.value).to.be(10);
+
+        done();
+      });
+    });
+  });
 });

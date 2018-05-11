@@ -444,3 +444,4 @@
   - allowed set and on paths are more permissive with regards to special characters '(' ')' '&'
   - set paths are not allowed to contain the * character
   - server side path checking
+  - increment set functionality and tests

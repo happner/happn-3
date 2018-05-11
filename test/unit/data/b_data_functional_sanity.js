@@ -14,7 +14,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var testId = require('shortid').generate();
 
-  var empty_config = {};
+  var nedb_config = {
+    datastores: [{
+      name: 'default',
+      provider: 'nedb',
+      isDefault: true,
+      settings: {}
+    }]
+  };
 
   before('should initialize the service', function (callback) {
 
@@ -27,7 +34,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    serviceInstance.initialize(empty_config, callback);
+    serviceInstance.initialize(nedb_config, callback);
   });
 
   after(function (done) {
@@ -61,36 +68,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   });
 
-  it('sets data and gets an error from __upsertInternal', function(callback) {
-
-    setTimeout(function(){
-
-      var db = serviceInstance.db('/set/' + testId);
-
-      db.__oldUpsert = db.upsert;
-
-      db.upsert = function(path, setData, options, dataWasMerged, callback){
-
-        return callback(new Error('test error'));
-      };
-
-      serviceInstance.upsert('/set/' + testId, {"test":"data"}, {}, function(e, response){
-
-        expect(e).to.not.be(null);
-
-        expect(e.toString()).to.be('Error: test error');
-
-        db.upsert = db.__oldUpsert.bind(db);
-
-        callback();
-
-      });
-
-    }, 100);
-
-  });
-
-  it('gets data', function(callback) {
+  it('gets data', function (callback) {
 
     serviceInstance.upsert('/get/' + testId, {
       "test": "data"
@@ -110,7 +88,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         callback();
 
       });
+
     });
+
   });
 
   it('gets no data', function (callback) {
@@ -549,4 +529,29 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     );
   });
 
+  it('increments a value', function (done) {
+
+    var async = require('async');
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/' + testId + '/' + test_string;
+
+    async.timesSeries(10, function (time, timeCB) {
+
+      serviceInstance.upsert(test_base_url, 'counter', {increment: 1, noPublish: true}, timeCB);
+
+    }, function (e) {
+
+      if (e) return done(e);
+
+      serviceInstance.get(test_base_url, null, function (e, result) {
+
+        if (e) return done(e);
+
+        expect(result.data.counter.value).to.be(10);
+
+        done();
+      });
+    });
+  });
 });
