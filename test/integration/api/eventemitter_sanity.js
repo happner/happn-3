@@ -1709,4 +1709,31 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
   });
+
+  it('increments a value on a path, convenience method, listens on path receives event', function (done) {
+
+    var async = require('async');
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/convenience/' + test_id + '/' + test_string;
+
+    listenerclient.on(test_base_url, function(data){
+
+      listenerclient.get(test_base_url, function(e, getIncrementedData){
+
+        expect(getIncrementedData[data.value].value).to.be(1);
+
+        done();
+      });
+
+    }, function(e){
+
+      if (e) return done(e);
+
+      publisherclient.increment(test_base_url, 1, function(e){
+
+        if (e) return done(e);
+      });
+    });
+  });
 });
