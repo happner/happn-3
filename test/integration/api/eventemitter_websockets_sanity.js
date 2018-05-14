@@ -12,6 +12,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var default_timeout = 4000;
   var happnInstance = null;
 
+  var test_id = Date.now() + '_' + require('shortid').generate();
+
   /*
    This test demonstrates starting up the happn service -
    the authentication service will use authTokenSecret to encrypt web tokens identifying
@@ -876,6 +878,58 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       })
       .then(callback)
       .catch(callback);
+  });
+
+  it('increments a value on a path', function (done) {
+
+    var async = require('async');
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/' + test_id + '/' + test_string;
+
+    async.timesSeries(10, function (time, timeCB) {
+
+      publisherclient.set(test_base_url, 'counter', {increment: 1, noPublish: true}, function (e, result) {
+
+        timeCB(e);
+      });
+
+    }, function (e) {
+
+      if (e) return done(e);
+
+      listenerclient.get(test_base_url, function (e, result) {
+
+        if (e) return done(e);
+
+        expect(result.counter.value).to.be(10);
+
+        done();
+      });
+    });
+  });
+
+  it('increments a value on a path, convenience method, listens on path receives event', function (done) {
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/convenience/' + test_id + '/' + test_string;
+
+    listenerclient.on(test_base_url, function (data) {
+
+      expect(data.value).to.be(1);
+      expect(data.guage).to.be('counter');
+
+      done();
+
+    }, function (e) {
+
+      if (e) return done(e);
+
+      publisherclient.increment(test_base_url, 1, function (e) {
+
+        if (e) return done(e);
+      });
+    });
   });
 
 });
