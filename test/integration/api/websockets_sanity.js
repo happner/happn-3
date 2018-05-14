@@ -1526,7 +1526,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     async.timesSeries(10, function (time, timeCB) {
 
-      publisherclient.set(test_base_url, 'counter', {increment: 1, noPublish: true}, function(e, result){
+      publisherclient.set(test_base_url, 'counter', {increment: 1, noPublish: true}, function (e, result) {
+
         timeCB(e);
       });
 
@@ -1547,25 +1548,21 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('increments a value on a path, convenience method, listens on path receives event', function (done) {
 
-    var async = require('async');
-
     var test_string = require('shortid').generate();
     var test_base_url = '/increment/convenience/' + test_id + '/' + test_string;
 
-    listenerclient.on(test_base_url, function(data){
+    listenerclient.on(test_base_url, function (data) {
 
-      listenerclient.get(test_base_url, function(e, getIncrementedData){
+      expect(data.value).to.be(1);
+      expect(data.guage).to.be('counter');
 
-        expect(getIncrementedData[data.value].value).to.be(1);
+      done();
 
-        done();
-      });
-
-    }, function(e){
+    }, function (e) {
 
       if (e) return done(e);
 
-      publisherclient.increment(test_base_url, 1, function(e){
+      publisherclient.increment(test_base_url, 1, function (e) {
 
         if (e) return done(e);
       });

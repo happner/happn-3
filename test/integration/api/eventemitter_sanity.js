@@ -1648,7 +1648,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     publisherclient.__oldUtils = publisherclient.utils;
 
     publisherclient.utils = {
-      checkPath:function(){
+      checkPath: function () {
 
       }
     };
@@ -1691,7 +1691,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     async.timesSeries(10, function (time, timeCB) {
 
-      publisherclient.set(test_base_url, 'counter', {increment: 1, noPublish: true}, function(e, result){
+      publisherclient.set(test_base_url, 'counter', {increment: 1, noPublish: true}, function (e, result) {
+
         timeCB(e);
       });
 
@@ -1710,30 +1711,188 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('increments a value on a path, convenience method, listens on path receives event', function (done) {
+  it('increments a value on a path, multiple guages', function (done) {
 
     var async = require('async');
 
     var test_string = require('shortid').generate();
-    var test_base_url = '/increment/convenience/' + test_id + '/' + test_string;
+    var test_base_url = '/increment/' + test_id + '/' + test_string;
 
-    listenerclient.on(test_base_url, function(data){
+    async.timesSeries(10, function (time, timeCB) {
 
-      listenerclient.get(test_base_url, function(e, getIncrementedData){
+      publisherclient.set(test_base_url, 'counter-' + time, {increment: 1, noPublish: true}, function (e) {
 
-        expect(getIncrementedData[data.value].value).to.be(1);
-
-        done();
+        timeCB(e);
       });
 
-    }, function(e){
+    }, function (e) {
 
       if (e) return done(e);
 
-      publisherclient.increment(test_base_url, 1, function(e){
+      listenerclient.get(test_base_url, function (e, result) {
+
+        if (e) return done(e);
+
+        expect(result['counter-0'].value).to.be(1);
+        expect(result['counter-1'].value).to.be(1);
+        expect(result['counter-2'].value).to.be(1);
+        expect(result['counter-3'].value).to.be(1);
+        expect(result['counter-4'].value).to.be(1);
+        expect(result['counter-5'].value).to.be(1);
+        expect(result['counter-6'].value).to.be(1);
+        expect(result['counter-7'].value).to.be(1);
+        expect(result['counter-8'].value).to.be(1);
+        expect(result['counter-9'].value).to.be(1);
+
+        done();
+      });
+    });
+  });
+
+  it('increments a value on a path, convenience method, multiple guages', function (done) {
+
+    var async = require('async');
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/' + test_id + '/' + test_string;
+
+    async.timesSeries(10, function (time, timeCB) {
+
+      publisherclient.increment(test_base_url, 'counter-' + time, 1, function (e) {
+
+        timeCB(e);
+      });
+
+    }, function (e) {
+
+      if (e) return done(e);
+
+      listenerclient.get(test_base_url, function (e, result) {
+
+        if (e) return done(e);
+
+        expect(result['counter-0'].value).to.be(1);
+        expect(result['counter-1'].value).to.be(1);
+        expect(result['counter-2'].value).to.be(1);
+        expect(result['counter-3'].value).to.be(1);
+        expect(result['counter-4'].value).to.be(1);
+        expect(result['counter-5'].value).to.be(1);
+        expect(result['counter-6'].value).to.be(1);
+        expect(result['counter-7'].value).to.be(1);
+        expect(result['counter-8'].value).to.be(1);
+        expect(result['counter-9'].value).to.be(1);
+
+        done();
+      });
+    });
+  });
+
+  it('increments a value on a path, convenience method, listens on path receives event', function (done) {
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/convenience/' + test_id + '/' + test_string;
+
+    listenerclient.on(test_base_url, function (data) {
+
+      expect(data.value).to.be(1);
+      expect(data.guage).to.be('counter');
+
+      done();
+
+    }, function (e) {
+
+      if (e) return done(e);
+
+      publisherclient.increment(test_base_url, 1, function (e) {
 
         if (e) return done(e);
       });
     });
   });
+
+  it('increments a value on a path, convenience method with custom guage and increment, listens on path receives event', function (done) {
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/convenience/' + test_id + '/' + test_string;
+
+    listenerclient.on(test_base_url, function (data) {
+
+      expect(data.value).to.be(3);
+      expect(data.guage).to.be('custom');
+
+      done();
+
+    }, function (e) {
+
+      if (e) return done(e);
+
+      publisherclient.increment(test_base_url, 'custom', 3, function (e) {
+
+        if (e) return done(e);
+      });
+    });
+  });
+
+  it('increments and decrements a value on a path, convenience method with custom guage and increment and decrement, listens on path receives event', function (done) {
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/convenience/' + test_id + '/' + test_string;
+
+    var incrementCount = 0;
+
+    listenerclient.on(test_base_url, function (data) {
+
+      incrementCount++;
+
+      if (incrementCount == 1){
+        expect(data.value).to.be(3);
+        expect(data.guage).to.be('custom');
+      }
+
+      if (incrementCount == 2){
+        expect(data.value).to.be(1);
+        expect(data.guage).to.be('custom');
+        done();
+      }
+
+    }, function (e) {
+
+      if (e) return done(e);
+
+      publisherclient.increment(test_base_url, 'custom', 3, function (e) {
+
+        if (e) return done(e);
+
+        publisherclient.increment(test_base_url, 'custom', -2, function (e) {
+
+          if (e) return done(e);
+        });
+      });
+    });
+  });
+
+  it('increments a value on a path, convenience method, no counter so defaults to 1, listens on path receives event', function (done) {
+
+    var test_string = require('shortid').generate();
+    var test_base_url = '/increment/convenience/' + test_id + '/' + test_string;
+
+    listenerclient.on(test_base_url, function (data) {
+
+      expect(data.value).to.be(1);
+      expect(data.guage).to.be('counter');
+
+      done();
+
+    }, function (e) {
+
+      if (e) return done(e);
+
+      publisherclient.increment(test_base_url, function (e) {
+
+        if (e) return done(e);
+      });
+    });
+  });
+
+
 });

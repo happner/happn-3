@@ -313,6 +313,130 @@ SET SIBLING
 		//you would get all siblings by querying the path e2e_test1/siblings*
 ```
 
+INCREMENT
+-------------------------
+
+*allows a counter to be incremented by an increment value*
+
+*single guage - causing on event:*
+```javascript
+
+  //listen on a path
+  myclient.on('my/increment/guage', function(data){
+    
+    //NB; the data on the event will look like this
+    //{guage:'counter', value:1}
+    
+    myclient.get('my/increment/guage', function(e, gotIncrementedData){
+  
+      expect(gotIncrementedData[data.value].value).to.be(1);
+    });
+  
+  }, function(e){
+  
+    if (e) throw e;
+  
+    //increment convenience method
+    myclient.increment('my/increment/guage', 1, function(e){
+  
+      if (e) throw e;
+    });
+  });
+```
+
+*increment multiple times, guage defaults to counter and increment value is 1:*
+```javascript
+  var async = require('async');
+
+  async.timesSeries(10, function (time, timeCB) {
+
+    myclient.increment('my/guage', function (e) {
+
+      timeCB(e);
+    });
+
+  }, function (e) {
+
+    myclient.get('my/guage', function (e, result) {
+
+      expect(result['counter-0'].value).to.be(10);
+
+    });
+  });
+```
+
+*multiple guages on the same path:*
+```javascript
+  var async = require('async');
+
+  async.timesSeries(10, function (time, timeCB) {
+
+    myclient.increment('my/dashboard', 'counter-' + time, 1, function (e) {
+
+      timeCB(e);
+    });
+
+  }, function (e) {
+
+    myclient.get('my/dashboard', function (e, result) {
+
+      expect(result['counter-0'].value).to.be(1);
+      expect(result['counter-1'].value).to.be(1);
+      expect(result['counter-2'].value).to.be(1);
+      expect(result['counter-3'].value).to.be(1);
+      expect(result['counter-4'].value).to.be(1);
+      expect(result['counter-5'].value).to.be(1);
+      expect(result['counter-6'].value).to.be(1);
+      expect(result['counter-7'].value).to.be(1);
+      expect(result['counter-8'].value).to.be(1);
+      expect(result['counter-9'].value).to.be(1);
+
+    });
+  });
+```
+
+*decrement a guage with a minus value:*
+```javascript
+ 
+  var incrementCount = 0;
+
+  //listening on the event
+  myclient.on('my/test/guage', function (data) {
+
+    incrementCount++;
+
+    if (incrementCount == 1){
+      expect(data.value).to.be(3);
+      expect(data.guage).to.be('custom');
+    }
+
+    if (incrementCount == 2){
+      expect(data.value).to.be(1);
+      expect(data.guage).to.be('custom');
+    }
+
+  }, function (e) {
+
+    myclient.increment('my/test/guage', 'custom', 3, function (e) {
+
+      myclient.get('my/test/guage', function (e, result) {
+      
+          expect(result['custom'].value).to.be(1);
+           
+          myclient.increment('my/test/guage', 'custom', -2, function (e) {
+     
+             myclient.get('my/dashboard', function (e, result) {
+             
+                  expect(result['custom'].value).to.be(1);
+             });
+          });
+      });
+
+     
+    });
+  });
+```
+
 GET
 ---------------------------
 
