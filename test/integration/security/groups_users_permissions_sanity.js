@@ -581,9 +581,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               callback();
             }
           );
-
         });
-
       });
 
       it('gets a specific user - ensuring the group is now part of the return object', function (callback) {
@@ -591,11 +589,59 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         testServices.security.users.getUser(linkUser.username, function (e, user) {
 
           if (e) return callback(e);
+
           expect(user.groups[linkGroup.name] != null).to.be(true);
           callback();
 
         });
 
+      });
+
+      it('gets a specific user - with the includeGroups:false switch, we ensure the group is not part of the user', function (callback) {
+
+        testServices.security.users.getUser(linkUser.username, {includeGroups:false}, function (e, user) {
+
+          if (e) return callback(e);
+
+          expect(user.groups).to.be(undefined);
+
+          expect(testServices.security.users.__cache_users.getSync(linkUser.username + ':nogroups')).to.eql(user);
+          expect(testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')).to.not.be(null);
+          expect(testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')).to.not.be(undefined);
+
+          testServices.security.users.clearCaches().then(function(){
+
+            expect(testServices.security.users.__cache_users.getSync(linkUser.username + ':nogroups')).to.be(undefined);
+            expect(testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')).to.be(undefined);
+
+            callback();
+          });
+        });
+      });
+
+      it('gets a non-existing user - with the includeGroups:false switch, we ensure we get null back', function (callback) {
+
+        testServices.security.users.getUser('a non existing user', {includeGroups:false}, function (e, user) {
+
+          if (e) return callback(e);
+
+          expect(user).to.be(null);
+          callback();
+
+        });
+      });
+
+      it('tries to create a user with the :nogroups switch in the user name - we ensure this fails validation', function (callback) {
+
+        var badUser = {
+          username: 'TESTBADUSER:nogroups',
+          password: 'PWD'
+        };
+
+        testServices.security.users.upsertUser(badUser, function (e) {
+          expect(e.toString()).to.be('Error: validation failure: username cannot contain the \':nogroups\' directive');
+          callback();
+        });
       });
 
       it('unlinks a group from a user', function (callback) {

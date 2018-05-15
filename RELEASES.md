@@ -445,3 +445,7 @@
   - set paths are not allowed to contain the * character
   - server side path checking
   - increment set functionality and tests
+  
+7.1.0 2018-05-16
+----------------
+  - added the includeGroups:false functionality in getUser
