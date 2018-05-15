@@ -9,8 +9,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   this.timeout(60000);
 
-  this.timeout(60000);
-
   var server1;
   var server2;
 
@@ -166,6 +164,28 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       }, 200); // depending on how long it waits, more and more happn clients
       // from previous tests are attaching to this test's server
+    });
+
+    it('groups are not carried over login session', function (done) {
+
+      Happn.client.create({
+        config: {
+          username: '_ADMIN',
+          password: 'secret',
+          port: 55006
+        },
+        info: {
+          "KEY": "VALUE"
+        }
+      }).then(function (client) {
+
+        expect(client.session.user.groups).to.be(undefined);
+
+        client.disconnect();
+
+        done();
+
+      }).catch(done);
     });
   });
 });
