@@ -449,3 +449,7 @@
 7.1.0 2018-05-16
 ----------------
   - added the includeGroups:false functionality in getUser
+  
+7.1.1 2018-05-15
+----------------
+  - groups no longer in session passed back on login, smaller on the wire
