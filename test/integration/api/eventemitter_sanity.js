@@ -1803,7 +1803,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       if (e) return done(e);
 
-      publisherclient.increment(test_base_url, 1, function (e) {
+      publisherclient.increment(test_base_url, 1, function (e, incResult) {
+
+        expect(incResult.value).to.be(1);
+        expect(incResult.guage).to.be('counter');
 
         if (e) return done(e);
       });

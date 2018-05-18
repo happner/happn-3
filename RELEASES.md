@@ -406,31 +406,31 @@
   - cookie token permissionSetKey removed
   - fixed group deleted but not unlinked properly
   - updated 401 return on http calls
-  
+
 6.1.0 2018-04-18
 ----------------
   - fixed 401 issue with auth invalid credentials failure
   - merge only subscriptions
-  
+
 6.2.0 2018-04-19
 ----------------
   - local admin login
   - tested _ADMIN password can be changed
-  
+
 6.2.1 2018-04-20
 ----------------
   - activate session management no longer calls dataChanged
-  
+
 6.3.0 2018-04-25
 ----------------
   - lisUsers optimised
   - listUsers criteria
-  
+
 6.3.1 2018-05-01
 ----------------
   - removed unnecessary bindings
   - removed unnecessary try catch blocks
-  
+
 6.3.2 2018-05-03
 ----------------
   - security caches refactor
@@ -438,18 +438,22 @@
   - lru cache now has getSync and setSync methods
   - lru cache now has values method
   - security users and groups refactor
-  
+
 7.0.0 2018-05-10
 ----------------
   - allowed set and on paths are more permissive with regards to special characters '(' ')' '&'
   - set paths are not allowed to contain the * character
   - server side path checking
   - increment set functionality and tests
-  
+
 7.1.0 2018-05-16
 ----------------
   - added the includeGroups:false functionality in getUser
-  
+
 7.1.1 2018-05-15
 ----------------
   - groups no longer in session passed back on login, smaller on the wire
+
+7.1.2 2016-05-18
+----------------
+  - more permissive paths in set and on, now % : is also allowed
