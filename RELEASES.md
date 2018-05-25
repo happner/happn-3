@@ -454,6 +454,11 @@
 ----------------
   - groups no longer in session passed back on login, smaller on the wire
 
-7.1.2 2016-05-18
+7.1.2 2018-05-18
 ----------------
   - more permissive paths in set and on, now % : is also allowed
+
+7.1.3 2018-05-26
+----------------
+  - handle_error now unit tested
+  - handle_error now has fatal option, only puts client into ERROR state if fatal
