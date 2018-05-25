@@ -1,4 +1,4 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   context('stopping and starting secure meshes', function () {
 
