@@ -216,7 +216,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     setTimeout(function(){
       happnInstance.stop(done);
-    }, 3000);
+    }, 10000);
   });
 
   /*
