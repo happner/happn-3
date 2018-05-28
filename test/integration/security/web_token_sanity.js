@@ -215,8 +215,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     if (testClient2) testClient2.disconnect({reconnect: false});
 
     setTimeout(function(){
-      happnInstance.stop(done);
-    }, 3000);
+      happnInstance.stop({reconnect: false}, done);
+    }, 10000);
   });
 
   /*

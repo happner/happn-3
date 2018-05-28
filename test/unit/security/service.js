@@ -285,7 +285,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       happnMock.services[serviceName] = testServices[serviceName];
 
       if (serviceName == 'error') happnMock.services[serviceName].handleFatal = function (message, e) {
-        console.log('FATAL FAILURE:::', message);
         throw e;
       };
 
@@ -1819,7 +1818,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                   if (e) console.warn('couldnt disconnect client:::', e);
                   serviceInstance.stop(done);
                 })
-
               })
 
               .catch(function (e) {
