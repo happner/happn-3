@@ -462,3 +462,7 @@
 ----------------
   - handle_error now unit tested
   - handle_error now has fatal option, only puts client into ERROR state if fatal
+
+7.1.4 2018-05-28
+----------------
+  - fixed intermittent issue with removal of decoupled session groups in security
