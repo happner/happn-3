@@ -586,8 +586,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           testServices.security.users.clearCaches().then(function(){
 
-            expect(testServices.security.users.__cache_users.getSync(linkUser.username + ':nogroups')).to.be(undefined);
-            expect(testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')).to.be(undefined);
+            expect(testServices.security.users.__cache_users.getSync(linkUser.username + ':nogroups')).to.be(null);
+            expect(testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')).to.be(null);
 
             callback();
           });
