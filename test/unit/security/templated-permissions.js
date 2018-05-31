@@ -106,6 +106,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   it('tests the __createPermissionSet method does permissions replacements, using a mocked identity with templated permissions', function (done) {
+
     initializeCheckpoint(function(e, checkpoint){
       if (e) return done(e);
       var mockedIdentity = {
@@ -116,18 +117,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             custom_field1:'test_custom_field1'
           },
           groups:{
-            'test_group_1':{
-              permissions:{
-                '/gauge/{{username}}/*':{actions: ['on','set']},
-                '/custom/{{custom_data.custom_field}}/*':{actions: ['on','set']}
-              }
-            },
-            'test_group_2':{
-              permissions:{
-                'test/path/*':{actions: ['get']},
-                '/custom/{{custom_data.custom_field1}}/*':{actions: ['*']}
-              }
-            }
+            'test_group_1':{},
+            'test_group_2':{}
           }
         }
       };
@@ -189,18 +180,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             custom_field1:'test_custom_field1'
           },
           groups:{
-            'test_group_1':{
-              permissions:{
-                '/gauge/{{username}}/*':{actions: ['on','set']},
-                '/custom/{{custom_data.custom_field}}/*':{actions: ['on','set']}
-              }
-            },
-            'test_group_2':{
-              permissions:{
-                'test/path/*':{actions: ['get']},
-                '/custom/{{custom_data.custom_field1}}/*':{actions: ['*']}
-              }
-            }
+            'test_group_1':{},
+            'test_group_2':{}
           }
         }
       };

@@ -122,7 +122,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('tests wildcard stuff', function (done) {
+  it('tests wildcardMatch', function (done) {
 
     var sharedUtils = require('../../../lib/services/utils/shared');
 
@@ -144,7 +144,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it('tests wildcard stuff', function (done) {
+  it('tests checkPath', function (done) {
 
     var sharedUtils = require('../../../lib/services/utils/shared');
 
@@ -166,6 +166,42 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*', 'set')).to.be('Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
     expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*{3}')).to.be(notOk);
     expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/$set')).to.be(notOk);
+
+    done();
+  });
+
+  it('tests wildcardAggregate', function (done) {
+
+    var aggregated = utils.wildcardAggregatePermissions({
+      '/test/*/*/*':{actions:['on', 'set']},
+      '/test/1/2/*':{actions:['on', 'set']},
+      '/test/1/3/*':{actions:['on', 'set']}
+    });
+
+    expect(aggregated).to.eql({
+      '/test/*/*/*':{actions:['on', 'set']}
+    });
+
+    var aggregated = utils.wildcardAggregatePermissions({
+      '/test/*/*/*':{actions:['*']},
+      '/test/1/2/*':{actions:['on', 'set']},
+      '/test/1/3/*':{actions:['on', 'set']}
+    });
+
+    expect(aggregated).to.eql({
+      '/test/*/*/*':{actions:['*']}
+    });
+
+    var aggregated = utils.wildcardAggregatePermissions({
+      '/test/*/*/*':{actions:['on', 'set']},
+      '/test/1/2/*':{actions:['on', 'set']},
+      '/test/1/3/*':{actions:['get']}
+    });
+
+    expect(aggregated).to.eql({
+      '/test/*/*/*':{actions:['on', 'set']},
+      '/test/1/3/*':{actions:['get']}
+    });
 
     done();
   });
