@@ -1711,7 +1711,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('increments a value on a path, multiple guages', function (done) {
+  it('increments a value on a path, multiple gauges', function (done) {
 
     var async = require('async');
 
@@ -1749,7 +1749,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('increments a value on a path, convenience method, multiple guages', function (done) {
+  it('increments a value on a path, convenience method, multiple gauges', function (done) {
 
     var async = require('async');
 
@@ -1795,7 +1795,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     listenerclient.on(test_base_url, function (data) {
 
       expect(data.value).to.be(1);
-      expect(data.guage).to.be('counter');
+      expect(data.gauge).to.be('counter');
 
       done();
 
@@ -1806,14 +1806,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       publisherclient.increment(test_base_url, 1, function (e, incResult) {
 
         expect(incResult.value).to.be(1);
-        expect(incResult.guage).to.be('counter');
+        expect(incResult.gauge).to.be('counter');
 
         if (e) return done(e);
       });
     });
   });
 
-  it('increments a value on a path, convenience method with custom guage and increment, listens on path receives event', function (done) {
+  it('increments a value on a path, convenience method with custom gauge and increment, listens on path receives event', function (done) {
 
     var test_string = require('shortid').generate();
     var test_base_url = '/increment/convenience/' + test_id + '/' + test_string;
@@ -1821,7 +1821,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     listenerclient.on(test_base_url, function (data) {
 
       expect(data.value).to.be(3);
-      expect(data.guage).to.be('custom');
+      expect(data.gauge).to.be('custom');
 
       done();
 
@@ -1836,7 +1836,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('increments and decrements a value on a path, convenience method with custom guage and increment and decrement, listens on path receives event', function (done) {
+  it('increments and decrements a value on a path, convenience method with custom gauge and increment and decrement, listens on path receives event', function (done) {
 
     var test_string = require('shortid').generate();
     var test_base_url = '/increment/convenience/' + test_id + '/' + test_string;
@@ -1849,12 +1849,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       if (incrementCount == 1){
         expect(data.value).to.be(3);
-        expect(data.guage).to.be('custom');
+        expect(data.gauge).to.be('custom');
       }
 
       if (incrementCount == 2){
         expect(data.value).to.be(1);
-        expect(data.guage).to.be('custom');
+        expect(data.gauge).to.be('custom');
         done();
       }
 
@@ -1882,7 +1882,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     listenerclient.on(test_base_url, function (data) {
 
       expect(data.value).to.be(1);
-      expect(data.guage).to.be('counter');
+      expect(data.gauge).to.be('counter');
 
       done();
 
