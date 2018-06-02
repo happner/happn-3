@@ -229,16 +229,57 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
       });
     });
 
+    it('changes a custom property on the user - which should update the session, checks we are no longer able to access the path the permission relates to, but are able to access based on the new property', function(done) {
+
+      testUser.custom_data.custom_field2 = 'custom_field2_changed';
+
+      serviceInstance.services.security.users.upsertUser(testUser, function(e, upserted){
+        if (e) return done(e);
+        testClient.on('/custom/custom_field2_changed', function(data) {
+          expect(data.test).to.be('data');
+          testClient.set('/custom/custom_field2_value', {
+            test: 'data'
+          }, function(e) {
+            expect(e.toString()).to.be('AccessDenied: unauthorized');
+            done();
+          });
+        }, function(e) {
+          testClient.set('/custom/custom_field2_changed', {
+            test: 'data'
+          }, function(e) {
+            if (e) return done(e);
+          });
+        });
+      });
+    });
+
+    it('removes a custom property from the user - which should update the session, checks we are no longer able to access the path the combination of permission and property value relate to', function(done) {
+
+      testClient.set('/custom/custom_field1_value', {
+        test: 'data'
+      }, function(e) {
+        if (e) return done(e);
+        delete testUser.custom_data.custom_field1;
+
+        serviceInstance.services.security.users.upsertUser(testUser, function(e, upserted){
+          if (e) return done(e);
+          testClient.set('/custom/custom_field1_value', {
+            test: 'data'
+          }, function(e) {
+            expect(e.toString()).to.be('AccessDenied: unauthorized');
+            done();
+          });
+        });
+      });
+    });
+
+    xit('subscribes to a templated path, checks we receive messages, modifies the custom data related to the path, we ensure we are unable to get messages on the path anymore', function(done) {
+
+    });
+
     xit('removes a templated permission from the group, checks we are no longer able to access the path the permission relates to', function(done) {
 
     });
 
-    xit('changes a custom property on the user - which should update the session, checks we are no longer able to access the path the permission relates to, but are able to access based on the new property', function(done) {
-
-    });
-
-    xit('removes a custom property from the user - which should update the session, checks we are no longer able to access the path the combination of permission and property value relate to', function(done) {
-
-    });
   });
 });
