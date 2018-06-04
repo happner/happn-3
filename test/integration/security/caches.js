@@ -29,6 +29,10 @@ describe(testHelper.testName(__filename, 3), function () {
               max: 6,
               maxAge: 0
             },
+            __cache_compiled_permissions_templates: {
+              max: 3,
+              maxAge: 0
+            },
             __cache_groups: {//groups cache
               max: 5,
               maxAge: 0
@@ -55,6 +59,7 @@ describe(testHelper.testName(__filename, 3), function () {
       expect(serviceInstance.services.security.groups.__cache_permissions.__cache.max).to.be(5);
       expect(serviceInstance.services.security.checkpoint.__cache_checkpoint_authorization.__cache.max).to.be(5);
       expect(serviceInstance.services.security.checkpoint.__cache_checkpoint_permissionset.__cache.max).to.be(6);
+      expect(serviceInstance.services.security.checkpoint.__cache_compiled_permissions_templates.__cache.max).to.be(3);
 
       serviceInstance.services.session.localClient({
           username: '_ADMIN',
@@ -93,6 +98,18 @@ describe(testHelper.testName(__filename, 3), function () {
       group.permissions['test/permission/get/' + time.toString()] = {actions: ['get']};
       group.permissions['test/permission/all/' + time.toString()] = {actions: ['*']};
 
+      group.permissions['test/{{user.username}}/all/0/*'] = {actions: ['*']};
+      group.permissions['test/{{user.username}}/all/1/*'] = {actions: ['*']};
+      group.permissions['test/{{user.username}}/all/2/*'] = {actions: ['*']};
+      group.permissions['test/{{user.username}}/all/3/*'] = {actions: ['*']};
+      group.permissions['test/{{user.username}}/all/4/*'] = {actions: ['*']};
+      group.permissions['test/{{user.username}}/all/5/*'] = {actions: ['*']};
+      group.permissions['test/{{user.username}}/all/6/*'] = {actions: ['*']};
+      group.permissions['test/{{user.username}}/all/7/*'] = {actions: ['*']};
+      group.permissions['test/{{user.username}}/all/8/*'] = {actions: ['*']};
+      group.permissions['test/{{user.username}}/all/9/*'] = {actions: ['*']};
+
+
       serviceInstance.services.security.groups.upsertGroup(group, function (e, upserted) {
 
         if (e) return timeCB(e);
@@ -110,7 +127,10 @@ describe(testHelper.testName(__filename, 3), function () {
 
       var user = {
         username: 'TEST_USR_' + time.toString(),
-        password: 'TEST_USR_' + time.toString()
+        password: 'TEST_USR_' + time.toString(),
+        custom_data:{
+          value: time.toString()
+        }
       };
 
       serviceInstance.services.security.users.upsertUser(user, function (e, upserted) {
@@ -198,7 +218,6 @@ describe(testHelper.testName(__filename, 3), function () {
 
       done();
     });
-
   });
 
   it('does a bunch of data activity - checks the security caches are the correct size', function (done) {
@@ -207,23 +226,28 @@ describe(testHelper.testName(__filename, 3), function () {
 
       var randomInt = testHelper.randomInt(0, SESSION_COUNT - 1);
 
-      var session = sessions[randomInt];
+      var client = sessions[randomInt];
 
-      session.offAll().then(function(){
+      client.offAll().then(function(){
 
-        session.on('test/permission/on/' + randomInt, function (ondata) {
+        client.on('test/permission/on/' + randomInt, function (ondata) {
 
-          session.get('test/permission/get/' + randomInt, function (e, getdata) {
+          client.get('test/permission/get/' + randomInt, function (e, getdata) {
 
             if (e) return timeCB(e);
 
-            session.set('test/permission/all/' + randomInt, {all: randomInt}, timeCB);
+            client.set('test/permission/all/' + randomInt, {all: randomInt}, function(e){
+
+              if (e) return timeCB(e);
+              var randomTemplateNumber = testHelper.randomInt(0, 9);
+              client.set('test/' + client.session.user.username + '/all/' + randomTemplateNumber + '/' + randomInt, {all: randomInt}, timeCB);
+            });
           });
         }, function(e){
 
           if (e) return timeCB(e);
 
-          session.set('test/permission/on/' + randomInt, {set: randomInt});
+          client.set('test/permission/on/' + randomInt, {set: randomInt});
         });
 
       }).catch(timeCB);
@@ -235,12 +259,13 @@ describe(testHelper.testName(__filename, 3), function () {
       expect(serviceInstance.services.security.checkpoint.__cache_checkpoint_authorization.__cache.values().length).to.be(5);
       expect(serviceInstance.services.security.checkpoint.__cache_checkpoint_permissionset.__cache.values().length).to.be(6);
       expect(serviceInstance.services.security.groups.__cache_permissions.__cache.values().length).to.be(5);
+      expect(serviceInstance.services.security.checkpoint.__cache_compiled_permissions_templates.__cache.values().length).to.be(3);
 
       done();
     });
   });
 
-  it('lists all users, checks we have the all users list cached, then update a user and esnure the cache is cleared', function (done) {
+  it('lists all users, checks we have the all users list cached, then update a user and ensure the cache is cleared', function (done) {
 
     expect(serviceInstance.services.security.users.__cache_list_all_users).to.be(null);
 

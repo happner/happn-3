@@ -1,4 +1,4 @@
-describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function() {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function() {
 
   var happn = require('../../../lib/index');
   var serviceInstance;
@@ -82,6 +82,15 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
       '/custom/{{user.custom_data.custom_field2}}': {
         actions: ['on', 'set']
       },
+      '/custom/{{user.custom_data.custom_field3}}': {
+        actions: ['on', 'set']
+      },
+      '/custom/{{user.custom_data.custom_field4}}': {
+        actions: ['on', 'set']
+      },
+      '/custom/{{user.custom_data.custom_field5}}': {
+        actions: ['on', 'set']
+      },
       '/forbidden/{{user.custom_data.custom_field_forbidden}}': {
         actions: ['*']
       }
@@ -93,12 +102,31 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
       custom_data: {
         custom_field1: 'custom_field1_value',
         custom_field2: 'custom_field2_value',
+        custom_field3: 'custom_field3_value',
+        custom_field4: 'custom_field4_value',
+        custom_field5: 'custom_field5_value',
         custom_field_forbidden: '*'
       }
     };
 
     var addedTestGroup;
     var addedTestuser;
+
+    before('logs in adminClient', function(done) {
+      serviceInstance.services.session.localClient({
+          username: '_ADMIN',
+          password: 'happn'
+        })
+
+        .then(function(clientInstance) {
+          adminClient = clientInstance;
+          done();
+        })
+
+        .catch(function(e) {
+          done(e);
+        });
+    });
 
     before('creates a group and a user, adds the group to the user, logs in with test user', function(done) {
 
@@ -190,6 +218,7 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         expect(data.value).to.be(1);
         done();
       }, function(e) {
+
         if (e) return done(e);
         testClient.set('/explicit/test/' + username, 1, function(e) {
           if (e) return done(e);
@@ -201,11 +230,14 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
       var username = 'TEST USER@blah.com' + test_id;
 
       testClient.on('/not_allowed/test/*', function(data) {
+
         done(new Error('unexpected access granted'));
       }, function(e) {
+
         if (!e) return done(new Error('unexpected access granted'));
         expect(e.toString()).to.be('AccessDenied: unauthorized');
         testClient.set('/not_allowed/test/' + username, 1, function(e) {
+
           if (!e) return done(new Error('unexpected access granted'));
           expect(e.toString()).to.be('AccessDenied: unauthorized');
           done();
@@ -213,14 +245,17 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
       });
     });
 
-    it('checks we are not able to access via a template, due to an illegal promotion exploit (* in a property of the session context)', function(done) {
+    it('checks we are not able to access via a template, due to an illegal promotion exploit (* in a {{property}} of the session context)', function(done) {
 
       testClient.on('/forbidden/*', function(data) {
+
         done(new Error('unexpected access granted'));
       }, function(e) {
+
         if (!e) return done(new Error('unexpected access granted'));
         expect(e.toString()).to.be('AccessDenied: unauthorized');
         testClient.set('/forbidden/1', 1, function(e) {
+
           if (!e) return done(new Error('unexpected access granted'));
           expect(e.toString()).to.be('AccessDenied: unauthorized');
           expect(warnings[0]).to.be('illegal promotion of permissions via permissions template, permissionPath/forbidden/{{user.custom_data.custom_field_forbidden}}, replaced path: /forbidden/*');
@@ -232,21 +267,25 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     it('changes a custom property on the user - which should update the session, checks we are no longer able to access the path the permission relates to, but are able to access based on the new property', function(done) {
 
       testUser.custom_data.custom_field2 = 'custom_field2_changed';
-
       serviceInstance.services.security.users.upsertUser(testUser, function(e, upserted){
+
         if (e) return done(e);
         testClient.on('/custom/custom_field2_changed', function(data) {
+
           expect(data.test).to.be('data');
           testClient.set('/custom/custom_field2_value', {
             test: 'data'
           }, function(e) {
+
             expect(e.toString()).to.be('AccessDenied: unauthorized');
             done();
           });
         }, function(e) {
+
           testClient.set('/custom/custom_field2_changed', {
             test: 'data'
           }, function(e) {
+
             if (e) return done(e);
           });
         });
@@ -258,14 +297,16 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
       testClient.set('/custom/custom_field1_value', {
         test: 'data'
       }, function(e) {
+
         if (e) return done(e);
         delete testUser.custom_data.custom_field1;
-
         serviceInstance.services.security.users.upsertUser(testUser, function(e, upserted){
+
           if (e) return done(e);
           testClient.set('/custom/custom_field1_value', {
             test: 'data'
           }, function(e) {
+
             expect(e.toString()).to.be('AccessDenied: unauthorized');
             done();
           });
@@ -273,13 +314,102 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
       });
     });
 
-    xit('subscribes to a templated path, checks we receive messages, modifies the custom data related to the path, we ensure we are unable to get messages on the path anymore', function(done) {
+    it('subscribes to a templated path, checks we receive messages, modifies the custom data related to the path, we ensure we are unable to get messages on the path anymore', function(done) {
 
+      this.timeout(10000);
+      var receivedCount = 0;
+      testClient.on('/custom/custom_field3_value', function(data) {
+
+        receivedCount++;
+        if (receivedCount == 2) return;
+        testUser.custom_data.custom_field3 = 'custom_field3_changed';
+        serviceInstance.services.security.users.upsertUser(testUser, function(e, upserted){
+
+          if (e) return done(e);
+          adminClient.set('/custom/custom_field3_value', {
+            test: 'data'
+          }, function(e) {
+
+            if (e) return done(e);
+            setTimeout(function(){
+              expect(receivedCount).to.be(1);
+              done();
+            }, 2000);
+          });
+        });
+      }, function(e) {
+
+        if (e) return done(e);
+        testClient.set('/custom/custom_field3_value', {
+          test: 'data'
+        }, function(e) {
+
+          if (e) return done(e);
+        });
+      });
     });
 
-    xit('removes a templated permission from the group, checks we are no longer able to access the path the permission relates to', function(done) {
+    it('subscribes to a templated path, checks we receive messages, removes the permission from the users group, we ensure we are unable to get messages on the path anymore', function(done) {
 
+      this.timeout(10000);
+      var receivedCount = 0;
+      testClient.on('/custom/custom_field4_value', function(data) {
+
+        receivedCount++;
+        if (receivedCount == 2) return;
+        serviceInstance.services.security.groups.removePermission(testGroup.name, '/custom/{{user.custom_data.custom_field4}}', 'on')
+        .then(function(){
+
+          adminClient.set('/custom/custom_field4_value', {
+            test: 'data'
+          }, function(e) {
+
+            if (e) return done(e);
+            setTimeout(function(){
+              expect(receivedCount).to.be(1);
+              done();
+            }, 2000);
+          });
+        });
+      }, function(e) {
+
+        if (e) return done(e);
+        testClient.set('/custom/custom_field4_value', {
+          test: 'data'
+        }, function(e) {
+
+          if (e) return done(e);
+        });
+      });
     });
 
+    it('removes a templated permission from the group, checks we are no longer able to access the path the permission relates to', function(done) {
+
+      this.timeout(10000);
+      var receivedCount = 0;
+      testClient.on('/custom/custom_field5_value', function(data) {
+
+        serviceInstance.services.security.groups.removePermission(testGroup.name, '/custom/{{user.custom_data.custom_field5}}', 'set')
+        .then(function(){
+
+          testClient.set('/custom/custom_field5_value', {
+            test: 'data'
+          }, function(e) {
+
+            expect(e.toString()).to.be('AccessDenied: unauthorized');
+            done();
+          });
+        });
+      }, function(e) {
+
+        if (e) return done(e);
+        testClient.set('/custom/custom_field5_value', {
+          test: 'data'
+        }, function(e) {
+
+          if (e) return done(e);
+        });
+      });
+    });
   });
 });
