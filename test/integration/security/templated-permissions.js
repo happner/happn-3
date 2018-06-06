@@ -130,40 +130,29 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     before('creates a group and a user, adds the group to the user, logs in with test user', function(done) {
 
-      serviceInstance.services.security.users.upsertGroup(testGroup, {
-        overwrite: false
-      }, function(e, result) {
+      serviceInstance.services.security.groups.upsertGroup(testGroup)
+      .then(function(result){
 
-        if (e) return done(e);
         addedTestGroup = result;
+        return serviceInstance.services.security.users.upsertUser(testUser);
+      })
+      .then(function(result){
 
-        serviceInstance.services.security.users.upsertUser(testUser, {
-          overwrite: false
-        }, function(e, result) {
+        addedTestuser = result;
+        return serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser);
+      })
+      .then(function(result){
 
-          if (e) return done(e);
-          addedTestuser = result;
-
-          serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function(e) {
-
-            if (e) return done(e);
-
-            serviceInstance.services.session.localClient({
-                username: testUser.username,
-                password: 'TEST PWD'
-              })
-
-              .then(function(clientInstance) {
-                testClient = clientInstance;
-                done();
-              })
-
-              .catch(function(e) {
-                done(e);
-              });
+        return serviceInstance.services.session.localClient({
+            username: testUser.username,
+            password: 'TEST PWD'
           });
-        });
-      });
+      })
+      .then(function(clientInstance){
+        testClient = clientInstance;
+        done();
+      })
+      .catch(done);
     });
 
     it('checks we are able to access templates using {{user.username}}', function(done) {

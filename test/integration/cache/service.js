@@ -728,4 +728,25 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
   });
+
+  it('tests the sync methods', function (done) {
+
+    this.timeout(10000);
+
+    serviceInstance.clear('specific');
+    var specific = serviceInstance.new('specific');
+
+    specific.setSync('test-key', {test: 'data'}, {ttl: 3000});
+
+    expect(specific.getSync('test-key')).to.eql({test: 'data'});
+
+    setTimeout(function(){
+      expect(specific.getSync('test-key')).to.be(null);
+      specific.setSync('test-key-remove', {test: 'data'});
+      expect(specific.getSync('test-key-remove')).to.eql({test: 'data'});
+      specific.removeSync('test-key-remove');
+      expect(specific.getSync('test-key-remove')).to.be(null);
+      done();
+    }, 3001);
+  });
 });

@@ -785,7 +785,7 @@ function (e, instance) {
 
 ```
 
-*at the moment, adding users, groups and permissions can only be done by directly accessing the security service, to see how this is done - please look at the [functional test for security](https://github.com/happner/happn-3/blob/master/test/a7_eventemitter_security_access.js)*
+*at the moment, adding users, groups and permissions can only be done by directly accessing the security service, to see how this is done - please look at the [functional test for security](https://github.com/happner/happn-3/blob/master/test/integration/security/access_sanity.js)*
 
 SECURITY CLIENT
 ----------------
@@ -1118,28 +1118,118 @@ SECURITY PROFILES
 
 ```
 
-*NB NB - if no matching profile is found for an incoming session, one of the above is selected based on whether the session is stateful or stateless, there is no ttl or inactivity timeout on both policies - this means that tokens can be reused forever (unless the user in the token is deleted) rather push to default polcies to your policy list which would sit above these less secure ones, with a ttl and possibly inactivity timeout*
+*NB NB - if no matching profile is found for an incoming session, one of the above is selected based on whether the session is stateful or stateless, there is no ttl or inactivity timeout on both policies - this means that tokens can be reused forever (unless the user in the token is deleted) rather push to default policies to your policy list which would sit above these less secure ones, with a ttl and possibly inactivity timeout*
 
 TEMPLATED PERMISSIONS
 ---------------------
 
 *permissions can be templated to the current session using {{handlebars}} syntax, the template context is the current session and its sub-objects*
 
+code snippets have been taken from the [this test](https://github.com/happner/happn-3/blob/master/test/integration/security/templated_permissions.js)
+
 average session object looks like this:
 
-```json
-
+```javascript
+var sessionObj = {
+  "id": "ec5d673b-cf28-4a0a-8a12-396f20aaaf57",//session unique id, transient
+  "username": "TEST USER@blah.com1528278832638_V1DWIA5xxB",//session username
+  "isToken": false,//whether the session was accessed via a token or not
+  "permissionSetKey": "uJgq//rc4saoc1MSjqyB3KvJEUs=",//hash of user permissions for quick access lookup
+  "user": {
+    "username": "TEST USER@blah.com1528278832638_V1DWIA5xxB",
+    "custom_data": {//any custom user info
+      "custom_field2": "custom_field2_changed",
+      "custom_field3": "custom_field3_changed",
+      "custom_field4": "custom_field4_value",
+      "custom_field5": "custom_field5_value",
+      "custom_field_forbidden": "*"
+    },
+    "groups": {//groups the user belongs to
+      "TEST GROUP1528278832638_V1DWIA5xxB": {
+        "data": {}//any data that may have been added to the group
+      }
+    }
+  }
+}
 ```
 
 we can save a group with templated permissions that give the user access to paths containing its username like so:
 
 ```javascript
 
+var testGroup = {
+  name: 'TEST GROUP' + test_id,
+  custom_data: {
+    customString: 'custom1',
+    customNumber: 0
+  }
+};
+
+testGroup.permissions = {
+  '/gauges/{{user.username}}': {
+    actions: ['*']
+  },
+  '/gauges/{{user.username}}/*': {//NB: note here how the path relates to the above session object's user.username
+    actions: ['*']
+  },
+  '/custom/{{user.custom_data.custom_field1}}': {//NB: note here how the path relates to the above session object
+    actions: ['get', 'set']
+  }
+};
+
+var testUser = {
+  username: 'TEST USER@blah.com' + test_id,
+  password: 'TEST PWD',
+  custom_data: {
+    custom_field1: 'custom_field1_value'//NB: note here how the value will match the below requests
+  }
+};
+
+var addedTestGroup, addedTestUser, testClient;
+
+//assuming we have created a happn instance and assigned it to myHappnService
+myHappnService.services.security.groups.upsertGroup(testGroup)
+  .then(function(result){
+
+    addedTestGroup = result;
+    return myHappnService.services.security.users.upsertUser(testUser);
+  })
+  .then(function(result){
+
+    addedTestUser = result;
+    return myHappnService.services.security.users.linkGroup(addedTestGroup, addedTestuser);
+  })
+  .then(function(result){
+
+    return myHappnService.services.session.localClient({
+        username: testUser.username,
+        password: 'TEST PWD'
+      });
+  })
+  .then(function(clientInstance){
+    testClient = clientInstance;
+    done();
+  })
+  .catch(done);
+
 ```
 
-then from the user access the path the template resolves to like so:
+then from the testClient access the path the template resolves to like so:
 
 ```javascript
+
+var username = 'TEST USER@blah.com' + test_id;
+
+testClient.on('/gauges/' + username, function(data) {
+  expect(data.value).to.be(1);
+  expect(data.gauge).to.be('logins');
+  done();
+}, function(e) {
+  if (e) return done(e);
+  testClient.increment('/gauges/' + username, 'logins', 1, function(e) {
+    if (e) return done(e);
+  });
+});
 
 ```
 
@@ -1364,7 +1454,7 @@ happn.client.create({protocol:'https', allowSelfSignedCerts:true},function(e, in
 PAYLOAD ENCRYPTION
 ------------------
 
-*if the server is running in secure mode, it can also be configured to encrypt payloads between it and socket clients, this means that the client must include a keypair as part of its credentials on logging in, to see payload encryption in action plase go to the [following test](https://github.com/happner/happn-3/blob/master/test/c2_websockets_embedded_sanity_encryptedpayloads.js)*
+*if the server is running in secure mode, it can also be configured to encrypt payloads between it and socket clients, this means that the client must include a keypair as part of its credentials on logging in, to see payload encryption in action plase go to the [following test](https://github.com/happner/happn-3/blob/master/test/integration/security/encryptedpayloads_sanity.js)*
 
 INBOUND AND OUTBOUND LAYERS (MIDDLEWARE)
 -----------------------------------------
