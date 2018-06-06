@@ -223,6 +223,8 @@ describe(testHelper.testName(__filename, 3), function () {
 
   it('does a bunch of data activity - checks the security caches are the correct size', function (done) {
 
+    this.timeout(30000);
+
     async.timesSeries(SESSION_COUNT * 100, function (time, timeCB) {
 
       var randomInt = testHelper.randomInt(0, SESSION_COUNT - 1);
