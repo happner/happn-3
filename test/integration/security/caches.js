@@ -186,6 +186,8 @@ describe(testHelper.testName(__filename, 3), function () {
 
   it('does a bunch of user and groups fetches- checks the security caches are the correct size', function (done) {
 
+    this.timeout(30000);
+
     async.timesSeries(SESSION_COUNT * 100, function (time, timeCB) {
 
       var randomInt = testHelper.randomInt(0, SESSION_COUNT - 1);
@@ -194,15 +196,14 @@ describe(testHelper.testName(__filename, 3), function () {
 
         if (e) return timeCB(e);
 
-        expect(serviceInstance.services.security.groups.__cache_groups.__cache.get('TEST_GRP_' + randomInt.toString()).data.name).to.be(group.name);
+        expect(serviceInstance.services.security.groups.__cache_groups.getSync('TEST_GRP_' + randomInt.toString()).name).to.be(group.name);
 
         serviceInstance.services.security.users.getUser('TEST_USR_' + randomInt.toString(), function(e, user){
 
           if (e) return timeCB(e);
 
-          expect(serviceInstance.services.security.users.__cache_users.__cache.get('TEST_USR_' + randomInt.toString()).data.username).to.be(user.username);
-          expect(serviceInstance.services.security.users.__cache_passwords.__cache.get('TEST_USR_' + randomInt.toString())).to.not.be(null);
-          expect(serviceInstance.services.security.users.__cache_passwords.__cache.get('TEST_USR_' + randomInt.toString())).to.not.be(undefined);
+          expect(serviceInstance.services.security.users.__cache_users.getSync('TEST_USR_' + randomInt.toString()).username).to.be(user.username);
+          expect(serviceInstance.services.security.users.__cache_passwords.getSync('TEST_USR_' + randomInt.toString())).to.not.be(null);
 
           timeCB();
         })
