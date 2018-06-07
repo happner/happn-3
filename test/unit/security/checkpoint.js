@@ -253,7 +253,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       if (e) return done(e);
 
-      expect(checkpoint.__cache_checkpoint_authorization.getSync('TEST-SESSION-ID' + '/test/path' + 'set')).to.be(undefined);
+      expect(checkpoint.__cache_checkpoint_authorization.getSync('TEST-SESSION-ID' + '/test/path' + 'set')).to.be(null);
 
       //session, path, action, callback
       checkpoint._authorizeUser({
@@ -281,7 +281,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         checkpoint.clearCaches();
 
-        expect(checkpoint.__cache_checkpoint_authorization.getSync('TEST-SESSION-ID' + '/test/path' + 'set')).to.be(undefined);
+        expect(checkpoint.__cache_checkpoint_authorization.getSync('TEST-SESSION-ID' + '/test/path' + 'set')).to.be(null);
 
         done();
       });
@@ -296,7 +296,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       if (e) return done(e);
 
-      expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(undefined);
+      expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(null);
 
       //session, path, action, callback
       checkpoint._authorizeUser({
@@ -325,7 +325,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         checkpoint.clearCaches();
 
-        expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(undefined);
+        expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(null);
 
         done();
       });

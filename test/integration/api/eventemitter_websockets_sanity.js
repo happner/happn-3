@@ -917,7 +917,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     listenerclient.on(test_base_url, function (data) {
 
       expect(data.value).to.be(1);
-      expect(data.guage).to.be('counter');
+      expect(data.gauge).to.be('counter');
 
       done();
 

@@ -297,6 +297,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     }, function (e) {
 
+      //console.log('attached secureMiddleman:::', e);
+
       if (e) return callback(e);
 
       //console.log('attached secureMiddleman:::');

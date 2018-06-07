@@ -107,31 +107,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         callback();
 
       });
-
-      it(' should aggregate wildcards', function (callback) {
-
-        var testWildcardDict = {
-          '/test/1deep/*': "1deep",
-          '/test/1deep/2deep*': "2deep",
-          '/test/2deep/3deep/*': "3deep",
-          '/test/2deep/3deep/4deep/*': "4deep",
-          '/test/3deep/*/5deep/*': "5deep",
-          '/test/3deep/4deep/5deep/*': "5deep",
-        }
-
-        var aggregated = testServices.utils.wildcardAggregate(testWildcardDict);
-
-        expect(aggregated['/test/1deep/*']).to.be("1deep");
-        expect(aggregated['/test/1deep/2deep*']).to.be(undefined);
-        expect(aggregated['/test/2deep/3deep/*']).to.be("3deep");
-        expect(aggregated['/test/2deep/3deep/4deep/*']).to.be(undefined);
-        expect(aggregated['/test/3deep/*/5deep/*']).to.be("5deep");
-        expect(aggregated['/test/3deep/4deep/5deep/*']).to.be(undefined);
-
-        callback();
-
-      });
-
     });
 
     var testGroup = {
@@ -611,8 +586,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           testServices.security.users.clearCaches().then(function(){
 
-            expect(testServices.security.users.__cache_users.getSync(linkUser.username + ':nogroups')).to.be(undefined);
-            expect(testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')).to.be(undefined);
+            expect(testServices.security.users.__cache_users.getSync(linkUser.username + ':nogroups')).to.be(null);
+            expect(testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')).to.be(null);
 
             callback();
           });

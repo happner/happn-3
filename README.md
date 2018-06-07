@@ -43,7 +43,7 @@ npm install happn-3
 ```
 
 You need NodeJS and NPM of course, you also need to know how node works (as my setup instructions are pretty minimal)
-To run the tests, clone the repo, npm install then npm test: 
+To run the tests, clone the repo, npm install then npm test:
 
 ```bash
 git clone https://github.com/happner/happn-3.git
@@ -134,15 +134,15 @@ service.create(function (e, happnInst) {
     if (e) throw e;
 
     happnInstance = happnInst;
-    
+
     happnInstance.services.session.localClient(/*credentials argument only necessary if secure*/{username:'test', password:'test'}, function(e, instance){
-    
+
       var myLocalClient = instance;
-      
+
       //myLocalClient.set(...)
-    
+
     });
-    
+
   });
 
 ```
@@ -157,15 +157,15 @@ service.create(function (e, happnInst) {
     if (e) throw e;
 
     happnInstance = happnInst;
-    
+
     happnInstance.services.session.localAdminClient(function(e, instance){
-    
+
       var myLocalAdminClient = instance;
-      
+
       //myLocalClient.set(...)
-    
+
     });
-    
+
   });
 
 ```
@@ -194,13 +194,13 @@ happn_client.create([
     }
   }
 }, function (e, instance) {
-  
+
   //we have our instance, which will fall back randomly to the alternative server instance defined in the array passed in to the create method
-  
+
   instance.onEvent('reconnect-successful', function(){
     //this event happens when we have successfully fallen back to a randomly selected alternative
   });
-  
+
 });
 
 //
@@ -224,7 +224,7 @@ happn_client.create([
 }, function (e, instance) {
 
 //we have our instance, which will fall back to the next alternative server defined in the array passed in to the create method
-  
+
   instance.onEvent('reconnect-successful', function(){
     //this event happens when we have successfully fallen back to the next active alternative
   });
@@ -248,7 +248,7 @@ happn_client.create([
     }
   }
 }, function (e, instance) {
-  
+
 });
 
 //
@@ -273,7 +273,7 @@ happn_client.create([
 
 ```
 
-###NB Ranges are convenience options so limited as follows: 
+###NB Ranges are convenience options so limited as follows:
 1. IP ranges are limited to the last octet, ie. 127.0.0.[here only]
 2. You can only range by IP or by port, but not by both at the same time.
 
@@ -323,22 +323,22 @@ INCREMENT
 
   //listen on a path
   myclient.on('my/increment/guage', function(data){
-    
+
     //NB; the data on the event will look like this
     //{guage:'counter', value:1}
-    
+
     myclient.get('my/increment/guage', function(e, gotIncrementedData){
-  
+
       expect(gotIncrementedData[data.value].value).to.be(1);
     });
-  
+
   }, function(e){
-  
+
     if (e) throw e;
-  
+
     //increment convenience method
     myclient.increment('my/increment/guage', 1, function(e){
-  
+
       if (e) throw e;
     });
   });
@@ -397,7 +397,7 @@ INCREMENT
 
 *decrement a guage with a minus value:*
 ```javascript
- 
+
   var incrementCount = 0;
 
   //listening on the event
@@ -420,19 +420,19 @@ INCREMENT
     myclient.increment('my/test/guage', 'custom', 3, function (e) {
 
       myclient.get('my/test/guage', function (e, result) {
-      
+
           expect(result['custom'].value).to.be(1);
-           
+
           myclient.increment('my/test/guage', 'custom', -2, function (e) {
-     
+
              myclient.get('my/dashboard', function (e, result) {
-             
+
                   expect(result['custom'].value).to.be(1);
              });
           });
       });
 
-     
+
     });
   });
 ```
@@ -554,8 +554,8 @@ EVENT DATA
 
 ```javascript
 //get the data back as part of the subscription callback
-listenerclient.on('/e2e_test1/testsubscribe/data/values_on_callback_test/*', 
-  {"event_type": "set", 
+listenerclient.on('/e2e_test1/testsubscribe/data/values_on_callback_test/*',
+  {"event_type": "set",
   "initialCallback":true //set to true, causes data to be passed back
   }, function (message) {
 
@@ -586,8 +586,8 @@ listenerclient.on('/e2e_test1/testsubscribe/data/values_on_callback_test/*',
 ```javascript
 //get the data emitted back immediately
 
-listenerclient.on('/e2e_test1/testsubscribe/data/values_emitted_test/*', 
-  {"event_type": "set", 
+listenerclient.on('/e2e_test1/testsubscribe/data/values_emitted_test/*',
+  {"event_type": "set",
   "initialEmit":true //set to true causes emit to happen on successful subscription
   }, function (message, meta) {
           //this emit handler runs immediately
@@ -645,9 +645,9 @@ listenerclient.on('/e2e_test1/testsubscribe/data/on_off_test', {event_type: 'set
         }
       },
       function (e, listenerId) {
-      
+
         //NB - listener id is passed in on the .on callback
-      
+
         if (e) return callback(new Error(e));
 
         currentListenerId = listenerId;
@@ -726,10 +726,10 @@ MERGE SUBSCRIPTIONS
       }, function (e) {
         console.log('subscription happened');
       });
-      
-my_client_instance.set('/merge/only/path', 
-                      {some:"data"}, 
-                      {merge:true}, 
+
+my_client_instance.set('/merge/only/path',
+                      {some:"data"},
+                      {merge:true},
                       function (e) {
                         console.log('set happened');
                       });
@@ -765,7 +765,7 @@ my_client_instance.set('e2e_test1/testsubscribe/data/', {property1:'property1',p
 SECURITY SERVER
 ---------------
 
-*happn server instances can be secured with user and group authentication, a default user and group called _ADMIN is created per happn instance, the admin password is 'happn' but is configurable (MAKE SURE PRODUCTION INSTANCES DO NOT RUN OFF THE DEFAULT PASSWORD)*
+*happn server instances can be secured with user and group authentication and authorisation, a default user and group called _ADMIN is created per happn instance, the admin password is 'happn' but is configurable (MAKE SURE PRODUCTION INSTANCES DO NOT RUN OFF THE DEFAULT PASSWORD)*
 
 ```javascript
 
@@ -785,7 +785,7 @@ function (e, instance) {
 
 ```
 
-*at the moment, adding users, groups and permissions can only be done by directly accessing the security service, to see how this is done - please look at the [functional test for security](https://github.com/happner/happn-3/blob/master/test/a7_eventemitter_security_access.js)*
+*at the moment, adding users, groups and permissions can only be done by directly accessing the security service, to see how this is done - please look at the [functional test for security](https://github.com/happner/happn-3/blob/master/test/integration/security/access_sanity.js)*
 
 SECURITY CLIENT
 ----------------
@@ -827,8 +827,8 @@ function (e, myHappn3Instance) {
       test:'data'
     }
   };
-  
-  //NB! permissions are stored separately to the group, so when upserting the group and it allready exists 
+
+  //NB! permissions are stored separately to the group, so when upserting the group and it allready exists
   //with other permissions the current upserts permissions are merged with the existing ones, down to action level
 
   myHappn3Instance.services.security.groups.upsertGroup(myGroup)
@@ -858,7 +858,7 @@ function (e, myHappn3Instance) {
           something: 'usefull'
         }
       };
-  
+
   myHappn3Instance.services.security.users.upsertUser(myUser)
   .then(function(upserted){
     //user added, with no permissions yet - permissions must be assigned to the user by linking the user to a group
@@ -878,7 +878,7 @@ happn.service.create({secure:true, adminUser:{password:'testPWD'}},
 function (e, myHappn3Instance) {
 
   var myUser, myGroup;
-  
+
   myHappn3Instance.services.security.users.getUser('TEST')
   .then(function(user){
     myUser = user;
@@ -908,15 +908,15 @@ var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
   function (e, myHappn3Instance) {
-  
+
     myHappn3Instance.services.security.groups.upsertPermission('TEST'/* group name*/, '/test/path/*' /* permission path */, 'on' /* action */, true /* allow (default) - if false the permission is removed */)
      .then(function () {
-        
+
         //users belonging to the TEST group can now do "set", "get" AND "on" operations as opposed to only set and get (check above addGroup example to double check the pre-existing permissions)
-        
+
      });
   });
-  
+
 ```
 
 
@@ -934,9 +934,9 @@ function (e, myHappn3Instance) {
 
   myHappn3Instance.services.security.groups.removePermission('TEST'/* group name*/, '/test/path/*' /* permission path */, 'on' /* action */)
     .then(function () {
-      
+
       //users belonging to the TEST group can now only do "set" and "get" operations, the right to do "on" has been revoked
-      
+
     })
     .catch(done);
 });
@@ -966,7 +966,7 @@ function (e, myHappn3Instance) {
       test:'data'
     }
   };
-  
+
   myHappn3Instance.services.security.groups.upsertGroup(myGroup)
   .then(function(upserted){
     //group updated, "on" permissions to "/test/do/not/subscribe" have been deleted if they existed previously
@@ -975,14 +975,14 @@ function (e, myHappn3Instance) {
 
 ```
 
-SECURITY PROFILES 
+SECURITY PROFILES
 -----------------
 
 *profiles can be configured to fit different session types, profiles are ordered sets of rules that match incoming sessions with specific policies, the first matching rule in the set is selected when a session is profiled, so the order they are configured in the array is important*
 
 ```javascript
 
-//there are 2 default profiles that exist in secure systems - here is an example configuration 
+//there are 2 default profiles that exist in secure systems - here is an example configuration
 //showing how profiles can be configured for a service:
 
  var serviceConfig = {
@@ -1086,7 +1086,7 @@ SECURITY PROFILES
 
 ```
 
-*the test that clearly demonstrates profiles can be found [here](https://github.com/happner/happn-3/blob/master/test/d3-security-tokens)*
+*the test that clearly demonstrates profiles can be found [here](https://github.com/happner/happn-3/blob/master/test/integration/security/default_profiles.js)*
 
 *the default policies look like this:*
 
@@ -1102,8 +1102,8 @@ SECURITY PROFILES
       inactivity_threshold:Infinity
     }
   }
-  
-  
+
+
 //stateless - so token based http requests (REST)
 {
     name:"default-stateless",// this is the default underlying profile for stateless sessions (REST)
@@ -1118,7 +1118,144 @@ SECURITY PROFILES
 
 ```
 
-*NB NB - if no matching profile is found for an incoming session, one of the above is selected based on whether the session is stateful or stateless, there is no ttl or inactivity timeout on both policies - this means that tokens can be reused forever (unless the user in the token is deleted) rather push to default polcies to your policy list which would sit above these less secure ones, with a ttl and possibly inactivity timeout*
+*NB NB - if no matching profile is found for an incoming session, one of the above is selected based on whether the session is stateful or stateless, there is no ttl or inactivity timeout on both policies - this means that tokens can be reused forever (unless the user in the token is deleted) rather push to default policies to your policy list which would sit above these less secure ones, with a ttl and possibly inactivity timeout*
+
+TEMPLATED PERMISSIONS
+---------------------
+
+*permissions can be templated to the current session using {{handlebars}} syntax, the template context is the current session and its sub-objects*
+
+code snippets have been taken from the [this test](https://github.com/happner/happn-3/blob/master/test/integration/security/templated_permissions.js)
+
+average session object looks like this:
+
+```javascript
+var sessionObj = {
+  "id": "ec5d673b-cf28-4a0a-8a12-396f20aaaf57",//session unique id, transient
+  "username": "TEST USER@blah.com1528278832638_V1DWIA5xxB",//session username
+  "isToken": false,//whether the session was accessed via a token or not
+  "permissionSetKey": "uJgq//rc4saoc1MSjqyB3KvJEUs=",//hash of user permissions for quick access lookup
+  "user": {
+    "username": "TEST USER@blah.com1528278832638_V1DWIA5xxB",
+    "custom_data": {//any custom user info
+      "custom_field2": "custom_field2_changed",
+      "custom_field3": "custom_field3_changed",
+      "custom_field4": "custom_field4_value",
+      "custom_field5": "custom_field5_value",
+      "custom_field_forbidden": "*"
+    },
+    "groups": {//groups the user belongs to
+      "TEST GROUP1528278832638_V1DWIA5xxB": {
+        "data": {}//any data that may have been added to the group
+      }
+    }
+  }
+}
+```
+
+we can save a group with templated permissions that give the user access to paths containing its username like so:
+
+```javascript
+
+var testGroup = {
+  name: 'TEST GROUP' + test_id,
+  custom_data: {
+    customString: 'custom1',
+    customNumber: 0
+  }
+};
+
+testGroup.permissions = {
+  '/gauges/{{user.username}}': {
+    actions: ['*']
+  },
+  '/gauges/{{user.username}}/*': {//NB: note here how the path relates to the above session object's user.username
+    actions: ['*']
+  },
+  '/custom/{{user.custom_data.custom_field1}}': {//NB: note here how the path relates to the above session object
+    actions: ['get', 'set']
+  }
+};
+
+var testUser = {
+  username: 'TEST USER@blah.com' + test_id,
+  password: 'TEST PWD',
+  custom_data: {
+    custom_field1: 'custom_field1_value'//NB: note here how the value will match the below requests
+  }
+};
+
+var addedTestGroup, addedTestUser, testClient;
+
+//assuming we have created a happn instance and assigned it to myHappnService
+myHappnService.services.security.groups.upsertGroup(testGroup)
+  .then(function(result){
+
+    addedTestGroup = result;
+    return myHappnService.services.security.users.upsertUser(testUser);
+  })
+  .then(function(result){
+
+    addedTestUser = result;
+    return myHappnService.services.security.users.linkGroup(addedTestGroup, addedTestuser);
+  })
+  .then(function(result){
+
+    return myHappnService.services.session.localClient({
+        username: testUser.username,
+        password: 'TEST PWD'
+      });
+  })
+  .then(function(clientInstance){
+    testClient = clientInstance;
+    done();
+  })
+  .catch(done);
+
+```
+
+then from the testClient access the path the template resolves to like so:
+
+```javascript
+
+var username = 'TEST USER@blah.com' + test_id;
+
+testClient.on('/gauges/' + username, function(data) {
+  expect(data.value).to.be(1);
+  expect(data.gauge).to.be('logins');
+  done();
+}, function(e) {
+  if (e) return done(e);
+  testClient.increment('/gauges/' + username, 'logins', 1, function(e) {
+    if (e) return done(e);
+  });
+});
+
+```
+
+NB: permissions that resolve to context properties with * in them are ignored lest there be the chance for unauthorized promotion of the users privileges, ie:
+
+```javascript
+//for the given user object with a custom_data property with a * fields
+var exampleUser = {
+  username:'test',
+  password:'blah',
+  custom_data:{
+    test:'*'
+  }
+}
+
+//this permission will not work:
+var exampleGroup = {
+  name:'test',
+  permissions:{
+    'users/{{user.custom_data.test}}/gauges/*':{actions:['on', 'set']}
+  }
+}
+
+//because the template would resolve to users/*/gauges/*, which may leak other users data
+
+```
 
 WEB PATH LEVEL SECURITY
 -----------------------
@@ -1171,10 +1308,7 @@ function (e, instance) {
 		    res.end(JSON.stringify({"secure":"value"}));
 
 		});
-
-
 	});
-
 });
 
 ```
@@ -1229,15 +1363,15 @@ var happn = require('happn');
 happn.client.create({username:'_ADMIN', password:'testPWD'},function(e, instance) {
 
   var request = require('request');
-  
+
   var options = {
     url: 'http://127.0.0.1:55000/my/special/middleware',
   };
-  
+
   options.headers = {'Authorization': ['Bearer ' + instance.session.token]};
-  
+
   request(options, function (error, response, body) {
-    
+
     //response happens all should be ok if the token is correct and the account is able to access the middleware resource
   });
 });
@@ -1320,7 +1454,7 @@ happn.client.create({protocol:'https', allowSelfSignedCerts:true},function(e, in
 PAYLOAD ENCRYPTION
 ------------------
 
-*if the server is running in secure mode, it can also be configured to encrypt payloads between it and socket clients, this means that the client must include a keypair as part of its credentials on logging in, to see payload encryption in action plase go to the [following test](https://github.com/happner/happn-3/blob/master/test/c2_websockets_embedded_sanity_encryptedpayloads.js)*
+*if the server is running in secure mode, it can also be configured to encrypt payloads between it and socket clients, this means that the client must include a keypair as part of its credentials on logging in, to see payload encryption in action plase go to the [following test](https://github.com/happner/happn-3/blob/master/test/integration/security/encryptedpayloads_sanity.js)*
 
 INBOUND AND OUTBOUND LAYERS (MIDDLEWARE)
 -----------------------------------------
@@ -1447,8 +1581,8 @@ clientInstance1.set('/test/path/acknowledged/1', {test: 'data'}, {
       {
         successful: 1,
         acknowledged:1,
-        failed: 0, 
-        skipped: 0, 
+        failed: 0,
+        skipped: 0,
         queued:1
       }
     )
@@ -1479,4 +1613,3 @@ gulp --gulpfile test/browser/gulp-01.js
 OTHER PLACES WHERE HAPPN-3 IS USED:
 ----------------------------------
 HAPPNER - an experimental application engine that uses happn for its nervous system, see: www.github.com/happner/happner-2 - happner is now on version 2 so relatively mature.
-

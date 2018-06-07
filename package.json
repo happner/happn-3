@@ -1,7 +1,7 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
-  "version": "7.1.4",
+  "version": "7.2.0",
   "main": "./lib/index",
   "protocol": "2",
   "database": "1",
@@ -36,6 +36,7 @@
     "connect-cookies": "0.0.0",
     "deep-copy": "1.1.2",
     "fs-extra": "2.0.0",
+    "handlebars": "4.0.11",
     "happn-logger": "0.0.2",
     "happn-nedb": "1.8.1",
     "happn-password-hash-and-salt": "1.1.0",
