@@ -23,7 +23,7 @@ message lifecycle:
 4. protocol stack executes on the message
 5. plugin success or fail method is invoked and the response is sent back to the client.
 
-publisher:- receives a message with the recipients for a publication of a remove or set event, and will push the publication to a publication queue, if the consistency option is QUEUED or DEFERRED - then the callback and reponse happens immediately after the publication is on the publication queue. See [constants](https://github.com/happner/happn-3/blob/master/constants.jshttps://github.com/happner/happn-3/blob/master/lib/constants.js) for the meanings of the consistency settings.
+publisher:- receives a message with the recipients for a publication of a remove or set event, and will push the publication to a publication queue, if the consistency option is QUEUED or DEFERRED - then the callback and reponse happens immediately after the publication is on the publication queue. See [constants](https://github.com/happner/happn-3/blob/master/constants.js) for the meanings of the consistency settings.
 
 queue:- system has 4 queues:
 1. the inbound queue - raw incoming messages land here, the protocol service matches a plugin with the raw message, where it is transformed and pushed down the protocol stack
@@ -33,12 +33,12 @@ queue:- system has 4 queues:
 
 security:- this service manages user and group CRUD, via the users module and refers to the checkpoint module which manages real-time authorisation. On a secure instance, the security services processAuthorize is added to the protocol pipeline.
 
-session:- this is where sessions are managed, when a primus connection is established, a session is generated and lives here, with its attendant connection. Incoming messages are fielded here, this could be confused with the transport layer, which deal only with the creation of the primus and http server instance, 
+session:- this is where sessions are managed, when a primus connection is established, a session is generated and lives here, with its attendant connection. Incoming messages are fielded here, this could be confused with the transport layer, which deal only with the creation of the primus and http server instance,
 
-stats:- this pulls together all the systems stats into a snapshot. 
+stats:- this pulls together all the systems stats into a snapshot.
   FUTURE:
   - possible statsProvider
-  - have 2 methods for now gauge and increment 
+  - have 2 methods for now gauge and increment
   - stats broken down by happn instance name
 
 subscription:- this services manages adding a subscription, pick up 'on' messages and add subscriptions to buckets. Buckets are simply optimised lists of subscribers taht are segmented by the action and possible configuration of wildcard paths.
