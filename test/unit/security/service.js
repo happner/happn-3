@@ -486,7 +486,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(clientInstance.options.publicKey).to.be('AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2');
     expect(clientInstance.options.privateKey).to.be('Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=');
 
-    var clientInstance = happn_client.__instance({
+    clientInstance = happn_client.__instance({
       username: '_ADMIN',
       publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2',
       privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M='
@@ -495,7 +495,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(clientInstance.options.publicKey).to.be('AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2');
     expect(clientInstance.options.privateKey).to.be('Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=');
 
-    var clientInstance = happn_client.__instance({
+    clientInstance = happn_client.__instance({
       username: '_ADMIN',
       password: 'happntest'
     });
@@ -503,7 +503,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(clientInstance.options.username).to.be('_ADMIN');
     expect(clientInstance.options.password).to.be('happntest');
 
-    var clientInstance = happn_client.__instance({
+    clientInstance = happn_client.__instance({
       config: {
         username: '_ADMIN',
         password: 'happntest'

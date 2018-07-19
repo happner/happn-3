@@ -95,7 +95,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var groups = [];
     var users = [];
 
-    for (var i = 0; i < 10; i++) groups.push({name: 'test_' + i});
+    for (var ii = 0; ii < 10; ii++) groups.push({name: 'test_' + ii});
 
     for (var i = 0; i < 10; i++) users.push({
       username: 'test_' + i,

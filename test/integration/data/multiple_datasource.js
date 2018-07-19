@@ -633,8 +633,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       var test_path = '/a3_eventemitter_multiple_datasource/' + test_id + '/persistedaddedpattern';
       var patternExists = false;
 
-      for (var pattern in services[1].services.data.dataroutes) {
-        if (pattern == test_path) {
+      for (var pattern1 in services[1].services.data.dataroutes) {
+        if (pattern1 == test_path) {
           patternExists = true;
           break;
         }
@@ -646,8 +646,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       services[1].services.data.removeDataStoreFilter(test_path);
 
-      for (var pattern in services[1].services.data.dataroutes) {
-        if (pattern == test_path) {
+      for (var pattern2 in services[1].services.data.dataroutes) {
+        if (pattern2 == test_path) {
           patternExists = true;
           break;
         }

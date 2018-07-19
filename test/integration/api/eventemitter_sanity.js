@@ -376,7 +376,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     }, function (err) {
 
-      expect(err).to.not.exist;
+      if (err) return done(err);
       publisherclient.set('setTest/nonMergeConsecutive', object, {}, function (err) {
         expect(err).to.not.be.ok();
         publisherclient.set('setTest/nonMergeConsecutive', object, {}, function (err) {

@@ -1,10 +1,12 @@
 describe('embedded_sanity_encryptedpayloads', function () {
 
+  var expect, happn_client;
+
   if (typeof window == 'undefined') {
-    var chai = require('chai'),
-      expect = chai.expect,
-      happn = require('../../lib/index'),
-      happn_client = happn.client;
+    var chai = require('chai');
+    var happn = require('../../lib/index');
+    expect = chai.expect;
+    happn_client = happn.client;
   }
   else {
     expect = window.expect;
@@ -16,7 +18,6 @@ describe('embedded_sanity_encryptedpayloads', function () {
     if (socketClient) {
       socketClient.disconnect(done);
     } else done();
-
   });
 
   var socketClient;

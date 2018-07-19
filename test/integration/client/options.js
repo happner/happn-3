@@ -95,7 +95,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var client = happn.client;
 
-    var clientOptions = client.__prepareOptions(connection, options);
+    var clientOptions = client.__prepareOptions(connection, undefined);
 
     expect(clientOptions).to.eql({
       host: '192.168.0.1',
