@@ -215,9 +215,9 @@ describe('longrunning/001_db_compaction', function () {
     var stats = fs.statSync(filepath);
     //Convert the file size to megabytes (optional)
     if (!stats) return 0;
-    if (!stats["size"]) return 0;
+    if (!stats.size) return 0;
 
-    return stats["size"];
+    return stats.size;
   }
 
   var fileSizeAfterActivity1;

@@ -212,7 +212,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     } catch (e) {
       callback(e);
     }
-  }
+  };
 
   it('should push some data into the multiple datastore, memory datastore, wildcard pattern', function (callback) {
 
@@ -423,7 +423,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var randomTag = require('shortid').generate();
 
-    var test_path = '/a3_eventemitter_multiple_datasource/' + test_id + '/persistedtest/tag'
+    var test_path = '/a3_eventemitter_multiple_datasource/' + test_id + '/persistedtest/tag';
 
     multipleClient.set(test_path, {
       property1: 'property1',

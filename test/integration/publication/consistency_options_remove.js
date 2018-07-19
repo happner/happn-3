@@ -120,7 +120,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         done();
       })
-      .catch(done)
+      .catch(done);
 
   });
 
@@ -210,7 +210,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         done();
       })
-      .catch(done)
+      .catch(done);
 
   });
 
@@ -300,7 +300,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         done();
       })
-      .catch(done)
+      .catch(done);
 
   });
 
@@ -407,7 +407,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         });
 
       })
-      .catch(done)
+      .catch(done);
 
   });
 
@@ -493,7 +493,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }, function (e) {
 
             if (e) return reject(e);
-          })
+          });
         });
       })
 
@@ -507,7 +507,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         done();
       })
-      .catch(done)
+      .catch(done);
 
   });
 
@@ -613,7 +613,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         });
 
       })
-      .catch(done)
+      .catch(done);
 
   });
 

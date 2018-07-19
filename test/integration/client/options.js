@@ -38,7 +38,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     if (happnInstance1) happnInstance1.stop()
       .then(done)
-      .catch(done)
+      .catch(done);
     else done();
   });
 
@@ -92,8 +92,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       host: '192.168.0.1',
       port: 10000
     };
-
-    var options = undefined;
 
     var client = happn.client;
 

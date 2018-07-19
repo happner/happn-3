@@ -12,12 +12,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           createLogger: function () {
             return {
               $$TRACE: function () {}
-            }
+            };
           }
-        }
+        };
       }
     }
-  }
+  };
 
   var replicationSubscriptions = {};
   var replicatedData = {};
@@ -36,7 +36,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       handleFatal: function (str, e) {
         console.error(str, e);
       }
-    }
+    };
 
     obj.happn.services.replicator = {
       on: function (eventName, handler) {

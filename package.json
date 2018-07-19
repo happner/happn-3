@@ -13,7 +13,8 @@
     "test-longrunning": "node test/test-longrunning/serial-run.js",
     "test-sanity": "mocha silence.js test/integration/**/*sanity.js",
     "test-release": "rm -rf node_modules && rm -f package-lock.json && npm install && npm test",
-    "test-010": "source ~/.nvm/nvm.sh && nvm use 0.10 && rm -rf node_modules && npm install && node_modules/mocha/bin/_mocha test/integration/**"
+    "test-010": "source ~/.nvm/nvm.sh && nvm use 0.10 && rm -rf node_modules && npm install && node_modules/mocha/bin/_mocha test/integration/**",
+    "test-lint": "gulp lint"
   },
   "author": "Tenacious and NSOFT",
   "license": "MIT",
@@ -73,10 +74,12 @@
     "coveralls": "2.11.6",
     "debug": "2.2.0",
     "expect.js": "*",
-    "gulp": "3.9.1",
+    "gulp": "^3.9.1",
+    "gulp-jshint": "^2.1.0",
     "happn-random-activity-generator": "0.2.0",
     "happner-serial-mocha": "1.5.2",
     "istanbul": "0.4.1",
+    "jshint": "^2.9.5",
     "karma": "0.13.9",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "0.2.1",

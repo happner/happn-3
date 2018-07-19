@@ -472,7 +472,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('should test the default config settings', function (done) {
 
-    var happn = require('../../../lib/index')
+    var happn = require('../../../lib/index');
     var happn_client = happn.client;
 
     var clientInstance = happn_client.__instance({
@@ -519,7 +519,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('should test the __prepareLogin method, password', function (done) {
 
-    var happn = require('../../../lib/index')
+    var happn = require('../../../lib/index');
     var happn_client = happn.client;
 
     var Crypto = require('happn-util-crypto');
@@ -559,7 +559,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('should test the __prepareLogin method, digest', function (done) {
 
-    var happn = require('../../../lib/index')
+    var happn = require('../../../lib/index');
     var happn_client = happn.client;
 
     var Crypto = require('happn-util-crypto');
@@ -684,7 +684,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         clientInstance.login();
 
       });
-    }
+    };
   });
 
   it('tests the security services __profileSession method, default profiles', function (done) {
@@ -860,7 +860,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             });
           }, 2500);
         });
-      })
+      });
     });
   });
 
@@ -1817,7 +1817,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                 clientInstance.disconnect(function (e) {
                   if (e) console.warn('couldnt disconnect client:::', e);
                   serviceInstance.stop(done);
-                })
+                });
               })
 
               .catch(function (e) {
@@ -1920,7 +1920,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
                 .then(function (clientInstance) {
 
-                  done(new Error('this was not meant to happn'))
+                  done(new Error('this was not meant to happn'));
 
                 })
 
@@ -1964,7 +1964,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expect(securityService.__cache_Profiles[1].policy.inactivity_threshold).to.be(60000 * 60 * 48);
         done();
       })
-      .catch(done)
+      .catch(done);
   });
 
   it('should create a user and login, getting a token - then should be able to use the token to log in again', function (done) {

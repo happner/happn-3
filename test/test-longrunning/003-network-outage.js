@@ -79,7 +79,7 @@ describe(filename, function () {
         clientSocket.on('data', function (buf) {
           if (_this.paused) return;
           targetSocket.write(buf);
-        })
+        });
 
       });
 
@@ -131,7 +131,7 @@ describe(filename, function () {
         })
 
         .then(function () {
-          return client.set('/test/x', {})
+          return client.set('/test/x', {});
         })
 
         .then(function () {
@@ -176,7 +176,7 @@ describe(filename, function () {
         })
 
         .then(function () {
-          return client.set('/test/x', {})
+          return client.set('/test/x', {});
         })
 
         .then(function () {

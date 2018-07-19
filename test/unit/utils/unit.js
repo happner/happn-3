@@ -1,6 +1,6 @@
 var path = require('path');
 var expect = require('expect.js');
-var Utils = require('../../../lib/services/utils/service')
+var Utils = require('../../../lib/services/utils/service');
 var utils = new Utils();
 
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
@@ -97,8 +97,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }, function (e) {
         expect(e).to.not.be(null);
         done();
-      })
-    })
+      });
+    });
   });
 
   it('tests async', function (done) {
