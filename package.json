@@ -6,7 +6,7 @@
   "protocol": "2",
   "database": "1",
   "scripts": {
-    "test": "mocha silence.js test/integration/** test/unit/**",
+    "test": "gulp lint && mocha silence.js test/integration/** test/unit/**",
     "test-unit": "mocha silence.js test/unit/**",
     "test-cover": "istanbul cover _mocha -- silence.js test/integration/** test/unit/**",
     "test-browser": "gulp --gulpfile test/browser/gulp-01.js",
