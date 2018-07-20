@@ -39,7 +39,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('logs errors via the error service, ensures system health changes as required', function (done) {
 
-    this.timeout(15000)
+    this.timeout(15000);
     var statsEmitted = [];
 
     serviceInstance.services.stats.on('system-stats', function(stats){

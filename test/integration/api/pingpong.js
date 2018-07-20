@@ -91,7 +91,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       doRequest('/ping', null, function (resp, body) {
         expect(body).to.be('pong');
         callback();
-      })
+      });
     });
   });
 

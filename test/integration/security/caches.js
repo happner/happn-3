@@ -1,4 +1,4 @@
-var testHelper = require('../../__fixtures/utils/test_helper').create()
+var testHelper = require('../../__fixtures/utils/test_helper').create();
 
 describe(testHelper.testName(__filename, 3), function () {
 
@@ -206,8 +206,8 @@ describe(testHelper.testName(__filename, 3), function () {
           expect(serviceInstance.services.security.users.__cache_passwords.getSync('TEST_USR_' + randomInt.toString())).to.not.be(null);
 
           timeCB();
-        })
-      })
+        });
+      });
 
     }, function(e){
 

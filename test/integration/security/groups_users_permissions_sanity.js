@@ -283,7 +283,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         customString: 'customSub1',
         customNumber: 0
       }
-    }
+    };
 
     it('should delete a group', function (callback) {
 
@@ -320,7 +320,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           expect(result.password).to.equal(undefined);
 
-          delete result['_meta'];
+          delete result._meta;
 
           expect(result).to.eql({
             custom_data: {
@@ -334,7 +334,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
               expect(result.data.password != 'TEST PWD').to.be(true);
 
-              delete result.data['password'];
+              delete result.data.password;
 
               expect(result.data).to.eql({
                 custom_data: {
@@ -400,7 +400,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             testServices.data.get('/_SYSTEM/_SECURITY/_USER/' + user.username, {},
               function (e, result) {
 
-                delete result.data['password'];
+                delete result.data.password;
 
                 expect(result.data).to.eql({
                   custom_data: {},
@@ -511,7 +511,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           customString: 'custom1',
           customNumber: 0
         }
-      }
+      };
 
       var linkUser = {
         username: 'LINK USER@blah.com' + test_id,
@@ -519,14 +519,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         custom_data: {
           something: 'usefull'
         }
-      }
+      };
 
       var nonExistantGroup = {
         name: 'BAD LINK GROUP' + test_id,
         _meta: {
           path: '/SOME/DODGE/PATH'
         }
-      }
+      };
 
       before('should create link between users and groups', function (done) {
         testServices.security.users.upsertGroup(linkGroup, function (e, result) {
@@ -683,8 +683,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           })
           .then(function(user){
 
-            expect(user.groups['thisGroup1']).to.not.be(null);
-            expect(user.groups['thisGroup1']).to.not.be(undefined);
+            expect(user.groups.thisGroup1).to.not.be(null);
+            expect(user.groups.thisGroup1).to.not.be(undefined);
             return testServices.security.groups.deleteGroup(fetchedGroup);
           })
           .then(function(){
@@ -692,7 +692,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           })
           .then(function(user){
 
-            expect(user.groups['thisGroup1']).to.be(undefined);
+            expect(user.groups.thisGroup1).to.be(undefined);
             done();
           })
           .catch(done);

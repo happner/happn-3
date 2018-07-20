@@ -51,7 +51,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         })
 
         .then(function () {
-          return client.set('/test/x', {})
+          return client.set('/test/x', {});
         })
 
         .then(function () {
@@ -85,7 +85,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         })
 
         .then(function () {
-          return client.set('/test/x', {})
+          return client.set('/test/x', {});
         })
 
         .then(function () {

@@ -15,7 +15,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__initializeProperties();
     happnClient.log = log || {
       error:function(){}
-    }
+    };
 
     happnClient.state = state != null?state: Constants.CLIENT_STATE.ACTIVE;
     happnClient.session = session || {id:'test'};
@@ -28,7 +28,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       on:function(eventName){
 
       }
-    }
+    };
 
     happnClient.options = clientOptions || {callTimeout: 60000};
 
@@ -41,7 +41,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action){
       callback();
-    }
+    };
 
     happnClient.__performDataRequest('/test/path', 'set', {test:'data'}, null, function(e, response){
       if (e) return done(e);
@@ -55,7 +55,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action){
       callback();
-    }
+    };
 
     happnClient.__performDataRequest('/test/path', 'set', {test:'data'});
 

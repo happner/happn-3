@@ -369,7 +369,7 @@ SanityTests.prototype.run = function (server, publisherclient, listenerclient) {
           expect(err).to.not.be.ok();
         });
       });
-    })
+    });
   });
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
@@ -402,7 +402,7 @@ SanityTests.prototype.run = function (server, publisherclient, listenerclient) {
           expect(err).to.not.be.ok();
         });
       });
-    })
+    });
   });
 
 

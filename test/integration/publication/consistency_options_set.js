@@ -100,7 +100,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             }
           }, function (e) {
             if (e) return reject(e);
-          })
+          });
         });
       })
       .then(function (results) {
@@ -112,7 +112,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         done();
       })
-      .catch(done)
+      .catch(done);
 
   });
 
@@ -183,7 +183,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }, function (e, response) {
             if (e) return reject(e);
             else resolve(response);
-          })
+          });
         });
       })
       .then(function (results) {
@@ -195,7 +195,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         done();
       })
-      .catch(done)
+      .catch(done);
 
   });
 
@@ -266,7 +266,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }, function (e, response) {
             if (e) return reject(e);
             else resolve(response);
-          })
+          });
         });
       })
       .then(function (results) {
@@ -275,7 +275,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         done();
       })
-      .catch(done)
+      .catch(done);
 
   });
 
@@ -374,10 +374,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           if (e) return done(e);
           setHappened = true;
-        })
+        });
 
       })
-      .catch(done)
+      .catch(done);
 
   });
 
@@ -463,7 +463,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }, function (e) {
 
             if (e) return reject(e);
-          })
+          });
         });
       })
 
@@ -477,7 +477,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         done();
       })
-      .catch(done)
+      .catch(done);
 
   });
 
@@ -573,10 +573,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         }, function (e) {
           if (e) return done(e);
-        })
+        });
 
       })
-      .catch(done)
+      .catch(done);
 
   });
 

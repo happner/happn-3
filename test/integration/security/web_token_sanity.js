@@ -27,7 +27,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (!query)
         options.headers = {
           'Cookie': ['happn_token=' + token]
-        }
+        };
       else
         options.url += '?happn_token=' + token;
     }
@@ -52,7 +52,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (!query)
         options.headers = {
           'Cookie': ['happn_token=' + token]
-        }
+        };
       else
         options.url += '?happn_token=' + token;
     }
@@ -493,7 +493,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests doing a request for a nonce using a GET with a username and password, nonce is encrypted for a login', function (callback) {
 
-    var encodedPublicKey = encodeURIComponent(keyPair.publicKey)
+    var encodedPublicKey = encodeURIComponent(keyPair.publicKey);
 
     doRequest('/auth/request-nonce?publicKey=' + encodedPublicKey + '&user=_ADMIN', null, true, function (response, body) {
 

@@ -366,8 +366,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (e) return callback(e);
           });
 
-        } catch (e) {
-          return callback(e);
+        } catch (err) {
+          return callback(err);
         }
       });
     });
@@ -407,9 +407,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             }, function (e) {
               if (e) return callback(e);
             });
-
-          } catch (e) {
-            return callback(e);
+          } catch (err) {
+            return callback(err);
           }
         });
       });

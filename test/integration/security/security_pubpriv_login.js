@@ -209,7 +209,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             "test": "on"
           }, function (e, response) {
             if (e) return callback(e);
-          })
+          });
 
 
         });
@@ -268,7 +268,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                   callback(new Error('on didn\'t happen'));
 
                 }, 4000);
-              })
+              });
             });
           })
 
