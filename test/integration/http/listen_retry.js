@@ -72,7 +72,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             setTimeout(function () {
               instances[0].stop();
             }, 3000);
-          })
+          });
         });
       });
 

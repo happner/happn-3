@@ -14,7 +14,7 @@ describe('longrunning/005_redundant_connections', function () {
 
   var service1Port = 8000;
   var service2Port = 8001;
-  var service3Port = 8002;005
+  var service3Port = 8002;
 
   var service1Client;
   var service2Client;
@@ -635,7 +635,7 @@ describe('longrunning/005_redundant_connections', function () {
           if (e) return done(e);
         });
 
-      }, randomMilliSeconds)
+      }, randomMilliSeconds);
 
     });
   });

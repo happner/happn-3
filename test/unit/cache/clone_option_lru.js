@@ -55,10 +55,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             expect(result === data).to.be(false);
             done();
           })
-          .catch(done)
+          .catch(done);
       })
 
-      .catch(done)
+      .catch(done);
   });
 
   it('sets data with clone: false, ensures when we get a value back it is not cloned', function (done) {
@@ -76,10 +76,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             expect(result === data).to.be(true);
             done();
           })
-          .catch(done)
+          .catch(done);
       })
 
-      .catch(done)
+      .catch(done);
   });
 
   it('specific cache, sets data, ensures when we get a value back it is cloned by default', function (done) {
@@ -103,10 +103,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             expect(result === data).to.be(false);
             done();
           })
-          .catch(done)
+          .catch(done);
       })
 
-      .catch(done)
+      .catch(done);
   });
 
   it('specific cache, sets data with clone: false, ensures when we get a value back it is not cloned', function (done) {
@@ -128,9 +128,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             expect(result === data).to.be(true);
             done();
           })
-          .catch(done)
+          .catch(done);
       })
 
-      .catch(done)
+      .catch(done);
   });
 });

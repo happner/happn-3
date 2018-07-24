@@ -59,11 +59,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           sort: {
             "name": 1
           }
-        }
+        };
 
         var criteria = {
           "name": "crimson tide"
-        }
+        };
 
         searchClient.get('movie/*', {
             criteria: criteria,
@@ -96,11 +96,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           fields: {
             "name": 1
           }
-        }
+        };
 
         var criteria = {
           "genre": "ww2"
-        }
+        };
 
         searchClient.get('movie/*', {
             criteria: criteria,
@@ -145,11 +145,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           "_meta.created": -1
         },
         limit: 1
-      }
+      };
 
       var criteria = {
         "genre": "family"
-      }
+      };
 
       var latestResult;
 
@@ -220,11 +220,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           "_meta.created": -1
         },
         limit: 1
-      }
+      };
 
       var criteria = {
         "genre": "family"
-      }
+      };
 
       var latestResult;
 

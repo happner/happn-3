@@ -1,7 +1,6 @@
-var shortid = require('shortid')
-  , path = require('path')
-  , fs = require('fs-extra')
-  ;
+var shortid = require('shortid'),
+path = require('path'),
+fs = require('fs-extra');
 
 function TestHelper() {
 

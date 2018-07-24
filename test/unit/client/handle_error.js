@@ -15,7 +15,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__initializeProperties();
     happnClient.log = {
       error:function(){}
-    }
+    };
 
     happnClient.onEvent('error', function(error){
       expect(happnClient.state != Constants.CLIENT_STATE.ERROR).to.be(true);
@@ -34,7 +34,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__initializeProperties();
     happnClient.log = {
       error:function(){}
-    }
+    };
 
     happnClient.onEvent('error', function(error){
       expect(happnClient.errors.length).to.be(1);
@@ -53,7 +53,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__initializeProperties();
     happnClient.log = {
       error:function(){}
-    }
+    };
 
     happnClient.onEvent('fatal-error', function(error){
       expect(happnClient.state == Constants.CLIENT_STATE.ERROR).to.be(true);
@@ -71,7 +71,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__initializeProperties();
     happnClient.log = {
       error:function(){}
-    }
+    };
 
     for (var i = 0; i <= 110; i++) happnClient.handle_error(new Error('test error: ' + i), true);
 

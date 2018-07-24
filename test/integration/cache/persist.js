@@ -52,7 +52,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       };
 
       serviceInstance.initialize(config, callback);
-    })
+    });
   });
 
   after(function (done) {
@@ -192,7 +192,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (e) return done(e);
 
       expect(item.data).to.be('foundMe');
-      expect(serviceInstance.__defaultCache.__cache['totallyCrazyPath'].data.data).to.be('foundMe');
+      expect(serviceInstance.__defaultCache.__cache.totallyCrazyPath.data.data).to.be('foundMe');
 
       done();
     });
@@ -210,7 +210,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
-      expect(serviceInstance.__caches['specific'].__cache[key].key).to.be(key);
+      expect(serviceInstance.__caches.specific.__cache[key].key).to.be(key);
 
       specific.get(key, function (e, data) {
 
@@ -236,7 +236,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
-      expect(serviceInstance.__caches['specific'].__cache[key].key).to.be(key);
+      expect(serviceInstance.__caches.specific.__cache[key].key).to.be(key);
 
       specific.get('totally-non-existent', function (e, data) {
 
@@ -263,7 +263,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
-      expect(serviceInstance.__caches['SPECIFIC'].__cache[key].key).to.be(key);
+      expect(serviceInstance.__caches.SPECIFIC.__cache[key].key).to.be(key);
 
       specific.get(key, function (e, data) {
 
@@ -293,9 +293,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                 expect(e).to.be(null);
                 expect(result).to.be(null);
 
-                expect(serviceInstance.__caches['SPECIFIC']).to.not.be(undefined);
+                expect(serviceInstance.__caches.SPECIFIC).to.not.be(undefined);
                 serviceInstance.clear('SPECIFIC', function (e) {
-                  expect(serviceInstance.__caches['SPECIFIC']).to.be(undefined);
+                  expect(serviceInstance.__caches.SPECIFIC).to.be(undefined);
 
                   done();
                 });
@@ -325,7 +325,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (e) return done(e);
 
       expect(item.data).to.be('foundMe');
-      expect(serviceInstance.__caches['specific'].__cache['totallyCrazyPath'].data.data).to.be('foundMe');
+      expect(serviceInstance.__caches.specific.__cache.totallyCrazyPath.data.data).to.be('foundMe');
       done();
     });
 
@@ -487,13 +487,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         expect(data).to.not.be(null);
 
-        expect(serviceInstance.__caches['specific']).to.not.be(undefined);
+        expect(serviceInstance.__caches.specific).to.not.be(undefined);
 
         serviceInstance.clear('specific', function (e) {
 
           if (e) return done(e);
 
-          expect(serviceInstance.__caches['specific']).to.be(undefined);
+          expect(serviceInstance.__caches.specific).to.be(undefined);
           done();
 
         });
@@ -580,7 +580,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           if (e) return done(e);
           expect(data).to.be(30);
 
-          expect(serviceInstance.__defaultCache.__cache['nonexistantItem']).to.not.be(undefined);
+          expect(serviceInstance.__defaultCache.__cache.nonexistantItem).to.not.be(undefined);
 
           var didCB = false;
 
@@ -592,7 +592,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
               expect(timed.item.key).to.be('nonexistantItem');
 
-              expect(serviceInstance.__defaultCache.__cache['nonexistantItem']).to.be(undefined);
+              expect(serviceInstance.__defaultCache.__cache.nonexistantItem).to.be(undefined);
 
               didCB = true;
 
@@ -631,7 +631,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(data).to.not.be(null);
       expect(data.nice).to.be('value');
 
-      expect(serviceInstance.__caches['specific']).to.not.be(undefined);
+      expect(serviceInstance.__caches.specific).to.not.be(undefined);
 
       setTimeout(function () {
 
@@ -693,7 +693,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         if (e) return done(e);
 
         expect(data).to.not.be(null);
-        expect(serviceInstance.__caches['specific']).to.not.be(undefined);
+        expect(serviceInstance.__caches.specific).to.not.be(undefined);
 
         specific.increment(key, 15, function (e, data) {
 
@@ -725,11 +725,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       expect(Object.keys(specific.__cache).length).to.be(5);
 
-      delete specific.__cache["sync_key_0"];
-      delete specific.__cache["sync_key_1"];
-      delete specific.__cache["sync_key_2"];
-      delete specific.__cache["sync_key_3"];
-      delete specific.__cache["sync_key_4"];
+      delete specific.__cache.sync_key_0;
+      delete specific.__cache.sync_key_1;
+      delete specific.__cache.sync_key_2;
+      delete specific.__cache.sync_key_3;
+      delete specific.__cache.sync_key_4;
 
       expect(Object.keys(specific.__cache).length).to.be(0);
 
@@ -768,11 +768,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       expect(Object.keys(specific.__cache).length).to.be(5);
 
-      delete specific.__cache["sync_key_0"];
-      delete specific.__cache["sync_key_1"];
-      delete specific.__cache["sync_key_2"];
-      delete specific.__cache["sync_key_3"];
-      delete specific.__cache["sync_key_4"];
+      delete specific.__cache.sync_key_0;
+      delete specific.__cache.sync_key_1;
+      delete specific.__cache.sync_key_2;
+      delete specific.__cache.sync_key_3;
+      delete specific.__cache.sync_key_4;
 
       expect(Object.keys(specific.__cache).length).to.be(0);
 

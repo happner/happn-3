@@ -283,7 +283,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(err).to.not.be.ok();
         });
       });
-    })
+    });
   });
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
@@ -315,7 +315,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(err).to.not.be.ok();
         });
       });
-    })
+    });
   });
 
 
@@ -353,7 +353,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       "keywords": {
         $in: ["bass", "Penny Siopis"]
       }
-    }
+    };
 
     var options1 = {
       fields: {
@@ -363,7 +363,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         "field1": 1
       },
       limit: 1
-    }
+    };
 
     var criteria2 = null;
 
@@ -373,7 +373,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         "field1": 1
       },
       limit: 2
-    }
+    };
 
     publisherclient.set('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
 
