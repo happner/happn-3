@@ -66,5 +66,5 @@ module.exports = function (config) {
     concurrency: Infinity,
 
     browserNoActivityTimeout: 60000
-  })
-}
+  });
+};

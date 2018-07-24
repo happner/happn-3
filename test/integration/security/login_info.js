@@ -63,15 +63,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       server1.services.session.on('connect', function (evt) {
         sessionId = evt.id;
-        events['connect'] = evt;
+        events.connect = evt;
       });
 
       server1.services.session.on('authentic', function (evt) {
-        events['authentic'] = evt;
+        events.authentic = evt;
       });
 
       server1.services.session.on('disconnect', function (evt) {
-        events['disconnect'] = evt;
+        events.disconnect = evt;
       });
 
       Happn.client.create({
@@ -115,15 +115,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       server2.services.session.on('authentic', function (evt) {
         sessionId = evt.id;
-        events['authentic'] = evt;
+        events.authentic = evt;
       });
 
       server2.services.session.on('connect', function (evt) {
-        events['connect'] = evt;
+        events.connect = evt;
       });
 
       server2.services.session.on('disconnect', function (evt) {
-        events['disconnect'] = evt;
+        events.disconnect = evt;
       });
 
       Happn.client.create({

@@ -82,7 +82,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       .then(done)
 
-      .catch(done)
+      .catch(done);
   });
 
 
@@ -181,7 +181,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expectedEvents = {
           1: true,
           4: true
-        }
+        };
       })
 
       .then(function () {

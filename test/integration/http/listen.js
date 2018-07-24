@@ -13,7 +13,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     if (!port) port = 55000;
 
     if (path[0] != '/')
-      path = '/' + path
+      path = '/' + path;
 
     var options = {
       url: 'http://127.0.0.1:' + port.toString() + path
@@ -23,7 +23,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (!query)
         options.headers = {
           'Cookie': ['happn_token=' + token]
-        }
+        };
       else
         options.url += '?happn_token=' + token;
     }
@@ -146,7 +146,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(e).to.be(null);
 
           doRequest('version', null, null, function (body) {
-            expect(body.version).to.not.be(null)
+            expect(body.version).to.not.be(null);
             callback();
           });
 
@@ -154,7 +154,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       }, 2000);
 
-    })
+    });
   });
 
   after(function (done) {

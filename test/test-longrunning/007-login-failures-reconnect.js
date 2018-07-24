@@ -130,7 +130,7 @@ describe(require('path').basename(__filename), function () {
       })
       .then(function (clientInstance) {
         return clientInstance.disconnect();
-      })
+      });
   });
 
   it('tests login retries', function (done) {
@@ -199,7 +199,7 @@ describe(require('path').basename(__filename), function () {
           callback(); //allow login
         }.bind(server1.services.security);
 
-      })
+      });
   });
 
   it('can login again if a login attempt failed on reconnect', function () {
@@ -240,7 +240,7 @@ describe(require('path').basename(__filename), function () {
           server1.services.security.on('loginAttempt', function waitForAttempt() {
             server1.services.subscription.removeAllListeners('loginAttempt');
             resolve();
-          })
+          });
         });
       })
       .then(function () {
@@ -259,7 +259,7 @@ describe(require('path').basename(__filename), function () {
       })
       .then(function () {
         return client.disconnect();
-      })
+      });
   });
 
   it('does not retry if we are connected', function () {
@@ -379,13 +379,13 @@ describe(require('path').basename(__filename), function () {
               expect(eventCalled).to.equal(0);
               client.offEvent(subHandle);
               resolve();
-            }, 20000)
+            }, 20000);
           }
         });
       })
       .then(function () {
         return client.disconnect(done);
-      })
+      });
   });
 
   it('kills a client that is started with "create" and fails to login', function (done) {

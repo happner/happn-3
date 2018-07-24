@@ -1,6 +1,6 @@
 var path = require('path');
 var expect = require('expect.js');
-var Utils = require('../../../lib/services/utils/service')
+var Utils = require('../../../lib/services/utils/service');
 var utils = new Utils();
 
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
@@ -29,6 +29,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var obj1 = {
       test: 1
     };
+
     var obj2 = {
       test: 2,
       test1: {
@@ -47,17 +48,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     test3.test1.hello = 4;
     expect(obj2.test1.hello).to.be(1);
 
-    var obj1 = {
+    obj1 = {
       test: 1
     };
-    var obj2 = {
+    obj2 = {
       test: 2,
       test1: {
         hello: 1
       }
     };
 
-    var test3 = utils.mergeObjects(obj1, obj2, {
+    test3 = utils.mergeObjects(obj1, obj2, {
       overwrite: false,
       clone: false
     });
@@ -97,8 +98,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }, function (e) {
         expect(e).to.not.be(null);
         done();
-      })
-    })
+      });
+    });
   });
 
   it('tests async', function (done) {
@@ -182,7 +183,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       '/test/*/*/*':{actions:['on', 'set']}
     });
 
-    var aggregated = utils.wildcardAggregatePermissions({
+    aggregated = utils.wildcardAggregatePermissions({
       '/test/*/*/*':{actions:['*']},
       '/test/1/2/*':{actions:['on', 'set']},
       '/test/1/3/*':{actions:['on', 'set']}
@@ -192,7 +193,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       '/test/*/*/*':{actions:['*']}
     });
 
-    var aggregated = utils.wildcardAggregatePermissions({
+    aggregated = utils.wildcardAggregatePermissions({
       '/test/*/*/*':{actions:['on', 'set']},
       '/test/1/2/*':{actions:['on', 'set']},
       '/test/1/3/*':{actions:['get']}

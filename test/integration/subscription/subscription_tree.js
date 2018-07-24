@@ -309,7 +309,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       subscriptionTree.__cache.set('/2/test/path/3{}', cachedSubs);
 
-      var subscribers1 = subscriptionTree.search('/2/test/path/3');
+      subscribers1 = subscriptionTree.search('/2/test/path/3');
 
       expect(subscribers1[0].specialValue).to.be('test');
 
@@ -346,7 +346,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             $$TRACE: function (message) {
               console.log(message);
             }
-          }
+          };
         }
       }
     });

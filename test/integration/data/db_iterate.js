@@ -135,10 +135,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     serviceInstance1.services.data.__iterateDataStores(function (key, ds, next) {
 
       expect(key).to.be("default");
-      expect(ds.provider['persistence']).to.not.be(null);
+      expect(ds.provider.persistence).to.not.be(null);
       next();
 
-    }, callback)
+    }, callback);
   });
 
   it('iterates over multiple ds instances', function (callback) {
@@ -148,14 +148,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     serviceInstance2.services.data.__iterateDataStores(function (key, ds, next) {
 
       expect(['file2', 'file2a'].indexOf(key) > -1).to.be(true);
-      expect(ds.provider['persistence']).to.not.be(null);
+      expect(ds.provider.persistence).to.not.be(null);
 
       keyCount++;
       next();
     }, function (e) {
       expect(keyCount).to.be(2);
       callback();
-    })
+    });
   });
 
   it('iterates a specific ds instance amongst multiple ds instances', function (callback) {
@@ -164,13 +164,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     serviceInstance2.services.data.__iterateDataStores('file2a', function (key, ds, next) {
       expect(key).to.be('file2a');
-      expect(ds.provider['persistence']).to.not.be(null);
+      expect(ds.provider.persistence).to.not.be(null);
       keyCount++;
       next();
     }, function (e) {
       expect(keyCount).to.be(1);
       callback();
-    })
+    });
   });
 
   it('iterates another specific ds instance amongst multiple ds instances', function (callback) {
@@ -179,13 +179,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     serviceInstance2.services.data.__iterateDataStores('file2', function (key, ds, next) {
       expect(key).to.be('file2');
-      expect(ds.provider['persistence']).to.not.be(null);
+      expect(ds.provider.persistence).to.not.be(null);
       keyCount++;
       next();
     }, function (e) {
       expect(keyCount).to.be(1);
       callback();
-    })
+    });
   });
 
   it('fails to find an instance on a single', function (callback) {
@@ -195,7 +195,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(e).to.not.be(null);
       expect(e.toString()).to.be('Error: datastore with key badkey, does not exist');
       callback();
-    })
+    });
   });
 
   it('fails to find an instance on a multiple', function (callback) {
@@ -205,7 +205,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(e).to.not.be(null);
       expect(e.toString()).to.be('Error: datastore with key badkey, does not exist');
       callback();
-    })
+    });
   });
 
 
