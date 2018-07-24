@@ -15,7 +15,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__initializeProperties();
     happnClient.log = log || {
       error: function() {}
-    }
+    };
 
     happnClient.state = state != null ? state : Constants.CLIENT_STATE.ACTIVE;
     happnClient.session = session || {
@@ -30,7 +30,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       on: function(eventName) {
 
       }
-    }
+    };
 
     happnClient.options = clientOptions || {
       callTimeout: 60000
@@ -44,26 +44,25 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
-    opts = happnClient.__prepareConnectionOptions({}, {})
+    opts = happnClient.__prepareConnectionOptions({}, {});
     expect(opts).to.eql({
       host: '127.0.0.1',
       port: 55000,
       protocol: 'http',
       url: 'http://127.0.0.1:55000'
-    })
-    done()
-  })
+    });
+    done();
+  });
 
   xit("tests the __prepareOptions function", function(done) {
 
-  })
+  });
 
   xit("tests the __updateOptions function", function(done) {
 
-  })
-
+  });
 
   xit('tests the __initializeConnectivity function.', function(done) {
     var happnClient = mockHappnClient();
@@ -74,12 +73,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     opts = happnClient.__prepareConnectionOptions({}, {})
 
     happnClient.__initializeConnectivity(opts, (err, data) => {
-      console.log(data)
-      console.log(err)
+      // console.log(data)
+      // console.log(err)
       //TODO Can't Timing out
-      done()
-    })
-  })
+      done();
+    });
+  });
 
   xit('tests the __connectSocket function.', function(done) {
     var happnClient = mockHappnClient();
@@ -90,13 +89,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__connectSocket((err, data) => {
       //TODO This test causes the client and test framework to hang
-      done()
-    })
-  })
+      done();
+    });
+  });
 
   xit("tests the __initializeEvents function", function(done) {
 
-  })
+  });
 
 
   it('tests the getScript function returns an error when not called from a browser', function(done) {
@@ -105,30 +104,30 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
     happnClient.getScript('http://www.google.com', (err, data) => {
       expect(err.toString()).to.eql('Error: only for browser')
       done()
-    })
-  })
+    });
+  });
 
   xit('tests the getScript function when called from a browser', function(done) {
     //TODO Not sure how to test this!
-  })
+  });
 
   it('tests the getResources function.', function(done) {
     var happnClient = mockHappnClient();
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.getResources((err, data) => {
 
       //TODO Can't access internals
-      done()
-    })
-  })
+      done();
+    });
+  });
 
   xit('tests the stop function.', function(done) {
     var happnClient = mockHappnClient();
@@ -142,29 +141,23 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       console.log(err)
       //TODO Can't access internals
       done()
-    })
-  })
-
-
-
-
-
-
+    });
+  });
 
   it('tests the __ensureCryptoLibrary function.', function(done) {
     var happnClient = mockHappnClient();
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.__ensureCryptoLibrary((err, data) => {
       //TODO This test causes the client and test framework to hang
       expect(err).to.be(undefined)
       expect(data).to.be(undefined)
       done()
-    })
-  })
+    });
+  });
 
   it('tests the __ensureCryptoLibrary function.', function(done) {
     var happnClient = mockHappnClient();
@@ -186,14 +179,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.login((err, data) => {
       console.log(err)
       console.log(data)
       done()
-    })
-  })
+    });
+  });
 
 
   xit('tests the __encryptLogin function.', function(done) {
@@ -209,9 +202,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }
     encrypt = happnClient.__encryptLogin(parameters, 456)
     console.log(encrypt)
-  })
-
-
+  });
 
   it('tests that the get function will call __getdatarequest and returns a callback ', function(done) {
 
@@ -219,7 +210,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.get('/test/path', function(e, response) {
       if (e) return done(e);
@@ -233,7 +224,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.getPaths('/test/path', function(e, response) {
       if (e) return done(e);
@@ -247,7 +238,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.increment('/test/path', 1, 1, function(e, response) {
       if (e) return done(e);
@@ -261,7 +252,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.increment('/test/path', 1, function(e, response) {
       if (e) return done(e);
@@ -275,7 +266,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.increment('/test/path', function(e, response) {
       if (e) return done(e);
@@ -289,20 +280,21 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.increment('/test/path', 1, 'string', function(e, response) {
       expect(e.toString()).to.eql("Error: increment must be a number")
       done();
     });
   });
+
   it('tests that the set function calls __getdatarequest and returns a callback', function(done) {
 
     var happnClient = mockHappnClient();
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.set('/test/path', {
       test: 'data'
@@ -318,7 +310,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.set('/test/*/path', {
       test: 'data'
@@ -334,7 +326,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.setSibling('/test/path', {
       test: 'data'
@@ -349,7 +341,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.remove('/test/path', null,
       function(e, response) {
@@ -363,7 +355,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.remove('/test/path',
       function(e, response) {
@@ -395,7 +387,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
   });
 
   it("tests that the __attachpublishedAck function will callback an error if options aren't correct", function(done) {
@@ -417,12 +409,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         done()
       },
       onPublishedTimeout: 10
-    }
+    };
     var happnClient = mockHappnClient();
-
-
     happnClient.__attachPublishedAck(options, {});
-
   });
 
   it("tests the handle_ack function works when __attachPublishedAck has been called", function(done) {
@@ -432,19 +421,22 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     message = {
       sessionId: "1",
       eventId: "1"
-    }
+    };
+
     message2 = {
       id: "1-1",
       result: "Good",
       status: "good"
-    }
+    };
+
     options = {
       onPublished: (e, results) => {
         expect(results).to.eql('Good');
         done()
       },
       onPublishedTimeout: 1000
-    }
+    };
+
     happnClient.__attachPublishedAck(options, message);
     happnClient.handle_ack(message2)
   })
@@ -456,13 +448,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     message = {
       sessionId: "1",
       eventId: "1"
-    }
+    };
     message2 = {
       id: "1-1",
       error: "Bad",
       status: "error",
       result: "Bad"
-    }
+    };
     options = {
       onPublished: (e, results) => {
         expect(e.toString()).to.eql("Error: Bad");
@@ -470,14 +462,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         done()
       },
       onPublishedTimeout: 1000
-    }
+    };
     happnClient.__attachPublishedAck(options, message);
-    happnClient.handle_ack(message2)
-  })
+    happnClient.handle_ack(message2);
+  });
 
   xit("tests the handle_publication function", function(done) {
 
-  })
-
-
-})
+  });
+});

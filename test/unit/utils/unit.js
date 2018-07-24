@@ -152,19 +152,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var checkPathTest = function(path, action){
 
       try{
-
         sharedUtils.checkPath(path, action);
-
         return 'ok';
       }catch(e){
         return e.toString();
       }
     };
 
-    var notOk = 'Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ), ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*';
+    var notOk = 'Error: Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ) _ -, ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*';
 
     expect(checkPathTest('factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*')).to.be('ok');
-    expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*', 'set')).to.be('Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
+    expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*', 'set')).to.be('Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
     expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*{3}')).to.be(notOk);
     expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/$set')).to.be(notOk);
 
