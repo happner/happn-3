@@ -69,10 +69,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
-    opts = happnClient.__prepareConnectionOptions({}, {})
+    };
 
-    happnClient.__initializeConnectivity(opts, (err, data) => {
+    opts = happnClient.__prepareConnectionOptions({}, {});
+
+    happnClient.__initializeConnectivity(opts, function (err, data) {
       // console.log(data)
       // console.log(err)
       //TODO Can't Timing out
@@ -85,9 +86,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
-    happnClient.__connectSocket((err, data) => {
+    happnClient.__connectSocket(function (err, data) {
       //TODO This test causes the client and test framework to hang
       done();
     });
@@ -105,7 +106,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
     };
-    happnClient.getScript('http://www.google.com', (err, data) => {
+    happnClient.getScript('http://www.google.com', function (err, data) {
       expect(err.toString()).to.eql('Error: only for browser')
       done()
     });
@@ -122,7 +123,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       callback();
     };
 
-    happnClient.getResources((err, data) => {
+    happnClient.getResources(function (err, data) {
 
       //TODO Can't access internals
       done();
@@ -136,7 +137,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       callback();
     }
 
-    happnClient.stop((err, data) => {
+    happnClient.stop(function(err, data){
       console.log(data)
       console.log(err)
       //TODO Can't access internals
@@ -151,7 +152,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       callback();
     };
 
-    happnClient.__ensureCryptoLibrary((err, data) => {
+    happnClient.__ensureCryptoLibrary(function(err, data) {
       //TODO This test causes the client and test framework to hang
       expect(err).to.be(undefined)
       expect(data).to.be(undefined)
@@ -166,11 +167,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       callback();
     }
 
-    happnClient.__ensureCryptoLibrary((err, data) => {
+    happnClient.__ensureCryptoLibrary(function(err, data) {
       //TODO This test causes the client and test framework to hang
-      expect(err).to.be(undefined)
-      expect(data).to.be(undefined)
-      done()
+      expect(err).to.be(undefined);
+      expect(data).to.be(undefined);
+      done();
     })
   })
 
@@ -181,10 +182,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       callback();
     };
 
-    happnClient.login((err, data) => {
-      console.log(err)
-      console.log(data)
-      done()
+    happnClient.login(function(err, data) {
+      console.log(err);
+      console.log(data);
+      done();
     });
   });
 
@@ -378,7 +379,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var happnClient = mockHappnClient();
 
     happnClient.reconnect({});
-    //    happnClient.on('reconnect', data => done())
+    //    happnClient.on('reconnect', function(data) {done();})
   });
 
   xit('tests that the handle error function', function(done) {
@@ -404,7 +405,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it("tests that the __attachpublishedAck function will callback with an error if timed out  ", function(done) {
     options = {
-      onPublished: (e, results) => {
+      onPublished: function(e, results) {
         expect(e.toString()).to.eql('Error: publish timed out');
         done()
       },
@@ -430,7 +431,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     };
 
     options = {
-      onPublished: (e, results) => {
+      onPublished: function (e, results) {
         expect(results).to.eql('Good');
         done()
       },
@@ -456,7 +457,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       result: "Bad"
     };
     options = {
-      onPublished: (e, results) => {
+      onPublished: function (e, results) {
         expect(e.toString()).to.eql("Error: Bad");
         expect(results).to.eql('Bad');
         done()
