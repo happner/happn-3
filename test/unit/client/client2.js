@@ -16,7 +16,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__initializeProperties();
     happnClient.log = log || {
       error: function() {}
-    }
+    };
 
     happnClient.state = state != null ? state : Constants.CLIENT_STATE.ACTIVE;
     happnClient.session = session || {
@@ -31,7 +31,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       on: function(eventName) {
 
       }
-    }
+    };
 
     happnClient.options = clientOptions || {
       callTimeout: 60000
@@ -873,7 +873,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.set('/test/*/path', {
       test: 'data'
@@ -905,7 +905,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.setSibling('/test/path', {
       test: 'data'
@@ -920,7 +920,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.remove('/test/path', null,
       function(e, response) {
@@ -934,7 +934,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.remove('/test/path',
       function(e, response) {
@@ -1035,10 +1035,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         done();
       },
       onPublishedTimeout: 10
-    }
+    };
     var happnClient = mockHappnClient();
-
-
     happnClient.__attachPublishedAck(options, {});
   });
 
@@ -1243,7 +1241,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         eventId: "MyEvent|1"
       },
       function(e, data) {
-        expect(e.toString()).to.eql("Error");
+        expect(e.toString()).to.eql("Error: This is an error");
         expect(data).to.eql(message);
         done();
       }, {}, "MyEvent|1");
@@ -1251,7 +1249,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var message = {
       _meta: {
         status: "error",
-        error: new Error('This is an error'),
+        error: {name:'Error', message:'This is an error'},
         eventId: "MyEvent|1"
       },
       message: "Bad message with error"
@@ -1772,7 +1770,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   it("tests the __connectionCleanup function throws an error", function(done) {
     var happnClient = mockHappnClient();
     happnClient.log.warn = function(e) {
-      expect(e).to.eql("socket.end failed in client: TypeError: this.socket.end is not a function");
+      expect(["socket.end failed in client: TypeError: this.socket.end is not a function",
+              "socket.end failed in client: TypeError: Object #<Object> has no method 'end'"]
+              .indexOf(e) > -1).to.be(true);
       done();
     }
     happnClient.__connectionCleanup();

@@ -36,7 +36,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       error:function(){}
     };
 
-    happnClient.onEvent('error', function(error){
+    happnClient.onEvent('fatal-error', function(error){
       expect(happnClient.errors.length).to.be(1);
       expect(happnClient.state == Constants.CLIENT_STATE.ERROR).to.be(true);
       done();

@@ -1637,7 +1637,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       property3: 'property3'
     }, function (e) {
 
-      expect(e.toString()).to.be('Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
+      expect(e.toString()).to.be('Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
 
       done();
     });
@@ -1676,7 +1676,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       property3: 'property3'
     }, function (e) {
 
-      expect(e.toString()).to.be('Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
+      expect(e.toString()).to.be('Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
 
       done();
     });
