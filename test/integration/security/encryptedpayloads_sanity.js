@@ -1,7 +1,7 @@
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var expect = require('expect.js');
-  var happn = require('../../../lib/index')
+  var happn = require('../../../lib/index');
   var service = happn.service;
   var happn_client = happn.client;
   var async = require('async');
@@ -309,7 +309,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       "keywords": {
         $in: ["bass", "Penny Siopis"]
       }
-    }
+    };
 
     var options1 = {
       fields: {
@@ -319,7 +319,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         "field1": 1
       },
       limit: 1
-    }
+    };
 
     var criteria2 = null;
 
@@ -329,7 +329,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         "field1": 1
       },
       limit: 2
-    }
+    };
 
     socketClient.set('/e2e_test1/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
       expect(e == null).to.be(true);

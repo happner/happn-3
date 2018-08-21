@@ -58,10 +58,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             expect(result.dkey).to.be(key);
             done();
           })
-          .catch(done)
+          .catch(done);
       })
 
-      .catch(done)
+      .catch(done);
   });
 
   it('gets data, default cache', function (done) {
@@ -82,10 +82,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             expect(result.dkey).to.be(key);
             done();
           })
-          .catch(done)
+          .catch(done);
       })
 
-      .catch(done)
+      .catch(done);
   });
 
   it('gets no data, default cache', function (done) {
@@ -107,7 +107,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(result).to.be(null);
           done();
         })
-        .catch(done)
+        .catch(done);
 
     });
   });
@@ -142,10 +142,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               });
             });
           })
-          .catch(done)
+          .catch(done);
       })
 
-      .catch(done)
+      .catch(done);
   });
 
   it('retrieves unfound data, default cache', function (done) {
@@ -169,7 +169,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(result.data).to.be('foundMe');
           done();
         })
-        .catch(done)
+        .catch(done);
 
     });
   });
@@ -188,7 +188,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
-      serviceInstance.__caches['specific'].get(key)
+      serviceInstance.__caches.specific.get(key)
         .then(function (data) {
           expect(data.dkey).to.be(key);
 
@@ -198,10 +198,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               done();
 
             })
-            .catch(done)
+            .catch(done);
 
         })
-        .catch(done)
+        .catch(done);
 
     });
   });
@@ -440,11 +440,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         expect(data).to.not.be(null);
 
-        expect(serviceInstance.__caches['specific']).to.not.be(undefined);
+        expect(serviceInstance.__caches.specific).to.not.be(undefined);
 
         serviceInstance.clear('specific');
 
-        expect(serviceInstance.__caches['specific']).to.be(undefined);
+        expect(serviceInstance.__caches.specific).to.be(undefined);
 
         done();
 
@@ -539,12 +539,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                     expect(data).to.be(null);
                     done();
                   })
-                  .catch(done)
+                  .catch(done);
 
               }, 2000);
 
             })
-            .catch(done)
+            .catch(done);
         });
       });
     });
@@ -575,7 +575,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(data).to.not.be(null);
       expect(data.nice).to.be('value');
 
-      expect(serviceInstance.__caches['specific']).to.not.be(undefined);
+      expect(serviceInstance.__caches.specific).to.not.be(undefined);
 
       setTimeout(function () {
 
@@ -636,7 +636,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (e) return done(e);
 
       expect(data).to.not.be(null);
-      expect(serviceInstance.__caches['specific']).to.not.be(undefined);
+      expect(serviceInstance.__caches.specific).to.not.be(undefined);
 
       specific.increment(key, 15, function (e, data) {
 

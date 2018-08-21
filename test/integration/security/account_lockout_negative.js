@@ -138,7 +138,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           })
           .catch(function(e) {
             itemCB(e);
-          })
+          });
       },
       function(itemCB) {
 
@@ -194,7 +194,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           })
           .catch(function(e) {
             itemCB(e);
-          })
+          });
       }
     ], done);
   });

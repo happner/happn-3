@@ -355,13 +355,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (e) return callback(e);
           });
 
-        } catch (e) {
-          return callback(e);
+        } catch (err) {
+          return callback(err);
         }
       });
-
     });
-
   });
 
   it('should subscribe and get initial values on the callback', function (callback) {
@@ -399,8 +397,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               if (e) return callback(e);
             });
 
-          } catch (e) {
-            return callback(e);
+          } catch (err) {
+            return callback(err);
           }
         });
       });

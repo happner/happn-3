@@ -152,7 +152,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (e) return done(e);
 
       expect(item.data).to.be('foundMe');
-      expect(serviceInstance.__defaultCache.__cache['totallyCrazyPath'].data.data).to.be('foundMe');
+      expect(serviceInstance.__defaultCache.__cache.totallyCrazyPath.data.data).to.be('foundMe');
 
       done();
     });
@@ -170,7 +170,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
-      expect(serviceInstance.__caches['specific'].__cache[key].key).to.be(key);
+      expect(serviceInstance.__caches.specific.__cache[key].key).to.be(key);
 
       specific.get(key, function (e, data) {
 
@@ -226,7 +226,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(result.key).to.be(key);
       expect(result.data.dkey).to.be(key);
 
-      expect(serviceInstance.__caches['specific'].__cache[key].key).to.be(key);
+      expect(serviceInstance.__caches.specific.__cache[key].key).to.be(key);
 
       specific.get(key, function (e, data) {
 
@@ -246,9 +246,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
             expect(data).to.be(null);
 
-            expect(serviceInstance.__caches['specific']).to.not.be(undefined);
+            expect(serviceInstance.__caches.specific).to.not.be(undefined);
             serviceInstance.clear('specific');
-            expect(serviceInstance.__caches['specific']).to.be(undefined);
+            expect(serviceInstance.__caches.specific).to.be(undefined);
 
             done();
 
@@ -275,7 +275,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (e) return done(e);
 
       expect(item.data).to.be('foundMe');
-      expect(serviceInstance.__caches['specific'].__cache['totallyCrazyPath'].data.data).to.be('foundMe');
+      expect(serviceInstance.__caches.specific.__cache.totallyCrazyPath.data.data).to.be('foundMe');
       done();
     });
 
@@ -430,11 +430,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         expect(data).to.not.be(null);
 
-        expect(serviceInstance.__caches['specific']).to.not.be(undefined);
+        expect(serviceInstance.__caches.specific).to.not.be(undefined);
 
         serviceInstance.clear('specific');
 
-        expect(serviceInstance.__caches['specific']).to.be(undefined);
+        expect(serviceInstance.__caches.specific).to.be(undefined);
 
         done();
 
@@ -520,7 +520,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           if (e) return done(e);
           expect(data).to.be(30);
 
-          expect(serviceInstance.__defaultCache.__cache['nonexistantItem']).to.not.be(undefined);
+          expect(serviceInstance.__defaultCache.__cache.nonexistantItem).to.not.be(undefined);
 
           var didCB = false;
 
@@ -532,7 +532,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
               expect(timed.item.key).to.be('nonexistantItem');
 
-              expect(serviceInstance.__defaultCache.__cache['nonexistantItem']).to.be(undefined);
+              expect(serviceInstance.__defaultCache.__cache.nonexistantItem).to.be(undefined);
 
               didCB = true;
 
@@ -571,7 +571,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(data).to.not.be(null);
       expect(data.nice).to.be('value');
 
-      expect(serviceInstance.__caches['specific']).to.not.be(undefined);
+      expect(serviceInstance.__caches.specific).to.not.be(undefined);
 
       setTimeout(function () {
 
@@ -631,7 +631,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (e) return done(e);
 
       expect(data).to.not.be(null);
-      expect(serviceInstance.__caches['specific']).to.not.be(undefined);
+      expect(serviceInstance.__caches.specific).to.not.be(undefined);
 
       specific.increment(key, 15, function (e, data) {
 

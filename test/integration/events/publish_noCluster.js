@@ -146,7 +146,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             'intraProcessClient /*/to/set/on': {
               some: 'data'
             }
-          })
+          });
         })
 
         .then(done).catch(done);

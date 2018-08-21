@@ -311,17 +311,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         listenerclient.onAsync(path, {
           event_type: 'set'
         }, function (data, meta) {
-          results[1] = true
+          results[1] = true;
         }),
         listenerclient.onAsync(path, {
           event_type: 'set'
         }, function (data, meta) {
-          results[2] = true
+          results[2] = true;
         }),
         listenerclient.onAsync(path, {
           event_type: 'set'
         }, function (data, meta) {
-          results[3] = true
+          results[3] = true;
         })
       ])
 
@@ -361,17 +361,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         listenerclient.onAsync(path, {
           event_type: 'set'
         }, function (data, meta) {
-          results[1] = true
+          results[1] = true;
         }),
         listenerclient.onAsync(path, {
           event_type: 'set'
         }, function (data, meta) {
-          results[2] = true
+          results[2] = true;
         }),
         listenerclient.onAsync(path, {
           event_type: 'set'
         }, function (data, meta) {
-          results[3] = true
+          results[3] = true;
         })
       ])
 
@@ -420,7 +420,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           emittedPath = path;
           originalHandleData.apply(this, arguments);
-        }
+        };
       })
 
       .then(function () {
@@ -457,7 +457,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             x: 1
           }
         }, function (data, meta) {
-          results[1] = true
+          results[1] = true;
         }),
         listenerclient.onAsync(path, {
           event_type: 'set',
@@ -465,7 +465,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             x: 2
           }
         }, function (data, meta) {
-          results[2] = true
+          results[2] = true;
         }),
         listenerclient.onAsync(path, {
           event_type: 'set',
@@ -473,7 +473,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             x: 3
           }
         }, function (data, meta) {
-          results[3] = true
+          results[3] = true;
         })
       ])
 
@@ -519,7 +519,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             x: 1
           }
         }, function (data, meta) {
-          results[1] = true
+          results[1] = true;
         }),
         listenerclient.onAsync(path, {
           event_type: 'set',
@@ -527,7 +527,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             x: 2
           }
         }, function (data, meta) {
-          results[2] = true
+          results[2] = true;
         }),
         listenerclient.onAsync(path, {
           event_type: 'set',
@@ -535,7 +535,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             x: 3
           }
         }, function (data, meta) {
-          results[3] = true
+          results[3] = true;
         })
       ])
 
@@ -585,17 +585,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         listenerclient.onAsync(path, {
           event_type: 'set'
         }, function (data, meta) {
-          results[1] = true
+          results[1] = true;
         }),
         listenerclient.onAsync(path, {
           event_type: 'set'
         }, function (data, meta) {
-          results[2] = true
+          results[2] = true;
         }),
         listenerclient.onAsync(path, {
           event_type: 'set'
         }, function (data, meta) {
-          results[3] = true
+          results[3] = true;
         })
       ])
 
@@ -610,7 +610,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         listenerclient.handle_data = function (path) {
           emittedPath = path;
           originalHandleData.apply(this, arguments);
-        }
+        };
       })
 
       .then(function () {

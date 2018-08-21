@@ -4,6 +4,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var service = happn.service;
   var happn_client = happn.client;
   var async = require('async');
+  var expect = require('expect.js');
 
   var test_secret = 'test_secret';
 
@@ -35,7 +36,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           if (e) return callback(e);
 
           Service2 = happnInst;
-
           callback();
         });
       });
@@ -92,8 +92,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       Service1.services.session.disconnectAllClients(function (e) {
         if (e) return callback(e);
-
-        console.log(Service1.services.session.__sessions);
+        expect(Service2.services.session.__sessions).to.eql({});
         callback();
       });
     });
@@ -110,8 +109,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       Service2.services.session.disconnectAllClients(function (e) {
         if (e) return callback(e);
-
-        console.log(Service2.services.session.__sessions);
+        expect(Service2.services.session.__sessions).to.eql({});
         callback();
       });
     });

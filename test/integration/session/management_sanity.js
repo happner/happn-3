@@ -1,7 +1,7 @@
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var expect = require('expect.js');
-  var happn = require('../../../lib/index')
+  var happn = require('../../../lib/index');
   var service = happn.service;
   var happn_client = happn.client;
   var async = require('async');

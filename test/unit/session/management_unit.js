@@ -3,7 +3,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   this.timeout(60000);
 
   var expect = require('expect.js');
-  var happn = require('../../../lib/index')
+  var happn = require('../../../lib/index');
   var service = happn.service;
   var async = require('async');
   var Promise = require('bluebird');
@@ -95,17 +95,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (e) return callback(e);
             callback(null, happn);
           });
-        }, 5000)
+        }, 5000);
 
       })
-      .catch(callback)
+      .catch(callback);
   };
 
   var mockClient = function () {
     return {
       on: function (evt, handler) {},
       end: function (data, options) {}
-    }
+    };
   };
 
   var mockSession = function (type, id, username, ttl, securityService) {
@@ -147,7 +147,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       done();
 
-    })
+    });
 
   });
 
@@ -491,7 +491,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
             expect(Object.keys(happn.services.security.__cache_revoked_sessions.__cache).length).to.be(0);
 
-            delete happn.services.cache.__caches['cache_revoked_sessions'];
+            delete happn.services.cache.__caches.cache_revoked_sessions;
             delete happn.services.security.__cache_revoked_sessions;
 
             happn.services.security.__loadRevokedSessions(function (e) {
@@ -504,7 +504,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
               setTimeout(function () {
 
-                delete happn.services.cache.__caches['cache_revoked_sessions'];
+                delete happn.services.cache.__caches.cache_revoked_sessions;
 
                 happn.services.security.__loadRevokedSessions(function (e) {
 

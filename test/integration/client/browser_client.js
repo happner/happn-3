@@ -156,7 +156,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     }
 
-    var clientCode = Happn.packager.browserClient({
+    clientCode = Happn.packager.browserClient({
       contentsOnly: true,
       min: true
     });

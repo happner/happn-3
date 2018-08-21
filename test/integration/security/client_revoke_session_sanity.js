@@ -31,7 +31,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (!query)
         options.headers = {
           'Cookie': ['happn_token=' + token]
-        }
+        };
       else
         options.url += '?happn_token=' + token;
     }

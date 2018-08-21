@@ -33,7 +33,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       "name": "ResourceNotFound"
     });
 
-    var accessDenied = errorService.ValidationError('test validation');
+    accessDenied = errorService.ValidationError('test validation');
 
     expect(accessDenied).to.eql({
       "code": 500,

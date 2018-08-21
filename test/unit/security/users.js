@@ -3,7 +3,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   this.timeout(5000);
 
   var expect = require('expect.js');
-  var happn = require('../../../lib/index')
+  var happn = require('../../../lib/index');
   var service = happn.service;
   var async = require('async');
   var Promise = require('bluebird');
@@ -84,7 +84,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           callback(null, happn);
         });
       })
-      .catch(callback)
+      .catch(callback);
   };
 
   function createUsersAndGroups(happn, done) {
@@ -95,7 +95,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var groups = [];
     var users = [];
 
-    for (var i = 0; i < 10; i++) groups.push({name: 'test_' + i});
+    for (var ii = 0; ii < 10; ii++) groups.push({name: 'test_' + ii});
 
     for (var i = 0; i < 10; i++) users.push({
       username: 'test_' + i,
@@ -187,7 +187,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         });
       });
-    })
+    });
   });
 
   it('searches for users with the $exists filter and other criteria', function (done) {
@@ -210,7 +210,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         });
       });
-    })
+    });
   });
 
   it('searches for users with the $exists filter and no other criteria', function (done) {
@@ -232,7 +232,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           done();
         });
       });
-    })
+    });
   });
 
   it('searches for users with the listUsers method, no criteria', function (done) {

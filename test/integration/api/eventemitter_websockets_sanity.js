@@ -1,7 +1,7 @@
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var expect = require('expect.js');
-  var happn = require('../../../lib/index')
+  var happn = require('../../../lib/index');
   var service = happn.service;
   var happn_client = happn.client;
   var async = require('async');
@@ -52,7 +52,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         if (e) console.warn('failed diconnecting test client');
 
         happnInstance.stop(done);
-      })
+      });
     });
   });
 
@@ -839,7 +839,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (err) return reject(err);
             resolve(handle);
           });
-        })
+        });
       },
       storeHandle1: function (handle) {
         handle1 = handle;
@@ -859,7 +859,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           // path 2 should still have its listener
           expect(publisherclient.events['/SET@' + path2].length).to.equal(1);
           resolve();
-        })
+        });
       }
     };
 

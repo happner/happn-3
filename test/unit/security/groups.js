@@ -3,7 +3,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   this.timeout(5000);
 
   var expect = require('expect.js');
-  var happn = require('../../../lib/index')
+  var happn = require('../../../lib/index');
   var service = happn.service;
   var async = require('async');
   var Promise = require('bluebird');
@@ -84,7 +84,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           callback(null, happn);
         });
       })
-      .catch(callback)
+      .catch(callback);
   };
 
 
@@ -106,8 +106,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expect(result.permissions).to.be(undefined);
 
         done();
-      })
-    })
+      });
+    });
   });
 
   it('fails adding a group, fails to attach permissions, invalid actions', function (done) {
@@ -129,8 +129,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expect(e.toString()).to.be('Error: group permissions invalid: missing allowed actions or prohibit rules: /test/path/2');
 
         done();
-      })
-    })
+      });
+    });
   });
 
   it('adds a group with valid permissions', function (done) {
@@ -161,8 +161,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           done();
 
         });
-      })
-    })
+      });
+    });
   });
 
   it('adds a group with valid permissions, then adds further permissions, we check that the permissions have been merged in the fetched group', function (done) {

@@ -25,7 +25,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         return callback(null, {data: {value: dbVersion}});
       }
 
-      callback(new Error('unknown test get path: ' + path))
+      callback(new Error('unknown test get path: ' + path));
     };
 
     dataService.upsert = function (path, dbVersion, callback) {
@@ -35,7 +35,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         return callback(null, {data: {value: dbVersion}});
       }
 
-      callback(new Error('unknown test upsert path: ' + path))
+      callback(new Error('unknown test upsert path: ' + path));
     };
 
     return dataService;

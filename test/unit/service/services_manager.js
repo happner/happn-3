@@ -46,7 +46,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       };
     });
 
-    serviceConfig.services['myService1'] = {
+    serviceConfig.services.myService1 = {
       instance: {
         initialize: function (config, cb) {
           cb();
@@ -60,7 +60,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    serviceConfig.services['myService2'] = {
+    serviceConfig.services.myService2 = {
       instance: {
         initialize: function (config, cb) {
           cb();
@@ -98,7 +98,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(happn.services.myService1.test()).to.be('TEST1');
       expect(happn.services.myService2.test()).to.be('TEST2');
 
-      serviceManager.stop(done)
+      serviceManager.stop(done);
 
     });
   });

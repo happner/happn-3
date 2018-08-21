@@ -72,11 +72,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expect(e.code).to.be('ECONNREFUSED');
         callback();
       });
-
     } catch (e) {
       callback(e);
     }
-
   });
 
   it('should fail to connect, bad ip - connect timeout of 3 seconds', function (callback) {

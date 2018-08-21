@@ -23,7 +23,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           callback();
         });
       } else callback();
-    }
+    };
 
     var initService = function (filename, name, callback) {
 

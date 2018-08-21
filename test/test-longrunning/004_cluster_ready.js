@@ -43,7 +43,7 @@ describe('longrunning/004_cluster_ready', function () {
         type: type,
         message: message
       });
-    }
+    };
   }
 
   Cluster.prototype.addChild = function (instance, callback) {
@@ -342,6 +342,6 @@ describe('longrunning/004_cluster_ready', function () {
         callback();
 
       });
-    })
+    });
   });
 });
