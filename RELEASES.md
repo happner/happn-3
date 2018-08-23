@@ -480,3 +480,8 @@
 ----------------
   - refactor: jshint integration
   - dep: package pem updated for new openssl libs
+
+7.2.3 2018-08-23
+----------------
+  - refactor: client unit tests
+  - jshint syntax fixes
