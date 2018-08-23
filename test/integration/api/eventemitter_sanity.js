@@ -26,7 +26,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       }
     }
-  }
+  };
 
   var config = {};
 
@@ -253,7 +253,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var timesCount = 10;
 
-    var testBasePath = '/1_eventemitter_embedded_sanity/' + test_id + '/set_multiple'
+    var testBasePath = '/1_eventemitter_embedded_sanity/' + test_id + '/set_multiple';
 
     try {
 
@@ -376,14 +376,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     }, function (err) {
 
-      expect(err).to.not.exist;
+      if (err) return done(err);
       publisherclient.set('setTest/nonMergeConsecutive', object, {}, function (err) {
         expect(err).to.not.be.ok();
         publisherclient.set('setTest/nonMergeConsecutive', object, {}, function (err) {
           expect(err).to.not.be.ok();
         });
       });
-    })
+    });
   });
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
@@ -417,7 +417,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(err).to.not.be.ok();
         });
       });
-    })
+    });
   });
 
 
@@ -1281,7 +1281,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       timeout = setTimeout(function () {
         listenerclient.offPath('/1_eventemitter_embedded_sanity/' + test_id + '/testNoPublish', function () {
           done();
-        })
+        });
       }, 1000);
       publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/testNoPublish', {
         property1: 'property1',
@@ -1637,7 +1637,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       property3: 'property3'
     }, function (e) {
 
-      expect(e.toString()).to.be('Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
+      expect(e.toString()).to.be('Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
 
       done();
     });
@@ -1676,7 +1676,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       property3: 'property3'
     }, function (e) {
 
-      expect(e.toString()).to.be('Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
+      expect(e.toString()).to.be('Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
 
       done();
     });

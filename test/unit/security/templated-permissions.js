@@ -111,7 +111,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     try{
       utils.checkPath('/gauge/{{username}}/*');
     }catch(e){
-      expect(e.toString()).to.be('Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ), ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*');
+      expect(e.toString()).to.be('Error: Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ) _ -, ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*');
       return done();
     }
     done(new Error('unexpected success...'));

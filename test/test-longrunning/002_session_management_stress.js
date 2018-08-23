@@ -1,7 +1,7 @@
 describe('longrunning/002_session_management_sanity', function () {
 
   var expect = require('expect.js');
-  var happn = require('../../lib/index')
+  var happn = require('../../lib/index');
   var service = happn.service;
   var happn_client = happn.client;
   var async = require('async');
@@ -18,7 +18,7 @@ describe('longrunning/002_session_management_sanity', function () {
 
   var stopService = function (callback) {
     if (serviceInstance)
-      serviceInstance.stop(callback)
+      serviceInstance.stop(callback);
     else
       callback();
   };
@@ -79,7 +79,7 @@ describe('longrunning/002_session_management_sanity', function () {
               clientInstance = instance;
 
               callback();
-
+              
             });
           }
         );

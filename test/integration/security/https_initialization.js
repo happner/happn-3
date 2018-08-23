@@ -9,7 +9,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var expect = require('expect.js');
   var async = require('async');
 
-  var config = require('../../__fixtures/test/integration/security/https_initialization_config.js')
+  var config = require('../../__fixtures/test/integration/security/https_initialization_config.js');
   var fs = require('fs');
 
   var clientConfig = {
@@ -99,7 +99,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         if (e) return done(e);
 
         var certStats = fs.statSync(serviceConfig.services.transport.config.certPath);
-        var keyStats = fs.statSync(serviceConfig.services.transport.config.keyPath)
+        var keyStats = fs.statSync(serviceConfig.services.transport.config.keyPath);
 
         expect(certStats.isFile()).to.equal(true);
         expect(keyStats.isFile()).to.equal(true);

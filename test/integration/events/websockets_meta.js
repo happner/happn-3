@@ -211,7 +211,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           });
 
-        })
+        });
 
       }, 1000);
 
@@ -251,7 +251,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           });
 
-        })
+        });
 
       }, 1000);
 
@@ -318,7 +318,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           });
 
-        })
+        });
 
       }, 1000);
 
@@ -383,7 +383,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           });
 
-        })
+        });
 
       }, 1000);
 
@@ -428,7 +428,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                 '$gte': windowStart,
                 '$lt': windowEnd
               }
-            }
+            };
 
             publisherclient.get('*', {
               criteria: searchCriteria
@@ -441,7 +441,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                 '_meta.created': {
                   '$gte': windowEnd
                 }
-              }
+              };
 
               publisherclient.get('*', {
                 criteria: searchCriteria
@@ -468,7 +468,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                       '_meta.modified': {
                         '$gte': lastModified
                       }
-                    }
+                    };
 
                     publisherclient.get('*', {
                       criteria: searchCriteria

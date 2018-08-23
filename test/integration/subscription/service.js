@@ -32,7 +32,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             $$TRACE: function (message) {
               console.log(message);
             }
-          }
+          };
         }
       }
     });
@@ -468,7 +468,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         happnClient.disconnect(function () {
           happnInstance.stop(done);
-        })
+        });
       })
       .catch(done);
   });

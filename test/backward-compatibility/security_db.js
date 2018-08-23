@@ -47,7 +47,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
 
     if (happnInstance) happnInstance.stop()
       .then(done)
-      .catch(done)
+      .catch(done);
     else done();
   });
 

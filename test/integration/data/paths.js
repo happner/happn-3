@@ -1,7 +1,7 @@
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var expect = require('expect.js');
-  var happn = require('../../../lib/index')
+  var happn = require('../../../lib/index');
   var service = happn.service;
   var async = require('async');
   var test_secret = 'test_secret';
@@ -178,7 +178,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     this.timeout(default_timeout);
     var timesCount = 10;
 
-    var testBasePath = '/a2_eventemitter_embedded_paths/' + test_id + '/set_multiple'
+    var testBasePath = '/a2_eventemitter_embedded_paths/' + test_id + '/set_multiple';
 
     try {
 
@@ -320,7 +320,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(err).to.not.be.ok();
         });
       });
-    })
+    });
   });
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
@@ -352,7 +352,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(err).to.not.be.ok();
         });
       });
-    })
+    });
   });
 
 
@@ -392,7 +392,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       "keywords": {
         $in: ["bass", "Penny Siopis"]
       }
-    }
+    };
 
     var options1 = {
       fields: {
@@ -402,7 +402,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         "field1": 1
       },
       limit: 1
-    }
+    };
 
     var criteria2 = null;
 
@@ -412,7 +412,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         "field1": 1
       },
       limit: 2
-    }
+    };
 
     publisherclient.set('/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
 

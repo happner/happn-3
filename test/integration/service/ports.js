@@ -1,7 +1,7 @@
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3),function () {
 
   var expect = require('expect.js');
-  var happn = require('../../../lib/index')
+  var happn = require('../../../lib/index');
   var service1 = happn.service;
   var service2 = happn.service;
   var serviceDefault = happn.service;
@@ -54,7 +54,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         callback();
       }
     );
-  }
+  };
 
   it('should initialize the services', function (callback) {
 

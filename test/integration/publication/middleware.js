@@ -104,7 +104,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           meta: {
             filter: true
           }
-        })
+        });
 
       })
       .then(function () {
@@ -118,7 +118,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       })
       .then(done)
-      .catch(done)
+      .catch(done);
 
     //create 1 client, 2 subscriptions, filter must remove one
 

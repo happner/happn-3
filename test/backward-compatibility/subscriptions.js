@@ -867,8 +867,8 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
               if (e) return callback(e);
             });
 
-          } catch (e) {
-            return callback(e);
+          } catch (err) {
+            return callback(err);
           }
         });
       });

@@ -49,7 +49,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         if (_this.publicationPushedHandler) _this.publicationPushedHandler(publication);
       }
-    }
+    };
   }
 
   function mockPublisherService(config, queueItems, queuePushedHandler, publications, publicationPushedHandler, callback) {
@@ -75,7 +75,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             $$TRACE: function (message) {
               //console.log(message);
             }
-          }
+          };
         }
       }
     });

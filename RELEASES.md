@@ -466,3 +466,22 @@
 7.1.4 2018-05-28
 ----------------
   - fixed intermittent issue with removal of decoupled session groups in security
+
+7.2.0 2018-06-07
+----------------
+  - feature: templated permissions
+  - fix: login lockout bug
+
+7.2.1 2018-05-28
+----------------
+  - fix: error when login locks not explicitly enabled
+
+7.2.2 2018-05-28
+----------------
+  - refactor: jshint integration
+  - dep: package pem updated for new openssl libs
+
+7.2.3 2018-08-23
+----------------
+  - refactor: client unit tests
+  - jshint syntax fixes

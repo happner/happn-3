@@ -438,7 +438,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(err).to.not.be.ok();
         });
       });
-    })
+    });
   });
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
@@ -471,7 +471,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(err).to.not.be.ok();
         });
       });
-    })
+    });
   });
 
 

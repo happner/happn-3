@@ -270,7 +270,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         if (happnInstance2) happnInstance2.stop()
           .then(done)
-          .catch(done)
+          .catch(done);
         else done();
 
       })

@@ -1,11 +1,14 @@
 describe('embedded_sanity_encryptedpayloads', function () {
 
+  var expect, happn_client;
+
   if (typeof window == 'undefined') {
-    var chai = require('chai'),
-      expect = chai.expect,
-      happn = require('../../lib/index'),
-      happn_client = happn.client
-  } else {
+    var chai = require('chai');
+    var happn = require('../../lib/index');
+    expect = chai.expect;
+    happn_client = happn.client;
+  }
+  else {
     expect = window.expect;
     happn_client = window.HappnClient;
   }
@@ -13,9 +16,8 @@ describe('embedded_sanity_encryptedpayloads', function () {
   after(function (done) {
 
     if (socketClient) {
-      socketClient.disconnect(done)
+      socketClient.disconnect(done);
     } else done();
-
   });
 
   var socketClient;
@@ -266,7 +268,7 @@ describe('embedded_sanity_encryptedpayloads', function () {
       "keywords": {
         $in: ["bass", "Penny Siopis"]
       }
-    }
+    };
 
     var options1 = {
       fields: {
@@ -276,7 +278,7 @@ describe('embedded_sanity_encryptedpayloads', function () {
         "field1": 1
       },
       limit: 1
-    }
+    };
 
     var criteria2 = null;
 
@@ -286,7 +288,7 @@ describe('embedded_sanity_encryptedpayloads', function () {
         "field1": 1
       },
       limit: 2
-    }
+    };
 
     socketClient.set('/e2e_test1/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function (e, put_result) {
       expect(e == null).to.equal(true);
