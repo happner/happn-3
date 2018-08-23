@@ -322,4 +322,33 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
   });
+
+  it.only('tests the __getUserNames method', function (done) {
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      
+    });
+  });
+
+  it('searches for users with the listUsersByGroup method, exact match to group', function (done) {
+
+    mockServices(function (e, happn) {
+
+      if (e) return done(e);
+
+      createUsersAndGroups(happn, function (e) {
+
+        if (e) return done(e);
+
+        happn.services.security.users.listUsersByGroup('test_1', function(e, users){
+
+          if (e) return done(e);
+
+          expect(users.length == 10).to.be(true);//11 to compensate for the admin user
+
+          done();
+        });
+      });
+    });
+  });
 });
