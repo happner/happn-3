@@ -485,3 +485,7 @@
 ----------------
   - refactor: client unit tests
   - jshint syntax fixes
+
+7.3.0 2018-08-23
+----------------
+  - feature: getUsersByGroup

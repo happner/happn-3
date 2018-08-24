@@ -433,11 +433,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             expect(users.length).to.be(4);
 
             callback();
-
           });
-
         });
-
       });
 
       it('can delete a user', function (callback) {
@@ -556,6 +553,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               callback();
             }
           );
+        });
+      });
+
+      it('should list users by groupName', function (callback) {
+
+        testServices.security.users.listUsersByGroup(linkGroup.name, function (e, users) {
+          if (e) return callback(e);
+          expect(users.length).to.be(1);
+          callback();
         });
       });
 

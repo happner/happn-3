@@ -100,7 +100,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     for (var i = 0; i < 10; i++) users.push({
       username: 'test_' + i,
       password: 'test_' + i,
-      custom_data: {role: 'OEM Admin'}
+      custom_data: {role: 'OEM Admin', extra:i}
     });
 
     async.each(groups, function (group, groupCB) {
@@ -317,6 +317,246 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           expect(users.length == 10).to.be(true);//11 to compensate for the admin user
 
+          done();
+        });
+      });
+    });
+  });
+
+  it('tests the __getUserNamesFromGroupLinks method', function (done) {
+
+    var userGroupLinks = [
+      {
+        "_meta": {
+          "path": "/_SYSTEM/_SECURITY/_USER/test_0/_USER_GROUP/test_1",
+          "_id": "/_SYSTEM/_SECURITY/_USER/test_0/_USER_GROUP/test_1"
+        }
+      },
+      {
+        "_meta": {
+          "path": "/_SYSTEM/_SECURITY/_USER/test_1/_USER_GROUP/test_1",
+          "_id": "/_SYSTEM/_SECURITY/_USER/test_1/_USER_GROUP/test_1"
+        }
+      },
+      {
+        "_meta": {
+          "path": "/_SYSTEM/_SECURITY/_USER/test_2/_USER_GROUP/test_1",
+          "_id": "/_SYSTEM/_SECURITY/_USER/test_2/_USER_GROUP/test_1"
+        }
+      },
+      {
+        "_meta": {
+          "path": "/_SYSTEM/_SECURITY/_USER/test_3/_USER_GROUP/test_1",
+          "_id": "/_SYSTEM/_SECURITY/_USER/test_3/_USER_GROUP/test_1"
+        }
+      },
+      {
+        "_meta": {
+          "path": "/_SYSTEM/_SECURITY/_USER/test_4/_USER_GROUP/test_1",
+          "_id": "/_SYSTEM/_SECURITY/_USER/test_4/_USER_GROUP/test_1"
+        }
+      },
+      {
+        "_meta": {
+          "path": "/_SYSTEM/_SECURITY/_USER/test_5/_USER_GROUP/test_1",
+          "_id": "/_SYSTEM/_SECURITY/_USER/test_5/_USER_GROUP/test_1"
+        }
+      },
+      {
+        "_meta": {
+          "path": "/_SYSTEM/_SECURITY/_USER/test_6/_USER_GROUP/test_1",
+          "_id": "/_SYSTEM/_SECURITY/_USER/test_6/_USER_GROUP/test_1"
+        }
+      },
+      {
+        "_meta": {
+          "path": "/_SYSTEM/_SECURITY/_USER/test_7/_USER_GROUP/test_1",
+          "_id": "/_SYSTEM/_SECURITY/_USER/test_7/_USER_GROUP/test_1"
+        }
+      },
+      {
+        "_meta": {
+          "path": "/_SYSTEM/_SECURITY/_USER/test_8/_USER_GROUP/test_1",
+          "_id": "/_SYSTEM/_SECURITY/_USER/test_8/_USER_GROUP/test_1"
+        }
+      },
+      {
+        "_meta": {
+          "path": "/_SYSTEM/_SECURITY/_USER/test_9/_USER_GROUP/test_1",
+          "_id": "/_SYSTEM/_SECURITY/_USER/test_9/_USER_GROUP/test_1"
+        }
+      }
+    ];
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      var userNames = happn.services.security.users.__getUserNamesFromGroupLinks(userGroupLinks);
+      expect(userNames).to.eql([
+        'test_0',
+        'test_1',
+        'test_2',
+        'test_3',
+        'test_4',
+        'test_5',
+        'test_6',
+        'test_7',
+        'test_8',
+        'test_9'
+      ]);
+      done();
+    });
+  });
+
+  it('tests the __getUserNamesFromGroupLinks method, empty links', function (done) {
+
+    var userGroupLinks = [];
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      var userNames = happn.services.security.users.__getUserNamesFromGroupLinks(userGroupLinks);
+      expect(userNames).to.eql([]);
+      done();
+    });
+  });
+
+  it('tests the __getUserNamesFromGroupLinks method, null links', function (done) {
+
+    var userGroupLinks = null;
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      var userNames = happn.services.security.users.__getUserNamesFromGroupLinks(userGroupLinks);
+      expect(userNames).to.eql([]);
+      done();
+    });
+  });
+
+  it('searches for users with the listUsersByGroup method, exact match to group', function (done) {
+
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      createUsersAndGroups(happn, function (e) {
+        if (e) return done(e);
+        happn.services.security.users.listUserNamesByGroup('test_1')
+        .then(function(userNames){
+          if (e) return done(e);
+          expect(userNames).to.eql([
+            'test_0',
+            'test_1',
+            'test_2',
+            'test_3',
+            'test_4',
+            'test_5',
+            'test_6',
+            'test_7',
+            'test_8',
+            'test_9'
+          ]);
+          done();
+        });
+      });
+    });
+  });
+
+  it('searches for users with the listUsersByGroup method, group name not matching', function (done) {
+
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      createUsersAndGroups(happn, function (e) {
+        if (e) return done(e);
+        happn.services.security.users.listUserNamesByGroup('lizard-group')
+        .then(function(userNames){
+          if (e) return done(e);
+          expect(userNames).to.eql([]);
+          done();
+        });
+      });
+    });
+  });
+
+  it('searches for users with the listUsersByGroup method, group name null', function (done) {
+
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      createUsersAndGroups(happn, function (e) {
+        if (e) return done(e);
+        happn.services.security.users.listUserNamesByGroup(null)
+        .then(function(userNames){
+          done(new Error('unexpected execution'))
+        })
+        .catch(function(e){
+          expect(e.toString()).to.be('Error: validation error: groupName must be specified');
+          done();
+        });
+      });
+    });
+  });
+
+  it('searches for users with the listUsersByGroup method, exact match to group', function (done) {
+
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      createUsersAndGroups(happn, function (e) {
+        if (e) return done(e);
+        happn.services.security.users.listUsersByGroup('test_1', function(e, users){
+          if (e) return done(e);
+          expect(users.length == 10).to.be(true);//11 to compensate for the admin user
+          done();
+        });
+      });
+    });
+  });
+
+  it('searches for users with the listUsersByGroup method, exact match to group, extra criteria', function (done) {
+
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      createUsersAndGroups(happn, function (e) {
+        if (e) return done(e);
+        happn.services.security.users.listUsersByGroup('test_1', {criteria:{'custom_data.extra':1}}, function(e, users){
+          if (e) return done(e);
+          expect(users.length == 1).to.be(true);//11 to compensate for the admin user
+          done();
+        });
+      });
+    });
+  });
+
+  it('searches for users with the listUsersByGroup method, exact match to group, unmatched extra criteria', function (done) {
+
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      createUsersAndGroups(happn, function (e) {
+        if (e) return done(e);
+        happn.services.security.users.listUsersByGroup('test_1', {criteria:{'custom_data.extra':1000}}, function(e, users){
+          if (e) return done(e);
+          expect(users.length == 0).to.be(true);//11 to compensate for the admin user
+          done();
+        });
+      });
+    });
+  });
+
+  it('searches for users with the listUsersByGroup method, unmatched group name', function (done) {
+
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      createUsersAndGroups(happn, function (e) {
+        if (e) return done(e);
+        happn.services.security.users.listUsersByGroup('lizard-group', function(e, users){
+          if (e) return done(e);
+          expect(users.length == 0).to.be(true);//11 to compensate for the admin user
+          done();
+        });
+      });
+    });
+  });
+
+  it('searches for users with the listUsersByGroup method, null group name', function (done) {
+
+    mockServices(function (e, happn) {
+      if (e) return done(e);
+      createUsersAndGroups(happn, function (e) {
+        if (e) return done(e);
+        happn.services.security.users.listUsersByGroup(null, function(e, users){
+          expect(e.toString()).to.be('Error: validation error: groupName must be specified');
           done();
         });
       });
