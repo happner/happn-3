@@ -867,8 +867,8 @@ function (e, myHappn3Instance) {
 });
 ```
 
-### link a user to a group
-
+### link a fetched user to a fetched group
+*demonstrates getUser, getGroup and linkGroup*
 ```javascript
 
 var happn = require('happn')
@@ -895,6 +895,51 @@ function (e, myHappn3Instance) {
 });
 
 
+```
+
+### list users
+*user can be listed by group name (exact match) or by a username (partial match with wildcard)*
+```javascript
+
+var happn = require('happn')
+var happnInstance; //this will be your server instance
+
+happn.service.create({secure:true, adminUser:{password:'testPWD'}},
+function (e, myHappn3Instance) {
+
+  //by username
+  myHappn3Instance.services.security.users.listUsers('TEST*')
+  .then(function(users){
+
+    //returns:
+    // [
+    //   {username:'test1', custom_data:{test:1}},
+    //   {username:'test2', custom_data:{test:1}},
+    //   {username:'test3', custom_data:{test:1}}
+    // ]
+
+    //by group name, note optional criteria
+    return myHappn3Instance.services.security.users.listUsersByGroup('TEST', {criteria:{custom_data:1}})
+  })
+  .then(function(users){
+
+    //returns:
+    // [
+    //   {username:'test1', custom_data:{test:1}}
+    // ]
+
+    //much faster - just get the usernames by the group name
+    return myHappn3Instance.services.security.groups.listUserNamesByGroup('TEST');
+  })
+  .then(function(usernames){
+
+    //returns:
+    // [
+    //   'test1'
+    // ]
+
+  });
+});
 ```
 
 ### upsert a permission
