@@ -2,44 +2,16 @@ var expect = require('expect.js'),
   async = require('async'),
   shortid = require('shortid');
 
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   context('functional subscription tree', function () {
 
-    it('subscription tree, wildcardMatching', function (done) {
-
-      var subscriptionTree = require('wild-pare').create({mode: 'wildstring'});
-
-      expect(subscriptionTree.__wildcardMatch('/test/pattern/blah', '/**/blah')).to.be(true);
-
-      expect(subscriptionTree.__wildcardMatch('/test/pattern/blah', '/*/blah')).to.be(true);
-
-      expect(subscriptionTree.__wildcardMatch('/test/pattern/blah', '/*/bleh')).to.be(false);
-
-      expect(subscriptionTree.__wildcardMatch('/test/pattern/blah', '/*/*/*')).to.be(true);
-
-      expect(subscriptionTree.__wildcardMatch('/test/pattern/blah', '/**')).to.be(true);
-
-      expect(subscriptionTree.__wildcardMatch('/test/pattern/blah', '**')).to.be(true);
-
-      expect(subscriptionTree.__wildcardMatch('/test/pattern/blah', '*')).to.be(true);
-
-      expect(subscriptionTree.__wildcardMatch('/test/pattern/blah', '/not/matching')).to.be(false);
-
-      expect(subscriptionTree.__wildcardMatch('/test/pattern/blah', '/test/pattern/blah')).to.be(true);
-
-      expect(subscriptionTree.__wildcardMatch('/test/pattern/bleh', '/test/pattern/*')).to.be(true);
-
-      done();
-
-    });
-
     it('subscription tree, single record subscribe', function (done) {
 
-      var subscriptionTree = require('wild-pare').create({mode: 'wildstring'});
+      var subscriptionTree = require('tame-search').create();
 
       //path, id, dataId, data, depth, originalPath
-      subscriptionTree.add('/test/path/1', {
+      subscriptionTree.subscribe('/test/path/1', {
         key: '1',
         data: {test: 1}
       });
@@ -53,40 +25,40 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     it('subscription tree, multiple record subscribe, with wildcards', function (done) {
 
-      var subscriptionTree = require('wild-pare').create({mode: 'wildstring'});
+      var subscriptionTree = require('tame-search').create();
 
       //path, id, dataId, data, depth, originalPath
-      subscriptionTree.add('/test/path/1', {
+      subscriptionTree.subscribe('/test/path/1', {
         key: '1',
         data: {test: 1}
       });
-      subscriptionTree.add('/test/path/1', {
+      subscriptionTree.subscribe('/test/path/1', {
         key: '1',
         data: {test: 2}
       });
-      subscriptionTree.add('/test/path/2', {
+      subscriptionTree.subscribe('/test/path/2', {
         key: '1',
         data: {test: 3}
       });
-      subscriptionTree.add('/test/path/2', {
+      subscriptionTree.subscribe('/test/path/2', {
         key: '1',
         data: {test: 4}
       });
 
-      subscriptionTree.add('/test/path/3', {
+      subscriptionTree.subscribe('/test/path/3', {
         key: '1',
         data: {test: 5}
       });
-      subscriptionTree.add('/test/path/3', {
+      subscriptionTree.subscribe('/test/path/3', {
         key: '1',
         data: {test: 6}
       });
 
-      subscriptionTree.add('/test/path/*', {
+      subscriptionTree.subscribe('/test/path/*', {
         key: '1',
         data: {test: 7}
       });
-      subscriptionTree.add('/test/path/*', {
+      subscriptionTree.subscribe('/test/path/*', {
         key: '1',
         data: {test: 8}
       });
@@ -99,78 +71,48 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     });
 
-    it('tests the subscription bucket adding and removing, bad edge case', function (done) {
-
-      var sessionId1 = '1';
-      var sessionId2 = '2';
-      var sessionId3 = '3';
-
-      var subscriptionTree = require('wild-pare').create({mode: 'wildstring'});
-
-      var data = {
-        options: {
-          refCount: 1
-        }
-      };
-
-      subscriptionTree.add('/_events/field-pop/server/deviceRegistered/*', {key:sessionId1, data:data});
-
-      subscriptionTree.add('/_events/field-pop/server/deviceRegistered/A corp/*', {key:sessionId2, data:data});
-
-      subscriptionTree.add('/_events/field-pop/server/deviceStatus/*', {key:sessionId3, data:data});
-
-      expect(subscriptionTree.__allRecipients.length).to.be(3);
-
-      subscriptionTree.remove('/_events/field-pop/server/deviceRegistered/A corp/*', sessionId2);
-
-      expect(subscriptionTree.__allRecipients.length).to.be(2);
-
-      done();
-
-    });
-
     it('subscription tree, multiple record subscribe, multiple wildcards', function (done) {
 
-      var subscriptionTree = require('wild-pare').create({mode: 'wildstring'});
+      var subscriptionTree = require('tame-search').create();
 
       //path, id, dataId, data, depth, originalPath
-      subscriptionTree.add('/2/test/path/1', {
+      subscriptionTree.subscribe('/2/test/path/1', {
         key: '1',
         data: {test: 1}
       });
-      subscriptionTree.add('/2/test/path/1', {
+      subscriptionTree.subscribe('/2/test/path/1', {
         key: '1',
         data: {test: 2}
       });
 
-      subscriptionTree.add('/2/test/path/2', {
+      subscriptionTree.subscribe('/2/test/path/2', {
         key: '1',
         data: {test: 1}
       });
-      subscriptionTree.add('/2/test/path/2', {
+      subscriptionTree.subscribe('/2/test/path/2', {
         key: '1',
         data: {test: 2}
       });
 
-      subscriptionTree.add('/2/test/path/3', {
+      subscriptionTree.subscribe('/2/test/path/3', {
         key: '1',
         data: {test: 1}
       });
-      subscriptionTree.add('/2/test/path/3', {
+      subscriptionTree.subscribe('/2/test/path/3', {
         key: '1',
         data: {test: 2}
       });
 
-      subscriptionTree.add('/2/test/path/*', {
+      subscriptionTree.subscribe('/2/test/path/*', {
         key: '1',
         data: {test: 1}
       });
-      subscriptionTree.add('/2/test/path/*', {
+      subscriptionTree.subscribe('/2/test/path/*', {
         key: '1',
         data: {test: 2}
       });
 
-      subscriptionTree.add('/2/*/*/3', {
+      subscriptionTree.subscribe('/2/*/*/3', {
         key: '1',
         data: {test: 3}
       });
@@ -184,13 +126,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     it('subscription tree, remove functionality', function (done) {
 
-      var subscriptionTree = require('wild-pare').create({mode: 'wildstring'});
+      var subscriptionTree = require('tame-search').create();
 
-      subscriptionTree.add('/2/test/path/3', {
+      subscriptionTree.subscribe('/2/test/path/3', {
         key: '1',
         data: {test: 3}
       });
-      subscriptionTree.add('/2/*/*/3', {
+      subscriptionTree.subscribe('/2/*/*/3', {
         key: '1',
         data: {test: 3}
       });
@@ -199,7 +141,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       expect(subscribers.length).to.be(2);
 
-      subscriptionTree.remove({path: '/2/*/*/3'});
+      subscriptionTree.unsubscribe('/2/*/*/3');
 
       subscribers = subscriptionTree.search('/2/test/path/3');
 
@@ -210,13 +152,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     it('subscription tree, remove non-existing', function (done) {
 
-      var subscriptionTree = require('wild-pare').create({mode: 'wildstring'});
+      var subscriptionTree = require('tame-search').create();
 
-      subscriptionTree.add('/2/test/path/3', {
+      subscriptionTree.subscribe('/2/test/path/3', {
         key: '1',
         data: {test: 3}
       });
-      subscriptionTree.add('/2/*/*/3', {
+      subscriptionTree.subscribe('/2/*/*/3', {
         key: '1',
         data: {test: 3}
       });
@@ -225,93 +167,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       expect(subscribers.length).to.be(2);
 
-      subscriptionTree.remove({path: '/4/1/1/3'});
+      subscriptionTree.unsubscribe('/4/1/1/3');
 
       subscribers = subscriptionTree.search('/2/test/path/3');
 
       expect(subscribers.length).to.be(2);
-
-      done();
-    });
-
-    it('subscription tree, multiple wildcard **', function (done) {
-
-      var subscriptionTree = require('wild-pare').create({mode: 'wildstring'});
-
-      //path, id, dataId, data, depth, originalPath
-      subscriptionTree.add('/2/test/**', {
-        key: '1',
-        data: {test: 1}
-      });
-
-      subscriptionTree.add('/2/**', {
-        key: '2',
-        data: {test: 2}
-      });
-
-      subscriptionTree.add('/2/**/2', {
-        key: '3',
-        data: {test: 3}
-      });
-
-      subscriptionTree.add('/2/**/2', {
-        key: '5',
-        data: {test: 5}
-      });
-
-      var subscriptions = subscriptionTree.search('/2/test/path/2');
-
-      expect(subscriptions.length).to.be(4);
-
-      subscriptionTree.remove({path: '/2/**/2', key: '5'});
-
-      subscriptions = subscriptionTree.search('/2/test/path/2');
-
-      expect(subscriptions.length).to.be(3);
-
-      done();
-    });
-
-    it('subscription tree, cache', function (done) {
-
-      var subscriptionTree = require('wild-pare').create({mode: 'wildstring'});
-
-      subscriptionTree.add('/2/test/path/3', {
-        key: '2',
-        data: {test: 2}
-      });
-
-      subscriptionTree.add('/2/*/*/3', {
-        key: '3',
-        data: {test: 3}
-      });
-
-      subscriptionTree.add('/2/test/*/4', {
-        key: '2',
-        data: {test: 2}
-      });
-
-      var subscribers1 = subscriptionTree.search('/2/test/path/3');
-
-      var subscribers2 = subscriptionTree.search('/2/test/path/4');
-
-      var subscribers3 = subscriptionTree.search('/2/test/path/3');
-
-      expect(subscribers1.length).to.be(2);
-      expect(subscribers2.length).to.be(1);
-      expect(subscribers3.length).to.be(2);
-
-      expect(subscriptionTree.__cache.values().length).to.be(2);
-
-      var cachedSubs = subscriptionTree.__cache.get('/2/test/path/3{}');
-
-      cachedSubs[0].specialValue = 'test';
-
-      subscriptionTree.__cache.set('/2/test/path/3{}', cachedSubs);
-
-      subscribers1 = subscriptionTree.search('/2/test/path/3');
-
-      expect(subscribers1[0].specialValue).to.be('test');
 
       done();
     });

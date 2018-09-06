@@ -489,3 +489,8 @@
 7.3.0 2018-08-23
 ----------------
   - feature: getUsersByGroup
+
+8.0.0 2018-09-05
+----------------
+  - fix: deleteUser removes tree first then user
+  - change: removed wild-pare, and included tame-search

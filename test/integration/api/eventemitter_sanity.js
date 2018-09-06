@@ -1,4 +1,4 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
@@ -57,9 +57,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   after(function (done) {
-    happnInstance.stop(done);
+    happnInstance.stop({}, done);
   });
-
 
   var publisherclient;
   var listenerclient;
