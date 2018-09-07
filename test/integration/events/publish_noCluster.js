@@ -90,8 +90,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         })
 
         .then(function () {
-          return normalClient.onAsync('/*/to/set/on', function (data, meta) {
-            emitted['normalClient /*/to/set/on'] = data;
+          return normalClient.onAsync('/*/*/to/set/on', function (data, meta) {
+            emitted['normalClient /*/*/to/set/on'] = data;
           });
         })
 
@@ -102,8 +102,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         })
 
         .then(function () {
-          return intraProcessClient.onAsync('/*/to/set/on', function (data, meta) {
-            emitted['intraProcessClient /*/to/set/on'] = data;
+          return intraProcessClient.onAsync('/*/*/to/set/on', function (data, meta) {
+            emitted['intraProcessClient /*/*/to/set/on'] = data;
           });
         })
 
@@ -137,13 +137,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             'normalClient /some/path/to/set/on': {
               some: 'data'
             },
-            'normalClient /*/to/set/on': {
+            'normalClient /*/*/to/set/on': {
               some: 'data'
             },
             'intraProcessClient /some/path/to/set/on': {
               some: 'data'
             },
-            'intraProcessClient /*/to/set/on': {
+            'intraProcessClient /*/*/to/set/on': {
               some: 'data'
             }
           });
@@ -177,8 +177,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         })
 
         .then(function () {
-          return normalClient.onAsync('/*/to/remove/on', function (data, meta) {
-            emitted['normalClient /*/to/remove/on'] = data;
+          return normalClient.onAsync('/*/*/to/remove/on', function (data, meta) {
+            emitted['normalClient /*/*/to/remove/on'] = data;
           });
         })
 
@@ -189,8 +189,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         })
 
         .then(function () {
-          return intraProcessClient.onAsync('/*/to/remove/on', function (data, meta) {
-            emitted['intraProcessClient /*/to/remove/on'] = data;
+          return intraProcessClient.onAsync('/*/*/to/remove/on', function (data, meta) {
+            emitted['intraProcessClient /*/*/to/remove/on'] = data;
           });
         })
 
@@ -201,8 +201,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         })
 
         .then(function () {
-          return clusterPeer.onAsync('/*/to/remove/on', function (data, meta) {
-            emitted['clusterPeer /*/to/remove/on'] = data;
+          return clusterPeer.onAsync('/*/*/to/remove/on', function (data, meta) {
+            emitted['clusterPeer /*/*/to/remove/on'] = data;
           });
         })
 
@@ -222,13 +222,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             'intraProcessClient /some/path/to/remove/on': {
               removed: 1
             },
-            'intraProcessClient /*/to/remove/on': {
+            'intraProcessClient /*/*/to/remove/on': {
               removed: 1
             },
             'normalClient /some/path/to/remove/on': {
               removed: 1
             },
-            'normalClient /*/to/remove/on': {
+            'normalClient /*/*/to/remove/on': {
               removed: 1
             }
           });

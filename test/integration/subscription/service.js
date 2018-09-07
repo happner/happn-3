@@ -540,19 +540,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (e) return done(e);
 
             expect(result.recipients.length).to.be(1);
-
-            instance.clearSessionSubscriptions('1', function(e) {
+            instance.clearSessionSubscriptions('1');
+            instance.processGetRecipients(getRecipientsMessage, function(e, afteClearedResult) {
 
               if (e) return done(e);
-
-              instance.processGetRecipients(getRecipientsMessage, function(e, afteClearedResult) {
-
-                if (e) return done(e);
-
-                expect(afteClearedResult.recipients.length).to.be(0);
-
-                done();
-              });
+              expect(afteClearedResult.recipients.length).to.be(0);
+              done();
             });
           });
         });

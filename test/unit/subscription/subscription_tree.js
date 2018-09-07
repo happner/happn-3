@@ -2,18 +2,20 @@ var expect = require('expect.js'),
   async = require('async'),
   shortid = require('shortid');
 
-describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function() {
 
-  context('functional subscription tree', function () {
+  context('functional subscription tree', function() {
 
-    it('subscription tree, single record subscribe', function (done) {
+    it('subscription tree, single record subscribe', function(done) {
 
       var subscriptionTree = require('tame-search').create();
 
       //path, id, dataId, data, depth, originalPath
       subscriptionTree.subscribe('/test/path/1', {
         key: '1',
-        data: {test: 1}
+        data: {
+          test: 1
+        }
       });
 
       var subscribers = subscriptionTree.search('/test/path/1');
@@ -23,44 +25,60 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
       done();
     });
 
-    it('subscription tree, multiple record subscribe, with wildcards', function (done) {
+    it('subscription tree, multiple record subscribe, with wildcards', function(done) {
 
       var subscriptionTree = require('tame-search').create();
 
       //path, id, dataId, data, depth, originalPath
       subscriptionTree.subscribe('/test/path/1', {
         key: '1',
-        data: {test: 1}
+        data: {
+          test: 1
+        }
       });
       subscriptionTree.subscribe('/test/path/1', {
         key: '1',
-        data: {test: 2}
+        data: {
+          test: 2
+        }
       });
       subscriptionTree.subscribe('/test/path/2', {
         key: '1',
-        data: {test: 3}
+        data: {
+          test: 3
+        }
       });
       subscriptionTree.subscribe('/test/path/2', {
         key: '1',
-        data: {test: 4}
+        data: {
+          test: 4
+        }
       });
 
       subscriptionTree.subscribe('/test/path/3', {
         key: '1',
-        data: {test: 5}
+        data: {
+          test: 5
+        }
       });
       subscriptionTree.subscribe('/test/path/3', {
         key: '1',
-        data: {test: 6}
+        data: {
+          test: 6
+        }
       });
 
       subscriptionTree.subscribe('/test/path/*', {
         key: '1',
-        data: {test: 7}
+        data: {
+          test: 7
+        }
       });
       subscriptionTree.subscribe('/test/path/*', {
         key: '1',
-        data: {test: 8}
+        data: {
+          test: 8
+        }
       });
 
       var subscribers = subscriptionTree.search('/test/path/1');
@@ -71,50 +89,68 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
 
     });
 
-    it('subscription tree, multiple record subscribe, multiple wildcards', function (done) {
+    it('subscription tree, multiple record subscribe, multiple wildcards', function(done) {
 
       var subscriptionTree = require('tame-search').create();
 
       //path, id, dataId, data, depth, originalPath
       subscriptionTree.subscribe('/2/test/path/1', {
         key: '1',
-        data: {test: 1}
+        data: {
+          test: 1
+        }
       });
       subscriptionTree.subscribe('/2/test/path/1', {
         key: '1',
-        data: {test: 2}
+        data: {
+          test: 2
+        }
       });
 
       subscriptionTree.subscribe('/2/test/path/2', {
         key: '1',
-        data: {test: 1}
+        data: {
+          test: 1
+        }
       });
       subscriptionTree.subscribe('/2/test/path/2', {
         key: '1',
-        data: {test: 2}
+        data: {
+          test: 2
+        }
       });
 
       subscriptionTree.subscribe('/2/test/path/3', {
         key: '1',
-        data: {test: 1}
+        data: {
+          test: 1
+        }
       });
       subscriptionTree.subscribe('/2/test/path/3', {
         key: '1',
-        data: {test: 2}
+        data: {
+          test: 2
+        }
       });
 
       subscriptionTree.subscribe('/2/test/path/*', {
         key: '1',
-        data: {test: 1}
+        data: {
+          test: 1
+        }
       });
       subscriptionTree.subscribe('/2/test/path/*', {
         key: '1',
-        data: {test: 2}
+        data: {
+          test: 2
+        }
       });
 
       subscriptionTree.subscribe('/2/*/*/3', {
         key: '1',
-        data: {test: 3}
+        data: {
+          test: 3
+        }
       });
 
       var subscribers = subscriptionTree.search('/2/test/path/3');
@@ -124,17 +160,21 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
       done();
     });
 
-    it('subscription tree, remove functionality', function (done) {
+    it('subscription tree, remove functionality', function(done) {
 
       var subscriptionTree = require('tame-search').create();
 
       subscriptionTree.subscribe('/2/test/path/3', {
         key: '1',
-        data: {test: 3}
+        data: {
+          test: 3
+        }
       });
       subscriptionTree.subscribe('/2/*/*/3', {
         key: '1',
-        data: {test: 3}
+        data: {
+          test: 3
+        }
       });
 
       var subscribers = subscriptionTree.search('/2/test/path/3');
@@ -150,17 +190,21 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
       done();
     });
 
-    it('subscription tree, remove non-existing', function (done) {
+    it('subscription tree, remove non-existing', function(done) {
 
       var subscriptionTree = require('tame-search').create();
 
       subscriptionTree.subscribe('/2/test/path/3', {
         key: '1',
-        data: {test: 3}
+        data: {
+          test: 3
+        }
       });
       subscriptionTree.subscribe('/2/*/*/3', {
         key: '1',
-        data: {test: 3}
+        data: {
+          test: 3
+        }
       });
 
       var subscribers = subscriptionTree.search('/2/test/path/3');
@@ -189,21 +233,21 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
 
     var subscriptionService = new SubscriptionService({
       logger: {
-        createLogger: function (key) {
+        createLogger: function(key) {
           return {
-            warn: function (message) {
+            warn: function(message) {
               console.log(message);
             },
-            info: function (message) {
+            info: function(message) {
               console.log(message);
             },
-            success: function (message) {
+            success: function(message) {
               console.log(message);
             },
-            error: function (message) {
+            error: function(message) {
               console.log(message);
             },
-            $$TRACE: function (message) {
+            $$TRACE: function(message) {
               console.log(message);
             }
           };
@@ -214,18 +258,18 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     subscriptionService.happn = {
       services: {
         data: {
-          get: function (path, criteria, callback) {
+          get: function(path, criteria, callback) {
             return callback(null, testItems);
           }
         },
-        security:{
-          onDataChanged:function(){}
+        security: {
+          onDataChanged: function() {}
         },
         utils: utilsService
       }
     };
 
-    subscriptionService.initialize(config, function (e) {
+    subscriptionService.initialize(config, function(e) {
 
       if (e) return callback(e);
 
@@ -234,13 +278,13 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     });
   }
 
-  it('starts up the subscription service, does processSubscribe - then getRecipients', function (done) {
+  it('starts up the subscription service, does processSubscribe - then getRecipients', function(done) {
 
     var config = {};
 
     var testItems = [];
 
-    mockSubscriptionService(config, testItems, function (e, instance) {
+    mockSubscriptionService(config, testItems, function(e, instance) {
 
       if (e) return done(e);
 
@@ -257,11 +301,11 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         }
       };
 
-      instance.prepareSubscribeMessage(subscribeMessage, function (e, prepared) {
+      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
 
         if (e) return done(e);
 
-        instance.processSubscribe(prepared, function (e, result) {
+        instance.processSubscribe(prepared, function(e, result) {
 
           if (e) return done(e);
 
@@ -274,7 +318,7 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
             }
           };
 
-          instance.processGetRecipients(getRecipientsMessage, function (e, result) {
+          instance.processGetRecipients(getRecipientsMessage, function(e, result) {
 
             if (e) return done(e);
 
@@ -287,13 +331,13 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     });
   });
 
-  it('starts up the subscription service, does processSubscribe - then getRecipients, then unsubscribe and get no recipients', function (done) {
+  it('starts up the subscription service, does processSubscribe - then getRecipients, then unsubscribe and get no recipients', function(done) {
 
     var config = {};
 
     var testItems = [];
 
-    mockSubscriptionService(config, testItems, function (e, instance) {
+    mockSubscriptionService(config, testItems, function(e, instance) {
 
       if (e) return done(e);
 
@@ -323,11 +367,11 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         }
       };
 
-      instance.prepareSubscribeMessage(subscribeMessage, function (e, prepared) {
+      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
 
         if (e) return done(e);
 
-        instance.processSubscribe(prepared, function (e, result) {
+        instance.processSubscribe(prepared, function(e, result) {
 
           if (e) return done(e);
 
@@ -341,21 +385,21 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
             }
           };
 
-          instance.processGetRecipients(getRecipientsMessage, function (e, result) {
+          instance.processGetRecipients(getRecipientsMessage, function(e, result) {
 
             if (e) return done(e);
 
             expect(result.recipients.length).to.be(1);
 
-            instance.prepareSubscribeMessage(unsubscribeMessage, function (e, prepared) {
+            instance.prepareSubscribeMessage(unsubscribeMessage, function(e, prepared) {
 
               if (e) return done(e);
 
-              instance.processUnsubscribe(prepared, function (e) {
+              instance.processUnsubscribe(prepared, function(e) {
 
                 if (e) return done(e);
 
-                instance.processGetRecipients(getRecipientsMessage, function (e) {
+                instance.processGetRecipients(getRecipientsMessage, function(e) {
 
                   if (e) return done(e);
 
@@ -372,21 +416,21 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     });
   });
 
-  it('starts up the subscription service, does processSubscribe - with initialCallback', function (done) {
+  it('starts up the subscription service, does processSubscribe - with initialCallback', function(done) {
 
     var config = {};
 
     var testItems = [{
-      path: 'test/path/1',
-      data: {}
-    },
+        path: 'test/path/1',
+        data: {}
+      },
       {
         path: 'test/path/2',
         data: {}
       }
     ];
 
-    mockSubscriptionService(config, testItems, function (e, instance) {
+    mockSubscriptionService(config, testItems, function(e, instance) {
 
       if (e) return done(e);
 
@@ -404,11 +448,11 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         }
       };
 
-      instance.prepareSubscribeMessage(subscribeMessage, function (e, prepared) {
+      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
 
         if (e) return done(e);
 
-        instance.processSubscribe(prepared, function (e, result) {
+        instance.processSubscribe(prepared, function(e, result) {
 
           if (e) return done(e);
 
@@ -422,21 +466,21 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     });
   });
 
-  it('starts up the subscription service, does processSubscribe - with initialEmit', function (done) {
+  it('starts up the subscription service, does processSubscribe - with initialEmit', function(done) {
 
     var config = {};
 
     var testItems = [{
-      path: 'test/path/1',
-      data: {}
-    },
+        path: 'test/path/1',
+        data: {}
+      },
       {
         path: 'test/path/2',
         data: {}
       }
     ];
 
-    mockSubscriptionService(config, testItems, function (e, instance) {
+    mockSubscriptionService(config, testItems, function(e, instance) {
 
       if (e) return done(e);
 
@@ -454,11 +498,11 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         }
       };
 
-      instance.prepareSubscribeMessage(subscribeMessage, function (e, prepared) {
+      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
 
         if (e) return done(e);
 
-        instance.processSubscribe(prepared, function (e, result) {
+        instance.processSubscribe(prepared, function(e, result) {
 
           if (e) return done(e);
 
@@ -471,13 +515,13 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
     });
   });
 
-  it('does a clearSubscriptions for a specific session', function (done) {
+  it('does a clearSubscriptions for a specific session', function(done) {
 
     var config = {};
 
     var testItems = [];
 
-    mockSubscriptionService(config, testItems, function (e, instance) {
+    mockSubscriptionService(config, testItems, function(e, instance) {
 
       if (e) return done(e);
 
@@ -506,11 +550,11 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
         }
       };
 
-      instance.prepareSubscribeMessage(subscribeMessage, function (e, prepared) {
+      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
 
         if (e) return done(e);
 
-        instance.processSubscribe(prepared, function (e, result) {
+        instance.processSubscribe(prepared, function(e, result) {
 
           if (e) return done(e);
 
@@ -523,25 +567,22 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
             }
           };
 
-          instance.processGetRecipients(getRecipientsMessage, function (e, result) {
+          instance.processGetRecipients(getRecipientsMessage, function(e, result) {
 
             if (e) return done(e);
 
             expect(result.recipients.length).to.be(1);
 
-            instance.clearSessionSubscriptions('1', function (e) {
+            instance.clearSessionSubscriptions('1');
+
+            instance.processGetRecipients(getRecipientsMessage, function(e, afteClearedResult) {
 
               if (e) return done(e);
 
-              instance.processGetRecipients(getRecipientsMessage, function (e, afteClearedResult) {
+              expect(afteClearedResult.recipients.length).to.be(0);
 
-                if (e) return done(e);
+              done();
 
-                expect(afteClearedResult.recipients.length).to.be(0);
-
-                done();
-
-              });
             });
           });
         });

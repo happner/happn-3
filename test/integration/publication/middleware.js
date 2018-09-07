@@ -56,7 +56,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance.on('/test/path/*', {
+          clientInstance.on('/test/path/*/*', {
             meta: {
               publish: true
             }
