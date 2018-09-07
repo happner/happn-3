@@ -36,7 +36,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
   });
 
   var SUBSCRIPTION_COUNT = 10000;
-  var SEARCH_COUNT = 100000;
+  var SEARCH_COUNT = 10000;
 
   this.timeout(SUBSCRIPTION_COUNT * 10);
 
@@ -88,6 +88,8 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       eventsCount++;
 
       if (eventsCount == SEARCH_COUNT){
+        // console.log(JSON.stringify(setResults, null, 2));
+        // console.log(JSON.stringify(subscriptions, null, 2));
         console.log('handled ' + SEARCH_COUNT + ' events in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
         done();
       }
