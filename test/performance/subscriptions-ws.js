@@ -11,13 +11,19 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
   var shortid = require('shortid');
   var random = require('../__fixtures/utils/random');
 
-  var SUBSCRIPTION_COUNT = 100;
+  var SUBSCRIPTION_COUNT = 1000;
   var SEARCH_COUNT = 10000;
 
   this.timeout(SUBSCRIPTION_COUNT * 100);
 
   beforeEach('should initialize the service', function (callback) {
-    service.create({},
+    service.create({
+      services:{
+        // queue:{
+        //   config:{mode:'direct'}
+        // }
+      }
+    },
       function (e, happnInst) {
         if (e) return callback(e);
         happnInstance = happnInst;
@@ -27,7 +33,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
 
   var client;
   beforeEach('should initialize the client', function (callback) {
-    happnInstance.services.session.localClient(function (e, instance) {
+    happn.client.create(function (e, instance) {
       if (e) return callback(e);
       client = instance;
       callback();
@@ -35,7 +41,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
   });
 
   afterEach('disconnect client', function (done) {
-    client.disconnect({}, done);
+    client.disconnect(done);
   });
 
   afterEach('disconnect server', function (done) {
@@ -76,10 +82,6 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       setResults[meta.path].push(data);
       setResults.counters[data.counter] = true;
       eventsCount++;
-
-      // console.log('event path: ' + meta.path);
-      // console.log('match path: ' + this.path);
-
       if (eventsCount == SEARCH_COUNT){
         // console.log(JSON.stringify(setResults, null, 2));
         // console.log(JSON.stringify(subscriptions, null, 2));
@@ -88,8 +90,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     };
 
     async.each(subscriptions, function(subscription, subscriptionCB){
-      //console.log('subscribed:::', subscription);
-      client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
+      client.on(subscription, handleOn, subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
       startedSearching = Date.now();
@@ -148,7 +149,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     };
 
     async.eachSeries(subscriptions, function(subscription, subscriptionCB){
-      client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
+      client.on(subscription, handleOn, subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
       startedSearching = Date.now();
@@ -203,7 +204,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     };
 
     async.each(subscriptions, function(subscription, subscriptionCB){
-      client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
+      client.on(subscription, handleOn, subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
       startedSearching = Date.now();
@@ -257,7 +258,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     };
 
     async.eachSeries(subscriptions, function(subscription, subscriptionCB){
-      client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
+      client.on(subscription, handleOn, subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
       startedSearching = Date.now();

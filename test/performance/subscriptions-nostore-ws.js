@@ -11,7 +11,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
   var shortid = require('shortid');
   var random = require('../__fixtures/utils/random');
 
-  var SUBSCRIPTION_COUNT = 100;
+  var SUBSCRIPTION_COUNT = 1000;
   var SEARCH_COUNT = 10000;
 
   this.timeout(SUBSCRIPTION_COUNT * 100);
@@ -27,7 +27,8 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
 
   var client;
   beforeEach('should initialize the client', function (callback) {
-    happnInstance.services.session.localClient(function (e, instance) {
+
+    happn.client.create(function (e, instance) {
       if (e) return callback(e);
       client = instance;
       callback();
@@ -76,10 +77,6 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       setResults[meta.path].push(data);
       setResults.counters[data.counter] = true;
       eventsCount++;
-
-      // console.log('event path: ' + meta.path);
-      // console.log('match path: ' + this.path);
-
       if (eventsCount == SEARCH_COUNT){
         // console.log(JSON.stringify(setResults, null, 2));
         // console.log(JSON.stringify(subscriptions, null, 2));
@@ -88,8 +85,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     };
 
     async.each(subscriptions, function(subscription, subscriptionCB){
-      //console.log('subscribed:::', subscription);
-      client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
+      client.on(subscription, handleOn, subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
       startedSearching = Date.now();
@@ -148,7 +144,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     };
 
     async.eachSeries(subscriptions, function(subscription, subscriptionCB){
-      client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
+      client.on(subscription, handleOn, subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
       startedSearching = Date.now();
@@ -165,7 +161,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     });
   });
 
-  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
+  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel, noStore set to true', function (done) {
 
     var subscriptions = [];
 
@@ -203,7 +199,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     };
 
     async.each(subscriptions, function(subscription, subscriptionCB){
-      client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
+      client.on(subscription, handleOn, subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
       startedSearching = Date.now();
@@ -211,7 +207,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       async.each(searchPaths, function(randomPath, randomPathCB){
         client.set(randomPath, {
           counter:counter++
-        }, {noStore:false}, randomPathCB);
+        }, {noStore:true}, randomPathCB);
       }, function(e){
         if (e) return done(e);
         console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
@@ -219,7 +215,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     });
   });
 
-  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in series', function (done) {
+  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in series, noStore set to true', function (done) {
 
     var subscriptions = [];
 
@@ -257,7 +253,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     };
 
     async.eachSeries(subscriptions, function(subscription, subscriptionCB){
-      client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
+      client.on(subscription, handleOn, subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
       startedSearching = Date.now();
@@ -265,7 +261,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       async.each(searchPaths, function(randomPath, randomPathCB){
         client.set(randomPath, {
           counter:counter++
-        }, {noStore:false}, randomPathCB);
+        }, {noStore:true}, randomPathCB);
       }, function(e){
         if (e) return done(e);
         console.log('handled ' + SEARCH_COUNT + ' consecutive sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
