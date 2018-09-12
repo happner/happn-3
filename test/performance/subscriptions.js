@@ -10,9 +10,13 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
   var test_id;
   var shortid = require('shortid');
   var random = require('../__fixtures/utils/random');
+  var CONSTANTS = require('../../lib/constants');
 
   var SUBSCRIPTION_COUNT = 100;
   var SEARCH_COUNT = 10000;
+
+  var NOSTORE = false;
+  var CONSISTENCY = CONSTANTS.CONSISTENCY.TRANSACTIONAL;
 
   this.timeout(SUBSCRIPTION_COUNT * 100);
 
@@ -97,7 +101,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       async.each(searchPaths, function(randomPath, randomPathCB){
         client.set(randomPath, {
           counter:counter++
-        }, {noStore:false}, randomPathCB);
+        }, {noStore:NOSTORE, consistency: CONSISTENCY}, randomPathCB);
       }, function(e){
         if (e) return done(e);
         console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
@@ -156,7 +160,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       async.each(searchPaths, function(randomPath, randomPathCB){
         client.set(randomPath, {
           counter:counter++
-        }, {noStore:false}, randomPathCB);
+        }, {noStore:NOSTORE, consistency: CONSISTENCY}, randomPathCB);
       }, function(e){
         if (e) return done(e);
         console.log('handled ' + SEARCH_COUNT + ' consecutive sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
@@ -211,7 +215,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       async.each(searchPaths, function(randomPath, randomPathCB){
         client.set(randomPath, {
           counter:counter++
-        }, {noStore:false}, randomPathCB);
+        }, {noStore:NOSTORE, consistency: CONSISTENCY}, randomPathCB);
       }, function(e){
         if (e) return done(e);
         console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
@@ -265,7 +269,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       async.each(searchPaths, function(randomPath, randomPathCB){
         client.set(randomPath, {
           counter:counter++
-        }, {noStore:false}, randomPathCB);
+        }, {noStore:NOSTORE, consistency: CONSISTENCY}, randomPathCB);
       }, function(e){
         if (e) return done(e);
         console.log('handled ' + SEARCH_COUNT + ' consecutive sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');

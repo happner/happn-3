@@ -7,6 +7,7 @@
   "database": "1",
   "scripts": {
     "test": "gulp lint && mocha silence.js test/integration/** test/unit/**",
+    "test-perf": "gulp lint && mocha silence.js test/performance/subscriptions.js",
     "test-unit": "mocha silence.js test/unit/**",
     "test-cover": "istanbul cover _mocha -- silence.js test/integration/** test/unit/**",
     "test-browser": "gulp --gulpfile test/browser/gulp-01.js",
@@ -36,6 +37,7 @@
     "connect": "3.4.0",
     "connect-cookies": "0.0.0",
     "deep-copy": "1.1.2",
+    "fast-clone": "^1.5.3",
     "fs-extra": "2.0.0",
     "handlebars": "4.0.11",
     "happn-logger": "0.0.2",

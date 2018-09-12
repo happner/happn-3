@@ -183,7 +183,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         if (e) return done(e);
 
-        expect(happnInstance.services.subscription.subscriptions.set.searchAll().length > 0).to.be(true);
+        expect(happnInstance.services.subscription.subscriptions.searchAll().length > 0).to.be(true);
 
         disconnectClients(null, function (e) {
 
@@ -191,7 +191,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           setTimeout(function(){
 
-            expect(happnInstance.services.subscription.subscriptions.set.searchAll().length == 0).to.be(true);
+            expect(happnInstance.services.subscription.subscriptions.searchAll().length == 0).to.be(true);
 
             done();
 
@@ -214,7 +214,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         if (e) return done(e);
 
-        expect(happnInstance.services.subscription.subscriptions.all.searchAll().length > 0).to.be(true);
+        expect(happnInstance.services.subscription.subscriptions.searchAll().length > 0).to.be(true);
 
         disconnectClients(null, function (e) {
 
@@ -222,7 +222,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           setTimeout(function(){
 
-            expect(happnInstance.services.subscription.subscriptions.all.searchAll().length == 0).to.be(true);
+            expect(happnInstance.services.subscription.subscriptions.searchAll().length == 0).to.be(true);
             done();
 
           }, 2000);

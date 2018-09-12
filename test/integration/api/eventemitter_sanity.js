@@ -228,7 +228,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     publisherclient.get('1_eventemitter_embedded_sanity/' + test_id + '/unfound/wild/*' + test_path_end + '/*', null, function (e, results) {
       ////////////console.log('new data results');
-
       expect(e).to.be(null);
       expect(results.length).to.be(0);
 
@@ -1195,8 +1194,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }, null, function (e, put_result) {
 
         publisherclient.remove('/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/catch_all', null, function (e, del_result) {
-
-
+          if (e) return done(e);
         });
       });
     });

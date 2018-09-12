@@ -377,7 +377,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       .spread(function (result1, result2, result3) {
 
-        console.log('1,2,3',result1[0], result2[0], result3[0]);
+        //console.log('1,2,3',result1[0], result2[0], result3[0]);
 
         listenerId1 = result1[0];
         listenerId2 = result2[0];
@@ -415,9 +415,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         // listenerclient anyway... and be filtered out clientside
 
         listenerclient.handle_data = function (path, data) {
-
-          console.log('handle_data:::', path, data);
-
           emittedPath = path;
           originalHandleData.apply(this, arguments);
         };

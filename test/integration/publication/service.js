@@ -6,7 +6,6 @@ var Happn = require('../../..'),
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3),  function () {
 
   var UtilsService = require('../../../lib/services/utils/service');
-
   var utilsService = new UtilsService();
 
   before('', function () {
@@ -143,7 +142,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         "path": "/set/some/data",
         "action": "/SET@/set/some/data",
         "type": "data",
-        "channel": "/SET@/set/some/data",
         "sessionId": "1",
         "consistency": 2,
         "publicationId": "1-10"
@@ -160,7 +158,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     expect(publication.id).to.be(message.session.id + '-' + message.request.eventId); //publications have a unique id built up from session and eventId
 
-    expect(publication.payload).to.eql(JSON.stringify(expectedMessage)); //not what gets queued exactly, just the data bit
+    expect(JSON.parse(publication.payload)).to.eql(expectedMessage); //not what gets queued exactly, just the data bit
 
     expect(publication.recipients.length).to.eql(message.recipients.length);
 
@@ -214,7 +212,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         "path": "/set/some/data",
         "action": "/SET@/set/some/data",
         "type": "data",
-        "channel": "/SET@/set/some/data",
         "sessionId": "1",
         "consistency": 1,
         "publicationId": "1-10"
@@ -231,7 +228,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     expect(publication.id).to.be(message.session.id + '-' + message.request.eventId); //publications have a unique id
 
-    expect(publication.payload).to.eql(JSON.stringify(expectedMessage));
+    expect(JSON.parse(publication.payload)).to.eql(expectedMessage);
 
     expect(publication.recipients.length).to.eql(message.recipients.length);
 
@@ -284,7 +281,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       "_meta": {
         "path": "/set/some/data",
         "action": "/SET@/set/some/data",
-        "type": "data"
+        "type": "data",
+        "created":undefined
       },
       "protocol": "happn-1.0.0"
     };

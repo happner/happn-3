@@ -79,6 +79,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     it('does not emit to clusterPeer if noCluster set', function (done) {
 
+      this.timeout(5000);
+
       var emitted = {};
 
       Promise.resolve()
@@ -114,8 +116,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         })
 
         .then(function () {
-          return clusterPeer.onAsync('/*/to/set/on', function (data, meta) {
-            emitted['clusterPeer /*/to/set/on'] = data;
+          return clusterPeer.onAsync('/*/*/to/set/on', function (data, meta) {
+            emitted['clusterPeer /*/*/to/set/on'] = data;
           });
         })
 
