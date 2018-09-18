@@ -1,4 +1,4 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
@@ -1622,9 +1622,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       property2: 'property2',
       property3: 'property3'
     }, function (e) {
-
       expect(e.toString()).to.be('Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
-
       done();
     });
   });
