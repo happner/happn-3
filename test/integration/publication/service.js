@@ -31,7 +31,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       pushOutbound: function (message, callback) {
 
         this.items.push(message);
-
         callback();
 
         if (this.itemPushedHandler) this.itemPushedHandler(message);
@@ -41,11 +40,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       pushPublication: function (publication, callback) {
 
         var _this = this;
-
         publications.push(publication);
-
         if (callback) callback();
-
         if (_this.publicationPushedHandler) _this.publicationPushedHandler(publication);
       }
     };
@@ -794,12 +790,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      mockPublisher.processPublish(message, function (e, response) {
-
-        if (e) return done(e);
+      mockPublisher.processPublish(message)
+      .then(function(){
         done();
-
-      });
+      })
+      .catch(done);
     });
   });
 
@@ -887,12 +882,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      mockPublisher.processPublish(message, function (e, response) {
-
-        if (e) return done(e);
+      mockPublisher.processPublish(message)
+      .then(function(){
         done();
-
-      });
+      })
+      .catch(done);
     });
   });
 

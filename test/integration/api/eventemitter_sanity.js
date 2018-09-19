@@ -1,4 +1,4 @@
-describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
@@ -1556,7 +1556,8 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
 
       setTimeout(function () {
 
-        if (hits != 3) return callback(new Error('hits were over the agreed on 2'));
+        if (hits < 3) return callback(new Error('hits were under the agreed on 3'));
+        if (hits > 3) return callback(new Error('hits were under the agreed on 3'));
 
         callback();
 

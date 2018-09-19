@@ -105,7 +105,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     this.timeout(default_timeout);
 
     try {
-
       //first listen for the change
       eventEmitterClient.on('/e2e_test1/testsubscribe/data/event', {
         event_type: 'set',
@@ -114,16 +113,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         expect(eventEmitterClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
-
       }, function (e) {
-
-        //////////////////console.log('ON HAS HAPPENED: ' + e);
-
         if (!e) {
-
           expect(eventEmitterClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
-          //////////////////console.log('on subscribed, about to publish');
-
           //then make the change
           socketClient.set('/e2e_test1/testsubscribe/data/event', {
             property1: 'property1',
@@ -135,13 +127,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         } else
           callback(e);
       });
-
     } catch (e) {
       callback(e);
     }
   });
 
-  it('the listener should pick up a single published event, eventemitter publishing', function (callback) {
+  it.only('the listener should pick up a single published event, eventemitter publishing', function (callback) {
 
     this.timeout(default_timeout);
 
@@ -153,14 +144,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
+        console.log('message:::', message);
         expect(socketClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
         callback();
 
       }, function (e) {
 
-        //////////////////console.log('ON HAS HAPPENED: ' + e);
+        console.log('ON HAS HAPPENED: ' + e);
 
         if (!e) {
+
+          console.log('socketClient.events:::', socketClient.events);
 
           expect(socketClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
           //////////////////console.log('on subscribed, about to publish');
@@ -174,8 +168,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             ////////////////////////////console.log('put happened - listening for result');
           });
 
-        } else
-          callback(e);
+        } else callback(e);
       });
 
     } catch (e) {
