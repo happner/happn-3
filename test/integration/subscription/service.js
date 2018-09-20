@@ -88,31 +88,23 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
+      var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
-        if (e) return done(e);
-
-        instance.processSubscribe(prepared, function(e, result) {
-
-          if (e) return done(e);
-
+      instance.processSubscribe(prepared)
+        .then(function(result) {
           expect(result.response._meta.status).to.be('ok');
-
-          var getRecipientsMessage = {
+          return instance.processGetRecipients({
             request: {
               action: 'SET',
               path: '/test/path/1'
             }
-          };
-
-          instance.processGetRecipients(getRecipientsMessage, function(e, result) {
-
-            if (e) return done(e);
-            expect(result.recipients.length).to.be(1);
-            done();
           });
-        });
-      });
+        })
+        .then(function(getRecipientsResult) {
+          expect(getRecipientsResult.recipients.length).to.be(1);
+          done();
+        })
+        .catch(done)
     });
   });
 
@@ -152,50 +144,36 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
+      var subscribePrepared = instance.prepareSubscribeMessage(subscribeMessage);
+      var unsubscribePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
 
-        if (e) return done(e);
-
-        instance.processSubscribe(prepared, function(e, result) {
-
-          if (e) return done(e);
-
-          expect(result.response._meta.status).to.be('ok');
-
-          var getRecipientsMessage = {
-            request: {
-              action: 'set',
-              path: '/test/path/1',
-              key: '/test/path/1'
-            }
-          };
-
-          instance.processGetRecipients(getRecipientsMessage, function(e, result) {
-
-            if (e) return done(e);
-
-            expect(result.recipients.length).to.be(1);
-
-            instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
-
-              if (e) return done(e);
-
-              instance.processUnsubscribe(prepared, function(e) {
-
-                if (e) return done(e);
-
-                instance.processGetRecipients(getRecipientsMessage, function(e) {
-
-                  if (e) return done(e);
-
-                  expect(result.recipients.length).to.be(0);
-
-                  done();
-                });
-              });
-            });
-          });
+      instance.processSubscribe(subscribePrepared)
+      .then(function(result){
+        expect(result.response._meta.status).to.be('ok');
+        return instance.processGetRecipients({
+          request: {
+            action: 'set',
+            path: '/test/path/1',
+            key: '/test/path/1'
+          }
         });
+      })
+      .then(function(getRecipientsResult){
+        expect(getRecipientsResult.recipients.length).to.be(1);
+        return instance.processUnsubscribe(unsubscribePrepared)
+      })
+      .then(function(unsubscribeResult){
+        return instance.processGetRecipients({
+          request: {
+            action: 'set',
+            path: '/test/path/1',
+            key: '/test/path/1'
+          }
+        });
+      })
+      .then(function(getRecipientsResult){
+        expect(getRecipientsResult.recipients.length).to.be(0);
+        done();
       });
     });
   });
@@ -247,51 +225,43 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       };
       var referenceId = null;
 
-      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
+      var subscribeMessagePrepared = instance.prepareSubscribeMessage(subscribeMessage);
+      var subscribeMessage1Prepared = instance.prepareSubscribeMessage(subscribeMessage1);
+      var unsubscribeMessagePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
 
-        if (e) return done(e);
-        instance.prepareSubscribeMessage(subscribeMessage1, function(e, prepared1) {
-
-          if (e) return done(e);
-          instance.processSubscribe(prepared, function(e, result) {
-
-            if (e) return done(e);
-            expect(result.response._meta.status).to.be('ok');
-            instance.processSubscribe(prepared1, function(e, result) {
-
-              if (e) return done(e);
-              referenceId = result.response.data.id;
-              expect(result.response._meta.status).to.be('ok');
-              var getRecipientsMessage = {
-                request: {
-                  action: 'set',
-                  path: '/test/path/1',
-                  key: '/test/path/1'
-                }
-              };
-              instance.processGetRecipients(getRecipientsMessage, function(e, result) {
-
-                if (e) return done(e);
-                expect(result.recipients.length).to.be(2);
-                instance.prepareSubscribeMessage(unsubscribeMessage, function(e, unsubPrepared) {
-
-                  if (e) return done(e);
-                  unsubPrepared.request.options.referenceId = referenceId;
-                  instance.processUnsubscribe(unsubPrepared, function(e) {
-
-                    if (e) return done(e);
-                    instance.processGetRecipients(getRecipientsMessage, function(e) {
-
-                      if (e) return done(e);
-                      expect(result.recipients.length).to.be(1);
-                      done();
-                    });
-                  });
-                });
-              });
-            });
-          });
+      instance.processSubscribe(subscribeMessagePrepared)
+      .then(function(result){
+        expect(result.response._meta.status).to.be('ok');
+        return instance.processSubscribe(subscribeMessage1Prepared);
+      })
+      .then(function(result){
+        referenceId = result.response.data.id;
+        expect(result.response._meta.status).to.be('ok');
+        return instance.processGetRecipients({
+          request: {
+            action: 'set',
+            path: '/test/path/1',
+            key: '/test/path/1'
+          }
         });
+      })
+      .then(function(result){
+        expect(result.recipients.length).to.be(2);
+        unsubscribeMessagePrepared.request.options.referenceId = referenceId;
+        return instance.processUnsubscribe(unsubscribeMessagePrepared);
+      })
+      .then(function(unsubresult){
+        return instance.processGetRecipients({
+          request: {
+            action: 'set',
+            path: '/test/path/1',
+            key: '/test/path/1'
+          }
+        });
+      })
+      .then(function(result){
+        expect(result.recipients.length).to.be(1);
+        done();
       });
     });
   });
@@ -341,47 +311,33 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           id: '1'
         }
       };
+
       var referenceId = null;
+      var subscribeMessagePrepared = instance.prepareSubscribeMessage(subscribeMessage);
+      var subscribeMessage1Prepared = instance.prepareSubscribeMessage(subscribeMessage1);
+      var unsubscribeMessagePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
 
-      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
-
-        if (e) return done(e);
-        instance.prepareSubscribeMessage(subscribeMessage1, function(e, prepared1) {
-
-          if (e) return done(e);
-          instance.processSubscribe(prepared, function(e, result) {
-
-            if (e) return done(e);
-            referenceId = result.response.data.id;
-            expect(result.response._meta.status).to.be('ok');
-            instance.processSubscribe(prepared1, function(e, result) {
-
-              if (e) return done(e);
-
-              expect(result.response._meta.status).to.be('ok');
-              expect(instance.allListeners('1').length).to.be(2);
-              expect(instance.allListeners('1')[0].key).to.be('1');
-              expect(instance.allListeners('1')[0].data.path).to.be('/test/path/*');
-              expect(instance.allListeners('1')[1].key).to.be('1');
-              expect(instance.allListeners('1')[1].data.path).to.be('/test/path/1');
-
-              instance.prepareSubscribeMessage(unsubscribeMessage, function(e, unsubPrepared) {
-
-                if (e) return done(e);
-                unsubPrepared.request.options.referenceId = referenceId;
-                instance.processUnsubscribe(unsubPrepared, function(e, result) {
-
-                  if (e) return done(e);
-                  expect(instance.allListeners('1').length).to.be(1);
-                  expect(instance.allListeners('1')[0].key).to.be('1');
-                  expect(instance.allListeners('1')[0].data.path).to.be('/test/path/1');
-
-                  done();
-                });
-              });
-            });
-          });
-        });
+      instance.processSubscribe(subscribeMessagePrepared)
+      .then(function(result){
+        referenceId = result.response.data.id;
+        expect(result.response._meta.status).to.be('ok');
+        return instance.processSubscribe(subscribeMessage1Prepared);
+      })
+      .then(function(result){
+        expect(result.response._meta.status).to.be('ok');
+        expect(instance.allListeners('1').length).to.be(2);
+        expect(instance.allListeners('1')[0].key).to.be('1');
+        expect(instance.allListeners('1')[0].data.path).to.be('/test/path/*');
+        expect(instance.allListeners('1')[1].key).to.be('1');
+        expect(instance.allListeners('1')[1].data.path).to.be('/test/path/1');
+        unsubscribeMessagePrepared.request.options.referenceId = referenceId;
+        return instance.processUnsubscribe(unsubscribeMessagePrepared);
+      })
+      .then(function(){
+        expect(instance.allListeners('1').length).to.be(1);
+        expect(instance.allListeners('1')[0].key).to.be('1');
+        expect(instance.allListeners('1')[0].data.path).to.be('/test/path/1');
+        done();
       });
     });
   });
@@ -418,19 +374,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
+      var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
-        if (e) return done(e);
+      instance.processSubscribe(prepared)
+      .then(function(result){
+        expect(result.response._meta.status).to.be('ok');
+        expect(result.response.initialValues.length).to.be(2);
 
-        instance.processSubscribe(prepared, function(e, result) {
-
-          if (e) return done(e);
-
-          expect(result.response._meta.status).to.be('ok');
-          expect(result.response.initialValues.length).to.be(2);
-
-          done();
-        });
+        done();
       });
     });
   });
@@ -467,20 +418,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
+      var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
-        if (e) return done(e);
-
-        instance.processSubscribe(prepared, function(e, result) {
-
-          if (e) return done(e);
-
-          expect(result.response._meta.status).to.be('ok');
-          expect(result.response.initialValues.length).to.be(2);
-
-          done();
-
-        });
+      instance.processSubscribe(prepared)
+      .then(function(result){
+        expect(result.response._meta.status).to.be('ok');
+        expect(result.response.initialValues.length).to.be(2);
+        done();
       });
     });
   });
@@ -520,35 +464,31 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      instance.prepareSubscribeMessage(subscribeMessage, function(e, prepared) {
+      var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
-        if (e) return done(e);
-
-        instance.processSubscribe(prepared, function(e, result) {
-
-          expect(result.response._meta.status).to.be('ok');
-
-          var getRecipientsMessage = {
-            request: {
-              action: 'SET',
-              path: '/test/path/1'
-            }
-          };
-
-          instance.processGetRecipients(getRecipientsMessage, function(e, result) {
-
-            if (e) return done(e);
-
-            expect(result.recipients.length).to.be(1);
-            instance.clearSessionSubscriptions('1');
-            instance.processGetRecipients(getRecipientsMessage, function(e, afteClearedResult) {
-
-              if (e) return done(e);
-              expect(afteClearedResult.recipients.length).to.be(0);
-              done();
-            });
-          });
+      instance.processSubscribe(prepared)
+      .then(function(result){
+        expect(result.response._meta.status).to.be('ok');
+        return instance.processGetRecipients({
+          request: {
+            action: 'SET',
+            path: '/test/path/1'
+          }
         });
+      })
+      .then(function(result){
+        expect(result.recipients.length).to.be(1);
+        instance.clearSessionSubscriptions('1');
+        return instance.processGetRecipients({
+          request: {
+            action: 'SET',
+            path: '/test/path/1'
+          }
+        });
+      })
+      .then(function(afteClearedResult){
+        expect(afteClearedResult.recipients.length).to.be(0);
+        done();
       });
     });
   });
@@ -651,5 +591,4 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       })
       .catch(done);
   });
-
 });

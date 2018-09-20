@@ -24,7 +24,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   Services.SystemService = require('../../../lib/services/system/service');
   Services.ErrorService = require('../../../lib/services/error/service');
   Services.QueueService = require('../../../lib/services/queue/service');
-  Services.LayerService = require('../../../lib/services/layer/service');
   Services.LogService = require('../../../lib/services/log/service');
 
   var mockService = Promise.promisify(function (happn, serviceName, config, callback) {
@@ -77,7 +76,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       .then(mockService(happn, 'System'))
       .then(mockService(happn, 'Security'))
       .then(mockService(happn, 'Subscription'))
-      .then(mockService(happn, 'Layer'))
       .then(function () {
         happn.services.session.initializeCaches.bind(happn.services.session)(function (e) {
           if (e) return callback(e);

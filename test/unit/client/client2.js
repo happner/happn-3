@@ -2,7 +2,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   this.timeout(5000);
 
-  var fs = require('fs')
+  var fs = require('fs');
   var expect = require('expect.js');
   var path = require('path');
   var HappnClient = require('../../../lib/client');
@@ -705,7 +705,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         action: 'login',
         eventId: 1,
         data: {
-          username: 'Janco',
+          username: 'Janco1',
           password: 'private'
         },
         sessionId: 'test'
@@ -714,8 +714,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }
 
     happnClient.__performSystemRequest("login", {
-      username: "Janco",
+      username: "Janco1",
       password: "private"
+    }, null, function(){
+
     });
   });
 
@@ -726,7 +728,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         action: 'login',
         eventId: 1,
         data: {
-          username: 'Janco',
+          username: 'Janco2',
           password: 'private'
         },
         options: {
@@ -738,10 +740,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }
 
     happnClient.__performSystemRequest("login", {
-      username: "Janco",
+      username: "Janco2",
       password: "private"
     }, {
       timeout: 100
+    }, null,
+    function(){
+
     });
   });
 
@@ -751,7 +756,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.socket.write = function(message) {};
 
     happnClient.__performSystemRequest("login", {
-      username: "Janco",
+      username: "Janco3",
       password: "private"
     }, {
       timeout: 50
