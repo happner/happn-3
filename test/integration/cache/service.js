@@ -644,11 +644,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  xit('tests the all function, default cache', function (done) {
-
-
-  });
-
   it('tests the all function, specific cache', function (done) {
 
     serviceInstance.clear('specific');

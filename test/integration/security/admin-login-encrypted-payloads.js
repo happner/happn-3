@@ -112,19 +112,16 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                 if (e)  return callback(e);
 
                 expect(records.length > 0).to.be(true);
-
                 expect(Object.keys(currentService.services.session.__sessions).length).to.be(1);
 
                 client.on('/test/path', function(data){
 
                   expect(data.test).to.be("data");
-
                   client.disconnect({reconnect:false});
 
                   setTimeout(function(){
 
                     expect(Object.keys(currentService.services.session.__sessions).length).to.be(0);
-
                     callback();
                   }, 3000);
 
