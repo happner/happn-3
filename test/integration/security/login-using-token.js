@@ -262,15 +262,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   after(function (done) {
 
-    if (happnInstance1) happnInstance1.stop()
+    this.timeout(20000);
+    setTimeout(function(){
+      if (happnInstance1) happnInstance1.stop()
 
-      .then(function () {
-        return happnInstance2.stop();
-      })
-      .then(done)
-      .catch(done);
+        .then(function () {
+          return happnInstance2.stop();
+        })
+        .then(done)
+        .catch(done);
 
-    else done();
+      else done();
+    }, 3000);
   });
 
   var getClient = function (config, callback) {
@@ -338,6 +341,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           if (e) return raiseError(e.toString());
 
+          //console.log('REMOVING:::');
           clientInstance.remove('/test/operations', function (e) {
 
             if (e) return raiseError(e.toString());
@@ -346,7 +350,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
   };
 
-  it('001: logs in with the test client, supplying a public key, we perform a bunch of operations - we remember the token and logout - then login with the token, and test operations', function (done) {
+  it.only('001: logs in with the test client, supplying a public key, we perform a bunch of operations - we remember the token and logout - then login with the token, and test operations', function (done) {
 
     getClient({
       config: {
