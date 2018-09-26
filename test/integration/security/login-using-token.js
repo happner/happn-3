@@ -340,17 +340,16 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }, function (e) {
 
           if (e) return raiseError(e.toString());
-
-          //console.log('REMOVING:::');
           clientInstance.remove('/test/operations', function (e) {
-
             if (e) return raiseError(e.toString());
           });
         });
       });
   };
 
-  it.only('001: logs in with the test client, supplying a public key, we perform a bunch of operations - we remember the token and logout - then login with the token, and test operations', function (done) {
+  it('001: logs in with the test client, supplying a public key, we perform a bunch of operations - we remember the token and logout - then login with the token, and test operations', function (done) {
+
+    this.timeout(20000);
 
     getClient({
       config: {
@@ -384,7 +383,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (e) return done(e);
 
             testOperations(tokenInstance, function (e) {
-
               tryDisconnect(tokenInstance, function () {
                 done(e);
               });

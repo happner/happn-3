@@ -25,6 +25,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.serverInfo = serverInfo || {};
 
     happnClient.socket = socket || {
+      removeAllListeners: function(){
+
+      },
       write: function(message) {
 
       },
@@ -604,12 +607,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.socket.write = function(message) {
     }
 
+    var package = require('../../../package.json')
+
     happnClient.login(function(data) {
       expect(data).to.eql({
         action: 'configure-session',
         eventId: 1,
         data: {
-          protocol: 'happn_2'
+          protocol: 'happn_' + package.protocol
         },
         sessionId: 'test'
       });
@@ -1772,19 +1777,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.off('string', function(err, data){expect(err.toString()).to.eql("Error: handle must be a number"); done();});
   });
 
-  it("tests the __connectionCleanup function throws an error", function(done) {
+  it("tests the __connectionCleanup function will call socket.end correctly if it is mocked.", function(done) {
     var happnClient = mockHappnClient();
-    happnClient.log.warn = function(e) {
-      expect(["socket.end failed in client: TypeError: this.socket.end is not a function",
-              "socket.end failed in client: TypeError: Object #<Object> has no method 'end'"]
-              .indexOf(e) > -1).to.be(true);
-      done();
-    }
-    happnClient.__connectionCleanup();
-
-  })
-it("tests the __connectionCleanup function will call socket.end correctly if it is mocked.", function(done) {
-      var happnClient = mockHappnClient();
     happnClient.socket.end = function() {
       done();
     }
