@@ -13,12 +13,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var happnClient = new HappnClient();
 
     happnClient.__initializeEvents();
-    happnClient.__initializeProperties();
+    happnClient.__initializeState();
     happnClient.log = log || {
       error: function() {}
     };
 
-    happnClient.state = state != null ? state : Constants.CLIENT_STATE.ACTIVE;
+    happnClient.status = state != null ? state : Constants.CLIENT_STATE.ACTIVE;
     happnClient.session = session || {
       id: 'test'
     };
@@ -51,7 +51,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }
     happnClient.initialize(function(err, results) {
       expect(err).to.be(null);
-      expect(results.state).to.equal(Constants.CLIENT_STATE.ACTIVE);
+      expect(results.status).to.equal(Constants.CLIENT_STATE.ACTIVE);
       expect(results.session).to.be(null);
       done();
     });
@@ -276,20 +276,20 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the __initializeProperties function", function(done) {
+  it("tests the __initializeState function", function(done) {
     var happnClient = mockHappnClient();
-    happnClient.__initializeProperties();
-    expect(happnClient.events).to.eql({});
-    expect(happnClient.messageEvents).to.eql({});
-    expect(happnClient.requestEvents).to.eql({});
-    expect(happnClient.currentEventId).to.eql(0);
-    expect(happnClient.currentListenerId).to.eql(0);
-    expect(happnClient.errors).to.eql([]);
-    expect(happnClient.clientType).to.eql('socket');
-    expect(happnClient.__systemMessageHandlers).to.eql([]);
-    expect(happnClient.state).to.eql(Constants.CLIENT_STATE.UNINITIALIZED);
-    expect(happnClient.__ackHandlers).to.eql({});
-    expect(happnClient.eventHandlers).to.eql({});
+    happnClient.__initializeState();
+    expect(happnClient.state.events).to.eql({});
+
+    expect(happnClient.state.requestEvents).to.eql({});
+    expect(happnClient.state.currentEventId).to.eql(0);
+    expect(happnClient.state.currentListenerId).to.eql(0);
+    expect(happnClient.state.errors).to.eql([]);
+    expect(happnClient.state.clientType).to.eql('socket');
+    expect(happnClient.state.systemMessageHandlers).to.eql([]);
+    expect(happnClient.status).to.eql(Constants.CLIENT_STATE.UNINITIALIZED);
+    expect(happnClient.state.ackHandlers).to.eql({});
+    expect(happnClient.state.eventHandlers).to.eql({});
     done();
 
   });
@@ -337,9 +337,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(happnClient.onEvent("MyNewEvent", function(x) {
       console.log(typeof x);
     })).to.eql("MyNewEvent|0");
-    expect(typeof happnClient.eventHandlers["MyEvent"][0]).to.eql('function');
-    expect(typeof happnClient.eventHandlers["MyEvent"][1]).to.eql('function');
-    expect(typeof happnClient.eventHandlers["MyNewEvent"][0]).to.eql('function');
+    expect(typeof happnClient.state.eventHandlers["MyEvent"][0]).to.eql('function');
+    expect(typeof happnClient.state.eventHandlers["MyEvent"][1]).to.eql('function');
+    expect(typeof happnClient.state.eventHandlers["MyNewEvent"][0]).to.eql('function');
     done();
   });
 
@@ -354,8 +354,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     })
     happnClient.offEvent("MyEvent|0");
 
-    expect(happnClient.eventHandlers["MyEvent"][0]).to.be(null);
-    expect(typeof happnClient.eventHandlers["MyEvent"][1]).to.eql('function');
+    expect(happnClient.state.eventHandlers["MyEvent"][0]).to.be(null);
+    expect(typeof happnClient.state.eventHandlers["MyEvent"][1]).to.eql('function');
     done();
   })
 
@@ -635,7 +635,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('tests the handle_end function emits a "connection-ended" event and sets state to disconnected.', function(done) {
+  it('tests the handle_end function emits a "connection-ended" event and sets status to disconnected.', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__attachSession({
       id: "This is a session"
@@ -644,7 +644,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.emit = function(event_type, data) {
       expect(event_type).to.eql("connection-ended");
       expect(data).to.eql("This is a session");
-      expect(this.state).to.eql(Constants.CLIENT_STATE.DISCONNECTED);
+      expect(this.status).to.eql(Constants.CLIENT_STATE.DISCONNECTED);
       done();
     }
     happnClient.handle_end();
@@ -659,7 +659,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         err: {},
         opts: {}
       })
-      expect(this.state).to.eql(Constants.CLIENT_STATE.DISCONNECTED);
+      expect(this.status).to.eql(Constants.CLIENT_STATE.DISCONNECTED);
       done();
     }
 
@@ -671,7 +671,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.emit = function(event_type, data) {
       expect(event_type).to.eql("reconnect-scheduled");
       expect(happnClient.__reconnectSuccessful).to.be(false);
-      expect(this.state).to.eql(Constants.CLIENT_STATE.RECONNECTING);
+      expect(this.status).to.eql(Constants.CLIENT_STATE.RECONNECTING);
       done();
     }
     happnClient.handle_reconnect_scheduled();
@@ -694,7 +694,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }, {
       timeout: 100
     }, "MyEvent|1")
-    expect(typeof happnClient.requestEvents["MyEvent|1"].handleResponse).to.eql("function");
+    expect(typeof happnClient.state.requestEvents["MyEvent|1"].handleResponse).to.eql("function");
     done();
   });
 
@@ -1004,8 +1004,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
 
     happnClient.handle_error(new Error('This is an error'), false);
-    expect(happnClient.errors[0].error.toString()).to.eql("Error: This is an error");
-    expect(happnClient.errors[0].fatal).to.be(false);
+    expect(happnClient.state.errors[0].error.toString()).to.eql("Error: This is an error");
+    expect(happnClient.state.errors[0].fatal).to.be(false);
     done();
   });
 
@@ -1021,8 +1021,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
 
     happnClient.handle_error(new Error('This is an error'), true)
-    expect(happnClient.errors[0].error.toString()).to.eql("Error: This is an error");
-    expect(happnClient.errors[0].fatal).to.be(true);
+    expect(happnClient.state.errors[0].error.toString()).to.eql("Error: This is an error");
+    expect(happnClient.state.errors[0].fatal).to.be(true);
     done();
   });
 
@@ -1417,7 +1417,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   it("tests the handle_data function with one event handler", function(done) {
     var happnClient = mockHappnClient();
 
-    happnClient.events = {
+    happnClient.state.events = {
       "MyEvent|1": [{
         handler: function(data, meta) {
           expect(data).to.eql(message.data);
@@ -1446,7 +1446,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       n++;
       if (n == 2) done();
     };
-    happnClient.events = {
+    happnClient.state.events = {
       "MyEvent|1": [{
           handler: function(data, meta) {
             expect(data).to.eql(message.data);
@@ -1476,13 +1476,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.handle_data("MyEvent|1", message);
   });
 
-  it("tests the __handleSystemMessage function will set state to disconnected if message event key is server-side-disconnect", function(done) {
+  it("tests the __handleSystemMessage function will set status to disconnected if message event key is server-side-disconnect", function(done) {
     var happnClient = mockHappnClient();
     var message = {
       eventKey: 'server-side-disconnect'
     };
     happnClient.__handleSystemMessage(message);
-    expect(happnClient.state).to.eql(Constants.CLIENT_STATE.DISCONNECTED);
+    expect(happnClient.status).to.eql(Constants.CLIENT_STATE.DISCONNECTED);
     done();
   });
 
@@ -1492,7 +1492,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       console.log(x);
     })).to.eql(0);
     happnClient.offSystemMessage(0);
-    expect(happnClient.__systemMessageHandlers.length).to.eql(0);
+    expect(happnClient.state.systemMessageHandlers.length).to.eql(0);
     done();
   });
 
@@ -1600,7 +1600,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       action: 'off',
       eventId: 1,
       options: {
-        referenceId: 123,
+        referenceId:0,
         timeout: 60000
       },
       path: channel,
@@ -1611,18 +1611,19 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       expect(path).to.equal(channel);
       expect(options).to.eql({
-        referenceId: 123,
+        referenceId:0,
         timeout: 60000
       });
       expect(message).to.eql(message1);
       expect(eventId).to.eql(1);
       expect(action).to.eql("off");
+
       callback(null, {
         status: "OK"
       });
     }
 
-    happnClient._remoteOff('/THIS@that', 123, function(err, data) {
+    happnClient._remoteOff('/THIS@that', function(err, data) {
       done();
     });
   });
@@ -1630,46 +1631,39 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   it("tests the _offListener function", function(done) {
     var happnClient = mockHappnClient();
     var path;
-    var refID;
-    happnClient._remoteOff = function(channel, ref, cb) {
+    happnClient._remoteOff = function(channel, listenerRef, cb) {
+      if (typeof listenerRef == 'function') cb = listenerRef;
       path = channel;
-      refID = ref;
       cb();
     }
 
-    happnClient.events = {
+    happnClient.state.refCount = {
+      "A":1,
+      "B":1,
+      "C":1,
+      "D":1
+    };
+
+    happnClient.state.events = {
       "event1": [{
         id: 1,
-        referenceId: "A"
+        eventKey: "A"
       }, {
         id: 2,
-        referenceId: "B"
+        eventKey: "B"
       }, {
         id: 3,
-        referenceId: "C"
+        eventKey: "C"
       }],
       "event2": [{
-        id: 4,
-        referenceId: "D"
-      }, {
         id: 5,
-        referenceId: "E"
-      }, {
-        id: 6,
-        referenceId: "F"
+        eventKey: "D"
       }]
     };
 
     happnClient._offListener(5, function() {
-      expect(refID).to.eql("E");
       expect(path).to.eql("event2");
-      expect(happnClient.events["event2"]).to.eql([{
-        id: 4,
-        referenceId: "D"
-      }, {
-        id: 6,
-        referenceId: "F"
-      }]);
+      expect(happnClient.state.events["event2"]).to.be(undefined);
       done();
     });
   });
@@ -1679,7 +1673,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient._remoteOff = function(channel, callback) {
       callback();
     }
-    happnClient.events = {
+    happnClient.state.events = {
       "/EVENT1@SOMEWHERE": [{
         id: 1,
         referenceId: "A"
@@ -1712,7 +1706,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }]
     };
     happnClient.offPath("SOMEWHERE", function(error, data) {
-      expect(happnClient.events).to.eql({
+      expect(happnClient.state.events).to.eql({
         "event2": [{
           id: 4,
           referenceId: "D"
@@ -1734,7 +1728,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(channel).to.eql('*');
       callback();
     }
-    happnClient.events = {
+    happnClient.state.events = {
       "/EVENT1@SOMEWHERE": [{
         id: 1,
         referenceId: "A"
@@ -1757,7 +1751,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }]
     };
     happnClient.offAll(function() {
-      expect(happnClient.events).to.eql({});
+      expect(happnClient.state.events).to.eql({});
       done();
     });
   });

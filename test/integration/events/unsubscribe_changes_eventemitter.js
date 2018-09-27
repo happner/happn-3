@@ -326,8 +326,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       ])
 
       .spread(function (result1, result2, result3) {
+        console.log('results',result1, result2, result3);
         // unsubscribe from 2nd subscription only
-        return listenerclient.off(result2[0]);
+        return listenerclient.off(result2);
       })
 
       .then(function () {
@@ -379,9 +380,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         //console.log('1,2,3',result1[0], result2[0], result3[0]);
 
-        listenerId1 = result1[0];
-        listenerId2 = result2[0];
-        listenerId3 = result3[0];
+        listenerId1 = result1;
+        listenerId2 = result2;
+        listenerId3 = result3;
 
         // unsubscribe from 2nd subscription only
         return listenerclient.off(listenerId2);

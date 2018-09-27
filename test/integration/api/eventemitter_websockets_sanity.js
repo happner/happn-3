@@ -43,13 +43,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       timeout: 2000
     }, function (e) {
 
-      if (e) console.warn('failed diconnecting test client');
+      if (e) console.warn('failed disconnecting test client');
 
       listenerclient.disconnect({
         timeout: 2000
       }, function (e) {
 
-        if (e) console.warn('failed diconnecting test client');
+        if (e) console.warn('failed disconnecting test client');
 
         happnInstance.stop(done);
       });
@@ -366,7 +366,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
+        expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.be(undefined);
         callback();
 
       }, function (e) {
@@ -375,7 +375,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
+          expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
           //////////////////console.log('on subscribed, about to publish');
 
           //then make the change
@@ -522,14 +522,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
+        expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.be(undefined);
         callback();
 
       }, function (e) {
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
+          expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
 
           ////////////////////////////console.log('on subscribed, about to publish');
 
@@ -611,7 +611,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           //instance of this event - the event listener should have been removed
           ////console.log('listenerclient.events');
           ////console.log(listenerclient.events);
-          expect(listenerclient.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(0);
+          expect(listenerclient.state.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me']).to.be(undefined);
 
           ////console.log(eventData);
 
@@ -629,7 +629,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           if (!e) {
             ////console.log('listenerclient.events, pre');
             ////console.log(listenerclient.events);
-            expect(listenerclient.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(1);
+            expect(listenerclient.state.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(1);
 
             //////////////////console.log('subscribed, about to delete');
 
@@ -855,9 +855,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       checkResults: function checkResults() {
         return new Promise(function (resolve) {
           // path 1 should have no listeners
-          expect(publisherclient.events['/SET@' + path1].length).to.equal(0);
+          expect(publisherclient.state.events['/SET@' + path1]).to.be(undefined);
           // path 2 should still have its listener
-          expect(publisherclient.events['/SET@' + path2].length).to.equal(1);
+          expect(publisherclient.state.events['/SET@' + path2].length).to.equal(1);
           resolve();
         });
       }

@@ -99,7 +99,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
               onPublished: function (e, results) {
 
-                expect(Object.keys(clientInstance2.__ackHandlers).length == 0).to.be(true);
+                expect(Object.keys(clientInstance2.state.ackHandlers).length == 0).to.be(true);
 
                 if (e) return reject(e);
 

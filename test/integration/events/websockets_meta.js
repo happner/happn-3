@@ -103,7 +103,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@' + test_path].length).to.be(1);
+          expect(listenerclient.state.events['/SET@' + test_path].length).to.be(1);
 
           //then make the change
           publisherclient.set(test_path, {

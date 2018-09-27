@@ -99,7 +99,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event/*'].length).to.be(0);
+        expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event/*']).to.be(undefined);
 
         expect(message).to.eql({
           property4: 'property4'

@@ -12,12 +12,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var happnClient = new HappnClient();
 
     happnClient.__initializeEvents();
-    happnClient.__initializeProperties();
+    happnClient.__initializeState();
+
     happnClient.log = log || {
       error:function(){}
     };
 
-    happnClient.state = state != null?state: Constants.CLIENT_STATE.ACTIVE;
+    happnClient.status = state != null?state: Constants.CLIENT_STATE.ACTIVE;
     happnClient.session = session || {id:'test'};
     happnClient.serverInfo = serverInfo || {};
 

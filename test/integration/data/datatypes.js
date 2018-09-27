@@ -318,7 +318,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.events['/SET@' + test_base_url + '/*'].length).to.be(0);
+        expect(listenerclient.state.events['/SET@' + test_base_url + '/*']).to.be(undefined);
 
         expect(message.value == "test string").to.be(true);
 
@@ -328,7 +328,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@' + test_base_url + '/*'].length).to.be(1);
+          expect(listenerclient.state.events['/SET@' + test_base_url + '/*'].length).to.be(1);
           //then make the change
           publisherclient.set(test_base_url + '/' + test_path_end, "test string", null, function (e, result) {
 

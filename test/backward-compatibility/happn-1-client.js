@@ -1,4 +1,4 @@
-describe.only(require('../__fixtures/utils/test_helper').create().testName(__filename), function () {
+xdescribe(require('../__fixtures/utils/test_helper').create().testName(__filename), function () {
 
   var expect = require('expect.js');
   var happn = require('../../lib/index');
@@ -457,7 +457,7 @@ describe.only(require('../__fixtures/utils/test_helper').create().testName(__fil
     });
   });
 
-  it.only('should unsubscribe from a specific event', function (done) {
+  it('should unsubscribe from a specific event', function (done) {
 
     this.timeout(10000);
 
