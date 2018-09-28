@@ -1,4 +1,4 @@
-xdescribe(require('../__fixtures/utils/test_helper').create().testName(__filename), function () {
+describe(require('../__fixtures/utils/test_helper').create().testName(__filename), function () {
 
   var expect = require('expect.js');
   var happn = require('../../lib/index');
@@ -476,8 +476,6 @@ xdescribe(require('../__fixtures/utils/test_helper').create().testName(__filenam
       count: 0
     }, function (message) {
 
-      console.log('on set 1:::', message);
-
       if (!emitted[reference1]) emitted[reference1] = [];
       emitted[reference1].push(message);
 
@@ -485,14 +483,10 @@ xdescribe(require('../__fixtures/utils/test_helper').create().testName(__filenam
 
       reference1 = eventReference1;
 
-      console.log('ref1:::', reference1);
-
       return listenerclient.on(path, {
         event_type: 'set',
         count: 0
       }, function (message) {
-
-        console.log('on set 2:::', message);
 
         if (!emitted[reference2]) emitted[reference2] = [];
         emitted[reference2].push(message);
@@ -511,15 +505,12 @@ xdescribe(require('../__fixtures/utils/test_helper').create().testName(__filenam
         }).then(function () {
           return listenerclient.set(path, {test: 'data3'});
         }).then(function (result) {
-          console.log('set again:::', result);
           setTimeout(function(){
             expect(emitted[reference1].length).to.be(3);
             expect(emitted[reference2].length).to.be(2);
             done();
           }, 2000)
-
         }).catch(done);
-
       });
     });
   });
@@ -784,17 +775,9 @@ xdescribe(require('../__fixtures/utils/test_helper').create().testName(__filenam
 
       setTimeout(function () {
 
-        publisherclient.off('/1_eventemitter_embedded_sanity/*', function (e) {
-
-          expect(e.toString()).to.be('Error: handle must be a number');
-
-          publisherclient.off(null, function (e) {
-
-            expect(e.toString()).to.be('Error: handle cannot be null');
-
-            publisherclient.off(currentEventId, done);
-
-          });
+        publisherclient.off(null, function (e) {
+          expect(e.toString()).to.be('Error: handle or callback cannot be null');
+          publisherclient.off(currentEventId, done);
         });
       }, 1500);
     });
@@ -868,13 +851,10 @@ xdescribe(require('../__fixtures/utils/test_helper').create().testName(__filenam
             expect(message.test).to.be("data1");
             callback();
           }
-
-
         }, function (e) {
           if (e) return callback(e);
         });
       });
     });
   });
-
 });

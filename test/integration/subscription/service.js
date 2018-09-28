@@ -493,11 +493,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
+  var happnInstance;
+  var happnClient;
+
+  after('it kills to client and server', function(done){
+    if (happnClient) happnClient.disconnect(function() {
+      happnInstance.stop(done);
+    });
+    else done();
+  });
+
   it('starts up an actual happn-3 instance, does a bunch of ons and sets', function(done) {
-
-    var happnInstance;
-
-    var happnClient;
 
     var service = require('../../..').service;
 
@@ -584,11 +590,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           });
         });
       }).then(function() {
-
-        happnClient.disconnect(function() {
-          happnInstance.stop(done);
-        });
+        done();
       })
-      .catch(done);
+      .catch(function(e){
+        done(e);
+      });
   });
 });
