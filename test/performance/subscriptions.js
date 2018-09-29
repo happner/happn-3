@@ -101,7 +101,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       async.each(searchPaths, function(randomPath, randomPathCB){
         client.set(randomPath, {
           counter:counter++
-        }, {noStore:NOSTORE, consistency: CONSISTENCY}, randomPathCB);
+        }, {noStore:NOSTORE, consistency: CONSISTENCY, onPublished: function(){}}, randomPathCB);
       }, function(e){
         if (e) return done(e);
         console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');

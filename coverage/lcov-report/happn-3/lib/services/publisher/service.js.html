@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for happn-3/lib/services/publisher/service.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">happn-3/lib/services/publisher/</a> service.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">89.61% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>69/77</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">76.92% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>20/26</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">92.86% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>13/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">97.1% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>67/69</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">185×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">185×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5795×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5795×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5795×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5793×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5789×</span>
+<span class="cline-any cline-yes">5789×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5799×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5799×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5799×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5799×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5799×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5793×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5789×</span>
+<span class="cline-any cline-yes">5789×</span>
+<span class="cline-any cline-yes">5789×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var path = require('path'),
+  util = require('util'),
+  EventEmitter = require('events').EventEmitter,
+  async = require('async'),
+  Publication = require('./publication'),
+  CONSISTENCY = require('../../../').constants.CONSISTENCY,
+  constants = require('../../constants'),
+  Promise = require('bluebird');
+&nbsp;
+function PublisherService(opts) {
+&nbsp;
+  this.log = opts.logger.createLogger('Publisher');
+&nbsp;
+  this.log.$$TRACE('construct(%j)', opts);
+}
+&nbsp;
+// Enable subscription to key lifecycle events
+util.inherits(PublisherService, EventEmitter);
+&nbsp;
+PublisherService.prototype.stats = stats;
+PublisherService.prototype.processAcknowledge = processAcknowledge;
+PublisherService.prototype.initialize = initialize;
+PublisherService.prototype.performPublication = performPublication;
+PublisherService.prototype.processPublish = processPublish;
+&nbsp;
+PublisherService.prototype.__emitPublicationLog = __emitPublicationLog;
+PublisherService.prototype.__recipientAcknowledge = __recipientAcknowledge;
+&nbsp;
+function stats (opts) {
+  return JSON.parse(JSON.stringify(this.__stats));
+}
+&nbsp;
+function processAcknowledge (message) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  return new Promise(function(resolve, reject){
+    _this.__recipientAcknowledge(message, function (e, message) {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return _this.errorService.handleSystem(new Error('processAcknowledge failed', e), 'PublisherService', constants.ERROR_SEVERITY.MEDIUM, <span class="fstat-no" title="function not covered" >function (e) {</span></span>
+<span class="cstat-no" title="statement not covered" >        reject(e);</span>
+      });
+      resolve(message);
+    });
+  });
+}
+&nbsp;
+function initialize (config, callback) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  try {
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!config) <span class="cstat-no" title="statement not covered" >config = {};</span>
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (config.timeout) <span class="cstat-no" title="statement not covered" >config.timeout = false;</span>
+&nbsp;
+    _this.__stats = {
+      attempted: 0,
+      failed: 0,
+      unacknowledged: 0
+    };
+&nbsp;
+    _this.errorService = _this.happn.services.error;
+&nbsp;
+    _this.dataService = _this.happn.services.data;
+&nbsp;
+    _this.securityService = _this.happn.services.security;
+&nbsp;
+    if (!config.publicationOptions) config.publicationOptions = {};
+&nbsp;
+    if (!config.publicationOptions.acknowledgeTimeout) config.publicationOptions.acknowledgeTimeout = 60000; //1 minute
+&nbsp;
+    //we need to keep these, as they accept incoming ack requests
+    _this.__unacknowledgedPublications = {};
+&nbsp;
+    _this.config = config;
+&nbsp;
+  } catch (e) {
+<span class="cstat-no" title="statement not covered" >    callback(e);</span>
+  }
+&nbsp;
+  callback();
+}
+&nbsp;
+function performPublication (publication, callback) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  publication.publish(_this.happn.services.queue, function (e) {
+&nbsp;
+    if (publication.options.consistency == CONSISTENCY.DEFERRED)
+      return _this.__emitPublicationLog(publication, e, callback);
+&nbsp;
+    if (publication.options.consistency == CONSISTENCY.ACKNOWLEDGED) {
+      delete _this.__unacknowledgedPublications[publication.id];
+      return _this.__emitPublicationLog(publication, e, callback);
+    }
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return callback(e); </span>//happens after the DEFERRED, as the error is handled there as well
+    callback(null, publication.message);
+  });
+}
+&nbsp;
+function __emitPublicationLog (publication, e, callback) {
+&nbsp;
+  // not logging 'happn.queue.outbound.time' for this use of outbound queue?
+  return this.happn.services.queue.pushOutbound(publication.resultsMessage(e), callback);
+}
+&nbsp;
+function __recipientAcknowledge (message, callback) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!_this.__unacknowledgedPublications[message.request.data]) <span class="cstat-no" title="statement not covered" >return callback(new Error('publication timed out'));</span>
+  _this.__unacknowledgedPublications[message.request.data].acknowledge(message.request.sessionId);
+  callback(null, message);
+}
+&nbsp;
+function processPublish (message) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  return new Promise(function(resolve, reject){
+&nbsp;
+    var publication = Publication.create(message, _this.config.publicationOptions);
+&nbsp;
+    message.publication = {
+      id: publication.id
+    };
+&nbsp;
+    if (publication.options.consistency == CONSISTENCY.QUEUED || publication.options.consistency == CONSISTENCY.DEFERRED) {
+      _this.happn.services.queue.pushPublication(publication);
+      return resolve(message);
+    }
+&nbsp;
+    if (publication.options.consistency == CONSISTENCY.ACKNOWLEDGED) {
+      _this.__unacknowledgedPublications[publication.id] = publication;
+      _this.happn.services.queue.pushPublication(publication);
+      return resolve(message);
+    }
+&nbsp;
+    //all other types of publications get processed up to whatever point consistency is set to - then response happens
+    // _this.happn.services.queue.pushPublication(publication, callback);
+    _this.happn.services.queue.pushPublication(publication, function (e, publication) {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return reject(e);</span>
+      resolve(message);
+    });
+  });
+}
+&nbsp;
+module.exports = PublisherService;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Sep 28 2018 13:22:12 GMT+0200 (SAST)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

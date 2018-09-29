@@ -1357,17 +1357,21 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   it("tests the delegate_handover function when delegate runcount > count", function(done) {
+    this.timeout(5000);
+
     var happnClient = mockHappnClient();
-    happnClient.__acknowledge = function(data) {
-      expect(data).to.eql(message);
-      done();
-    }
+
     var delegate = {
       count: 1,
-      runcount: 2
+      runcount: 2,
+      handler: function(data, meta) {
+        done(new Error('unexpected'));
+      }
     };
+
     var message = "This is a message";
     happnClient.delegate_handover(message, delegate);
+    setTimeout(done, 2000);
   });
 
   it("tests the delegate_handover function when runcount will equal count after 1 iteration", function(done) {

@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for happn-3/lib/services/queue/service.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">happn-3/lib/services/queue/</a> service.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">86% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>86/100</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">76.47% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>26/34</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">66.67% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>10/15</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">85.88% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>73/85</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">183×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">183×</span>
+<span class="cline-any cline-yes">183×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">183×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">183×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">183×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">88×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">88×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">137×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">173×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">173×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">173×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">173×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">91×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">91×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">91×</span>
+<span class="cline-any cline-yes">91×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">91×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">91×</span>
+<span class="cline-any cline-yes">91×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">88×</span>
+<span class="cline-any cline-yes">88×</span>
+<span class="cline-any cline-yes">88×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var util = require('util'),
+  EventEmitter = require('events').EventEmitter,
+  Promise = require('bluebird'),
+  async = require('async');
+&nbsp;
+module.exports = QueueService;
+&nbsp;
+function QueueService(opts) {
+&nbsp;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!opts) <span class="cstat-no" title="statement not covered" >opts = {};</span>
+&nbsp;
+  this.log = opts.logger.createLogger('Queue');
+  this.log.$$TRACE('construct(%j)', opts);
+&nbsp;
+  EventEmitter.call(this);
+&nbsp;
+  // for calculating queue messages per second at time of calling stats()
+  this.lastStatsCalledAt = Date.now();
+&nbsp;
+  this.statsInternal = {
+    publication: 0,
+    inbound: 0,
+    outbound: 0,
+    system: 0,
+    failures: 0
+  };
+}
+&nbsp;
+util.inherits(QueueService, EventEmitter);
+&nbsp;
+QueueService.prototype.stats = function () {
+&nbsp;
+  var now = Date.now();
+  var seconds = (now - this.lastStatsCalledAt) / 1000;
+  this.lastStatsCalledAt = now;
+&nbsp;
+  if (this.__inboundQueue != null) this.statsInternal.inbound = {
+    length: this.__inboundQueue.length(),
+    running: this.__inboundQueue.running(),
+    rate: this.__inboundQueue.__count / seconds
+  };
+  if (this.__outboundQueue != null) this.statsInternal.outbound = {
+    length: this.__outboundQueue.length(),
+    running: this.__outboundQueue.running(),
+    rate: this.__outboundQueue.__count / seconds
+  };
+  if (this.__systemQueue != null) this.statsInternal.system = {
+    length: this.__systemQueue.length(),
+    running: this.__systemQueue.running(),
+    rate: this.__systemQueue.__count / seconds
+  };
+  if (this.__publicationQueue != null) this.statsInternal.publication = {
+    length: this.__publicationQueue.length(),
+    running: this.__publicationQueue.running(),
+    rate: this.__publicationQueue.__count / seconds
+  };
+&nbsp;
+  if (this.__inboundQueue != null) this.__inboundQueue.__count = 0;
+  if (this.__outboundQueue != null) this.__outboundQueue.__count = 0;
+  if (this.__systemQueue != null) this.__systemQueue.__count = 0;
+  if (this.__publicationQueue != null) this.__publicationQueue.__count = 0;
+&nbsp;
+  return this.statsInternal;
+};
+&nbsp;
+QueueService.prototype.inboundDrain = function () {
+  this.emit('inbound-queue-empty');
+};
+&nbsp;
+QueueService.prototype.outboundDrain = <span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >  this.emit('outbound-queue-empty');</span>
+};
+&nbsp;
+QueueService.prototype.outboundDrain = <span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >  this.emit('outbound-queue-empty');</span>
+};
+&nbsp;
+QueueService.prototype.systemDrain = <span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >  this.emit('system-queue-empty');</span>
+};
+&nbsp;
+QueueService.prototype.publicationDrain = function () {
+  this.emit('publication-queue-empty');
+};
+&nbsp;
+QueueService.prototype.stop = Promise.promisify(function (options, callback) {
+  callback();
+});
+&nbsp;
+QueueService.prototype.initialize = Promise.promisify(function (config, callback) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!config) <span class="cstat-no" title="statement not covered" >config = {};</span>
+&nbsp;
+  this.config = config;
+&nbsp;
+  if (this.config.mode !== 'queue') { //no queue or quality of service
+&nbsp;
+    this.pushInbound = Promise.promisify(this.happn.services.protocol.processMessageIn.bind(this.happn.services.protocol));
+&nbsp;
+    this.pushOutbound = Promise.promisify(this.happn.services.protocol.processMessageOut.bind(this.happn.services.protocol));
+&nbsp;
+    this.pushSystem = Promise.promisify(this.happn.services.protocol.processSystem.bind(this.happn.services.protocol));
+&nbsp;
+    this.pushPublication = Promise.promisify(this.happn.services.publisher.performPublication.bind(this.happn.services.publisher));
+&nbsp;
+  } else {
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!this.config.concurrency) this.config.concurrency = 100;
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!this.config.systemConcurrency) this.config.systemConcurrency = 1; //system events are concurrent
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!this.config.concurrencyIn) this.config.concurrencyIn = this.config.concurrency;
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!this.config.concurrencyOut) this.config.concurrencyOut = this.config.concurrency;
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!this.config.concurrencyPublisher) this.config.concurrencyPublisher = this.config.concurrency  * 10;
+&nbsp;
+    //GET SET ON DELETE
+    this.__inboundQueue = async.queue(this.happn.services.protocol.processMessageIn.bind(this.happn.services.protocol), this.config.concurrencyIn);
+    this.__inboundQueue.__count = 0;
+&nbsp;
+    //outbound writes to recipients via a publication
+    this.__outboundQueue = async.queue(this.happn.services.protocol.processMessageOut.bind(this.happn.services.protocol), this.config.concurrencyOut);
+    this.__outboundQueue.__count = 0;
+&nbsp;
+    //publications
+    this.__publicationQueue = async.queue(this.happn.services.publisher.performPublication.bind(this.happn.services.publisher), this.config.concurrencyPublisher);
+    this.__publicationQueue.__count = 0;
+&nbsp;
+    //system events - disconnect/reconnect etc.
+    this.__systemQueue = async.queue(this.happn.services.protocol.processSystem.bind(this.happn.services.protocol), this.config.systemConcurrency);
+    this.__systemQueue.__count = 0;
+&nbsp;
+    this.__inboundQueue.drain = this.inboundDrain.bind(this);
+&nbsp;
+    this.__outboundQueue.drain = this.outboundDrain.bind(this);
+&nbsp;
+    this.__publicationQueue.drain = this.publicationDrain.bind(this);
+&nbsp;
+    this.__systemQueue.drain = this.systemDrain.bind(this);
+  }
+&nbsp;
+  return callback();
+&nbsp;
+});
+&nbsp;
+QueueService.prototype.pushInbound = function (message, callback) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  this.__inboundQueue.__count++;
+&nbsp;
+  return new Promise(function(resolve, reject){
+    _this.__inboundQueue.push(message, function (e) {
+&nbsp;
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (e) {
+<span class="cstat-no" title="statement not covered" >        _this.stats.failures++;</span>
+<span class="cstat-no" title="statement not covered" >        _this.emit('queue-failure', {</span>
+          message: message,
+          error: e
+        });
+<span class="cstat-no" title="statement not covered" >        return reject(e);</span>
+      }
+      _this.emit('inbound-job-queued', message);
+      resolve(message);
+    });
+  });
+};
+&nbsp;
+QueueService.prototype.pushOutbound = Promise.promisify(<span class="fstat-no" title="function not covered" >function (message, callback) {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  this.__outboundQueue.__count++;</span>
+<span class="cstat-no" title="statement not covered" >  this.__outboundQueue.push(message, callback);</span>
+<span class="cstat-no" title="statement not covered" >  this.emit('outbound-job-queued', message);</span>
+&nbsp;
+});
+&nbsp;
+QueueService.prototype.pushSystem = Promise.promisify(<span class="fstat-no" title="function not covered" >function (message, callback) {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  this.__systemQueue.__count++;</span>
+<span class="cstat-no" title="statement not covered" >  this.__systemQueue.push(message, callback);</span>
+<span class="cstat-no" title="statement not covered" >  this.emit('system job queued', message);</span>
+&nbsp;
+});
+&nbsp;
+QueueService.prototype.pushPublication = Promise.promisify(function (publication, callback) {
+&nbsp;
+  this.__publicationQueue.__count++;
+  this.__publicationQueue.push(publication, callback);
+  this.emit('publication job queued', publication);
+&nbsp;
+});
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Sep 28 2018 13:22:12 GMT+0200 (SAST)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

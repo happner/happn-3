@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for happn-3/lib/services/security/checkpoint.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">happn-3/lib/services/security/</a> checkpoint.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">93.07% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>188/202</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">84.4% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>92/109</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>29/29</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">98.79% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>163/165</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">214×</span>
+<span class="cline-any cline-yes">214×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">214×</span>
+<span class="cline-any cline-yes">8452×</span>
+<span class="cline-any cline-yes">8452×</span>
+<span class="cline-any cline-yes">8374×</span>
+<span class="cline-any cline-yes">8374×</span>
+<span class="cline-any cline-yes">8374×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8374×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4426×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4426×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4426×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4426×</span>
+<span class="cline-any cline-yes">4426×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4426×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7283×</span>
+<span class="cline-any cline-yes">8198×</span>
+<span class="cline-any cline-yes">7268×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7328×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11596×</span>
+<span class="cline-any cline-yes">3667×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3674×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8345×</span>
+<span class="cline-any cline-yes">3616×</span>
+<span class="cline-any cline-yes">3614×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">60×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4232×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4232×</span>
+<span class="cline-any cline-yes">4192×</span>
+<span class="cline-any cline-yes">4192×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4232×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4232×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4226×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4220×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">712×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">712×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">712×</span>
+<span class="cline-any cline-yes">5932×</span>
+<span class="cline-any cline-yes">5932×</span>
+<span class="cline-any cline-yes">4232×</span>
+<span class="cline-any cline-yes">4232×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5920×</span>
+<span class="cline-any cline-yes">1413×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">712×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">712×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7327×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7327×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7327×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">708×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">708×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">733×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">733×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">733×</span>
+<span class="cline-any cline-yes">5922×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">733×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">707×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">707×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">707×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">707×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7324×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7324×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7306×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">259×</span>
+<span class="cline-any cline-yes">259×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7842×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7842×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7841×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7841×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7846×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7846×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7846×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7846×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7846×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7842×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7842×</span>
+<span class="cline-any cline-yes">7842×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7838×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7838×</span>
+<span class="cline-any cline-yes">7838×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7838×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7836×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7827×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">7864×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7864×</span>
+<span class="cline-any cline-yes">7864×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7864×</span>
+<span class="cline-any cline-yes">7324×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7323×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7322×</span>
+<span class="cline-any cline-yes">7322×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7322×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">540×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var LRU = require("lru-cache");
+var async = require("async");
+var Promise = require("bluebird");
+var handlebars = require('handlebars');
+&nbsp;
+module.exports = CheckPoint;
+&nbsp;
+function CheckPoint(opts) {
+&nbsp;
+  this.log = opts.logger.createLogger('CheckPoint');
+  this.log.$$TRACE('construct(%j)', opts);
+&nbsp;
+  String.prototype.count = function(chr) {
+    var count = 0, first = this.indexOf(chr);
+    if (first == -1) return 0;// return 0 if there are no occurences
+    c = chr.charAt(0); // we save some time here
+    for(var i = first; i &lt; this.length; ++i)
+        <span class="missing-if-branch" title="else path not taken" >E</span>if(c === this.charAt(i)) ++count;
+&nbsp;
+    return count;
+  };
+}
+&nbsp;
+CheckPoint.prototype.clearCaches = function (effectedSessions) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  return new Promise(function (resolve, reject) {
+&nbsp;
+    try {
+&nbsp;
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (_this.__cache_checkpoint_permissionset)  _this.__cache_checkpoint_permissionset.clear();
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (_this.__cache_checkpoint_authorization)  _this.__cache_checkpoint_authorization.clear();
+&nbsp;
+      resolve(effectedSessions); //passing effected sessions through
+    } catch (e) {
+<span class="cstat-no" title="statement not covered" >      reject(e);</span>
+    }
+  });
+};
+&nbsp;
+CheckPoint.prototype.__authorizedAction = function (action, permission) {
+&nbsp;
+  for (var permissableActionIndex in permission.actions) {
+    if (permission.actions[permissableActionIndex] == action || permission.actions[permissableActionIndex] == '*')
+      return true;
+  }
+&nbsp;
+  return false;
+};
+&nbsp;
+CheckPoint.prototype.__authorized = function (permissionSet, path, action) {
+&nbsp;
+  for (var permissionPath in permissionSet.explicit) {
+&nbsp;
+    if (permissionPath == path) {
+      if (this.__authorizedAction(action, permissionSet.explicit[permissionPath])) return true;
+    }
+  }
+&nbsp;
+  for (var wildPermissionPath in permissionSet.wildcard) {
+&nbsp;
+    if (this.securityService.happn.services.utils.wildcardMatch(wildPermissionPath, path)) {
+      if (this.__authorizedAction(action, permissionSet.wildcard[wildPermissionPath]))
+        return true;
+    }
+  }
+&nbsp;
+  return false;
+};
+&nbsp;
+CheckPoint.prototype.__compilePermissionsTemplate = function(permissionPath, identity){
+&nbsp;
+  var cachedTemplate = this.__cache_compiled_permissions_templates.getSync(permissionPath);
+&nbsp;
+  if (!cachedTemplate){
+    cachedTemplate = handlebars.compile(permissionPath, {strict: true});
+    this.__cache_compiled_permissions_templates.setSync(permissionPath, cachedTemplate, {clone: false});
+  }
+&nbsp;
+  try{
+&nbsp;
+    var replacedPath = cachedTemplate(identity);
+    //prevents any exploit where the session data is updated with a * value
+    if (replacedPath.count('*') &gt; permissionPath.count('*')) {
+      this.log.warn('illegal promotion of permissions via permissions template, permissionPath' + permissionPath + ', replaced path: ' + replacedPath);
+      return null;
+    }
+    return replacedPath;
+  }catch(e){
+    this.log.warn('missing data for permissions template: ' + permissionPath);
+    return null;
+  }
+};
+&nbsp;
+CheckPoint.prototype.__createPermissionSet = function (permissions, identity) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  var permissionSet = {
+    explicit: {},
+    wildcard: {}
+  };
+&nbsp;
+  for (var rawPath in permissions) {
+    var templatedPath = rawPath.toString();
+    if (rawPath.indexOf('{{') &gt; -1) {
+      templatedPath = this.__compilePermissionsTemplate(rawPath, identity);
+      if (templatedPath == null) continue;//we skip templated paths that dont have matching properties in the identity
+    }
+&nbsp;
+    if (templatedPath.indexOf('*') &gt; -1) permissionSet.wildcard[templatedPath] = permissions[rawPath];
+    else permissionSet.explicit[templatedPath] = permissions[rawPath];
+  }
+  permissionSet.wildcard = _this.securityService.happn.services.utils.wildcardAggregatePermissions(permissionSet.wildcard);
+&nbsp;
+  return permissionSet;
+};
+&nbsp;
+CheckPoint.prototype.__loadPermissionSet = function (identity, callback) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  var permissionSet = _this.__cache_checkpoint_permissionset.getSync(identity.permissionSetKey);
+&nbsp;
+  if (permissionSet) return callback(null, permissionSet);
+&nbsp;
+  var permissions = {};
+&nbsp;
+  async.each(Object.keys(identity.user.groups), function (groupName, eachCB) {
+&nbsp;
+    _this.securityService.groups.getGroup(groupName, {}, function (e, group) {
+&nbsp;
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return eachCB(e);</span>
+&nbsp;
+      for (var permissionPath in group.permissions)
+        permissions[permissionPath] = group.permissions[permissionPath];
+&nbsp;
+      eachCB();
+    });
+&nbsp;
+  }, function (e) {
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return callback(e);</span>
+&nbsp;
+    permissionSet = _this.__createPermissionSet(permissions, identity);
+&nbsp;
+    _this.__cache_checkpoint_permissionset.setSync(identity.permissionSetKey, permissionSet, {clone:false});
+&nbsp;
+    callback(null, permissionSet);
+  });
+};
+&nbsp;
+CheckPoint.prototype.__constructPermissionSet = function (session, callback) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  if (session.isToken) { //we are dealing with a decoded token, re-fetch the user
+&nbsp;
+    _this.securityService.users.getUser(session.username, function (e, user) {
+&nbsp;
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return callback(e);</span>
+&nbsp;
+      if (user == null) return callback(_this.errorService.AccessDeniedError('user ' + session.username + ' has been deleted or does not exist'));
+&nbsp;
+      _this.__loadPermissionSet({
+        id: session.id,
+        user: user,
+        permissionSetKey: _this.securityService.generatePermissionSetKey(user)
+      }, callback);
+    });
+  } else {
+    _this.__loadPermissionSet(session, callback);
+  }
+};
+&nbsp;
+CheckPoint.prototype.initialize = function (config, securityService, callback) {
+&nbsp;
+  try {
+&nbsp;
+    this.config = config;
+&nbsp;
+    this.securityService = securityService;
+    this.cacheService = this.happn.services.cache;
+    this.errorService = this.happn.services.error;
+    this.sessionService = this.happn.services.session;
+&nbsp;
+    if (!config.__cache_checkpoint_authorization) config.__cache_checkpoint_authorization = {
+      max: 2500,
+      maxAge: 0
+    };
+&nbsp;
+    if (!config.__cache_compiled_permissions_templates) config.__cache_compiled_permissions_templates = {
+      max: 2500,
+      maxAge: 0
+    };
+&nbsp;
+    if (!config.__cache_checkpoint_permissionset) config.__cache_checkpoint_permissionset = config.__cache_checkpoint_authorization;
+&nbsp;
+    if (!config.expiry_grace) config.expiry_grace = 60; //default expiry grace of 1 minute
+&nbsp;
+    if (!config.groupPermissionsPolicy) config.groupPermissionsPolicy = 'most_restrictive';
+&nbsp;
+    this.__cache_checkpoint_permissionset = this.cacheService.new('checkpoint_cache_permissionset', {
+      type: 'LRU',
+      cache: config.__cache_checkpoint_permissionset
+    });
+&nbsp;
+    this.__cache_checkpoint_authorization = this.cacheService.new('checkpoint_cache_authorization', {
+      type: 'LRU',
+      cache: config.__cache_checkpoint_authorization
+    });
+&nbsp;
+    this.__cache_compiled_permissions_templates = this.cacheService.new('checkpoint_compiled_permissions_templates', {
+      type: 'LRU',
+      cache: config.__cache_compiled_permissions_templates
+    });
+&nbsp;
+    this.__checkpoint_usage_limit = this.cacheService.new('checkpoint_usage_limit');
+    this.__checkpoint_inactivity_threshold = this.cacheService.new('checkpoint_inactivity_threshold');
+&nbsp;
+    this.sessionService.on('client-disconnect', function (sessionId) {
+&nbsp;
+      this.__checkpoint_usage_limit.remove(sessionId);
+      this.__checkpoint_inactivity_threshold.remove(sessionId);
+    }.bind(this));
+&nbsp;
+    callback();
+  } catch (e) {
+<span class="cstat-no" title="statement not covered" >    callback(e);</span>
+  }
+};
+&nbsp;
+CheckPoint.prototype.__checkInactivity = function (session, policy, callback) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  if (policy.inactivity_threshold &lt;= 0 || policy.inactivity_threshold == Infinity || policy.inactivity_threshold == null || policy.inactivity_threshold == undefined) return callback(null, true);
+&nbsp;
+  var now = Date.now();
+&nbsp;
+  var doSet = function () {
+    _this.__checkpoint_inactivity_threshold.set(session.id, now, {
+      ttl: policy.inactivity_threshold
+    }, function (e) {
+&nbsp;
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return callback(e);</span>
+      else callback(null, true);
+    });
+  };
+&nbsp;
+  _this.__checkpoint_inactivity_threshold.get(session.id, function (e, value) {
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return callback(e);</span>
+&nbsp;
+    if (value == null || value == undefined) {
+      if (now - session.timestamp &gt; policy.inactivity_threshold) return callback(null, false);
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (now - session.timestamp &lt; policy.inactivity_threshold) doSet();
+    } else {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (now - value &gt; policy.inactivity_threshold) <span class="cstat-no" title="statement not covered" >return callback(null, false);</span>
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (now - value &lt; policy.inactivity_threshold) doSet();
+    }
+  });
+};
+&nbsp;
+CheckPoint.prototype.__checkUsageLimit = function (session, policy, callback) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  if (policy.usage_limit == null || policy.usage_limit &lt;= 0 || policy.usage_limit == Infinity) return callback(null, true);
+&nbsp;
+  var ttl = session.ttl - (Date.now() - session.timestamp); //calculate how much longer our session is valid for
+&nbsp;
+  _this.__checkpoint_usage_limit.get(session.id, {
+    default: {
+      value: 0,
+      ttl: ttl
+    }
+  }, function (e, value) {
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return callback(e);</span>
+&nbsp;
+    if (value &gt;= policy.usage_limit) return callback(null, false);
+    else {
+      _this.__checkpoint_usage_limit.increment(session.id, 1, function (e) {
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return callback(e);</span>
+        callback(null, true);
+      });
+    }
+  });
+};
+&nbsp;
+CheckPoint.prototype.__checkSessionPermissions = function (policy, path, action, session) {
+  var permissionSet = this.__createPermissionSet(policy.permissions, session);
+&nbsp;
+  return this.__authorized(permissionSet, path, action);
+};
+&nbsp;
+CheckPoint.prototype._authorizeSession = function (session, path, action, callback) {
+&nbsp;
+  try {
+&nbsp;
+    var _this = this;
+&nbsp;
+    var policy = session.policy[session.type];
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!policy) <span class="cstat-no" title="statement not covered" >return callback(null, false, 'no policy for session type: ' + session.type);</span>
+&nbsp;
+    if (policy.ttl &gt; 0 &amp;&amp; (Date.now()) &gt; session.timestamp + policy.ttl) return callback(null, false, 'expired session token');
+&nbsp;
+    _this.__checkInactivity(session, policy, function (e, ok) {
+&nbsp;
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return callback(e);</span>
+      if (!ok) return callback(null, false, 'session inactivity threshold reached');
+&nbsp;
+      _this.__checkUsageLimit(session, policy, function (e, ok) {
+&nbsp;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return callback(e);</span>
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (!ok) <span class="cstat-no" title="statement not covered" >return callback(null, false, 'session usage limit reached');</span>
+&nbsp;
+        if (policy.permissions) {
+&nbsp;
+          // this allows the caller to circumvent any further calls through the security layer
+          // , idea here is that we can have tokens that have permission to do a very specific thing
+          // but we also allow for a fallback to the original session users permissions
+          var passthrough = _this.__checkSessionPermissions(policy, path, action, session);
+&nbsp;
+&nbsp;
+          if (passthrough) return callback(null, true, null, true);
+          else return callback(null, false, 'token permissions limited');
+        }
+&nbsp;
+        //passthrough happens, as a token has been used to do a login re-attempt
+        if (action === 'login') return callback(null, true, null, true);
+&nbsp;
+        callback(null, true);
+      });
+    });
+&nbsp;
+  } catch (e) {
+    callback(e);
+  }
+};
+&nbsp;
+CheckPoint.prototype._authorizeUser = function (session, path, action, callback) {
+  var _this = this;
+&nbsp;
+  var permissionCacheKey = session.id + path + action;
+  var authorized = this.__cache_checkpoint_authorization.getSync(permissionCacheKey);
+&nbsp;
+  if (authorized == null)
+    return _this.__constructPermissionSet(session, function (e, permissionSet) {
+&nbsp;
+      if (e) return callback(e);
+&nbsp;
+      authorized = _this.__authorized(permissionSet, path, action);
+      _this.__cache_checkpoint_authorization.setSync(permissionCacheKey, authorized, {clone:false});
+&nbsp;
+      return callback(null, authorized);
+    });
+&nbsp;
+  return callback(null, authorized);
+};
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Sep 28 2018 13:22:12 GMT+0200 (SAST)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

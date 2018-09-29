@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for happn-3/lib/services/protocol/service.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">happn-3/lib/services/protocol/</a> service.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">89.47% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>119/133</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">82.14% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>46/56</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">88.46% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>23/26</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">92.98% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>106/114</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">183×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">183×</span>
+<span class="cline-any cline-yes">183×</span>
+<span class="cline-any cline-yes">183×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">104×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10696×</span>
+<span class="cline-any cline-yes">10696×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10696×</span>
+<span class="cline-any cline-yes">10696×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10695×</span>
+<span class="cline-any cline-yes">5952×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5938×</span>
+<span class="cline-any cline-yes">187×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5938×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5938×</span>
+<span class="cline-any cline-yes">5798×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4743×</span>
+<span class="cline-any cline-yes">1391×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1387×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3352×</span>
+<span class="cline-any cline-yes">1351×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1345×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2001×</span>
+<span class="cline-any cline-yes">1112×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">889×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">886×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">589×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">292×</span>
+<span class="cline-any cline-yes">281×</span>
+<span class="cline-any cline-yes">125×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10687×</span>
+<span class="cline-any cline-yes">10687×</span>
+<span class="cline-any cline-yes">10687×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10687×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10631×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1272×</span>
+<span class="cline-any cline-yes">1272×</span>
+<span class="cline-any cline-yes">1272×</span>
+<span class="cline-any cline-yes">1272×</span>
+<span class="cline-any cline-yes">1272×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-yes">348×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">696×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">696×</span>
+<span class="cline-any cline-yes">696×</span>
+<span class="cline-any cline-yes">696×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var util = require('util'),
+  EventEmitter = require('events').EventEmitter,
+  Promise = require('bluebird'),
+  async = require('async'),
+  constants = require('../../constants');
+&nbsp;
+module.exports = ProtocolService;
+&nbsp;
+function ProtocolService(opts) {
+&nbsp;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!opts) <span class="cstat-no" title="statement not covered" >opts = {};</span>
+&nbsp;
+  this.log = opts.logger.createLogger('Protocol');
+  this.log.$$TRACE('construct(%j)', opts);
+  this.__stackCache = {};
+}
+&nbsp;
+// Enable subscription to key lifecycle events
+util.inherits(ProtocolService, EventEmitter);
+&nbsp;
+ProtocolService.prototype.initialize = initialize;
+ProtocolService.prototype.stats = stats;
+ProtocolService.prototype.processSystem = processSystem;
+ProtocolService.prototype.processInboundStack = processInboundStack;
+ProtocolService.prototype.processLayers = processLayers;
+ProtocolService.prototype.processMessageIn = processMessageIn;
+ProtocolService.prototype.processMessageOut = processMessageOut;
+ProtocolService.prototype.processMessageInLayers = processMessageInLayers;
+ProtocolService.prototype.processMessageOutLayers = processMessageOutLayers;
+&nbsp;
+function stats () {
+  return {
+    protocols: Object.keys(this.config.protocols)
+  };
+}
+&nbsp;
+//takes outbound system requests and transforms them into ones the client understands
+<span class="fstat-no" title="function not covered" >function processSystem (message, respond) {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (!this.config.protocols[message.session.protocol]) <span class="cstat-no" title="statement not covered" >return respond(this.happn.services.error.SystemError('unknown system protocol: ' + message.session.protocol, 'protocol'));</span></span>
+<span class="cstat-no" title="statement not covered" >  respond(null, this.config.protocols[message.session.protocol].transformSystem(message));</span>
+}
+&nbsp;
+function processInboundStack (message, protocol) {
+&nbsp;
+  var _this = this;
+  var transformed;
+&nbsp;
+  try{
+    transformed = protocol.transformIn(message);
+  }catch(e){
+    return Promise.reject(e);
+  }
+&nbsp;
+  if (['set', 'remove'].indexOf(transformed.request.action) &gt; -1){
+    return _this.happn.services.security.processAuthorize(transformed)
+    .then(function(authorized){
+      if (transformed.request.action == 'set') return _this.happn.services.data.processStore(authorized);
+      return _this.happn.services.data.processRemove(authorized);
+    })
+    .then(function(updated){
+      return _this.happn.services.subscription.processGetRecipients(updated);
+    })
+    .then(function(publication){
+      if (publication.request.options &amp;&amp; publication.request.options.noPublish) return Promise.resolve(publication);
+      return _this.happn.services.publisher.processPublish(publication);
+    });
+  }
+&nbsp;
+  if (transformed.request.action == 'get'){
+    return _this.happn.services.security.processAuthorize(transformed)
+    .then(function(authorized){
+      return _this.happn.services.data.processGet(authorized);
+    });
+  }
+&nbsp;
+  if (transformed.request.action == 'on'){
+    return _this.happn.services.security.processAuthorize(transformed)
+    .then(function(authorized){
+      return _this.happn.services.subscription.processSubscribe(_this.happn.services.subscription.prepareSubscribeMessage(authorized));
+    });
+  }
+&nbsp;
+  if (transformed.request.action == 'off')
+    return _this.happn.services.subscription.processUnsubscribe(_this.happn.services.subscription.prepareSubscribeMessage(transformed));
+&nbsp;
+  if (transformed.request.action === 'request-nonce') return this.happn.services.security.processNonceRequest(transformed);
+&nbsp;
+  if (transformed.request.action === 'describe') return this.happn.services.system.processMessage(transformed);
+&nbsp;
+  if (transformed.request.action === 'configure-session') return this.happn.services.session.processConfigureSession(transformed);
+&nbsp;
+  if (transformed.request.action === 'login') {
+    if (this.config.secure) return this.happn.services.security.processLogin(transformed);
+    else return this.happn.services.security.processUnsecureLogin(transformed);
+  }
+&nbsp;
+  if (transformed.request.action === 'ack') return this.happn.services.publisher.processAcknowledge(transformed);
+&nbsp;
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (transformed.request.action === 'revoke-session') return this.happn.services.session.processRevokeSession(transformed);
+}
+&nbsp;
+function processMessageIn (message, callback) {
+&nbsp;
+  var _this = this;
+  var protocol = _this.config.protocols[message.session.protocol];
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!protocol) <span class="cstat-no" title="statement not covered" >return callback(_this.happn.services.error.SystemError('unknown inbound protocol: ' + message.session.protocol, 'protocol'));</span>
+&nbsp;
+  _this.processInboundStack(message, protocol)
+  .then(function (processed) {
+    callback(null, protocol.success(processed));
+  })
+  .catch(function (e) {
+    message.error = e.cause ? e.cause : e;
+    callback(null, protocol.fail(message));
+    _this.happn.services.error.handleSystem(e, 'ProtocolService', constants.ERROR_SEVERITY.MEDIUM);
+  });
+}
+&nbsp;
+function processLayers(message, layers){
+  var _this = this;
+  return new Promise(function(resolve, reject){
+    if (layers == null || layers.length == 0) return resolve(message);
+    async.waterfall([function(callback) {
+        callback(null, message);
+    }].concat(layers), function(e, result){
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (e) <span class="cstat-no" title="statement not covered" >return reject(e);</span>
+      resolve(result);
+    });
+  });
+}
+&nbsp;
+function processMessageInLayers (message, callback) {
+&nbsp;
+  var _this = this;
+  var protocol = _this.config.protocols[message.session.protocol];
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!protocol) <span class="cstat-no" title="statement not covered" >return callback(_this.happn.services.error.SystemError('unknown inbound protocol: ' + message.session.protocol, 'protocol'));</span>
+&nbsp;
+  _this.processLayers(message, _this.config.inboundLayers)
+  .then(function(inboundTransformed){
+    return _this.processInboundStack(inboundTransformed, protocol);
+  })
+  .then(function (processed) {
+    return _this.processLayers(processed, _this.config.outboundLayers);
+  })
+  .then(function (layerProcessed) {
+    callback(null, protocol.success(layerProcessed));
+  })
+  .catch(<span class="fstat-no" title="function not covered" >function (e) {</span>
+<span class="cstat-no" title="statement not covered" >    message.error = e.cause ? e.cause : e;</span>
+<span class="cstat-no" title="statement not covered" >    callback(null, protocol.fail(message));</span>
+<span class="cstat-no" title="statement not covered" >    _this.happn.services.error.handleSystem(e, 'ProtocolService', constants.ERROR_SEVERITY.MEDIUM);</span>
+  });
+}
+&nbsp;
+function processMessageOutLayers (message, callback) {
+&nbsp;
+  var _this = this;
+&nbsp;
+  try{
+&nbsp;
+    var protocol = this.config.protocols[message.session.protocol];
+&nbsp;
+    _this.processLayers(protocol.transformOut(message), _this.config.outboundLayers)
+    .then(function(transformedPublication){
+      protocol.emit(transformedPublication, message.session);
+      callback(null, transformedPublication);
+    })
+    .catch(<span class="fstat-no" title="function not covered" >function(e){</span>
+<span class="cstat-no" title="statement not covered" >      callback(e);</span>
+    });
+  }catch(e){
+<span class="cstat-no" title="statement not covered" >    callback(e);</span>
+  }
+}
+&nbsp;
+function processMessageOut (message, callback) {
+&nbsp;
+  try{
+    var protocol = this.config.protocols[message.session.protocol];
+    var publication = protocol.transformOut(message);
+    protocol.emit(publication, message.session);
+    callback(null, publication);
+  }catch(e){
+<span class="cstat-no" title="statement not covered" >    callback(e);</span>
+  }
+}
+&nbsp;
+function initialize (config, callback) {
+&nbsp;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!config) <span class="cstat-no" title="statement not covered" >config = {};</span>
+&nbsp;
+  if (!config.protocols) config.protocols = {};
+&nbsp;
+  var packageProtocol = require('../../../package.json').protocol;
+&nbsp;
+  this.__latest = require('./happn_' + packageProtocol).create();
+  this.__earliest = require('./happn_1').create();
+&nbsp;
+  config.protocols['happn_' + packageProtocol] = this.__latest;
+  //the earliest clients have no protocol version, so we use the earliest by default
+  config.protocols.happn = this.__earliest;
+&nbsp;
+  for (var i = 1; i &lt; packageProtocol; i++)
+    if (!config.protocols['happn_' + i]) config.protocols['happn_' + i] = require('./happn_' + i).create();
+&nbsp;
+  for (var protocolKey in config.protocols) {
+&nbsp;
+    var protocol = config.protocols[protocolKey];
+&nbsp;
+    protocol.happn = this.happn;
+    protocol.protocolVersion = protocolKey;
+    protocol.initialize();
+  }
+&nbsp;
+  this.config = config;
+&nbsp;
+  if (this.config.outboundLayers) this.processMessageOut = this.processMessageOutLayers;
+  if (this.config.inboundLayers) this.processMessageIn = this.processMessageInLayers;
+&nbsp;
+  return callback();
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Sep 28 2018 13:22:12 GMT+0200 (SAST)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>
