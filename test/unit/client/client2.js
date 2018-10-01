@@ -1674,7 +1674,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it("tests the _offPath function", function(done) {
     var happnClient = mockHappnClient();
-    happnClient._remoteOff = function(channel, callback) {
+    happnClient._remoteOff = function(channel, listenerRef, callback) {
+      if (typeof listenerRef == 'function'){
+        callback = listenerRef;
+        listenerRef = 0;
+      }
       callback();
     }
     happnClient.state.events = {

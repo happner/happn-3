@@ -37,13 +37,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
    We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
    */
-  before('should initialize the client', function (done) {
-    happn_client.create(function (e, instance) {
-      if (e) return done(e);
-      client = instance;
-      client.onAsync = Promise.promisify(client.on);
-      done();
+  beforeEach('should initialize the client', function (done) {
+    if (client) client.disconnect(function(e){
+      if (e) console.warn('disconnect failed: ', e);
     });
+    setTimeout(function(){
+      happn_client.create(function (e, instance) {
+        if (e) return done(e);
+        client = instance;
+        client.onAsync = Promise.promisify(client.on);
+        done();
+      });
+    }, 3000);
   });
 
   function restartServer(){
@@ -184,6 +189,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   it('does a normal subscription, initialEmit and initialCallback - checks the listener state, does a reconnect (server restart) - check the listener state', function (done) {
+
     var eventData = [];
 
     var handleEvent = function(data){
@@ -194,35 +200,40 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var reference2;
     var reference3;
 
-    client.set('/test/path/', {test:1})
+    client.set('/test/path/reconnect', {test:1})
     .then(function(){
-      return client.onAsync('/test/path', {}, handleEvent);
+      return client.onAsync('/test/path/reconnect', {}, handleEvent);
     })
     .then(function(reference){
       reference1 = reference;
       expect(Object.keys(client.state.events).length).to.be(1);
-      expect(client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0}']).to.be(1);
+      expect(client.state.refCount['{"path":"/ALL@/test/path/reconnect","event_type":"all","count":0}']).to.be(1);
       expect(Object.keys(client.state.listenerRefs).length).to.be(1);
-      return client.onAsync('/test/path', {initialEmit:true}, handleEvent);
+      return client.onAsync('/test/path/reconnect', {initialEmit:true}, handleEvent);
+    })
+    .then(function(result){
+      return new Promise(function(resolve){
+        setTimeout(resolve, 2000);
+      });
     })
     .then(function(reference){
       reference2 = reference;
       expect(eventData.length).to.be(1);
       expect(Object.keys(client.state.events).length).to.be(1);
-      expect(client.state.events['/ALL@/test/path'].length).to.be(2);
-      expect(client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0,"initialEmit":true}']).to.be(1);
-      expect(client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0}']).to.be(1);
+      expect(client.state.events['/ALL@/test/path/reconnect'].length).to.be(2);
+      expect(client.state.refCount['{"path":"/ALL@/test/path/reconnect","event_type":"all","count":0,"initialEmit":true}']).to.be(1);
+      expect(client.state.refCount['{"path":"/ALL@/test/path/reconnect","event_type":"all","count":0}']).to.be(1);
       expect(Object.keys(client.state.listenerRefs).length).to.be(2);
-      return client.onAsync('/test/path', {initialCallback:true}, handleEvent);
+      return client.onAsync('/test/path/reconnect', {initialCallback:true}, handleEvent);
     })
     .then(function(reference, items){
       reference3 = reference[0];
       expect(eventData.length).to.be(1);
       expect(Object.keys(client.state.events).length).to.be(1);
-      expect(client.state.events['/ALL@/test/path'].length).to.be(3);
-      expect(client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0,"initialCallback":true}']).to.be(1);
-      expect(client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0,"initialEmit":true}']).to.be(1);
-      expect(client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0}']).to.be(1);
+      expect(client.state.events['/ALL@/test/path/reconnect'].length).to.be(3);
+      expect(client.state.refCount['{"path":"/ALL@/test/path/reconnect","event_type":"all","count":0,"initialCallback":true}']).to.be(1);
+      expect(client.state.refCount['{"path":"/ALL@/test/path/reconnect","event_type":"all","count":0,"initialEmit":true}']).to.be(1);
+      expect(client.state.refCount['{"path":"/ALL@/test/path/reconnect","event_type":"all","count":0}']).to.be(1);
       expect(happnInstance.services.subscription.allListeners(client.session.id).length).to.be(3);
       expect(Object.keys(client.state.listenerRefs).length).to.be(3);
       return restartServer();
@@ -235,10 +246,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     .then(function(){
       expect(eventData.length).to.be(1);
       expect(Object.keys(client.state.events).length).to.be(1);
-      expect(client.state.events['/ALL@/test/path'].length).to.be(3);
-      expect(client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0,"initialCallback":true}']).to.be(1);
-      expect(client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0,"initialEmit":true}']).to.be(1);
-      expect(client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0}']).to.be(1);
+      expect(client.state.events['/ALL@/test/path/reconnect'].length).to.be(3);
+      expect(client.state.refCount['{"path":"/ALL@/test/path/reconnect","event_type":"all","count":0,"initialCallback":true}']).to.be(1);
+      expect(client.state.refCount['{"path":"/ALL@/test/path/reconnect","event_type":"all","count":0,"initialEmit":true}']).to.be(1);
+      expect(client.state.refCount['{"path":"/ALL@/test/path/reconnect","event_type":"all","count":0}']).to.be(1);
       expect(happnInstance.services.subscription.allListeners(client.session.id).length).to.be(3);
       expect(Object.keys(client.state.listenerRefs).length).to.be(3);
       client.offAll(done);
