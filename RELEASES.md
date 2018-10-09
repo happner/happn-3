@@ -493,4 +493,7 @@
 8.0.0 2018-09-05
 ----------------
   - fix: deleteUser removes tree first then user
-  - change: removed wild-pare, and included tame-search
+  - change: removed wild-pare, and included tame-search, wildcards now dealt with differently
+  - change: client now has state property holding all mutable state
+  - change: client now uses status property to indicate connection state
+  - change: happn-3 protocol now sends back a security-directory-changed system event
