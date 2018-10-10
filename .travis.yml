@@ -9,7 +9,6 @@ node_js:
   - "7"
   - "6"
   - "4"
-  - "0.10"
 env:
 - NODE_TLS_REJECT_UNAUTHORIZED=0
 # how to get the right line numbers on failure
