@@ -12,7 +12,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var happnClient = new HappnClient();
 
     happnClient.__initializeEvents();
-    happnClient.__initializeProperties();
+    happnClient.__initializeState();
     happnClient.log = {
       error:function(){}
     };
@@ -31,14 +31,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var happnClient = new HappnClient();
 
     happnClient.__initializeEvents();
-    happnClient.__initializeProperties();
+    happnClient.__initializeState();
     happnClient.log = {
       error:function(){}
     };
 
     happnClient.onEvent('fatal-error', function(error){
-      expect(happnClient.errors.length).to.be(1);
-      expect(happnClient.state == Constants.CLIENT_STATE.ERROR).to.be(true);
+      expect(happnClient.state.errors.length).to.be(1);
+      expect(happnClient.status == Constants.CLIENT_STATE.ERROR).to.be(true);
       done();
     });
 
@@ -50,13 +50,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var happnClient = new HappnClient();
 
     happnClient.__initializeEvents();
-    happnClient.__initializeProperties();
+    happnClient.__initializeState();
     happnClient.log = {
       error:function(){}
     };
 
     happnClient.onEvent('fatal-error', function(error){
-      expect(happnClient.state == Constants.CLIENT_STATE.ERROR).to.be(true);
+      expect(happnClient.status == Constants.CLIENT_STATE.ERROR).to.be(true);
       done();
     });
 
@@ -68,15 +68,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var happnClient = new HappnClient();
 
     happnClient.__initializeEvents();
-    happnClient.__initializeProperties();
+    happnClient.__initializeState();
     happnClient.log = {
       error:function(){}
     };
 
     for (var i = 0; i <= 110; i++) happnClient.handle_error(new Error('test error: ' + i), true);
 
-    expect(happnClient.errors.length).to.be(100);
-    expect(happnClient.errors[99].error.message).to.be('test error: 110');
+    expect(happnClient.state.errors.length).to.be(100);
+    expect(happnClient.state.errors[99].error.message).to.be('test error: 110');
 
     done();
 

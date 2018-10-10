@@ -24,7 +24,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   Services.SystemService = require('../../../lib/services/system/service');
   Services.ErrorService = require('../../../lib/services/error/service');
   Services.QueueService = require('../../../lib/services/queue/service');
-  Services.LayerService = require('../../../lib/services/layer/service');
   Services.LogService = require('../../../lib/services/log/service');
 
   var mockService = Promise.promisify(function (happn, serviceName, config, callback) {
@@ -87,7 +86,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         secure: true
       }))
       .then(mockService(happn, 'Subscription'))
-      .then(mockService(happn, 'Layer'))
       .then(function () {
         setTimeout(function () {
 
@@ -103,8 +101,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var mockClient = function () {
     return {
+      once: function (evt, handler) {
+        this.onceHandler = handler;
+      },
       on: function (evt, handler) {},
-      end: function (data, options) {}
+      end: function (data, options) {
+        this.onceHandler();
+      }
     };
   };
 
@@ -324,9 +327,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests pubsub services session logging', function (done) {
 
-    var mockSocket = {
-
-    };
+    var mockSocket = {};
 
     mockServices(function (e, happn) {
 
@@ -353,7 +354,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(list[0].user.username).to.be('TEST_USER');
           expect(list[0].id).to.be(client.sessionId);
 
-          happn.services.session.disconnectSession(client.sessionId, 'server disconnect');
+          happn.services.session.disconnectSession(client.sessionId, function(){}, 'server disconnect');
 
           setTimeout(function () {
 

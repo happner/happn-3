@@ -107,14 +107,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(0);
+        expect(listenerclient.state.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event/*']).to.be(undefined);
         callback();
 
       }, function (e) {
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
+          expect(listenerclient.state.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event/*'].length).to.be(1);
 
           //then make the change
           publisherclient.set('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event/blah', {
@@ -139,16 +139,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       onPublished: function (message, meta) {
 
         expect(message.property1).to.be('property1');
-
         expect(meta.created <= Date.now()).to.be(true);
-
         callback();
       }
     }).then(function (eventId) {
 
       expect(eventId >= 0).to.be(true);
-
-      expect(listenerclient.events['/ALL@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/*'].length).to.be(1);
+      expect(listenerclient.state.events['/ALL@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/*'].length).to.be(1);
 
       publisherclient.set('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/onPublished/blah', {
         property1: 'property1',
@@ -168,14 +165,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       //first listen for the change
       listenerclient.on('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/anyevent/*', function (message) {
 
-        expect(listenerclient.events['/ALL@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/anyevent/*'].length).to.be(1);
+        expect(listenerclient.state.events['/ALL@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/anyevent/*'].length).to.be(1);
         callback();
 
       }, function (e) {
 
         if (!e) {
 
-          expect(listenerclient.events['/ALL@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/anyevent/*'].length).to.be(1);
+          expect(listenerclient.state.events['/ALL@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/anyevent/*'].length).to.be(1);
 
           //then make the change
           publisherclient.set('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/anyevent/blah', {
@@ -201,14 +198,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       //first listen for the change
       listenerclient.on('2_websockets_embedded_sanity/anyevent/*', function (message) {
 
-        expect(listenerclient.events['/ALL@2_websockets_embedded_sanity/anyevent/*'].length).to.be(1);
+        expect(listenerclient.state.events['/ALL@2_websockets_embedded_sanity/anyevent/*'].length).to.be(1);
         callback();
 
       }, function (e) {
 
         if (!e) {
 
-          expect(listenerclient.events['/ALL@2_websockets_embedded_sanity/anyevent/*'].length).to.be(1);
+          expect(listenerclient.state.events['/ALL@2_websockets_embedded_sanity/anyevent/*'].length).to.be(1);
 
           //then make the change
           publisherclient.set('2_websockets_embedded_sanity/anyevent/blah', {
@@ -236,14 +233,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.events['/ALL@2_websockets_embedded_sanity/anyeventonce/*'].length).to.be(0);
+        expect(listenerclient.state.events['/ALL@2_websockets_embedded_sanity/anyeventonce/*']).to.be(undefined);
         callback();
 
       }, function (e) {
 
         if (!e) {
 
-          expect(listenerclient.events['/ALL@2_websockets_embedded_sanity/anyeventonce/*'].length).to.be(1);
+          expect(listenerclient.state.events['/ALL@2_websockets_embedded_sanity/anyeventonce/*'].length).to.be(1);
 
           //then make the change
           publisherclient.set('2_websockets_embedded_sanity/anyeventonce/blah', {
@@ -287,9 +284,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       expect(e).to.be(null);
       expect(results.length).to.be(0);
-
       callback(e);
-
     });
   });
 
@@ -648,8 +643,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   it('the publisher should set new data then update the data', function (callback) {
-
-
     try {
       var test_path_end = require('shortid').generate();
 
@@ -675,11 +668,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(e).to.be(null);
           expect(updateResult._meta.id == insertResult._meta.id).to.be(true);
           callback();
-
         });
-
       });
-
     } catch (e) {
       callback(e);
     }
@@ -725,7 +715,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           .then(function (response) {
             response1 = response;
             return listenerclient.set(path, {test: 'data2'});
-          }).then(function (response) {
+          })
+          .then(function (response) {
           response2 = response;
           return listenerclient.off(reference2);
         }).then(function () {
@@ -823,14 +814,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event'].length).to.be(0);
+        expect(listenerclient.state.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event']).to.be(undefined);
         callback();
 
       }, function (e) {
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event'].length).to.be(1);
+          expect(listenerclient.state.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event'].length).to.be(1);
           //////////////////console.log('on subscribed, about to publish');
 
           //then make the change
@@ -972,14 +963,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event'].length).to.be(0);
+        expect(listenerclient.state.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event']).to.be(undefined);
         callback();
 
       }, function (e) {
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event'].length).to.be(1);
+          expect(listenerclient.state.events['/SET@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/event'].length).to.be(1);
 
           ////////////////////////////console.log('on subscribed, about to publish');
 
@@ -1084,7 +1075,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         //instance of this event - the event listener should have been removed
         ////console.log('listenerclient.events');
         ////console.log(listenerclient.events);
-        expect(listenerclient.events['/REMOVE@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/delete_me'].length).to.be(0);
+        expect(listenerclient.state.events['/REMOVE@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/delete_me']).to.be(undefined);
 
         ////console.log(eventData);
 
@@ -1105,7 +1096,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         ////console.log('listenerclient.events, pre');
         ////console.log(listenerclient.events);
-        expect(listenerclient.events['/REMOVE@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/delete_me'].length).to.be(1);
+        expect(listenerclient.state.events['/REMOVE@/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/delete_me'].length).to.be(1);
 
         //////////////////console.log('subscribed, about to delete');
 
@@ -1127,6 +1118,38 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   });
 
+  it('should unsubscribe from a path', function (callback) {
+    this.timeout(5000);
+    var eventFired = false;
+    listenerclient.on('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/on_off_test', {
+      event_type: 'set',
+      count: 0
+    }, function (message) {
+      eventFired = true;
+    }, function(e){
+      //we detach all listeners from the path here
+
+      listenerclient.offPath('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/on_off_test', function (e) {
+        if (e) return callback(new Error(e));
+        publisherclient.set('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/on_off_test', {
+          property1: 'property1',
+          property2: 'property2',
+          property3: 'property3'
+        }, {}, function (e, setresult) {
+          if (e) return callback(new Error(e));
+
+          setTimeout(function(){
+            expect(eventFired).to.be(false);
+            callback();
+          }, 2000)
+
+          ////console.log('DID ON SET');
+          ////console.log(setresult);
+        });
+      });
+    });
+  });
+
   it('should unsubscribe from an event', function (callback) {
 
     var currentListenerId;
@@ -1137,30 +1160,23 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }, function (message) {
 
       //we detach all listeners from the path here
-      ////console.log('ABOUT OFF PATH');
+
       listenerclient.offPath('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/on_off_test', function (e) {
 
-        if (e)
-          return callback(new Error(e));
+        if (e) return callback(new Error(e));
 
         listenerclient.on('/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/on_off_test', {
             event_type: 'set',
             count: 0
           },
           function (message) {
-
-            ////console.log('ON RAN');
-            ////console.log(message);
-
             listenerclient.off(currentListenerId, function (e) {
 
               if (e)
                 return callback(new Error(e));
               else
                 return callback();
-
             });
-
           },
           function (e, listenerId) {
             if (e) return callback(new Error(e));
@@ -1177,9 +1193,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               ////console.log('DID ON SET');
               ////console.log(setresult);
             });
-
           });
-
       });
 
     }, function (e, listenerId) {

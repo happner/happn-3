@@ -264,19 +264,22 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   after(function (done) {
 
-    if (happnInstance1) happnInstance1.stop()
+    this.timeout(20000);
+    setTimeout(function(){
+      if (happnInstance1) happnInstance1.stop()
 
-      .then(function () {
+        .then(function () {
 
-        if (happnInstance2) happnInstance2.stop()
-          .then(done)
-          .catch(done);
-        else done();
+          if (happnInstance2) happnInstance2.stop()
+            .then(done)
+            .catch(done);
+          else done();
 
-      })
-      .catch(done);
+        })
+        .catch(done);
 
-    else done();
+      else done();
+    }, 2000);
   });
 
   var getClient = function (config, callback) {
@@ -343,9 +346,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }, function (e) {
 
           if (e) return raiseError(e.toString());
-
+          //console.log('DOING REMOVE:::');
           clientInstance.remove('/test/operations', function (e) {
-
+            //console.log('DID REMOVE:::');
             if (e) return raiseError(e.toString());
           });
         });

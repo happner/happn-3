@@ -20,13 +20,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('should instantiate a service with a piece of middleware', function (done) {
 
-    var recipientFilterFunction = function (message, recipients, callback) {
+    var recipientFilterFunction = function (message, recipients) {
 
-      //filter recipients by message and recipient meta
-      callback(null, recipients.filter(function (recipient) {
-
+      return recipients.filter(function (recipient) {
         return recipient.data.options.meta.publish;
-      }));
+      });
     };
 
     var clientConfig = {};
@@ -56,7 +54,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         return new Promise(function (resolve, reject) {
 
-          clientInstance.on('/test/path/*', {
+          clientInstance.on('/test/path/*/*', {
             meta: {
               publish: true
             }

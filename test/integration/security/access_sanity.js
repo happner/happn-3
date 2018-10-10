@@ -19,12 +19,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     getService({
       secure: true
     }, function (e, service) {
-
       if (e) return done(e);
-
       serviceInstance = service;
       done();
-
     });
   });
 
@@ -33,7 +30,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     this.timeout(15000);
 
     if (testClient) testClient.disconnect({reconnect: false});
-
     if (adminClient) adminClient.disconnect({reconnect: false});
 
     setTimeout(function () {
@@ -446,7 +442,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (!e) return done(new Error('this should not have been allowed...'));
             expect(e.toString()).to.be('AccessDenied: unauthorized');
             done();
-
           });
 
         }, 2000);
@@ -546,16 +541,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }, {}, function (e) {
 
             if (!e) return done(new Error('this should not have been allowed...'));
-
             expect(e.toString()).to.be('Error: client is disconnected');
-
             done();
           });
         }
       });
 
       serviceInstance.services.security.users.deleteUser(addedTestuser, function (e) {
-
         if (e) return done(e);
       });
     });

@@ -542,6 +542,70 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
+  it('should do an on, check we receive events, modify the on permission, wait a sec and see we are now unable to do the .on anymore', function (done) {
+
+    this.timeout(15000);
+
+    var count = 0;
+
+    var securityServiceEventCount = 0;
+
+    createTestClient(function (e, client) {
+
+      if (e) return done(e);
+
+      currentClient = client;
+
+      client.on('/security_directory_changed/' + test_id + '/on/2', function (message) {
+        count++;
+      }, function (e) {
+        if (e) return done(e);
+      });
+
+      doSetOperationsForOn2(client, null, function (e) {
+
+        if (e) return done(e);
+
+        expect(count).to.be(3);
+
+        client.onSystemMessage(function(key, message){
+          if (key == 'security-data-changed') securityServiceEventCount++;
+        });
+
+        expect(Object.keys(client.state.events).length).to.be(1);
+        expect(Object.keys(client.state.refCount).length).to.be(1);
+        expect(Object.keys(client.state.listenerRefs).length).to.be(1);
+
+        //console.log('state before:::', JSON.stringify(client.state, null, 2));
+
+        removePermission('/security_directory_changed/' + test_id + '/on/2', true, function (e) {
+
+          if (e) return done(e);
+
+          setTimeout(function () {
+
+            client.on('/security_directory_changed/' + test_id + '/on/2', function (message) {
+
+            }, function (e) {
+
+              expect(e).to.not.be(null);
+              expect(e.toString()).to.be('AccessDenied: unauthorized');
+              expect(securityServiceEventCount).to.be(1);
+
+              expect(Object.keys(client.state.events).length).to.be(0);
+              expect(Object.keys(client.state.refCount).length).to.be(0);
+              expect(Object.keys(client.state.listenerRefs).length).to.be(0);
+
+              //console.log('state after:::', JSON.stringify(client.state, null, 2));
+
+              done();
+            });
+          }, 300);
+        });
+      });
+    });
+  });
+
   after(function (done) {
 
     this.timeout(20000);

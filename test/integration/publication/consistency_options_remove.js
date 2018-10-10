@@ -99,7 +99,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
               onPublished: function (e, results) {
 
-                expect(Object.keys(clientInstance2.__ackHandlers).length == 0).to.be(true);
+                expect(Object.keys(clientInstance2.state.ackHandlers).length == 0).to.be(true);
 
                 if (e) return reject(e);
 
@@ -214,96 +214,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   });
 
-  it('does a set and remove with a publish, queued consistency publishResults:true, should be no publication log', function (done) {
-
-    var clientConfig = {};
-
-    var config = {
-      services: {
-        subscription: {
-          config: {}
-        }
-      }
-    };
-
-    var ran1 = false,
-      ran2 = false;
-
-    var subscription1, subscription2;
-
-    service.create(config)
-      .then(function (instance) {
-        serviceInstance = instance;
-        return Happn.client.create(clientConfig);
-      })
-      .then(function (client) {
-
-        clientInstance1 = client;
-        return Happn.client.create(clientConfig);
-      })
-      .then(function (client) {
-
-        clientInstance2 = client;
-
-        return clientInstance1.on('/test/path/queued/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran1 = true;
-          }
-        });
-      })
-      .then(function (subscription) {
-
-        subscription1 = subscription;
-
-        return clientInstance2.on('/test/path/queued/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran2 = true;
-          }
-        });
-      })
-      .then(function (subscription) {
-
-        subscription2 = subscription;
-
-        return new Promise(function (resolve, reject) {
-
-          clientInstance1.set('/test/path/queued/1', {
-            test: 'data'
-          }, {}, function (e) {
-
-            if (e) return reject(e);
-
-            clientInstance1.remove('/test/path/queued/1', {
-
-              consistency: CONSISTENCY.QUEUED,
-
-              publishResults: true
-
-            }, function (e, response) {
-
-              if (e) return reject(e);
-
-              else resolve(response);
-            });
-          });
-        });
-      })
-      .then(function (results) {
-
-        expect(results._meta.publishResults).to.be(undefined);
-
-        done();
-      })
-      .catch(done);
-
-  });
-
   it('does a set and remove with a publish, deferred consistency, times the publication out', function (done) {
 
     this.timeout(10000);
@@ -333,12 +243,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         //we overwrite this function - so publish never happens
         serviceInstance.services.publisher.performPublication = function (publication, callback) {
-
           return callback(null, publication.message);
-        };
+        }.bind(serviceInstance.services.publisher);
 
-        serviceInstance.services.queue.__publicationQueue = async.queue(serviceInstance.services.publisher.performPublication.bind(serviceInstance.services.publisher), 10);
-
+        serviceInstance.services.queue.pushPublication = Promise.promisify(serviceInstance.services.publisher.performPublication);
         return Happn.client.create(clientConfig);
       })
       .then(function (client) {
@@ -425,8 +333,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    var ran1 = false,
-      ran2 = false;
+    var ran1 = false, ran2 = false;
 
     var subscription1, subscription2;
 
@@ -481,17 +388,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           clientInstance1.set('/test/path/acknowledged/1', {
             test: 'data'
           }, {
-
             consistency: CONSISTENCY.ACKNOWLEDGED,
-
             onPublished: function (e, results) {
-
               if (e) return reject(e);
-
               resolve(results);
             }
           }, function (e) {
-
             if (e) return reject(e);
           });
         });

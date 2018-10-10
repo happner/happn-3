@@ -98,6 +98,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         timeout: 1
       }, function (e) {
 
+        if (!e) return callback(new Error('unexpected success'));
+
         expect(e.toString()).to.be('Error: api request timed out path: /test/path action: set');
 
         instance.disconnect(callback);

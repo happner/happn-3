@@ -4,6 +4,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var serviceInstance;
   var expect = require('expect.js');
   var constants = happn.constants;
+  var Promise = require('bluebird');
 
   var getService = function (config, callback) {
 
@@ -123,8 +124,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           var stats = serviceInstance.services.system.stats();
 
-          expect(stats.HEALTH.lastError.message).to.be('Error: subscribe failed');
-          expect(stats.HEALTH.lastError.area).to.be('SubscriptionService');
+          expect(stats.HEALTH.lastError.message).to.be('SystemError: subscribe failed');
+          expect(stats.HEALTH.lastError.area).to.be('ProtocolService');
           expect(stats.HEALTH.lastError.severity).to.be(1);
 
           serviceInstance.services.subscription.addListener = serviceInstance.services.subscription.__oldAddListener;
@@ -148,11 +149,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       .then(function (client) {
 
-        serviceInstance.services.publisher.__oldPublishMessage = serviceInstance.services.publisher.publishMessage.bind(serviceInstance.services.publisher);
+        serviceInstance.services.publisher.__oldPublishMessage = serviceInstance.services.publisher.processPublish.bind(serviceInstance.services.publisher);
 
-        serviceInstance.services.publisher.publishMessage = function (message, callback) {
-
-          return callback(new Error('a test publication error'), message);
+        serviceInstance.services.publisher.processPublish = function (message) {
+          return Promise.reject(new Error('a test publication error'));
         };
 
         client.on('/test/publication', function (data) {
@@ -169,8 +169,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
             var stats = serviceInstance.services.system.stats();
 
-            expect(stats.HEALTH.lastError.message).to.be('Error: processPublish failed');
-            expect(stats.HEALTH.lastError.area).to.be('PublisherService');
+            expect(stats.HEALTH.lastError.message).to.be('Error: a test publication error');
+            expect(stats.HEALTH.lastError.area).to.be('ProtocolService');
             expect(stats.HEALTH.lastError.severity).to.be(1);
 
             serviceInstance.services.publisher.publishMessage = serviceInstance.services.publisher.__oldPublishMessage;
@@ -179,74 +179,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           });
         });
       })
-
-      .catch(function (e) {
-        if (e) return done(e);
-      });
-
-  });
-
-  var didGet = false;
-
-  it('tests failures in the protocol service', function (done) {
-
-    serviceInstance.services.session.localClient({
-        username: '_ADMIN',
-        password: 'happn'
-      })
-
-      .then(function (client) {
-
-        serviceInstance.services.protocol.__oldRespondMessageIn = serviceInstance.services.protocol.__respondMessageIn;
-
-        serviceInstance.services.protocol.__respondMessageIn = function (protocol, message, respond, e) {
-
-          serviceInstance.services.protocol.__latest.__oldFail = serviceInstance.services.protocol.__latest.fail;
-
-          serviceInstance.services.protocol.__latest.fail = function () {
-            throw new Error('test protocol fail error');
-          };
-
-          serviceInstance.services.protocol.__oldRespondMessageIn(protocol, message, respond, new Error('test protocol error'));
-
-          setTimeout(function () {
-
-            var stats = serviceInstance.services.system.stats();
-
-            expect(stats.HEALTH.lastError.message).to.be('Error: test protocol fail error');
-            expect(stats.HEALTH.lastError.area).to.be('ProtocolService.__respondMessageIn');
-            expect(stats.HEALTH.lastError.severity).to.be(1);
-
-            expect(stats.HEALTH.STATUS).to.be(constants.SYSTEM_HEALTH.POOR);
-
-            serviceInstance.services.protocol.__respondMessageIn = serviceInstance.services.protocol.__oldRespondMessageIn.bind(serviceInstance.services.protocol);
-
-            client.get('/test/get', function (e, items) {
-
-              if (!didGet) didGet = true;
-              else {
-                //TODO: figure this one out
-                //console.warn('get happened twice:::');
-                return;
-              }
-
-              expect(e).to.be(null);
-              client.disconnect();
-              done();
-            });
-
-          }, 1000);
-
-        }.bind(serviceInstance.services.protocol);
-
-        client.get('/test/get', function (e, items) {
-          //do nothing
-        });
-      })
-
       .catch(function (e) {
         if (e) return done(e);
       });
   });
-
 });

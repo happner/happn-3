@@ -94,16 +94,4 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
   });
-
-  xit('should do a successful ping pong to the server via the client, via ws', function (callback) {
-
-    initService('ws_ping_pong', function (e) {
-
-      if (e) return callback(e);
-
-
-
-    });
-  });
-
 });

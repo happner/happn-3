@@ -489,3 +489,12 @@
 7.3.0 2018-08-23
 ----------------
   - feature: getUsersByGroup
+
+8.0.0 2018-09-10
+----------------
+  - fix: deleteUser removes tree first then user
+  - change: removed wild-pare, and included tame-search, wildcards now dealt with differently
+  - change: client now has state property holding all mutable state
+  - change: client now uses status property to indicate connection state
+  - change: happn-3 protocol now sends back a security-directory-changed system event
+  - change: protocol now logs a verbose error on AccessDenied

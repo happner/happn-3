@@ -23,6 +23,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       },
       response: {
+        data: {
+          test: 'set-data'
+        },
         _meta: {
           path: '/a/test/path'
         }
@@ -37,9 +40,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var publication = require('../../../lib/services/publisher/publication').create(message, options);
 
     expect(JSON.parse(publication.payload)).to.eql({
+      "data": {
+        "test": "set-data"
+      },
       "_meta": {
         "path": "/a/test/path",
-        "channel": "/SET@/a/test/path",
         "action": "/SET@/a/test/path",
         "type": "data",
         "sessionId": "test-session-id",
@@ -57,7 +62,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       },
       "_meta": {
         "path": "/a/test/path",
-        "channel": "/SET@/a/test/path",
         "action": "/SET@/a/test/path",
         "type": "data",
         "sessionId": "test-session-id",
