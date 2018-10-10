@@ -520,7 +520,7 @@ EVENTS
 NB about wildcards:
 -------------------
 
-As of version 8.0.0 the wildcard is a whole word, and the / is used to denote path segments - ie: to get all events for a set or remove with path /my/test/event you need to subscribe to /my/*/*, /my/* and /my* or /my/te*/event will no longer work.
+As of version 8.0.0 the wildcard is a whole word, and the / is used to denote path segments - ie: to get all events for a set or remove with path /my/test/event you need to subscribe to /my/\*/\*, /my/\* and /my\* or /my/te\*/event will no longer work.
 
 Specific listener:
 ```javascript
