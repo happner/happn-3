@@ -76,14 +76,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message, meta) {
 
-        expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event/*'].length).to.be(0);
+        expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event/*']).to.be(undefined);
         callback();
 
       }, function (e) {
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event/*'].length).to.be(1);
+          expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event/*'].length).to.be(1);
 
           //then make the change
           publisherclient.set('/e2e_test1/testsubscribe/data/event/blah', {
@@ -116,7 +116,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
+        expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.be(undefined);
         callback();
 
       }, function (e) {
@@ -125,7 +125,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
+          expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
           //////////////////console.log('on subscribed, about to publish');
 
           //then make the change
@@ -159,14 +159,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(0);
+        expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.be(undefined);
         callback();
 
       }, function (e) {
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
+          expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
 
           ////////////////////////////console.log('on subscribed, about to publish');
 
@@ -212,7 +212,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           //instance of this event - the event listener should have been removed
           ////console.log('listenerclient.events');
           ////console.log(listenerclient.events);
-          expect(listenerclient.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(0);
+          expect(listenerclient.state.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me']).to.be(undefined);
 
           ////console.log(eventData);
 
@@ -230,7 +230,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           if (!e) {
             ////console.log('listenerclient.events, pre');
             ////console.log(listenerclient.events);
-            expect(listenerclient.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(1);
+            expect(listenerclient.state.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(1);
 
             //////////////////console.log('subscribed, about to delete');
 

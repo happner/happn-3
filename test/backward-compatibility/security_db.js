@@ -17,6 +17,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     services: {
       data: {
         config: {
+          autoUpdateDBVersion:true,
           filename: path.resolve(__dirname, '..', '__fixtures', 'test', 'integration', 'security', 'backward_compatibility.nedb')
         }
       }

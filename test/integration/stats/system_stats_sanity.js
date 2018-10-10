@@ -26,7 +26,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     statsServer.on('fragment', function (fragment) {
       lastFragment = fragment;
     });
-    
+
     statsServer.start()
     .then(function () {
       done();
@@ -39,6 +39,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       service.create({
           name: 'server_name',
           services: {
+            queue:{
+              config:{
+                mode:'queue'
+              }
+            },
             stats: {
               config: {
                 debug: true,
@@ -125,26 +130,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expect(lastFragment.name).to.be('server_name');
         done();
       }, 1020);
-
-    });
-
-    it('gets queue times', function (done) {
-
-      Promise.all([
-        happnClient.onAsync('/some/path', function () {}),
-        happnClient.setAsync('/some/path', {})
-      ])
-        .then(function () {
-
-          setTimeout(function () {
-            expect(lastMetrics.gauges['happn.queue.inbound.time']).to.be.greaterThan(0);
-            expect(lastMetrics.gauges['happn.queue.outbound.time']).to.be.greaterThan(0);
-            expect(lastMetrics.gauges['happn.queue.publication.time']).to.be.greaterThan(0);
-            done();
-          }, 1020);
-
-        })
-        .catch(done);
 
     });
 

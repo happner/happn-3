@@ -66,7 +66,7 @@ starting service:
 The service runs on port 55000 by default - the following code snippet demonstrates how to instantiate a server.
 
 ```javascript
-var happn = require('happn')
+var happn = require('happn-3')
 var happnInstance; //this will be your server instance
 
 //we are using a compact default config here, port defaults to 55000
@@ -95,7 +95,7 @@ Connecting to Happn
 Using node:
 
 ```javascript
-var happn = require('happn');
+var happn = require('happn-3');
 var my_client_instance; //this will be your client instance
 
 happn.client.create([options], function(e, instance) {
@@ -431,8 +431,6 @@ INCREMENT
              });
           });
       });
-
-
     });
   });
 ```
@@ -503,7 +501,7 @@ SEARCH
 
 ```
 
-DELETE
+DELETE / REMOVE
 ---------------------------
 
 *deletes the data living at the specified branch*
@@ -517,7 +515,12 @@ DELETE
 EVENTS
 ----------------------------
 
-*you can listen to any SET & REMOVE events happening in your data - you can specifiy a path you want to listen on or you can listen to all SET and DELETE events using a catch-all listener*
+*you can listen to any SET & REMOVE events happening in your data - you can specify a path you want to listen on or you can listen to all SET and DELETE events using a catch-all listener, the * character denotes a wildcard*
+
+NB about wildcards:
+-------------------
+
+As of version 8.0.0 the wildcard is a whole word, and the / is used to denote path segments - ie: to get all events for a set or remove with path /my/test/event you need to subscribe to /my/*/*, /my/* and /my* or /my/te*/event will no longer work.
 
 Specific listener:
 ```javascript
@@ -550,7 +553,7 @@ my_client_instance.onAll(function(//your listener event handler
 EVENT DATA
 ----------------------------
 
-* you can grab the data you are listening for immediately either by causing the events to be emitted immediately on successful subscription or you can have the data returned as part of the subscription callback using the initialCallback and initialEmit options respectively*
+*you can grab the data you are listening for immediately either by causing the events to be emitted immediately on successful subscription or you can have the data returned as part of the subscription callback using the initialCallback and initialEmit options respectively*
 
 ```javascript
 //get the data back as part of the subscription callback
@@ -929,7 +932,7 @@ function (e, myHappn3Instance) {
     // ]
 
     //much faster - just get the usernames by the group name
-    return myHappn3Instance.services.security.groups.listUserNamesByGroup('TEST');
+    return myHappn3Instance.services.security.users.listUserNamesByGroup('TEST');
   })
   .then(function(usernames){
 

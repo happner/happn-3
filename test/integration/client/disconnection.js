@@ -92,7 +92,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       Service1.services.session.disconnectAllClients(function (e) {
         if (e) return callback(e);
-        expect(Service2.services.session.__sessions).to.eql({});
+        expect(Service1.services.session.__sessions).to.eql({});
         callback();
       });
     });

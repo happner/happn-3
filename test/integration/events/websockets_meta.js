@@ -103,7 +103,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         if (!e) {
 
-          expect(listenerclient.events['/SET@' + test_path].length).to.be(1);
+          expect(listenerclient.state.events['/SET@' + test_path].length).to.be(1);
 
           //then make the change
           publisherclient.set(test_path, {
@@ -499,86 +499,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
 
   });
-
-  xit('tests the meta data is not enumerable for responses', function (callback) {
-
-    this.timeout(default_timeout);
-
-    try {
-
-      //then make the change
-      publisherclient.set(test_path_not_enumerable, {
-        property1: 'property1',
-        property2: 'property2',
-        property3: 'property3'
-      }, null, function (e, result) {
-
-        if (e) return callback(e);
-
-        expect(result._meta != null).to.be(true);
-        expect(result._meta != undefined).to.be(true);
-
-        for (var propertyName in result) {
-          if (propertyName == '_meta')
-            return callback(new Error('failed test, _meta was enumerated'));
-        }
-
-        callback();
-
-      });
-
-    } catch (e) {
-      callback(e);
-    }
-  });
-
-  xit('tests the meta data is not enumerable for gets', function (callback) {
-
-    this.timeout(default_timeout);
-
-    try {
-
-      //then make the change
-      publisherclient.set(test_path_not_enumerable_get + '/0', {
-        property3: 'property3'
-      }, null, function (e) {
-
-        if (e) return callback(e);
-
-        publisherclient.set(test_path_not_enumerable_get + '/1', {
-          property1: 'property1'
-        }, null, function (e) {
-
-          if (e) return callback(e);
-
-          publisherclient.get(test_path_not_enumerable_get + '/*', function (e, items) {
-
-            if (e) return callback(e);
-
-            expect(items.length).to.be(2);
-            var foundMeta = false;
-            items.map(function (item) {
-              expect(item._meta.path.indexOf(test_path_not_enumerable_get)).to.be(0);
-
-              for (var propertyName in item) {
-                if (propertyName == '_meta')
-                  foundMeta = true;
-              }
-            });
-
-            if (foundMeta) return callback(new Error('failed test, _meta was enumerated'));
-            callback();
-
-          });
-
-        });
-      });
-    } catch (e) {
-      callback(e);
-    }
-  });
-
-
 
   it('tests the all meta data', function (callback) {
 

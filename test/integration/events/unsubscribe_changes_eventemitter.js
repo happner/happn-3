@@ -326,8 +326,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       ])
 
       .spread(function (result1, result2, result3) {
+        console.log('results',result1, result2, result3);
         // unsubscribe from 2nd subscription only
-        return listenerclient.off(result2[0]);
+        return listenerclient.off(result2);
       })
 
       .then(function () {
@@ -377,11 +378,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       .spread(function (result1, result2, result3) {
 
-        console.log('1,2,3',result1[0], result2[0], result3[0]);
+        //console.log('1,2,3',result1[0], result2[0], result3[0]);
 
-        listenerId1 = result1[0];
-        listenerId2 = result2[0];
-        listenerId3 = result3[0];
+        listenerId1 = result1;
+        listenerId2 = result2;
+        listenerId3 = result3;
 
         // unsubscribe from 2nd subscription only
         return listenerclient.off(listenerId2);
@@ -415,9 +416,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         // listenerclient anyway... and be filtered out clientside
 
         listenerclient.handle_data = function (path, data) {
-
-          console.log('handle_data:::', path, data);
-
           emittedPath = path;
           originalHandleData.apply(this, arguments);
         };
@@ -443,135 +441,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       .then(function(){
         callback();
       }).catch(callback);
-
-  });
-
-  xit('should remove only the correct subscriptionData entry with wildcard', function (callback) {
-
-    var path = '/with/wildcard/remove/correct/subscriptionData/*';
-
-    Promise.all([
-        listenerclient.onAsync(path, {
-          event_type: 'set',
-          meta: {
-            x: 1
-          }
-        }, function (data, meta) {
-          results[1] = true;
-        }),
-        listenerclient.onAsync(path, {
-          event_type: 'set',
-          meta: {
-            x: 2
-          }
-        }, function (data, meta) {
-          results[2] = true;
-        }),
-        listenerclient.onAsync(path, {
-          event_type: 'set',
-          meta: {
-            x: 3
-          }
-        }, function (data, meta) {
-          results[3] = true;
-        })
-      ])
-
-      .spread(function (result1, result2, result3) {
-        // unsubscribe from 2nd subscription only
-        return listenerclient.off(result2[0]);
-      })
-
-      .then(function () {
-        var bucket = happnInstance.services.subscription.__buckets.filter(function (bucket) {
-          return bucket.options.name == '__listeners_SET';
-        })[0];
-
-        var segment = bucket.__subscriptions.array.filter(function (segment) {
-          return segment.fullPath == path;
-        })[0];
-
-        var metaArray = Object.keys(segment.subscriptionData).map(function (listenerId) {
-          return segment.subscriptionData[listenerId].options.meta;
-        });
-
-        expect(metaArray).to.eql([{
-            x: 1
-          },
-          {
-            x: 3
-          }
-        ]);
-      })
-
-      .then(callback).catch(callback);
-
-  });
-
-  xit('should remove only the correct subscriptionData entry without wildcard', function (callback) {
-
-    var path = '/without/wildcard/remove/correct/subscriptionData';
-
-    Promise.all([
-        listenerclient.onAsync(path, {
-          event_type: 'set',
-          meta: {
-            x: 1
-          }
-        }, function (data, meta) {
-          results[1] = true;
-        }),
-        listenerclient.onAsync(path, {
-          event_type: 'set',
-          meta: {
-            x: 2
-          }
-        }, function (data, meta) {
-          results[2] = true;
-        }),
-        listenerclient.onAsync(path, {
-          event_type: 'set',
-          meta: {
-            x: 3
-          }
-        }, function (data, meta) {
-          results[3] = true;
-        })
-      ])
-
-      .spread(function (result1, result2, result3) {
-        // unsubscribe from 2nd subscription only
-        return listenerclient.off(result2[0]);
-      })
-
-      .then(function () {
-
-        var bucket = happnInstance.services.subscription.__buckets.filter(function (bucket) {
-          return bucket.options.name == '__listeners_SET';
-        })[0];
-
-        var pathAndSession = path +
-          bucket.options.pathSessionDelimiter +
-          listenerclient.session.id;
-
-        var subscription = bucket.__explicit_subscriptions.get(pathAndSession)[0];
-
-        var metaArray = Object.keys(subscription.subscriptionData).map(function (listenerId) {
-          return subscription.subscriptionData[listenerId].options.meta;
-        });
-
-        expect(metaArray).to.eql([{
-            x: 1
-          },
-          {
-            x: 3
-          }
-        ]);
-
-      })
-
-      .then(callback).catch(callback);
-
   });
 
   it('should remove all subscriptions on offPath without wildcard', function (callback) {
