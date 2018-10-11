@@ -68,7 +68,7 @@ describe('embedded_sanity_encryptedpayloads', function () {
         count: 1
       }, function (message) {
 
-        expect(socketClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.equal(0);
+        expect(socketClient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.equal(undefined);
         callback();
 
       }, function (e) {
@@ -77,7 +77,7 @@ describe('embedded_sanity_encryptedpayloads', function () {
 
         if (!e) {
 
-          expect(socketClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.equal(1);
+          expect(socketClient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.equal(1);
           //////////////////console.log('on subscribed, about to publish');
 
           //then make the change
@@ -109,7 +109,7 @@ describe('embedded_sanity_encryptedpayloads', function () {
         count: 1
       }, function (message) {
 
-        expect(socketClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.equal(0);
+        expect(socketClient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.equal(undefined);
         callback();
 
       }, function (e) {
@@ -118,7 +118,7 @@ describe('embedded_sanity_encryptedpayloads', function () {
 
         if (!e) {
 
-          expect(socketClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.equal(1);
+          expect(socketClient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.equal(1);
           //////////////////console.log('on subscribed, about to publish');
 
           //then make the change
@@ -528,14 +528,14 @@ describe('embedded_sanity_encryptedpayloads', function () {
         count: 1
       }, function (message) {
 
-        expect(socketClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.equal(0);
+        expect(socketClient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.equal(undefined);
         callback();
 
       }, function (e) {
 
         if (!e) {
 
-          expect(socketClient.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.equal(1);
+          expect(socketClient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length).to.equal(1);
 
           ////////////////////////////console.log('on subscribed, about to publish');
 
@@ -617,7 +617,7 @@ describe('embedded_sanity_encryptedpayloads', function () {
           //instance of this event - the event listener should have been removed
           ////console.log('socketClient.events');
           ////console.log(socketClient.events);
-          expect(socketClient.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.equal(0);
+          expect(socketClient.state.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me']).to.equal(undefined);
 
           ////console.log(eventData);
 
@@ -635,7 +635,7 @@ describe('embedded_sanity_encryptedpayloads', function () {
           if (!e) {
             ////console.log('socketClient.events, pre');
             ////console.log(socketClient.events);
-            expect(socketClient.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.equal(1);
+            expect(socketClient.state.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me'].length).to.equal(1);
 
             //////////////////console.log('subscribed, about to delete');
 
