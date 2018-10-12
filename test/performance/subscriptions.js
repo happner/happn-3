@@ -12,10 +12,10 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
   var random = require('../__fixtures/utils/random');
   var CONSTANTS = require('../../lib/constants');
 
-  var SUBSCRIPTION_COUNT = 1000;
+  var SUBSCRIPTION_COUNT = 100;
   var SEARCH_COUNT = 10000;
 
-  var NOSTORE = false;
+  var NOSTORE = true;
   var CONSISTENCY = CONSTANTS.CONSISTENCY.TRANSACTIONAL;
 
   this.timeout(SUBSCRIPTION_COUNT * 100);
