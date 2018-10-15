@@ -9,7 +9,7 @@
     "test": "gulp lint && mocha silence.js test/integration/** test/unit/** test/backward-compatibility/**",
     "test-perf": "gulp lint && mocha silence.js test/performance/subscriptions.js",
     "test-unit": "mocha silence.js test/unit/**",
-    "test-cover": "istanbul cover _mocha -- silence.js test/integration/** test/unit/**",
+    "test-cover": "istanbul cover _mocha -- silence.js test/integration/** test/unit/** test/backward-compatibility/**",
     "test-browser": "gulp --gulpfile test/browser/gulp-01.js",
     "test-longrunning": "node test/test-longrunning/serial-run.js",
     "test-sanity": "mocha silence.js test/integration/**/*sanity.js",
