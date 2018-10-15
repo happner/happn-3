@@ -498,3 +498,7 @@
   - change: client now uses status property to indicate connection state
   - change: happn-3 protocol now sends back a security-directory-changed system event
   - change: protocol now logs a verbose error on AccessDenied
+
+8.0.0 2018-09-15
+----------------
+  - fix: disconnect issue with protocol 2 client and protocol 2 server
