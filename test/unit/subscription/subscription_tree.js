@@ -2,7 +2,7 @@ var expect = require('expect.js'),
   async = require('async'),
   shortid = require('shortid');
 
-describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function() {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function() {
 
   context('functional subscription tree', function() {
 
