@@ -9,6 +9,6 @@ var lintSrc = [
 
 gulp.task('lint', function () {
   return gulp.src(lintSrc)
-    .pipe(jshint())
+    .pipe(jshint({esnext:true}))
     .pipe(jshint.reporter('default'));
 });
