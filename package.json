@@ -31,7 +31,6 @@
     "url": "https://github.com/happner/happn-3.git"
   },
   "dependencies": {
-    "async": "1.5.2",
     "bluebird": "2.10.2",
     "body-parser": "1.14.1",
     "connect": "3.4.0",
@@ -71,6 +70,7 @@
     "ws": "1.0.1"
   },
   "devDependencies": {
+    "async": "^1.5.2",
     "byline": "5.0.0",
     "chai": "3.5.0",
     "coveralls": "2.11.6",
