@@ -1356,7 +1356,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the delegate_handover function when delegate runcount > count", function(done) {
+  xit("tests the delegate_handover function when delegate runcount > count", function(done) {
+
     this.timeout(5000);
 
     var happnClient = mockHappnClient();
