@@ -8,6 +8,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var testClient;
 
+  var tempFile1 = __dirname + '/tmp/testdata_templated-permissions.db';
+
   var getService = function(config, callback) {
     happn.service.create(config,
       callback
@@ -19,7 +21,21 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   before('it starts completely defaulted service', function(done) {
 
     getService({
-      secure: true
+      secure: true,
+      services: {
+        data: {
+          config: {
+            datastores: [
+              {
+                name: 'persisted',
+                settings: {
+                  filename: tempFile1
+                }
+              }
+            ]
+          }
+        }
+      }
     }, function(e, service) {
 
       if (e) return done(e);
@@ -35,7 +51,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  after('should delete the temp data file', function(callback) {
+  after('should stop the service', function(callback) {
 
     this.timeout(15000);
 
@@ -54,6 +70,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         callback();
       });
     }, 5000);
+  });
+
+  after('should delete the temp data file', function() {
+    require('fs').unlinkSync(tempFile1);
   });
 
   context('resources access testing', function() {
@@ -369,6 +389,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           if (e) return done(e);
         });
+      });
+    });
+
+    it('compacts the db file', function(done){
+
+      serviceInstance.services.data.compact(function(e, result){
+        if (e) return done(e);
+        done();
       });
     });
 
