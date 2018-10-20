@@ -15,7 +15,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
   var SUBSCRIPTION_COUNT = 1000;
   var SEARCH_COUNT = 10000;
 
-  var NOSTORE = false;
+  var NOSTORE = true;
   var CONSISTENCY = CONSTANTS.CONSISTENCY.TRANSACTIONAL;
 
   this.timeout(SUBSCRIPTION_COUNT * 100);
