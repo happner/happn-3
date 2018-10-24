@@ -1,4 +1,4 @@
-describe('embedded_sanity_encryptedpayloads', function () {
+describe('01_websockets_embedded_sanity_encrypted_payloads', function () {
 
   var expect, happn_client;
 

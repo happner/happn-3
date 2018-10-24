@@ -15,7 +15,8 @@ module.exports = function (config) {
     files: [
 
       'browser_client.js',
-      '01_websockets_embedded_sanity_encryptedpayloads.js'
+      '01_websockets_embedded_sanity_encryptedpayloads.js',
+      '02_security_hsts_cookie.js'
     ],
 
     // list of files / patterns to load in the browser
