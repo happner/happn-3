@@ -499,10 +499,15 @@
   - change: happn-3 protocol now sends back a security-directory-changed system event
   - change: protocol now logs a verbose error on AccessDenied
 
-8.0.1 2018-09-15
+8.0.1 2018-10-15
 ----------------
   - fix: disconnect issue with protocol 2 client and protocol 2 server
 
-8.0.2 2018-09-20
+8.0.2 2018-10-20
 ----------------
   - fix: nedb provider now clones incoming data
+
+8.0.3 2018-10-26
+----------------
+  - security patch: cookie client adds is now secure
+  - security patch: hsts header when https mode
