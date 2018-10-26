@@ -49,6 +49,7 @@
     "happn-util-crypto": "0.2.3",
     "happner-hyperid": "2.0.0",
     "homedir": "0.6.0",
+    "hsts": "^2.1.0",
     "jsonfile": "^4.0.0",
     "jsonpack": "1.1.5",
     "jwt-simple": "0.2.0",

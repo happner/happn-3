@@ -39,7 +39,14 @@ gulp.task('default',  async () => {
 
   happnInstance1 = await serverHelper.createServer({
       secure: true,
-      port:55001
+      port:55001,
+      services: {
+        transport: {
+          config: {
+            mode: 'https'
+          }
+        }
+      }
     });
 
   var karmaServer = new Server({
@@ -52,8 +59,7 @@ gulp.task('default',  async () => {
     karmaServer.on('run_complete', async (browsers, results) => {
 
         await serverHelper.killServers();
-        if (results.error || results.failed)
-            return reject(new Error('There are test failures'));
+        if (results.error || results.failed) return reject(new Error('There are test failures'));
         resolve();
     });
     karmaServer.start();

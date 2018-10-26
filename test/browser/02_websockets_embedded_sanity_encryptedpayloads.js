@@ -51,7 +51,6 @@ describe('01_websockets_embedded_sanity_encrypted_payloads', function () {
     } catch (e) {
       callback(e);
     }
-
   });
 
   //  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
