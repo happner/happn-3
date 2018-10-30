@@ -511,3 +511,4 @@
 ----------------
   - security patch: cookie client adds is now secure
   - security patch: hsts header when https mode
+  - security enhancement: allow _ADMIN connections on intra-process only by configuration

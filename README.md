@@ -1361,7 +1361,7 @@ function (e, instance) {
 
 ```
 
-*logging in with a secure client gives us access to a token that can be used, either by embedding the token in a cookie called happn_token or a query string parameter called happn_token, if the login has happened on the browser, the happn_token is autmatically set by default*
+*logging in with a secure client gives us access to a token that can be used, either by embedding the token in a cookie called happn_token or a query string parameter called happn_token, if the login has happened on the browser, the happn_token is automatically set by default*
 
 
 ```javascript
@@ -1383,18 +1383,12 @@ happn.client.create({username:'_ADMIN', password:'testPWD'},function(e, instance
       	path:'/secure/route/test'
 	}
 
-	if (use_query_string)
-      	options.path += '?happn_token=' + instance.session.token;
-    else
-    	options.headers = {'Cookie': ['happn_token=' + instance.session.token]}
+	if (use_query_string) options.path += '?happn_token=' + instance.session.token;
+  else options.headers = {'Cookie': ['happn_token=' + instance.session.token]}
 
-    http.request(options, function(response){
-
-    	//response.statusCode should be 200;
-
-    }).end();
-
-
+  http.request(options, function(response){
+  	//response.statusCode should be 200;
+  }).end();
 });
 
 
@@ -1421,6 +1415,58 @@ happn.client.create({username:'_ADMIN', password:'testPWD'},function(e, instance
   request(options, function (error, response, body) {
 
     //response happens all should be ok if the token is correct and the account is able to access the middleware resource
+  });
+});
+
+```
+
+SECURITY OPTIONS
+----------------
+
+__disableDefaultAdminNetworkConnections__ - this config setting prevents any logins of the default _ADMIN user via the network, thus only local (intra process) _ADMIN connections are allowed:
+
+```javascript
+
+var happn = require('happn-3');
+
+happn.service.create({
+  secure: true,
+  port:55002,
+  disableDefaultAdminNetworkConnections:true //here is our switch
+}, function(e, service){
+
+  happn_client.create({
+    config: {
+      username: '_ADMIN',
+      password: 'happn',
+      port:55002
+    }
+  }, function (e, instance) {
+    //we will have an error here
+    expect(e.toString()).to.be('AccessDenied: use of _ADMIN credentials over the network is disabled');
+  });
+});
+
+//only clients peeled off the local process will work:
+
+serviceInstanceLocked.services.session.localAdminClient(function(e, adminClient){
+  if (e) return done(e);
+  adminClient.get('/_SYSTEM/*', function(e, items){
+
+    expect(items.length > 0).to.be(true);//fetched system level data
+  });
+});
+
+//or
+
+serviceInstanceLocked.services.session.localClient({
+  username:'_ADMIN',
+  password:'happn'
+}, function(e, adminClient){
+
+  adminClient.get('/_SYSTEM/*', function(e, items){
+
+    expect(items.length > 0).to.be(true);//fetched system level data
   });
 });
 
