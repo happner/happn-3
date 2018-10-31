@@ -122,43 +122,4 @@ describe('02_security_hsts_cookie', function () {
 
     oReq.send();
   });
-
-  //struggling with this
-  xit('checks our cookie is set to secure', function (done) {
-
-    this.timeout(default_timeout);
-
-    var oReq = new XMLHttpRequest();
-
-    oReq.addEventListener("progress", updateProgress);
-    oReq.addEventListener("load", transferComplete);
-    oReq.addEventListener("error", transferFailed);
-    oReq.addEventListener("abort", transferCanceled);
-
-    oReq.open("GET", 'https://localhost:55001/auth/login?username=_ADMIN&password=happn', true);
-    oReq.setRequestHeader('Content-Type', 'application/json');
-
-    // progress on transfers from the server to the client (downloads)
-    function updateProgress (evt) {
-      //console.log("updateProgress...", evt);
-    }
-
-    function transferComplete(evt) {
-      setTimeout(function(){
-        console.log('document cookie:::', document.cookie);
-        //expect(oReq.getAllResponseHeaders().indexOf('strict-transport-security: max-age=15552000; includeSubDomains') > -1).to.equal(true);
-        done();
-      }, 2000);
-    }
-
-    function transferFailed(evt) {
-      //console.log("An error occurred while transferring the file.", evt);
-    }
-
-    function transferCanceled(evt) {
-      //console.log("The transfer has been canceled by the user.", evt);
-    }
-
-    oReq.send();
-  });
 });
