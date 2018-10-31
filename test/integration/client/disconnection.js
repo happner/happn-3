@@ -44,6 +44,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }
   });
 
+  after('stop services', async () => {
+    if (Service1) await Service1.stop();
+    if (Service2) await Service2.stop();
+  });
+
   var getClients = function (service, clientCount, opts, callback) {
 
     var wsClientCollection = [];

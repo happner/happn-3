@@ -507,7 +507,7 @@
 ----------------
   - fix: nedb provider now clones incoming data
 
-8.0.3 2018-10-26
+8.1.0 2018-10-31
 ----------------
   - security patch: cookie client adds is now secure
   - security patch: hsts header when https mode

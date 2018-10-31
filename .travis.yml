@@ -5,9 +5,9 @@ branches:
   only:
     - master
 node_js:
+  - "10"
   - "8"
   - "7"
-  - "6"
 env:
 - NODE_TLS_REJECT_UNAUTHORIZED=0
 # how to get the right line numbers on failure
