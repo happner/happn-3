@@ -1,4 +1,4 @@
-describe('embedded_sanity_encryptedpayloads', function () {
+describe('01_websockets_embedded_sanity_encrypted_payloads', function () {
 
   var expect, happn_client;
 
@@ -51,7 +51,6 @@ describe('embedded_sanity_encryptedpayloads', function () {
     } catch (e) {
       callback(e);
     }
-
   });
 
   //  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.

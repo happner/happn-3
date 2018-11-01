@@ -1,7 +1,7 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
-  "version": "8.0.2",
+  "version": "8.1.0",
   "main": "./lib/index",
   "protocol": "3",
   "database": "1",
@@ -49,6 +49,7 @@
     "happn-util-crypto": "0.2.3",
     "happner-hyperid": "2.0.0",
     "homedir": "0.6.0",
+    "hsts": "^2.1.0",
     "jsonfile": "^4.0.0",
     "jsonpack": "1.1.5",
     "jwt-simple": "0.2.0",

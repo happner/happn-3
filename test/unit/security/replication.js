@@ -25,6 +25,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   function createMockHappn(obj) {
     obj.happn = {};
     obj.happn.services = {};
+    obj.happn.config = {
+      services:{
+        security:{}
+      }
+    };
 
     obj.happn.services.cache = {
       new: function () {}

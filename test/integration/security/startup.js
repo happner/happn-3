@@ -10,7 +10,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   testConfigs.data = {};
 
-  testConfigs.security = {};
+  testConfigs.security = {
+
+  };
 
   var testServices = {};
 
@@ -32,6 +34,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var initializeMockServices = function (callback) {
 
     var happnMock = {
+      config:{
+        services:{
+          security:{}
+        }
+      },
       services: {
         system: {
           package: require('../../../package.json')

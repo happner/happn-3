@@ -13,9 +13,9 @@ module.exports = function (config) {
     frameworks: ['mocha', 'chai'],
 
     files: [
-
       'browser_client.js',
-      '01_websockets_embedded_sanity_encryptedpayloads.js'
+      '01_security_hsts_cookie.js',
+      '02_websockets_embedded_sanity_encryptedpayloads.js'
     ],
 
     // list of files / patterns to load in the browser
@@ -54,7 +54,13 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Chrome_without_security'],
+    customLaunchers:{
+        Chrome_without_security:{
+            base: 'Chrome',
+            flags: ['--disable-web-security', '--ignore-certificate-errors']
+        }
+    },
 
 
     // Continuous Integration mode
