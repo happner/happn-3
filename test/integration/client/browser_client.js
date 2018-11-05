@@ -58,8 +58,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests the client middleware is able to fetch the contents', function (done) {
 
-    var middleware = require('../../../lib/services/connect/middleware/client');
-
+    var Middleware = require('../../../lib/services/connect/middleware/client');
+    var middleware = new Middleware();
     var req = {
       url: '/browser_client'
     };
@@ -97,7 +97,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
-    var middleware = require('../../../lib/services/connect/middleware/client');
+    var Middleware = require('../../../lib/services/connect/middleware/client');
+    var middleware = new Middleware();
 
     var req = {
       url: '/browser_client'
@@ -194,7 +195,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     }
 
-    var middleware = require('../../../lib/services/connect/middleware/client');
+    var Middleware = require('../../../lib/services/connect/middleware/client');
+    var middleware = new Middleware();
 
     var req = {
       url: '/browser_client'
@@ -214,7 +216,5 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     middleware.process(req, res, function (e) {
       if (e) return done(e);
     });
-
   });
-
 });

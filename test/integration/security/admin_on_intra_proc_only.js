@@ -13,7 +13,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var serviceInstanceLockedConvenient;
 
   var getService = async function (config) {
-    return happn.service.create(config);
+    return new Promise((resolve, reject) => {
+      happn.service.create(config, (e, instance) =>{
+        if (e) return reject(e);
+        resolve(instance);
+      });
+    });
   };
 
   before('it starts secure defaulted service', async () => {
@@ -22,6 +27,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       secure: true,
       port:55000
     });
+
+    serviceInstance.specialSetting = 55000;
   });
 
   before('it starts secure locked down service', async () => {
@@ -37,6 +44,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       }
     });
+    serviceInstanceLocked.specialSetting = 55001;
   });
 
   before('it starts secure locked down service, convenience option', async () => {
@@ -46,12 +54,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       port:55002,
       disableDefaultAdminNetworkConnections:true
     });
+    serviceInstanceLockedConvenient.specialSetting = 55002;
   });
 
   after('should disconnect the test clients', async () => {
 
     this.timeout(10000);
-
     if (testClient) await testClient.disconnect({reconnect: false});
   });
 
@@ -60,9 +68,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     this.timeout(10000);
 
     if (serviceInstance) await serviceInstance.stop();
-
     if (serviceInstanceLocked) await serviceInstanceLocked.stop();
-
     if (serviceInstanceLockedConvenient) await serviceInstanceLockedConvenient.stop();
   });
 
@@ -73,6 +79,31 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         username: '_ADMIN',
         password: 'happn'
       }
+    });
+  });
+
+  function doWebRequest(path, port, callback) {
+
+    var request = require('request');
+
+    request({ url: 'http://127.0.0.1:' + port + path  }, function (error, response, body) {
+      callback(error, body);
+    });
+  }
+
+  it('fails to authenticate with the _ADMIN user, over a web post', function(done) {
+
+    doWebRequest('/auth/login?username=_ADMIN&password=happn', 55001, function(e, body){
+      expect(JSON.parse(body).error.message).to.be('use of _ADMIN credentials over the network is disabled');
+      done();
+    });
+  });
+
+  it('fails to authenticate with the _ADMIN user, over a web post, negative test', function(done) {
+
+    doWebRequest('/auth/login?username=_ADMIN&password=happn', 55000, function(e, body){
+      expect(JSON.parse(body).error).to.be(null);
+      done();
     });
   });
 

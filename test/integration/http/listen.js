@@ -118,29 +118,21 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     service.create({
         deferListen: true
       })
-
       .then(function (happnInst) {
         happnInstance = happnInst;
         callback();
       })
-
-      .catch(callback)
-
-    ;
+      .catch(callback);
   });
 
   it('should try and start the service, but fail with EADDRINUSE, then kill the http server, then successfully retry', function (callback) {
     happnInstance.listen(function (e) {
-
       //cannot listen
       expect(e.toString()).to.be("Error: timeout");
-
       for (var key in connections) {
         connections[key].destroy();
       }
-
       httpServer.close();
-
       setTimeout(function () {
         happnInstance.listen(function (e) {
           expect(e).to.be(null);
@@ -149,11 +141,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             expect(body.version).to.not.be(null);
             callback();
           });
-
         });
-
       }, 2000);
-
     });
   });
 
