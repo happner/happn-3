@@ -512,3 +512,8 @@
   - security patch: cookie client adds is now secure
   - security patch: hsts header when https mode
   - security enhancement: allow _ADMIN connections on intra-process only by configuration
+
+8.1.1 2018-11-06
+----------------
+  - fix: scope issue with middleware
+  - refactor: service.js cleaned up
