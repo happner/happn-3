@@ -107,7 +107,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         });
       });
     });
-
   });
 
   it('should stop the service, even though it hasnt started listening', function (callback) {
