@@ -68,6 +68,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     //NB NB - if ths test fails it is probably because the getUser function relies on a heavily changes user service
     // just skip it in futire
 
+    serviceInstance.services.security.users.__oldGetUser = serviceInstance.services.security.users.getUser;
+
     serviceInstance.services.security.users.getUser = function (userName, options, callback) {
 
       if (typeof options == 'function') {
@@ -145,6 +147,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
 
     }, function(e){
+
+      serviceInstance.services.security.users.getUser = serviceInstance.services.security.users.__oldGetUser;
+
       if (e) return done(e);
       if (!badMatchFound) return done(new Error('could not prove negative test'));
       done();
