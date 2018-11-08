@@ -3,27 +3,9 @@ var expect = require('expect.js');
 
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function() {
 
-  it('tests the __transformResponse method, array with one item', function() {
-
-    var Protocol = require('../../../lib/services/protocol/happn_1');
-    var protocol = new Protocol();
-
-    var response = protocol.__transformResponse({
-      request: {}
-    }, [{
-      _meta: {},
-      data: {}
-    }]);
-
-    expect(response).to.eql([{
-      _meta: {},
-      data: {}
-    }]);
-  });
-
   it('tests the fail method, not login action, encrypted payloads', function(done) {
 
-    const Protocol = require('../../../lib/services/protocol/happn_1');
+    const Protocol = require('../../../lib/services/protocol/happn_3');
     const protocol = new Protocol();
 
     const CryptoService = require('../../../lib/services/crypto/service');
@@ -64,7 +46,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests the fail method, login action, encrypted payloads', function(done) {
 
-    const Protocol = require('../../../lib/services/protocol/happn_1');
+    const Protocol = require('../../../lib/services/protocol/happn_3');
     const protocol = new Protocol();
 
     const CryptoService = require('../../../lib/services/crypto/service');
@@ -112,7 +94,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests the fail method, not login action, encrypted payloads, negative', function(done) {
 
-    const Protocol = require('../../../lib/services/protocol/happn_1');
+    const Protocol = require('../../../lib/services/protocol/happn_3');
     const protocol = new Protocol();
 
     protocol.protocolVersion = 'happn';
@@ -170,7 +152,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests the success method, encrypted payloads', function(done) {
 
-    const Protocol = require('../../../lib/services/protocol/happn_1');
+    const Protocol = require('../../../lib/services/protocol/happn_3');
     const protocol = new Protocol();
 
     protocol.protocolVersion = 'happn';
@@ -212,7 +194,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests the success method, encrypted payloads, negative', function(done) {
 
-    const Protocol = require('../../../lib/services/protocol/happn_1');
+    const Protocol = require('../../../lib/services/protocol/happn_3');
     const protocol = new Protocol();
 
     protocol.protocolVersion = 'happn';
@@ -262,5 +244,4 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       done();
     });
   });
-
 });

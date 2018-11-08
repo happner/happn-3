@@ -523,3 +523,7 @@
   - fix: issue with __transformResponse protocol happn_1, bad callback
   - fix: security, users that are substrings of other users get returned by getUser
   - test: updated travis.yml
+
+8.1.3 2018-11-07
+----------------
+  - fix: protocol fail for encrypted payloads issue
