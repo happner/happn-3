@@ -517,3 +517,9 @@
 ----------------
   - fix: scope issue with middleware
   - refactor: service.js cleaned up
+
+8.1.2 2018-11-07
+----------------
+  - fix: issue with __transformResponse protocol happn_1, bad callback
+  - fix: security, users that are substrings of other users get returned by getUser
+  - test: updated travis.yml
