@@ -1918,15 +1918,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                 username: testUser.username,
                 publicKey: newKeypair.publicKey,
                 privateKey: newKeypair.privateKey
-
               };
 
               happn.client.create(creds)
 
                 .then(function (clientInstance) {
-
                   done(new Error('this was not meant to happn'));
-
                 })
 
                 .catch(function (e) {
@@ -1934,7 +1931,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                   expect(e.toString()).to.be('AccessDenied: Invalid credentials');
                   serviceInstance.stop(done);
                 });
-
             });
           });
         });
@@ -2067,23 +2063,51 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                     }, function (e) {
 
                       if (e) return done(e);
+                      tokenClientInstance.disconnect();
+                      clientInstance.disconnect();
                       serviceInstance.stop(done);
                     });
-
                   })
-
                   .catch(function (e) {
                     done(e);
                   });
-
               })
-
               .catch(function (e) {
                 done(e);
               });
 
           });
         });
+      });
+    });
+  });
+
+  it('tests the processLogin method, session dropped while logging in', function (done) {
+
+    getService({
+      secure: true
+    }, function (e, instance) {
+
+      if (e) return done(e);
+
+      instance.services.security.login = function(credentials, sessionId, request, callback){
+        callback(null, 2);
+      }
+
+      instance.services.security.processLogin({
+        session:{
+          id:1
+        },
+        request:{
+          data:{}
+        }
+      })
+      .then(function(message){
+        done(new Error('unexpected success'));
+      })
+      .catch(function(e){
+        expect(e.toString()).to.be('Error: session with id 1 dropped while logging in');
+        stopService(instance, done);
       });
     });
   });

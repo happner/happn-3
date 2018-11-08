@@ -7,6 +7,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var test_id = Date.now() + '_' + require('shortid').generate();
   var async = require('async');
   var testClient;
+  var Promisify = require('bluebird').promisify;
 
   var getService = function (config, callback) {
     happn.service.create(config,
@@ -70,7 +71,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     serviceInstance.services.security.users.__oldGetUser = serviceInstance.services.security.users.getUser;
 
-    serviceInstance.services.security.users.getUser = function (userName, options, callback) {
+    serviceInstance.services.security.users.getUser = Promisify(function (userName, options, callback) {
 
       if (typeof options == 'function') {
         callback = options;
@@ -130,7 +131,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         callback(null, user);
       });
-    }.bind(serviceInstance.services.security.users);
+    }.bind(serviceInstance.services.security.users));
 
     var badMatchFound = false;
 
