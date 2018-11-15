@@ -77,12 +77,13 @@ describe(require('path').basename(__filename), function () {
 
         if (!allowLogin) {
           if (returnError) {
-            server1.services.security.login = function (credentials, sessionId, callback) {
+            server1.services.security.login = function (credentials, sessionId, request, callback) {
+              console.log('credentials, sessionId, request, callback:::', credentials, sessionId, request, callback);
               this.emit('loginAttempt');
               callback(new Error('TEST ERROR'));
             };
           } else {
-            server1.services.security.login = function (credentials, sessionId, callback) {
+            server1.services.security.login = function (credentials, sessionId, request, callback) {
               this.emit('loginAttempt');
             };
           }
@@ -139,7 +140,7 @@ describe(require('path').basename(__filename), function () {
 
     var client;
 
-    return Happn.client.create({
+    Happn.client.create({
         username: testUser2.username,
         password: testUser2.password,
         port: testPort,
@@ -183,20 +184,18 @@ describe(require('path').basename(__filename), function () {
               function waitForConnectSuccess() {
 
                 client.offEvent(subHandle);
-
                 client.disconnect(done);
               }
             );
-
             resolve();
           }
         });
       })
       .then(function () {
 
-        server1.services.security.login = function (credentials, sessionId, callback) {
+        server1.services.security.login = function (credentials, sessionId, request, callback) {
           this.emit('loginAttempt');
-          callback(); //allow login
+          callback(null, {user:{}}); //allow login
         }.bind(server1.services.security);
 
       });
@@ -341,7 +340,7 @@ describe(require('path').basename(__filename), function () {
       });
   });
 
-  it('will not reconnect after shutdown', function (done) {
+  it('will not reconnect after shutdown', function () {
 
     this.timeout(30000);
 
@@ -378,14 +377,13 @@ describe(require('path').basename(__filename), function () {
             setTimeout(function () {
               expect(eventCalled).to.equal(0);
               client.offEvent(subHandle);
-              resolve();
+              return client.disconnect(function(){
+                resolve();
+              });
             }, 20000);
           }
         });
       })
-      .then(function () {
-        return client.disconnect(done);
-      });
   });
 
   it('kills a client that is started with "create" and fails to login', function (done) {

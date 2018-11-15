@@ -27,30 +27,37 @@ describe('01_websockets_embedded_sanity_encrypted_payloads', function () {
    We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
    */
-  before('should initialize the client', function (callback) {
+  beforeEach('should initialize the client', function (callback) {
     this.timeout(default_timeout);
 
-    try {
-      happn_client.create({
-        config: {
-          username: '_ADMIN',
-          password: 'happn',
-          keyPair: {
-            publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
-            privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
+    var createClient = function(e){
+      if (e) return callback(e);
+      try {
+        happn_client.create({
+          config: {
+            username: '_ADMIN',
+            password: 'happn',
+            keyPair: {
+              publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
+              privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
+            }
           }
-        }
-      }, function (e, instance) {
+        }, function (e, instance) {
 
-        if (e) return callback(e);
+          if (e) return callback(e);
 
-        socketClient = instance;
-        callback();
+          socketClient = instance;
 
-      });
-    } catch (e) {
-      callback(e);
+          callback();
+
+        });
+      } catch (e) {
+        callback(e);
+      }
     }
+
+    if (socketClient) return socketClient.disconnect(createClient);
+    createClient();
   });
 
   //  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
@@ -813,6 +820,195 @@ describe('01_websockets_embedded_sanity_encrypted_payloads', function () {
           });
         }
       );
+    });
+  });
+
+  it('does a variable depth on, ensure the client state items are correct', function(done){
+
+    var variableDepthHandle;
+
+    socketClient.on('/test/path/**', { depth:4 }, function(data){
+      expect(data).to.eql({set:'data'});
+
+      socketClient.off(variableDepthHandle, function(e){
+
+        if (e) return done(e);
+
+        expect(socketClient.state.listenerRefs[variableDepthHandle]).to.eql(undefined);
+        expect(socketClient.state.listenerRefs).to.eql({});
+
+        done();
+      });
+    }, function(e, handle){
+
+      if (e) return done(e);
+
+      expect(handle).to.equal(0);
+
+      expect(Object.keys(socketClient.state.listenerRefs).length).to.eql(1);
+
+      variableDepthHandle = handle;
+
+      socketClient.set('/test/path/1', {set:'data'}, function(e){
+        if (e) return done(e);
+      });
+    });
+  });
+
+  it('does a variable depth on, ensure the client state items are correct, deeper path', function(done){
+
+    var variableDepthHandle;
+
+    socketClient.on('/test/path/**', { depth:4 }, function(data){
+      expect(data).to.eql({set:'data'});
+
+      socketClient.off(variableDepthHandle, function(e){
+
+        if (e) return done(e);
+
+        expect(socketClient.state.listenerRefs[variableDepthHandle]).to.eql(undefined);
+        expect(socketClient.state.listenerRefs).to.eql({});
+
+        done();
+      });
+    }, function(e, handle){
+
+      if (e) return done(e);
+
+      expect(handle).to.equal(0);
+
+      expect(Object.keys(socketClient.state.listenerRefs).length).to.eql(1);
+
+      variableDepthHandle = handle;
+
+      socketClient.set('/test/path/1/3', {set:'data'}, function(e){
+        if (e) return done(e);
+      });
+    });
+  });
+
+  it('does a couple of variable depth ons, we disconnect the client and ensure the state is cleaned up', function(done){
+
+    socketClient.on('/test/path/**', { depth:4 }, function(data){}, function(e, handle1){
+
+      socketClient.on('/test/path/1/**', { depth:5 }, function(data){}, function(e, handle2){
+
+        expect(Object.keys(socketClient.state.listenerRefs).length).to.eql(2);
+
+        socketClient.disconnect(function(e){
+
+          if (e) return done(e);
+          expect(Object.keys(socketClient.state.listenerRefs).length).to.eql(0);
+          done();
+        });
+      });
+    });
+  });
+
+  it('does a variable depth on which eclipses another .on, do off and ensure the correct handlers are called', function(done){
+
+    var variableDepthHandle;
+    var results = [];
+
+    socketClient.on('/test/path/**', { depth:4 }, function(data, meta){
+      results.push({data:data, channel:meta.channel, path:meta.path});
+    }, function(e, handle1){
+      if (e) return done(e);
+      socketClient.on('/test/path/1/**', { depth:4 }, function(data, meta){
+        results.push({data:data, channel:meta.channel, path:meta.path});
+      }, function(e, handle2){
+        if (e) return done(e);
+        socketClient.set('/test/path/1/1', {set:1}, function(e){
+          if (e) return done(e);
+          socketClient.off(handle1, function(e){
+            if (e) return done(e);
+            socketClient.set('/test/path/1/1', {set:2}, function(e){
+              if (e) return done(e);
+              expect(results).to.eql([
+                { data: { set: 1 }, channel: '/ALL@/test/path/1/**', path: "/test/path/1/1" },
+                { data: { set: 1 }, channel: '/ALL@/test/path/**', path: "/test/path/1/1" },
+                { data: { set: 2 }, channel: '/ALL@/test/path/1/**', path: "/test/path/1/1" }]
+              );
+              done();
+            });
+          });
+        });
+      });
+    });
+  });
+
+  it('should subscribe and get initial values on the callback', function (callback) {
+
+    socketClient.set('/initialCallback/testsubscribe/data/values_on_callback_test/1', {
+      "test": "data"
+    }, function (e) {
+      if (e) return callback(e);
+
+      socketClient.set('/initialCallback/testsubscribe/data/values_on_callback_test/2', {
+        "test": "data1"
+      }, function (e) {
+        if (e) return callback(e);
+
+        socketClient.on('/initialCallback/**', {
+          "event_type": "set",
+          "initialCallback": true
+        }, function (message) {
+
+          expect(message.updated).to.equal(true);
+          callback();
+
+        }, function (e, reference, response) {
+          if (e) return callback(e);
+          try {
+
+            expect(response.length).to.equal(2);
+            expect(response[0].test).to.equal('data');
+            expect(response[1].test).to.equal('data1');
+
+            socketClient.set('/initialCallback/testsubscribe/data/values_on_callback_test/1', {
+              "test": "data",
+              "updated": true
+            }, function (e) {
+              if (e) return callback(e);
+            });
+
+          } catch (err) {
+            return callback(err);
+          }
+        });
+      });
+    });
+  });
+
+  it('should subscribe and get initial values emitted immediately', function (callback) {
+
+    var caughtEmitted = 0;
+
+    socketClient.set('/initialEmitSpecific/testsubscribe/data/values_emitted_test/1', {
+      "test": "data"
+    }, function (e) {
+      if (e) return callback(e);
+
+      socketClient.set('/initialEmitSpecific/testsubscribe/data/values_emitted_test/2', {
+        "test": "data1"
+      }, function (e) {
+        if (e) return callback(e);
+
+        socketClient.on('/initialEmitSpecific/**', {
+          "event_type": "set",
+          "initialEmit": true
+        }, function (message, meta) {
+
+          caughtEmitted++;
+
+          if (caughtEmitted == 2) {
+            expect(message.test).to.equal("data1");
+            callback();
+          }
+        }, function (e) {
+          if (e) return callback(e);
+        });
+      });
     });
   });
 

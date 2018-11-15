@@ -19,6 +19,8 @@ test/test-temp/*
 *.db
 *test/test-resources/c7a/test/**
 *test/test-resources/c7/test/**
+test/test-longrunning/reports/*
+test/test-longrunning/test-resources/c7a/test/*
 pids
 logs
 results
