@@ -520,7 +520,7 @@ EVENTS
 NB about wildcards:
 -------------------
 
-As of version 8.0.0 the wildcard is a whole word, and the / is used to denote path segments - ie: to get all events for a set or remove with path /my/test/event you need to subscribe to /my/\*/\*, /my/\* and /my\* or /my/te\*/event will no longer work.
+As of version 8.0.0 the wildcard is a whole word, and the / is used to denote path segments - ie: to get all events for a set or remove with path /my/test/event you need to subscribe to /my/\*/\*, /my/\* and /my\* or /my/te\*/event will no longer work. One deviation from this limitation is in the usage of variable depth subscriptions (as documented below).
 
 Specific listener:
 ```javascript
@@ -736,6 +736,60 @@ my_client_instance.set('/merge/only/path',
                       function (e) {
                         console.log('set happened');
                       });
+
+```
+
+VARIABLE DEPTH SUBSCRIPTIONS
+-----------------------
+*A special subscription, with a trailing /\*\* on the path, allows for subscriptions to multiple wildcard paths, up to a specific depth*
+
+```javascript
+
+var handler = function(data){
+
+};
+
+myclient.on('/test/path/**', { depth:4 }, handler, function(e, variableDepthHandle){
+
+  //you can unsubscribe as per normal
+  // ie: myclient.off(variableDepthHandle)
+});
+
+//is the same as
+myclient.on('/test/path/*', handler, function(e){
+
+});
+myclient.on('/test/path/*/*', handler, function(e){
+
+});
+myclient.on('/test/path/*/*/*', handler, function(e){
+
+});
+myclient.on('/test/path/*/*/*/*', handler, function(e){
+
+});
+
+//NB: up to a depth of 4, so the event will not fire for a larger depth, ie: /test/path/1/2/3/4/5
+//NB: this functionality also works with initialCallback and initialEmit
+
+myclient.on('/test/path/**', {
+  "event_type": "set",
+  "initialEmit": true
+}, function (message, meta) {
+  //items will be immediately emitted up to the depth specified
+});
+
+myclient.on('/test/path/**', {
+  "event_type": "set",
+  "initialCallback": true
+}, function (message) {
+
+  expect(message.updated).to.be(true);
+  callback();
+
+}, function (e, reference, response) {
+  //response will be an array of items that exist to the specified depth
+});
 
 ```
 
