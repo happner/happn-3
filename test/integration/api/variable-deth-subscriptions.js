@@ -10,12 +10,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   this.timeout(5000);
 
-  /*
-   This test demonstrates starting up the happn service -
-   the authentication service will use authTokenSecret to encrypt web tokens identifying
-   the logon session. The utils setting will set the system to log non priority information
-   */
-
   before('should initialize the service', function (callback) {
 
     try {
@@ -332,5 +326,102 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         });
       });
     });
+  });
+
+  it('should subscribe and get initial values on the callback, to the correct depth', async () => {
+
+    this.timeout(10000);
+
+    var caughtEmitted = [];
+
+    await listenerclient.set('/initialEmitSpecificCorrectDepth/testsubscribe/1', {
+      "test": "data1"
+    });
+
+    await publisherclient.set('/initialEmitSpecificCorrectDepth/testsubscribe/2', {
+      "test": "data2"
+    });
+
+    await publisherclient.set('/initialEmitSpecificCorrectDepth/testsubscribe/3', {
+      "test": "data3"
+    });
+
+    await publisherclient.set('/initialEmitSpecificCorrectDepth/testsubscribe/3/4', {
+      "test": "data4"
+    });
+
+    await publisherclient.set('/initialEmitSpecificCorrectDepth/testsubscribe/3/4/5', {
+      "test": "data5"
+    });
+
+    await publisherclient.set('/initialEmitSpecificCorrectDepth/testsubscribe/3/4/5/6', {
+      "test": "data6"
+    });
+
+    await listenerclient.onAsync('/initialEmitSpecificCorrectDepth/testsubscribe/**', {
+      "event_type": "set",
+      "initialEmit": true,
+      depth:2
+    }, function (data) {
+      caughtEmitted.push(data._meta.path);
+    });
+
+    expect(caughtEmitted.sort()).to.eql([
+      '/initialEmitSpecificCorrectDepth/testsubscribe/1',
+      '/initialEmitSpecificCorrectDepth/testsubscribe/2',
+      '/initialEmitSpecificCorrectDepth/testsubscribe/3',
+      '/initialEmitSpecificCorrectDepth/testsubscribe/3/4'
+    ]);
+  });
+
+  it('should subscribe and get initial values emitted immediately, to the correct depth', async () => {
+
+    this.timeout(10000);
+
+    var caughtEmitted = [];
+
+    await listenerclient.set('/initialCallbackCorrectDepth/testsubscribe/1', {
+      "test": "data1"
+    });
+
+    await publisherclient.set('/initialCallbackCorrectDepth/testsubscribe/2', {
+      "test": "data2"
+    });
+
+    await publisherclient.set('/initialCallbackCorrectDepth/testsubscribe/3', {
+      "test": "data3"
+    });
+
+    await publisherclient.set('/initialCallbackCorrectDepth/testsubscribe/3/4', {
+      "test": "data4"
+    });
+
+    await publisherclient.set('/initialCallbackCorrectDepth/testsubscribe/3/4/5', {
+      "test": "data5"
+    });
+
+    await publisherclient.set('/initialCallbackCorrectDepth/testsubscribe/3/4/5/6', {
+      "test": "data6"
+    });
+
+    var results = await new Promise(function(resolve, reject){
+      listenerclient.on('/initialCallbackCorrectDepth/testsubscribe/**', {
+        "event_type": "set",
+        "initialCallback": true,
+        depth:2
+      }, function (message) {}, function (e, reference, response) {
+        if (e) return reject(e);
+        resolve(response.map(function(item){
+          return item._meta.path;
+        }).sort());
+      });
+    });
+
+    expect(results).to.eql([
+      '/initialCallbackCorrectDepth/testsubscribe/1',
+      '/initialCallbackCorrectDepth/testsubscribe/2',
+      '/initialCallbackCorrectDepth/testsubscribe/3',
+      '/initialCallbackCorrectDepth/testsubscribe/3/4'
+    ]);
   });
 });
