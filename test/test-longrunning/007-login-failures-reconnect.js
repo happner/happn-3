@@ -78,7 +78,6 @@ describe(require('path').basename(__filename), function () {
         if (!allowLogin) {
           if (returnError) {
             server1.services.security.login = function (credentials, sessionId, request, callback) {
-              console.log('credentials, sessionId, request, callback:::', credentials, sessionId, request, callback);
               this.emit('loginAttempt');
               callback(new Error('TEST ERROR'));
             };
