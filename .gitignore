@@ -9,7 +9,7 @@ lib-cov
 *.log.*
 *.nedb
 tmp
-test/test-browser/browser_client.js
+test/browser/browser_client.js
 *test/test-tmp*
 test/test-temp/*
 !test/test-temp/.tests.use.this
