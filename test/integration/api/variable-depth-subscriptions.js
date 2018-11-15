@@ -424,4 +424,63 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       '/initialCallbackCorrectDepth/testsubscribe/3/4'
     ]);
   });
+
+  it('does a normal subscription, initialEmit and initialCallback - checks the listener state, then unsubscribes by path and checks the listener state', function (done) {
+
+    var eventData = [];
+
+    var handleEvent = function(data){
+      eventData.push(data);
+    }
+
+    var reference1;
+    var reference2;
+    var reference3;
+
+    listenerclient.set('/initialEmitTest/path', {test:1})
+    .then(function(){
+      return listenerclient.onAsync('/initialEmitTest/path', {}, handleEvent);
+    })
+    .then(function(reference){
+      reference1 = reference;
+      expect(Object.keys(listenerclient.state.events).length).to.be(1);
+      expect(listenerclient.state.refCount['{"path":"/ALL@/initialEmitTest/path","event_type":"all","count":0}']).to.be(1);
+      expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(1);
+      return listenerclient.onAsync('/initialEmitTest/**', {initialEmit:true}, handleEvent);
+    })
+    .then(function(reference){
+      reference2 = reference;
+      expect(eventData.length).to.be(1);
+      expect(Object.keys(listenerclient.state.events).length).to.be(2);
+      expect(listenerclient.state.events['/ALL@/initialEmitTest/**'].length).to.be(1);
+      expect(listenerclient.state.refCount['{"path":"/ALL@/initialEmitTest/**","event_type":"all","count":0,"initialEmit":true}']).to.be(1);
+      expect(listenerclient.state.refCount['{"path":"/ALL@/initialEmitTest/path","event_type":"all","count":0}']).to.be(1);
+      expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(2);
+      return listenerclient.onAsync('/initialEmitTest/**', {initialCallback:true}, handleEvent);
+    })
+    .then(function(reference, items){
+      reference3 = reference[0];
+      expect(eventData.length).to.be(1);
+      expect(Object.keys(listenerclient.state.events).length).to.be(2);
+      expect(listenerclient.state.events['/ALL@/initialEmitTest/**'].length).to.be(2);
+      expect(listenerclient.state.refCount['{"path":"/ALL@/initialEmitTest/**","event_type":"all","count":0,"initialCallback":true}']).to.be(1);
+      expect(listenerclient.state.refCount['{"path":"/ALL@/initialEmitTest/**","event_type":"all","count":0,"initialEmit":true}']).to.be(1);
+      expect(listenerclient.state.refCount['{"path":"/ALL@/initialEmitTest/path","event_type":"all","count":0}']).to.be(1);
+
+      expect(happnInstance.services.subscription.allListeners(listenerclient.session.id).length).to.be(11);
+      expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(3);
+      return listenerclient.offPath('/initialEmitTest/**');
+    })
+    .then(function(){
+      expect(eventData.length).to.be(1);
+      expect(Object.keys(listenerclient.state.events).length).to.be(0);
+      expect(listenerclient.state.events['/ALL@/initialEmitTest/**']).to.be(undefined);
+      expect(listenerclient.state.refCount['{"path":"/ALL@/initialEmitTest/**","event_type":"all","count":0,"initialCallback":true}']).to.be(undefined);
+      expect(listenerclient.state.refCount['{"path":"/ALL@/initialEmitTest/**","event_type":"all","count":0,"initialEmit":true}']).to.be(undefined);
+      expect(listenerclient.state.refCount['{"path":"/ALL@/initialEmitTest/path","event_type":"all","count":0}']).to.be(undefined);
+      expect(happnInstance.services.subscription.allListeners(listenerclient.session.id).length).to.be(0);
+      expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(0);
+      done();
+    });
+  });
 });
