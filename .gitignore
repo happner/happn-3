@@ -9,7 +9,7 @@ lib-cov
 *.log.*
 *.nedb
 tmp
-test/test-browser/browser_client.js
+test/browser/browser_client.js
 *test/test-tmp*
 test/test-temp/*
 !test/test-temp/.tests.use.this
@@ -19,6 +19,8 @@ test/test-temp/*
 *.db
 *test/test-resources/c7a/test/**
 *test/test-resources/c7/test/**
+test/test-longrunning/reports/*
+test/test-longrunning/test-resources/c7a/test/*
 pids
 logs
 results

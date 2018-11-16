@@ -527,3 +527,7 @@
 8.1.3 2018-11-07
 ----------------
   - fix: protocol fail for encrypted payloads issue
+
+8.2.0 2018-11-15
+----------------
+  - feature: variable depth subscriptions
