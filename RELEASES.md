@@ -531,3 +531,8 @@
 8.2.0 2018-11-15
 ----------------
   - feature: variable depth subscriptions
+
+8.2.1 2018-11-16
+----------------
+  - fix: overlapping variable depth subscriptions, different depths
+  - doc: updated variable depth on readme
