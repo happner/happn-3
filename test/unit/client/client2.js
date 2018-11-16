@@ -128,6 +128,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__prepareOptions({});
     expect(happnClient.options).to.eql({
       callTimeout: 60000,
+      defaultVariableDepth: 5,
       host: '127.0.0.1',
       port: 55000,
       protocol: 'http',
@@ -159,6 +160,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(happnClient.options).to.eql({
       pool: [1, 2],
       callTimeout: 60000,
+      defaultVariableDepth: 5,
       poolReconnectDelay: 0,
       poolType: 1,
       poolReconnectAttempts: 4,
@@ -194,6 +196,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         privateKey: 456
       },
       callTimeout: 60000,
+      defaultVariableDepth: 5,
       host: '127.0.0.1',
       port: 55000,
       protocol: 'http',

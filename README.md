@@ -745,6 +745,12 @@ VARIABLE DEPTH SUBSCRIPTIONS
 
 ```javascript
 
+var happn = require('../../../lib/index');
+var happn_client = happn.client;
+
+//NB the default variable depth is 5, you can set it when initialising the client like so:
+myclient = await happn_client.create({config:{username:'_ADMIN', password:'happn', defaultVariableDepth:10}});
+
 var handler = function(data){
 
 };
