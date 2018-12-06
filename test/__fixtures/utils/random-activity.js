@@ -1,4 +1,4 @@
-var Happn = require('../../lib/index'),
+var Happn = require('../../../lib/index'),
   service = Happn.service,
   expect = require('expect.js'),
   async = require('async'),
