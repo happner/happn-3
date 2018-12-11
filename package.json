@@ -11,7 +11,7 @@
     "test-unit": "mocha silence.js test/unit/**",
     "test-cover": "istanbul cover _mocha -- silence.js test/integration/** test/unit/** test/backward-compatibility/**",
     "test-browser": "gulp --gulpfile test/browser/gulp-01.js",
-    "test-longrunning": "node test/test-longrunning/serial-run.js",
+    "test-longrunning": "node test/test-longrunning/serial-run.js --exit",
     "test-sanity": "mocha silence.js test/integration/**/*sanity.js --exit",
     "test-release": "rm -rf node_modules && rm -f package-lock.json && npm install && npm test",
     "test-010": "source ~/.nvm/nvm.sh && nvm use 0.10 && rm -rf node_modules && npm install && node_modules/mocha/bin/_mocha test/integration/**",
