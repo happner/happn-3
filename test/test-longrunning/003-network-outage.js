@@ -20,7 +20,7 @@ describe(filename, function() {
         server = _server;
       })
       .then(done)
-      .catch(done);
+      .catch(err => done(err));
   });
 
   after('stop server', function(done) {
@@ -152,19 +152,13 @@ describe(filename, function() {
           return Promise.all([
             new Promise(function(resolve) {
               client.onEvent('reconnect-scheduled', function() {
-                console.log(
-                  'client detected disconnect after %dms',
-                  Date.now() - now
-                );
+                // console.log('client detected disconnect after %dms', Date.now() - now);
                 resolve();
               });
             }),
             new Promise(function(resolve) {
               server.services.session.on('disconnect', function() {
-                console.log(
-                  'server detected disconnect after %dms',
-                  Date.now() - now
-                );
+                // console.log('server detected disconnect after %dms', Date.now() - now);
                 resolve();
               });
             })
@@ -194,7 +188,7 @@ describe(filename, function() {
         })
 
         .then(done)
-        .catch(done);
+        .catch(err => done(err));
     });
   });
 });

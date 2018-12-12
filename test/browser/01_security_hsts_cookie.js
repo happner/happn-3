@@ -14,7 +14,7 @@ describe('02_security_hsts_cookie', function() {
   var socketClient;
   var socketClientHttp;
 
-  it('should initialize the https client', async function() {
+  it('should initialize the https client', function(callback) {
     this.timeout(default_timeout);
 
     try {
@@ -28,13 +28,14 @@ describe('02_security_hsts_cookie', function() {
           }
         },
         function(e, instance) {
-          if (e) return Promise.reject(e);
+          if (e) return callback(e);
 
           socketClient = instance;
+          callback();
         }
       );
     } catch (e) {
-      return Promise.reject(e);
+      callback(e);
     }
   });
 
@@ -57,7 +58,7 @@ describe('02_security_hsts_cookie', function() {
               publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
               privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
             },
-            port: 55005
+            port: 55000
           }
         },
         function(e, instance) {
@@ -100,7 +101,7 @@ describe('02_security_hsts_cookie', function() {
 
     oReq.open(
       'GET',
-      'https://localhost:55005/auth/login?username=_ADMIN&password=happn',
+      'https://localhost:55001/auth/login?username=_ADMIN&password=happn',
       true
     );
     oReq.setRequestHeader('Content-Type', 'application/json');
