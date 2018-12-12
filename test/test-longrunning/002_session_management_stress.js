@@ -1,9 +1,9 @@
-describe("longrunning/002_session_management_sanity", function() {
-  var expect = require("expect.js");
-  var happn = require("../../lib/index");
+describe('longrunning/002_session_management_sanity', function() {
+  var expect = require('expect.js');
+  var happn = require('../../lib/index');
   var service = happn.service;
   var happn_client = happn.client;
-  var async = require("async");
+  var async = require('async');
 
   var serviceInstance;
   var clientInstance;
@@ -26,7 +26,7 @@ describe("longrunning/002_session_management_sanity", function() {
   ) {
     if (!port) port = 55550;
 
-    if (typeof activateSessionManagement == "function") {
+    if (typeof activateSessionManagement == 'function') {
       callback = activateSessionManagement;
       activateSessionManagement = true;
       sessionActivityTTL = 60000 * 60 * 24 * 30;
@@ -61,11 +61,11 @@ describe("longrunning/002_session_management_sanity", function() {
             {
               config: {
                 port: port,
-                username: "_ADMIN",
-                password: "happn"
+                username: '_ADMIN',
+                password: 'happn'
               },
               info: {
-                from: "startup"
+                from: 'startup'
               }
             },
             function(e, instance) {
@@ -81,7 +81,7 @@ describe("longrunning/002_session_management_sanity", function() {
     });
   };
 
-  it("tests session management, multiple clients in series", function(callback) {
+  it('tests session management, multiple clients in series', function(callback) {
     var times = 20;
 
     this.timeout(times * 6000 + 10000);
@@ -96,8 +96,8 @@ describe("longrunning/002_session_management_sanity", function() {
             {
               config: {
                 port: 55550,
-                username: "_ADMIN",
-                password: "happn"
+                username: '_ADMIN',
+                password: 'happn'
               }
             },
             function(e, instance) {
@@ -107,20 +107,20 @@ describe("longrunning/002_session_management_sanity", function() {
 
               sessionData.client = instance;
 
-              var RandomActivityGenerator = require("happn-random-activity-generator");
+              var RandomActivityGenerator = require('happn-random-activity-generator');
               var randomActivity = new RandomActivityGenerator(instance);
 
               sessionData.random = randomActivity;
 
-              randomActivity.generateActivityStart("test", function() {
+              randomActivity.generateActivityStart('test', function() {
                 setTimeout(function() {
-                  randomActivity.generateActivityEnd("test", function(
+                  randomActivity.generateActivityEnd('test', function(
                     aggregatedLog
                   ) {
                     sessionData.results = aggregatedLog;
                     sessionData.client = instance;
 
-                    console.log("collected data:::", aggregatedLog);
+                    console.log('collected data:::', aggregatedLog);
 
                     session_results.push(sessionData);
 
@@ -160,7 +160,7 @@ describe("longrunning/002_session_management_sanity", function() {
     });
   });
 
-  it("tests session management, multiple clients in parallel", function(callback) {
+  it('tests session management, multiple clients in parallel', function(callback) {
     var times = 20;
 
     this.timeout(times * 6000 + 10000);
@@ -177,9 +177,9 @@ describe("longrunning/002_session_management_sanity", function() {
             happn_client.create(
               {
                 config: {
-                  port: 55550,
-                  username: "_ADMIN",
-                  password: "happn"
+                  port: 55557,
+                  username: '_ADMIN',
+                  password: 'happn'
                 }
               },
               function(e, instance) {
@@ -189,20 +189,20 @@ describe("longrunning/002_session_management_sanity", function() {
 
                 sessionData.client = instance;
 
-                var RandomActivityGenerator = require("happn-random-activity-generator");
+                var RandomActivityGenerator = require('happn-random-activity-generator');
                 var randomActivity = new RandomActivityGenerator(instance);
 
                 sessionData.random = randomActivity;
 
-                randomActivity.generateActivityStart("test", function() {
+                randomActivity.generateActivityStart('test', function() {
                   setTimeout(function() {
-                    randomActivity.generateActivityEnd("test", function(
+                    randomActivity.generateActivityEnd('test', function(
                       aggregatedLog
                     ) {
                       sessionData.results = aggregatedLog;
                       sessionData.client = instance;
 
-                      console.log("collected data:::", timeIndex + 1);
+                      console.log('collected data:::', timeIndex + 1);
 
                       session_results.push(sessionData);
 
@@ -223,7 +223,7 @@ describe("longrunning/002_session_management_sanity", function() {
               ) {
                 if (e) return callback(e);
 
-                console.log("active sessions:::", list.length);
+                console.log('active sessions:::', list.length);
 
                 expect(list.length).to.be(times + 1); //+1 for connected client
 
@@ -233,7 +233,7 @@ describe("longrunning/002_session_management_sanity", function() {
                 ) {
                   if (e) return callback(e);
 
-                  console.log("sessions activity:::", list.length);
+                  console.log('sessions activity:::', list.length);
 
                   expect(list.length).to.be(times);
 

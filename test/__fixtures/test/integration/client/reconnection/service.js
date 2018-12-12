@@ -8,14 +8,15 @@ var config = {
   port: 55005
 };
 
-Happn.service.create(config)
-  .then(function (_server) {
+Happn.service
+  .create(config)
+  .then(function(_server) {
     server = _server;
   })
-  .then(function () {
-    console.log("READY");
+  .then(function() {
+    console.log('READY');
   })
-  .catch(function (e) {
+  .catch(function(e) {
     console.warn('service failed to start:::', e.toString());
-    console.log("ERROR");
+    console.log('ERROR');
   });

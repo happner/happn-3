@@ -14,7 +14,7 @@ describe('02_security_hsts_cookie', function() {
   var socketClient;
   var socketClientHttp;
 
-  it.only('should initialize the https client', async function() {
+  it('should initialize the https client', async function() {
     this.timeout(default_timeout);
 
     try {
@@ -23,7 +23,7 @@ describe('02_security_hsts_cookie', function() {
           config: {
             username: '_ADMIN',
             password: 'happn',
-            port: 55000,
+            port: 55001,
             protocol: 'https'
           }
         },
@@ -38,13 +38,13 @@ describe('02_security_hsts_cookie', function() {
     }
   });
 
-  it.only('checks our cookie is set to secure on socket login', function(done) {
+  it('checks our cookie is set to secure on socket login', function(done) {
     if (document.cookie != '')
       return done(new Error('cookie should be blank as it is secure'));
     done();
   });
 
-  it.only('should initialize the http client', function(callback) {
+  it('should initialize the http client', function(callback) {
     this.timeout(default_timeout);
 
     try {
@@ -57,7 +57,7 @@ describe('02_security_hsts_cookie', function() {
               publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
               privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
             },
-            port: 55000
+            port: 55005
           }
         },
         function(e, instance) {
@@ -100,7 +100,7 @@ describe('02_security_hsts_cookie', function() {
 
     oReq.open(
       'GET',
-      'https://localhost:55001/auth/login?username=_ADMIN&password=happn',
+      'https://localhost:55005/auth/login?username=_ADMIN&password=happn',
       true
     );
     oReq.setRequestHeader('Content-Type', 'application/json');
