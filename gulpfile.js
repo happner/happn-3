@@ -1,11 +1,11 @@
-var gulp = require("gulp");
-var jshint = require("gulp-jshint");
+var gulp = require('gulp');
+var jshint = require('gulp-jshint');
 
-var lintSrc = ["./lib/**/*.js", "./test/**/*.js"];
+var lintSrc = ['./lib/**/*.js', './test/**/*.js'];
 
-gulp.task("lint", function() {
+gulp.task('lint', function() {
   return gulp
     .src(lintSrc)
-    .pipe(jshint({ esversion: 8 }))
-    .pipe(jshint.reporter("default"));
+    .pipe(jshint({ esversion: 6 }))
+    .pipe(jshint.reporter('default'));
 });

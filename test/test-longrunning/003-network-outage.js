@@ -6,10 +6,10 @@ var expect = require('expect.js');
 var net = require('net');
 var Happn = require('../..');
 
-describe(filename, function() {
+describe('longrunning/003-network-outage', function() {
   var server;
 
-  this.timeout(60000);
+  this.timeout(120000);
 
   before('start server', function(done) {
     Happn.service
@@ -152,13 +152,19 @@ describe(filename, function() {
           return Promise.all([
             new Promise(function(resolve) {
               client.onEvent('reconnect-scheduled', function() {
-                // console.log('client detected disconnect after %dms', Date.now() - now);
+                console.log(
+                  'client detected disconnect after %dms',
+                  Date.now() - now
+                );
                 resolve();
               });
             }),
             new Promise(function(resolve) {
               server.services.session.on('disconnect', function() {
-                // console.log('server detected disconnect after %dms', Date.now() - now);
+                console.log(
+                  'server detected disconnect after %dms',
+                  Date.now() - now
+                );
                 resolve();
               });
             })

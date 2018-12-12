@@ -1,13 +1,13 @@
 describe(
-  require("../../__fixtures/utils/test_helper")
+  require('../../__fixtures/utils/test_helper')
     .create()
     .testName(__filename, 3),
   function() {
-    var expect = require("expect.js");
-    var happn = require("../../../lib/index");
+    var expect = require('expect.js');
+    var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require("async");
+    var async = require('async');
 
     var serviceInstance;
     var clientInstance;
@@ -22,7 +22,7 @@ describe(
       else callback();
     };
 
-    after("disconnects the client and stops the server", function(callback) {
+    after('disconnects the client and stops the server', function(callback) {
       this.timeout(3000);
 
       disconnectClient(function() {
@@ -41,7 +41,7 @@ describe(
 
       if (sessionActivityLogging == undefined) sessionActivityLogging = true;
 
-      if (typeof activateSessionManagement == "function") {
+      if (typeof activateSessionManagement == 'function') {
         callback = activateSessionManagement;
         activateSessionManagement = true;
         sessionActivityTTL = 60000 * 60 * 24 * 30;
@@ -76,11 +76,11 @@ describe(
               {
                 config: {
                   port: port,
-                  username: "_ADMIN",
-                  password: "happn"
+                  username: '_ADMIN',
+                  password: 'happn'
                 },
                 info: {
-                  from: "startup"
+                  from: 'startup'
                 }
               },
               function(e, instance) {
@@ -97,22 +97,22 @@ describe(
     };
 
     before(
-      "starts up happn instance with session management switched on",
+      'starts up happn instance with session management switched on',
       function(callback) {
         getService(callback);
       }
     );
 
-    it("tests active sessions and session activity logging on a secure instance", function(callback) {
+    it('tests active sessions and session activity logging on a secure instance', function(callback) {
       this.timeout(6000);
 
-      var RandomActivityGenerator = require("happn-random-activity-generator");
+      var RandomActivityGenerator = require('happn-random-activity-generator');
 
       var randomActivity1 = new RandomActivityGenerator(clientInstance);
 
-      randomActivity1.generateActivityStart("test", function() {
+      randomActivity1.generateActivityStart('test', function() {
         setTimeout(function() {
-          randomActivity1.generateActivityEnd("test", function(aggregatedLog) {
+          randomActivity1.generateActivityEnd('test', function(aggregatedLog) {
             serviceInstance.services.security.listActiveSessions(function(
               e,
               list
@@ -135,16 +135,16 @@ describe(
       });
     });
 
-    it("tests session revocation on a secure instance", function(callback) {
+    it('tests session revocation on a secure instance', function(callback) {
       this.timeout(10000);
 
-      var RandomActivityGenerator = require("happn-random-activity-generator");
+      var RandomActivityGenerator = require('happn-random-activity-generator');
 
       var randomActivity1 = new RandomActivityGenerator(clientInstance);
 
-      randomActivity1.generateActivityStart("test", function() {
+      randomActivity1.generateActivityStart('test', function() {
         setTimeout(function() {
-          randomActivity1.generateActivityEnd("test", function(aggregatedLog) {
+          randomActivity1.generateActivityEnd('test', function(aggregatedLog) {
             serviceInstance.services.security.listActiveSessions(function(
               e,
               list
@@ -163,7 +163,7 @@ describe(
 
                 serviceInstance.services.security.revokeSession(
                   session,
-                  "APP",
+                  'APP',
                   function(e) {
                     if (e) return callback(e);
 
@@ -173,17 +173,17 @@ describe(
 
                         expect(items.length).to.be(1);
 
-                        clientInstance.set("/TEST/DATA", {}, function(
+                        clientInstance.set('/TEST/DATA', {}, function(
                           e,
                           result
                         ) {
                           expect(e.toString()).to.be(
-                            "AccessDenied: unauthorized"
+                            'AccessDenied: unauthorized'
                           );
                           expect(e.reason).to.be(
-                            "session with id " +
+                            'session with id ' +
                               session.id +
-                              " has been revoked"
+                              ' has been revoked'
                           );
 
                           serviceInstance.services.security.restoreSession(
@@ -191,7 +191,7 @@ describe(
                             function(e) {
                               if (e) return callback(e);
 
-                              clientInstance.set("/TEST/DATA", {}, callback);
+                              clientInstance.set('/TEST/DATA', {}, callback);
                             }
                           );
                         });
@@ -206,7 +206,7 @@ describe(
       });
     });
 
-    it("tests session management, multiple clients", function(callback) {
+    it('tests session management, multiple clients', function(callback) {
       var times = 4;
 
       this.timeout(times * 6000 + 10000);
@@ -221,8 +221,8 @@ describe(
               {
                 config: {
                   port: 55550,
-                  username: "_ADMIN",
-                  password: "happn"
+                  username: '_ADMIN',
+                  password: 'happn'
                 }
               },
               function(e, instance) {
@@ -232,14 +232,14 @@ describe(
 
                 sessionData.client = instance;
 
-                var RandomActivityGenerator = require("happn-random-activity-generator");
+                var RandomActivityGenerator = require('happn-random-activity-generator');
                 var randomActivity = new RandomActivityGenerator(instance);
 
                 sessionData.random = randomActivity;
 
-                randomActivity.generateActivityStart("test", function() {
+                randomActivity.generateActivityStart('test', function() {
                   setTimeout(function() {
-                    randomActivity.generateActivityEnd("test", function(
+                    randomActivity.generateActivityEnd('test', function(
                       aggregatedLog
                     ) {
                       sessionData.results = aggregatedLog;
@@ -283,20 +283,20 @@ describe(
       });
     });
 
-    it("tests session management, switching on session management with activity logging", function(callback) {
+    it('tests session management, switching on session management with activity logging', function(callback) {
       this.timeout(6000);
 
       getService(
         false,
         10000,
         function(e) {
-          var RandomActivityGenerator = require("happn-random-activity-generator");
+          var RandomActivityGenerator = require('happn-random-activity-generator');
 
           var randomActivity1 = new RandomActivityGenerator(clientInstance);
 
-          randomActivity1.generateActivityStart("test", function() {
+          randomActivity1.generateActivityStart('test', function() {
             setTimeout(function() {
-              randomActivity1.generateActivityEnd("test", function(
+              randomActivity1.generateActivityEnd('test', function(
                 aggregatedLog
               ) {
                 serviceInstance.services.security.listActiveSessions(function(
@@ -304,13 +304,13 @@ describe(
                   list
                 ) {
                   expect(e.toString()).to.be(
-                    "Error: session management not activated"
+                    'Error: session management not activated'
                   );
 
                   serviceInstance.services.security.listSessionActivity(
                     function(e, list) {
                       expect(e.toString()).to.be(
-                        "Error: session activity logging not activated"
+                        'Error: session activity logging not activated'
                       );
 
                       serviceInstance.services.security.activateSessionManagement(
@@ -323,11 +323,11 @@ describe(
                           );
 
                           randomActivity2.generateActivityStart(
-                            "test",
+                            'test',
                             function() {
                               setTimeout(function() {
                                 randomActivity2.generateActivityEnd(
-                                  "test",
+                                  'test',
                                   function(aggregatedLog) {
                                     serviceInstance.services.security.listActiveSessions(
                                       function(e, list) {
@@ -364,20 +364,20 @@ describe(
       );
     });
 
-    it("tests session management, switching on session management without activity logging", function(callback) {
+    it('tests session management, switching on session management without activity logging', function(callback) {
       this.timeout(6000);
 
       getService(
         false,
         10000,
         function(e) {
-          var RandomActivityGenerator = require("happn-random-activity-generator");
+          var RandomActivityGenerator = require('happn-random-activity-generator');
 
           var randomActivity1 = new RandomActivityGenerator(clientInstance);
 
-          randomActivity1.generateActivityStart("test", function() {
+          randomActivity1.generateActivityStart('test', function() {
             setTimeout(function() {
-              randomActivity1.generateActivityEnd("test", function(
+              randomActivity1.generateActivityEnd('test', function(
                 aggregatedLog
               ) {
                 serviceInstance.services.security.listActiveSessions(function(
@@ -385,13 +385,13 @@ describe(
                   list
                 ) {
                   expect(e.toString()).to.be(
-                    "Error: session management not activated"
+                    'Error: session management not activated'
                   );
 
                   serviceInstance.services.security.listSessionActivity(
                     function(e, list) {
                       expect(e.toString()).to.be(
-                        "Error: session activity logging not activated"
+                        'Error: session activity logging not activated'
                       );
 
                       serviceInstance.services.security.activateSessionManagement(
@@ -404,11 +404,11 @@ describe(
                           );
 
                           randomActivity2.generateActivityStart(
-                            "test",
+                            'test',
                             function() {
                               setTimeout(function() {
                                 randomActivity2.generateActivityEnd(
-                                  "test",
+                                  'test',
                                   function(aggregatedLog) {
                                     serviceInstance.services.security.listActiveSessions(
                                       function(e, list) {
@@ -418,7 +418,7 @@ describe(
                                         serviceInstance.services.security.listSessionActivity(
                                           function(e, list) {
                                             expect(e.toString()).to.be(
-                                              "Error: session activity logging not activated"
+                                              'Error: session activity logging not activated'
                                             );
                                             callback();
                                           }
@@ -444,20 +444,20 @@ describe(
       );
     });
 
-    it("tests session management, switching on session management without activity logging, then starting up activity logging", function(callback) {
+    it('tests session management, switching on session management without activity logging, then starting up activity logging', function(callback) {
       this.timeout(10000);
 
       getService(
         false,
         10000,
         function(e) {
-          var RandomActivityGenerator = require("happn-random-activity-generator");
+          var RandomActivityGenerator = require('happn-random-activity-generator');
 
           var randomActivity1 = new RandomActivityGenerator(clientInstance);
 
-          randomActivity1.generateActivityStart("test", function() {
+          randomActivity1.generateActivityStart('test', function() {
             setTimeout(function() {
-              randomActivity1.generateActivityEnd("test", function(
+              randomActivity1.generateActivityEnd('test', function(
                 aggregatedLog
               ) {
                 serviceInstance.services.security.listActiveSessions(function(
@@ -465,13 +465,13 @@ describe(
                   list
                 ) {
                   expect(e.toString()).to.be(
-                    "Error: session management not activated"
+                    'Error: session management not activated'
                   );
 
                   serviceInstance.services.security.listSessionActivity(
                     function(e, list) {
                       expect(e.toString()).to.be(
-                        "Error: session activity logging not activated"
+                        'Error: session activity logging not activated'
                       );
 
                       serviceInstance.services.security.activateSessionManagement(
@@ -484,11 +484,11 @@ describe(
                           );
 
                           randomActivity2.generateActivityStart(
-                            "test",
+                            'test',
                             function() {
                               setTimeout(function() {
                                 randomActivity2.generateActivityEnd(
-                                  "test",
+                                  'test',
                                   function(aggregatedLog) {
                                     serviceInstance.services.security.listActiveSessions(
                                       function(e, list) {
@@ -498,7 +498,7 @@ describe(
                                         serviceInstance.services.security.listSessionActivity(
                                           function(e, list) {
                                             expect(e.toString()).to.be(
-                                              "Error: session activity logging not activated"
+                                              'Error: session activity logging not activated'
                                             );
 
                                             serviceInstance.services.security.activateSessionActivity(
@@ -513,7 +513,7 @@ describe(
                                                     );
 
                                                     clientInstance.set(
-                                                      "/test/data",
+                                                      '/test/data',
                                                       50000,
                                                       function(e) {
                                                         if (e)
