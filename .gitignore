@@ -10,6 +10,7 @@ lib-cov
 *.nedb
 tmp
 test/browser/browser_client.js
+test/integration/client/browser_client.js
 *test/test-tmp*
 test/test-temp/*
 !test/test-temp/.tests.use.this

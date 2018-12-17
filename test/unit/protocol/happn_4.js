@@ -4,10 +4,10 @@ var expect = require('expect.js');
 describe(
   require('../../__fixtures/utils/test_helper')
     .create()
-    .testName(__filename, 3),
+    .testName(__filename, 4),
   function() {
     it('tests the fail method, not login action, encrypted payloads', function(done) {
-      const Protocol = require('../../../lib/services/protocol/happn_3');
+      const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
       const CryptoService = require('../../../lib/services/crypto/service');
@@ -25,7 +25,7 @@ describe(
         var failure = protocol.fail({
           session: {
             isEncrypted: true,
-            secret: '1898981',
+            secret: '18989811111111111111111111111111',
             protocol: 'happn'
           },
           error: new Error('test error'),
@@ -39,7 +39,7 @@ describe(
 
         expect(failure.response).to.eql({
           encrypted:
-            '0764bcc8773108aa57b37fd437c7f285081ab9c8bc20e7640bce4be2ed00f2d801e589fd8f098851b74e5f818b2888ba1c9e4afd12a2426a08354fcc5e03b4ab88379db26b331864b97cb5c0e2499634cb2aa2802be2157ab01f2e22262e70fc5548f7b5e16029178b8ce68550100f5e5d7c69004d9ea9e864d16dabb1242fb4cb20869382bab0598db46a9e30'
+            '658ace4ecb470ca904e8e479246b0f22c1603889d539ddea959600d6657e88bf3bb919066c211d419841b15831a193a5572fb683f5dbf70685002455bde855df5d8772e1f3fdea320e4705bb45dee31657587b857fbbb4b71e948484684378009865fe64f8bb6dcf13c185896437956e8cb3c6b5ec79fe700e89f2fe045c47b0ae9d8544103b1b480c80458ba9'
         });
 
         done();
@@ -47,7 +47,7 @@ describe(
     });
 
     it('tests the fail method, login action, encrypted payloads', function(done) {
-      const Protocol = require('../../../lib/services/protocol/happn_3');
+      const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
       const CryptoService = require('../../../lib/services/crypto/service');
@@ -65,7 +65,7 @@ describe(
         var failure = protocol.fail({
           session: {
             isEncrypted: true,
-            secret: '1898981',
+            secret: '18989811111111111111111111111111',
             protocol: 'happn'
           },
           error: new Error('test error'),
@@ -95,7 +95,7 @@ describe(
     });
 
     it('tests the fail method, not login action, encrypted payloads, negative', function(done) {
-      const Protocol = require('../../../lib/services/protocol/happn_3');
+      const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
       protocol.protocolVersion = 'happn';
@@ -115,7 +115,7 @@ describe(
         var failure = protocol.fail({
           session: {
             isEncrypted: false,
-            secret: '1898981'
+            secret: '18989811111111111111111111111111'
           },
           error: new Error('test error'),
           request: {
@@ -151,7 +151,7 @@ describe(
     });
 
     it('tests the success method, encrypted payloads', function(done) {
-      const Protocol = require('../../../lib/services/protocol/happn_3');
+      const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
       protocol.protocolVersion = 'happn';
@@ -171,7 +171,7 @@ describe(
         var success = protocol.success({
           session: {
             isEncrypted: true,
-            secret: '1898981'
+            secret: '18989811111111111111111111111111'
           },
           request: {
             action: 'set',
@@ -186,7 +186,7 @@ describe(
 
         expect(success.response).to.eql({
           encrypted:
-            '0764bcc8773108aa57b37fd437c7f285081ab9c8bc20e7640bce4be2ed00f2d801e589fd8f098851b74e5f818b2888ba1c9e4afd18bb12295867168c421fa5af8420d7ed69704e71bd3ce4c0b80e9923f627efd438f4157ab0187f676b254bea1800e4a3b82324028f86aa9d48770e49462c36004d83bef463df69a1ff3c37e2c63282c389eabf'
+            '658ace4ecb470ca904e8e479246b0f22c1603889d539ddea959600d6657e88bf3bb919066c211d419841b15831a193a5572fb683ffc2a745d5527d15a1f444db519038bef1bebc270a0754bb1f99ec016a5536d16cadb4b71e93d5c125484316d52ded72a1f860da17cbc9917c50947997e399b5ec64e96c0987f6f44a445fe6a38f81141b6b14'
         });
 
         done();
@@ -194,7 +194,7 @@ describe(
     });
 
     it('tests the success method, encrypted payloads, negative', function(done) {
-      const Protocol = require('../../../lib/services/protocol/happn_3');
+      const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
       protocol.protocolVersion = 'happn';
@@ -214,7 +214,7 @@ describe(
         var success = protocol.success({
           session: {
             isEncrypted: false,
-            secret: '1898981'
+            secret: '18989811111111111111111111111111'
           },
           request: {
             action: 'set',
