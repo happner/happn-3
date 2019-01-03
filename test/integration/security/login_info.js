@@ -14,7 +14,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   before('starts the services', function (done) {
     Happn.service.create({
-      port: 55005
+      port: 55002
     }).then(function (server) {
       server1 = server;
       service1Name = server.name;
@@ -79,7 +79,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           KEY: 'VALUE'
         },
         config: {
-          port: 55005
+          port: 55002
         }
       }).then(function (client) {
         client.disconnect();
@@ -90,8 +90,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expect(events.connect.happn.name).to.equal(service1Name);
         expect(events.disconnect.happn.name).to.equal(service1Name);
         //
-        expect(events.disconnect.info.KEY).to.equal("VALUE");
-        expect(events.authentic.info.KEY).to.equal("VALUE");
+        expect(events.disconnect.info.KEY).to.equal('VALUE');
+        expect(events.authentic.info.KEY).to.equal('VALUE');
         expect(events.disconnect.info._local).to.equal(false);
         //
         expect(events.connect.id).to.equal(sessionId);
@@ -133,7 +133,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           port: 55006
         },
         info: {
-          "KEY": "VALUE"
+          'KEY': 'VALUE'
         }
       }).then(function (client) {
 
@@ -149,8 +149,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expect(events.disconnect.happn.name).to.equal(service2Name);
 
         expect(events.connect.happn.name).to.equal(service2Name);
-        expect(events.authentic.info.KEY).to.equal("VALUE");
-        expect(events.disconnect.info.KEY).to.equal("VALUE");
+        expect(events.authentic.info.KEY).to.equal('VALUE');
+        expect(events.disconnect.info.KEY).to.equal('VALUE');
 
         expect(events.connect.happn.name).to.equal(service2Name);
         expect(events.authentic.info._browser).to.equal(false);
@@ -175,7 +175,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           port: 55006
         },
         info: {
-          "KEY": "VALUE"
+          'KEY': 'VALUE'
         }
       }).then(function (client) {
 

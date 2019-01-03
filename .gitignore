@@ -31,6 +31,7 @@ test-resources/c7a/test/*
 dump.rdb
 
 .scannerwork
+.vscode
 
 
 npm-debug.log

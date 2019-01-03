@@ -16,7 +16,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var spawn = require('child_process').spawn;
 
-  var libFolder = path.resolve(__dirname, '..','..','__fixtures', 'test', 'integration', 'client', 'reconnection');
+  var libFolder = path.resolve(__dirname, '..', '..', '__fixtures', 'test', 'integration', 'client', 'reconnection');
 
   var events = [];
 
@@ -56,7 +56,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     remote = spawn('node', [path.join(libFolder, 'service.js')]);
 
     remote.stdout.on('data', function (data) {
-
+      //console.log(data.toString());
       if (data.toString().match(/READY/)) {
 
         callback();
@@ -80,7 +80,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     Happn.client.create({
       config: {
-        port: 55005
+        port: 55002
       }
     }, function (e, instance) {
 

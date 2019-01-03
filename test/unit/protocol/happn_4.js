@@ -5,20 +5,22 @@ describe(
   require('../../__fixtures/utils/test_helper')
     .create()
     .testName(__filename, 4),
-  function() {
-    it('tests the fail method, not login action, encrypted payloads', function(done) {
+  function () {
+    it('tests the fail method, not login action, encrypted payloads', function (done) {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
       const CryptoService = require('../../../lib/services/crypto/service');
       var cryptoService = new CryptoService();
+      const utils = require('../../../lib/services/utils/shared');
 
-      cryptoService.initialize({}, function(e) {
+      cryptoService.initialize({}, function (e) {
         if (e) return done(e);
 
         protocol.happn = {
           services: {
-            crypto: cryptoService
+            crypto: cryptoService,
+            utils: utils
           }
         };
 
@@ -46,19 +48,24 @@ describe(
       });
     });
 
-    it('tests the fail method, login action, encrypted payloads', function(done) {
+    it('tests the fail method, login action, encrypted payloads', function (done) {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
+
+      const utils = require('../../../lib/services/utils/shared');
+
+
 
       const CryptoService = require('../../../lib/services/crypto/service');
       var cryptoService = new CryptoService();
 
-      cryptoService.initialize({}, function(e) {
+      cryptoService.initialize({}, function (e) {
         if (e) return done(e);
 
         protocol.happn = {
           services: {
-            crypto: cryptoService
+            crypto: cryptoService,
+            util: utils
           }
         };
 
@@ -94,7 +101,7 @@ describe(
       });
     });
 
-    it('tests the fail method, not login action, encrypted payloads, negative', function(done) {
+    it('tests the fail method, not login action, encrypted payloads, negative', function (done) {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
@@ -103,7 +110,7 @@ describe(
       const CryptoService = require('../../../lib/services/crypto/service');
       var cryptoService = new CryptoService();
 
-      cryptoService.initialize({}, function(e) {
+      cryptoService.initialize({}, function (e) {
         if (e) return done(e);
 
         protocol.happn = {
@@ -150,21 +157,25 @@ describe(
       });
     });
 
-    it('tests the success method, encrypted payloads', function(done) {
+    it('tests the success method, encrypted payloads', function (done) {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
+
+      const utils = require('../../../lib/services/utils/shared');
+
 
       protocol.protocolVersion = 'happn';
 
       const CryptoService = require('../../../lib/services/crypto/service');
       var cryptoService = new CryptoService();
 
-      cryptoService.initialize({}, function(e) {
+      cryptoService.initialize({}, function (e) {
         if (e) return done(e);
 
         protocol.happn = {
           services: {
-            crypto: cryptoService
+            crypto: cryptoService,
+            utils: utils
           }
         };
 
@@ -193,7 +204,7 @@ describe(
       });
     });
 
-    it('tests the success method, encrypted payloads, negative', function(done) {
+    it('tests the success method, encrypted payloads, negative', function (done) {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
@@ -202,7 +213,7 @@ describe(
       const CryptoService = require('../../../lib/services/crypto/service');
       var cryptoService = new CryptoService();
 
-      cryptoService.initialize({}, function(e) {
+      cryptoService.initialize({}, function (e) {
         if (e) return done(e);
 
         protocol.happn = {
