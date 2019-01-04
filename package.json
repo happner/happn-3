@@ -62,10 +62,10 @@
     "tame-search": "^1.4.1",
     "tcp-port-used": "1.0.1",
     "traverse": "0.6.6",
-    "uglify-js": "3.4.9",
     "underscore.string": "3.3.5",
     "user-home": "2.0.0",
-    "uuid": "3.3.2"
+    "uuid": "3.3.2",
+    "uglify-js": "3.4.9"
   },
   "devDependencies": {
     "byline": "5.0.0",
