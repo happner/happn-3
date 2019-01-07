@@ -42,7 +42,7 @@
     "happn-logger": "0.0.2",
     "happn-nedb": "1.8.1",
     "happn-password-hash-and-salt": "1.1.0",
-    "happn-primus-wrapper": "^7.3.1",
+    "happn-primus": "^6.0.1",
     "happn-sillyname": "^0.1.1",
     "happn-stats": "1.0.6",
     "happn-util-crypto": "^0.3.0",
@@ -61,13 +61,11 @@
     "sift": "3.2.6",
     "tame-search": "^1.4.1",
     "traverse": "0.6.6",
-    "uglify-js": "2.6.1",
+    "uglify-js": "3.4.9",
     "underscore.string": "3.3.4",
     "tcp-port-used": "1.0.1",
-    "traverse": "0.6.6",
     "user-home": "2.0.0",
-    "uuid": "3.3.2",
-    "uglify-js": "3.4.9"
+    "uuid": "3.3.2"
   },
   "devDependencies": {
     "byline": "5.0.0",
