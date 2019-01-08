@@ -14,7 +14,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   before('starts the services', function (done) {
     Happn.service.create({
-      port: 55005
+      port: 55000
     }).then(function (server) {
       server1 = server;
       service1Name = server.name;
@@ -79,7 +79,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           KEY: 'VALUE'
         },
         config: {
-          port: 55005
+          port: 55000
         }
       }).then(function (client) {
         client.disconnect();

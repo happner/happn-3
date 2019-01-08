@@ -80,7 +80,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     Happn.client.create({
       config: {
-        port: 55005
+        port: 55000
       }
     }, function (e, instance) {
 

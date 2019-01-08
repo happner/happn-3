@@ -5,7 +5,7 @@ var Happn = require(path.join('..', '..', '..', '..', '..', '..'));
 var server;
 
 var config = {
-  port: 55005
+  port: 55000
 };
 
 Happn.service.create(config)

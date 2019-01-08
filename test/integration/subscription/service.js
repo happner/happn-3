@@ -48,9 +48,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           onDataChanged: function() {}
         },
         error: {
-          handleSystem: function() {
-
-          }
+          handleSystem: function() {}
         },
         utils: utilsService
       }

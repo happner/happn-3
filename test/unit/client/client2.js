@@ -1,3 +1,5 @@
+//const log = require('why-is-node-running');
+
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function() {
 
   this.timeout(5000);
@@ -25,7 +27,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.serverInfo = serverInfo || {};
 
     happnClient.socket = socket || {
-      removeAllListeners: function(){
+      removeAllListeners: function() {
 
       },
       write: function(message) {
@@ -37,18 +39,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     };
 
     happnClient.options = clientOptions || {
-      callTimeout: 60000
+      callTimeout: 5000
     };
 
     return happnClient;
   }
 
-  it("tests that the initialize function calls authenticate and login if there is a socket", function(done) {
+  it('tests that the initialize function calls authenticate and login if there is a socket', function(done) {
     var happnClient = mockHappnClient();
     happnClient.socket = true;
     happnClient.login = function(callback) {
-      return callback(null, "done");
-    }
+      return callback(null, 'done');
+    };
     happnClient.initialize(function(err, results) {
       expect(err).to.be(null);
       expect(results.status).to.equal(Constants.CLIENT_STATE.ACTIVE);
@@ -57,7 +59,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the __prepareSecurityOptions function", function(done) {
+  it('tests the __prepareSecurityOptions function', function(done) {
     var happnClient = mockHappnClient();
     var options = {
       keyPair: {
@@ -71,10 +73,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it("tests the __prepareSocketOptions function", function(done) {
+  it('tests the __prepareSocketOptions function', function(done) {
     var happnClient = mockHappnClient();
     var opts = {};
-    happnClient.__prepareSocketOptions(opts)
+    happnClient.__prepareSocketOptions(opts);
     var expectedOpts = {
       socket: {
         reconnect: {
@@ -82,7 +84,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           max: 180000
         },
         timeout: 30000,
-        strategy: "disconnect,online,timeout"
+        strategy: 'disconnect,online,timeout'
       }
     };
     expect(opts).to.eql(expectedOpts);
@@ -107,14 +109,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var defaults = {
       protocol: 'ssh',
       allowSelfSignedCerts: true,
-      username: "Janco",
-      password: "private"
+      username: 'Janco',
+      password: 'private'
     };
     opts = happnClient.__prepareConnectionOptions({}, defaults);
     expect(opts).to.eql({
       allowSelfSignedCerts: true,
-      username: "Janco",
-      password: "private",
+      username: 'Janco',
+      password: 'private',
       host: '127.0.0.1',
       port: 55000,
       protocol: 'ssh',
@@ -123,7 +125,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it("tests the __prepareOptions function with blank options", function(done) {
+  it('tests the __prepareOptions function with blank options', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__prepareOptions({});
     expect(happnClient.options).to.eql({
@@ -151,7 +153,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it("tests the __prepareOptions function with mostly blank options, including pool object", function(done) {
+  it('tests the __prepareOptions function with mostly blank options, including pool object', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__prepareOptions({
       pool: [1, 2]
@@ -180,9 +182,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       loginTimeout: 60000
     });
     done();
-  })
+  });
 
-  it("tests the __prepareOptions function with mostly blank options, including keyPair(security) object", function(done) {
+  it('tests the __prepareOptions function with mostly blank options, including keyPair(security) object', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__prepareOptions({
       keyPair: {
@@ -221,34 +223,34 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it("tests the __updateOptions function", function(done) {
+  it('tests the __updateOptions function', function(done) {
     var happnClient = mockHappnClient();
     var possibility = {
-      url: "1.0.0.127",
-      host: "local",
+      url: '1.0.0.127',
+      host: 'local',
       port: 8000,
-      protocol: "http",
+      protocol: 'http',
       allowSelfSignedCerts: false,
-      username: "Janco",
-      password: "Private",
+      username: 'Janco',
+      password: 'Private',
       publicKey: 123,
       privateKey: 456,
-      token: "None",
-      someRubbish: "rubbish",
-      moreRubbish: "rubbish"
+      token: 'None',
+      someRubbish: 'rubbish',
+      moreRubbish: 'rubbish'
     };
     var possibility2 = {
-      "callTimeout": 60000,
-      url: "1.0.0.127",
-      host: "local",
+      'callTimeout': 5000,
+      url: '1.0.0.127',
+      host: 'local',
       port: 8000,
-      protocol: "http",
+      protocol: 'http',
       allowSelfSignedCerts: false,
-      username: "Janco",
-      password: "Private",
+      username: 'Janco',
+      password: 'Private',
       publicKey: 123,
       privateKey: 456,
-      token: "None"
+      token: 'None'
     };
 
     happnClient.__updateOptions(possibility);
@@ -271,7 +273,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   xit('tests the __connectSocket function.', function(done) {
 
     var happnClient = mockHappnClient();
-    var opts = happnClient.__prepareOptions({},{});
+    var opts = happnClient.__prepareOptions({}, {});
 
     happnClient.__connectSocket(function(err, data) {
       //TODO::: This test passes, but causes the client and test framework to hang
@@ -279,7 +281,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the __initializeState function", function(done) {
+  it('tests the __initializeState function', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__initializeState();
     expect(happnClient.state.events).to.eql({});
@@ -297,7 +299,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   });
 
-  it("tests the __initializeEvents function creates functions for 'onEvent', 'offEvent' and 'emit'", function(done) {
+  it('tests the __initializeEvents function creates functions for \'onEvent\', \'offEvent\' and \'emit\'', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__initializeEvents();
     expect(typeof happnClient.onEvent).to.eql('function');
@@ -306,65 +308,65 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it("tests the 'onEvent' function created by __initializeEvents throws an error if no event_name is supplied", function(done) {
+  it('tests the \'onEvent\' function created by __initializeEvents throws an error if no event_name is supplied', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__initializeEvents();
     try {
-      happnClient.onEvent()
+      happnClient.onEvent();
     } catch (e) {
       expect(e.toString()).to.eql('Error: event name cannot be blank or null');
       done();
     }
   });
 
-  it("tests the 'onEvent' function created by __initializeEvents throws an error if event_handler isn't a function", function(done) {
+  it('tests the \'onEvent\' function created by __initializeEvents throws an error if event_handler isn\'t a function', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__initializeEvents();
     try {
-      happnClient.onEvent("MyEvent", "MyHandler")
+      happnClient.onEvent('MyEvent', 'MyHandler');
     } catch (e) {
-      expect(e.toString()).to.eql('Error: event handler must be a function')
-      done()
+      expect(e.toString()).to.eql('Error: event handler must be a function');
+      done();
     }
   });
 
-  it("tests the 'onEvent' function created by __initializeEvents returns the correct information", function(done) {
+  it('tests the \'onEvent\' function created by __initializeEvents returns the correct information', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__initializeEvents();
-    expect(happnClient.onEvent("MyEvent", function(x) {
+    expect(happnClient.onEvent('MyEvent', function(x) {
       console.log(x);
-    })).to.eql("MyEvent|0");
-    expect(happnClient.onEvent("MyEvent", function(x) {
+    })).to.eql('MyEvent|0');
+    expect(happnClient.onEvent('MyEvent', function(x) {
       console.log(typeof x);
-    })).to.eql("MyEvent|1");
-    expect(happnClient.onEvent("MyNewEvent", function(x) {
+    })).to.eql('MyEvent|1');
+    expect(happnClient.onEvent('MyNewEvent', function(x) {
       console.log(typeof x);
-    })).to.eql("MyNewEvent|0");
-    expect(typeof happnClient.state.eventHandlers["MyEvent"][0]).to.eql('function');
-    expect(typeof happnClient.state.eventHandlers["MyEvent"][1]).to.eql('function');
-    expect(typeof happnClient.state.eventHandlers["MyNewEvent"][0]).to.eql('function');
+    })).to.eql('MyNewEvent|0');
+    expect(typeof happnClient.state.eventHandlers['MyEvent'][0]).to.eql('function');
+    expect(typeof happnClient.state.eventHandlers['MyEvent'][1]).to.eql('function');
+    expect(typeof happnClient.state.eventHandlers['MyNewEvent'][0]).to.eql('function');
     done();
   });
 
-  it("tests the 'offEvent' function created by __initializeEvents removes an event handler", function(done) {
+  it('tests the \'offEvent\' function created by __initializeEvents removes an event handler', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__initializeEvents();
-    var a = happnClient.onEvent("MyEvent", function(x) {
+    var a = happnClient.onEvent('MyEvent', function(x) {
       console.log(x);
-    })
-    var b = happnClient.onEvent("MyEvent", function(x) {
+    });
+    var b = happnClient.onEvent('MyEvent', function(x) {
       console.log(typeof x);
-    })
-    happnClient.offEvent("MyEvent|0");
+    });
+    happnClient.offEvent('MyEvent|0');
 
-    expect(happnClient.state.eventHandlers["MyEvent"][0]).to.be(null);
-    expect(typeof happnClient.state.eventHandlers["MyEvent"][1]).to.eql('function');
+    expect(happnClient.state.eventHandlers['MyEvent'][0]).to.be(null);
+    expect(typeof happnClient.state.eventHandlers['MyEvent'][1]).to.eql('function');
     done();
-  })
+  });
 
   it('tests the getScript function returns an error when not called from a browser', function(done) {
     var happnClient = mockHappnClient();
-    happnClient.getScript('http://www.google.com', function(err, data)  {
+    happnClient.getScript('http://www.google.com', function(err, data) {
       expect(err.toString()).to.eql('Error: only for browser');
       done();
     });
@@ -385,7 +387,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   xit('tests the stop function.', function(done) {
     var happnClient = mockHappnClient();
 
-    happnClient.stop(function(err, data)  {
+    happnClient.stop(function(err, data) {
 
       //TODO::: Can't test: Socket issues
       done();
@@ -405,7 +407,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var parameters = {
       publicKey: pubKey,
       username: 'Janco',
-      password: "private"
+      password: 'private'
     };
     happnClient.__ensureCryptoLibrary();
 
@@ -423,12 +425,16 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests the __encryptPayload function.', function(done) {
     var happnClient = mockHappnClient();
+
+    // //needs utils to be
+    // var utils = require('../../../lib/services/utils/shared');
+    // happnClient.utils = utils;
     happnClient.__ensureCryptoLibrary();
-    happnClient.session.secret = "Secret";
+    happnClient.session.secret = '990413ee0e4911e9ab14d663bd873d94';
     var message = {
-      text: "unencrypted text",
+      text: 'unencrypted text',
       _meta: {
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
       sessionId: 1
     };
@@ -438,21 +444,26 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(newMessage.sessionId).to.eql(1);
     expect(re.test(newMessage.encrypted)).to.be(true);
     done();
-  })
+  });
 
   it('tests the __decryptPayload function.', function(done) {
     var happnClient = mockHappnClient();
-    var message = "e912552b792587572be6fe0163f9e8587ce5a4c15b58020f0a4e8e87e55a7fed2b7cf58b682c7aecf5b1c7f2d74679a9c83f5a9b3885739e2a6380cdb04d281068ca38584b7de85b86";
+    var message = 'b5428d67b42b083f6b1da9aebf78909e0bc4cef3d55afe318900585e7a979da144d0367489771efa9325e914c27f08223cad12bc09c9e62c2855f6c4c426ada7b0750a67d266361cbd';
     //Message string gotten from __encryptPayload test above
     var message2 = {
-      text: "unencrypted text",
+      text: 'unencrypted text',
       _meta: {
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
       sessionId: 1
     };
+
+    // //needs utils to be
+    // var utils = require('../../../lib/services/utils/shared');
+    // happnClient.utils = utils;
+
     happnClient.__ensureCryptoLibrary();
-    happnClient.session.secret = "Secret";
+    happnClient.session.secret = '990413ee0e4911e9ab14d663bd873d94';
     newMessage = happnClient.__decryptPayload(message);
     expect(newMessage).to.eql(message2);
     done();
@@ -468,43 +479,43 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests the __attachSession function.', function(done) {
     var happnClient = mockHappnClient();
-    happnClient.__attachSession("This is a session");
-    expect(happnClient.session).to.eql("This is a session");
+    happnClient.__attachSession('This is a session');
+    expect(happnClient.session).to.eql('This is a session');
     done();
 
   });
 
   it('tests the __payloadToError function.', function(done) {
     var happnClient = mockHappnClient();
-    var payload = "This is an error";
+    var payload = 'This is an error';
     e = happnClient.__payloadToError(payload);
-    expect(e.toString()).to.eql("Error: This is an error");
+    expect(e.toString()).to.eql('Error: This is an error');
     done();
-  })
+  });
 
   it('tests the __payloadToError function when payload contains a message.', function(done) {
     var happnClient = mockHappnClient();
     var payload = {
-      message: "This is an error"
-    }
+      message: 'This is an error'
+    };
     e = happnClient.__payloadToError(payload);
-    expect(e.toString()).to.eql("Error: This is an error");
+    expect(e.toString()).to.eql('Error: This is an error');
     done();
-  })
+  });
 
   it('tests the __doLogin function will attach a session with mocked systemRequest.', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__performSystemRequest = function(action, data, options, callback) {
       callback(null, {
-        session: "This is a session",
+        session: 'This is a session',
         _meta: {
-          status: "ok"
+          status: 'ok'
         }
       });
-    }
+    };
     happnClient.__doLogin({}, function(e, data) {
       expect(happnClient.session).to.eql({
-        session: "This is a session"
+        session: 'This is a session'
       });
       done();
     });
@@ -515,22 +526,22 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__performSystemRequest = function(action, data, options, callback) {
       callback(null, {
         _meta: {},
-        payload: "this is an error"
+        payload: 'this is an error'
       });
-    }
+    };
     happnClient.__doLogin({}, function(e, data) {
-      expect(e.toString()).to.eql("Error: this is an error");
+      expect(e.toString()).to.eql('Error: this is an error');
       done();
-    })
-  })
+    });
+  });
 
   it('tests the __doLogin function will return an error with mocked systemRequest if system Request returns an error', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__performSystemRequest = function(action, data, options, callback) {
-      callback(new Error("system request failed"), null);
-    }
+      callback(new Error('system request failed'), null);
+    };
     happnClient.__doLogin({}, function(e, data) {
-      expect(e.toString()).to.eql("Error: system request failed");
+      expect(e.toString()).to.eql('Error: system request failed');
       done();
     });
   });
@@ -546,19 +557,19 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     });
 
-    happnClient.__ensureCryptoLibrary()
+    happnClient.__ensureCryptoLibrary();
 
-    a = happnClient.__signNonce(":::32 Bit buffer???");
+    a = happnClient.__signNonce(':::32 Bit buffer???');
     console.log(a);
     done();
-  })
+  });
 
   it('tests the __prepareLogin function will calback login paramaters if not encrypted or digest.', function(done) {
     var happnClient = mockHappnClient();
     var loginParameters = {
-      name: "Janco",
-      password: "private",
-      loginType: "password"
+      name: 'Janco',
+      password: 'private',
+      loginType: 'password'
     };
     happnClient.__prepareLogin(loginParameters, function(e, data) {
       expect(data).to.eql(loginParameters);
@@ -580,9 +591,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.serverInfo.publicKey = pubKey;
 
     var loginParameters = {
-      name: "Janco",
-      password: "private",
-      loginType: "password"
+      name: 'Janco',
+      password: 'private',
+      loginType: 'password'
     };
 
     happnClient.__prepareLogin(loginParameters, function(e, data) {
@@ -597,20 +608,19 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__doLogin = function(options, callback) {
       callback(options);
-    }
+    };
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback(message);
-    }
+    };
 
     happnClient.__prepareOptions({
-      username: "Janco"
+      username: 'Janco'
     });
 
-    happnClient.socket.write = function(message) {
-    }
+    happnClient.socket.write = function(message) {};
 
-    var package = require('../../../package.json')
+    var package = require('../../../package.json');
 
     happnClient.login(function(data) {
       expect(data).to.eql({
@@ -629,11 +639,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var happnClient = mockHappnClient();
     happnClient.socket = true;
     happnClient.login = function(callback) {
-      return callback(null, "done");
-    }
+      return callback(null, 'done');
+    };
     happnClient.authenticate(function(err, data) {
       expect(err).to.be(null);
-      expect(data).to.be("done");
+      expect(data).to.be('done');
       done();
     });
   });
@@ -641,15 +651,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   it('tests the handle_end function emits a "connection-ended" event and sets status to disconnected.', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__attachSession({
-      id: "This is a session"
+      id: 'This is a session'
     });
 
     happnClient.emit = function(event_type, data) {
-      expect(event_type).to.eql("connection-ended");
-      expect(data).to.eql("This is a session");
+      expect(event_type).to.eql('connection-ended');
+      expect(data).to.eql('This is a session');
       expect(this.status).to.eql(Constants.CLIENT_STATE.DISCONNECTED);
       done();
-    }
+    };
     happnClient.handle_end();
   });
 
@@ -657,14 +667,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var happnClient = mockHappnClient();
 
     happnClient.emit = function(event_type, data) {
-      expect(event_type).to.eql("reconnect-timeout");
+      expect(event_type).to.eql('reconnect-timeout');
       expect(data).to.eql({
         err: {},
         opts: {}
-      })
+      });
       expect(this.status).to.eql(Constants.CLIENT_STATE.DISCONNECTED);
       done();
-    }
+    };
 
     happnClient.handle_reconnect_timeout({}, {});
   });
@@ -672,13 +682,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   it('tests the handle_reconnect_scheduled function emits a reconnect scheduled event.', function(done) {
     var happnClient = mockHappnClient();
     happnClient.emit = function(event_type, data) {
-      expect(event_type).to.eql("reconnect-scheduled");
+      expect(event_type).to.eql('reconnect-scheduled');
       expect(happnClient.__reconnectSuccessful).to.be(false);
       expect(this.status).to.eql(Constants.CLIENT_STATE.RECONNECTING);
       done();
-    }
+    };
     happnClient.handle_reconnect_scheduled();
-  })
+  });
 
   it('tests the getEventId function.', function(done) {
 
@@ -686,18 +696,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(happnClient.getEventId()).to.eql(1);
     expect(happnClient.getEventId()).to.eql(2);
     done();
-  })
+  });
 
   it('tests the __requestCallback function.', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__requestCallback({
-      eventId: "MyEvent|1"
+      eventId: 'MyEvent|1'
     }, function(e, response) {
       return response;
     }, {
       timeout: 100
-    }, "MyEvent|1")
-    expect(typeof happnClient.state.requestEvents["MyEvent|1"].handleResponse).to.eql("function");
+    }, 'MyEvent|1');
+    expect(typeof happnClient.state.requestEvents['MyEvent|1'].handleResponse).to.eql('function');
     done();
   });
 
@@ -719,19 +729,24 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         sessionId: 'test'
       });
       done();
-    }
+    };
 
-    happnClient.__performSystemRequest("login", {
-      username: "Janco1",
-      password: "private"
-    }, null, function(){
+    happnClient.__performSystemRequest('login', {
+      username: 'Janco1',
+      password: 'private'
+    }, null, function() {
 
     });
   });
 
+
+  //ISSUE:::
   it('tests the __performSystemRequest function writes a message to the socket with timeout options.', function(done) {
+
+    this.timeout(20000);
     var happnClient = mockHappnClient();
     happnClient.socket.write = function(message) {
+
       expect(message).to.eql({
         action: 'login',
         eventId: 1,
@@ -745,17 +760,20 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         sessionId: 'test'
       });
       done();
-    }
+    };
 
-    happnClient.__performSystemRequest("login", {
-      username: "Janco2",
-      password: "private"
-    }, {
-      timeout: 100
-    }, null,
-    function(){
+    happnClient.__performSystemRequest(
+      'login',
+      {
+        username: 'Janco2',
+        password: 'private'
+      },
+      {
+        timeout: 100
+      },
+      function() {
 
-    });
+      });
   });
 
   it('tests the __performSystemRequest function will return a callback if one is passed to it.', function(done) {
@@ -763,13 +781,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.socket.write = function(message) {};
 
-    happnClient.__performSystemRequest("login", {
-      username: "Janco3",
-      password: "private"
+    happnClient.__performSystemRequest('login', {
+      username: 'Janco3',
+      password: 'private'
     }, {
       timeout: 50
     }, function(error, data) {
-      expect(error.toString()).to.eql("Error: api request timed out");
+      expect(error.toString()).to.eql('Error: api request timed out');
       done();
     });
   });
@@ -786,7 +804,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.get('/test/path', function(e, response) {
       if (e) return done(e);
@@ -800,7 +818,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.getPaths('/test/path', function(e, response) {
       if (e) return done(e);
@@ -814,7 +832,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.increment('/test/path', 1, 1, function(e, response) {
       if (e) return done(e);
@@ -828,7 +846,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.increment('/test/path', 1, function(e, response) {
       if (e) return done(e);
@@ -842,7 +860,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.increment('/test/path', function(e, response) {
       if (e) return done(e);
@@ -856,10 +874,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.increment('/test/path', 1, 'string', function(e, response) {
-      expect(e.toString()).to.eql("Error: increment must be a number");
+      expect(e.toString()).to.eql('Error: increment must be a number');
       done();
     });
   });
@@ -870,7 +888,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.set('/test/path', {
       test: 'data'
@@ -891,7 +909,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.set('/test/*/path', {
       test: 'data'
     }, function(e, response) {
-      expect(e.toString()).to.eql("Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character");
+      expect(e.toString()).to.eql('Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
       done();
     });
   });
@@ -902,12 +920,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
 
     happnClient.set('/test/^/path', {
       test: 'data'
     }, function(e, response) {
-      expect(e.toString()).to.eql("Error: Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ) _ -, ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*");
+      expect(e.toString()).to.eql('Error: Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ) _ -, ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*');
       done();
     });
   });
@@ -969,13 +987,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var happnClient = mockHappnClient();
 
-    happnClient.onEvent("reconnect", function(data) {
+    happnClient.onEvent('reconnect', function(data) {
       expect(data).to.eql(options);
       done();
-    })
+    });
 
     var options = {
-      Name: "Options"
+      Name: 'Options'
     };
 
     happnClient.reconnect(options);
@@ -987,10 +1005,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.authenticate = function(cb) {
       expect(typeof cb).to.eql('function');
       done();
-    }
-    happnClient.onEvent("reconnect", function(data) {})
+    };
+    happnClient.onEvent('reconnect', function(data) {});
     var options = {
-      Name: "Options"
+      Name: 'Options'
     };
 
     happnClient.reconnect(options);
@@ -1000,14 +1018,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var happnClient = mockHappnClient();
 
     happnClient.onEvent(
-      "error",
+      'error',
       function(e, response) {
-        expect(e.toString()).to.eql("Error: This is an error");
+        expect(e.toString()).to.eql('Error: This is an error');
         expect(response).to.be(undefined);
       });
 
     happnClient.handle_error(new Error('This is an error'), false);
-    expect(happnClient.state.errors[0].error.toString()).to.eql("Error: This is an error");
+    expect(happnClient.state.errors[0].error.toString()).to.eql('Error: This is an error');
     expect(happnClient.state.errors[0].fatal).to.be(false);
     done();
   });
@@ -1017,19 +1035,19 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     // TODO::: SHOULD THE FATAL ERROR BE THROWN? OR SHOULD USER BE ALERTED SOMEHOW?
     var happnClient = mockHappnClient();
     happnClient.onEvent(
-      "fatal-error",
+      'fatal-error',
       function(e, response) {
-        expect(e.toString()).to.eql("Error: This is an error");
+        expect(e.toString()).to.eql('Error: This is an error');
         expect(response).to.be(undefined);
       });
 
-    happnClient.handle_error(new Error('This is an error'), true)
-    expect(happnClient.state.errors[0].error.toString()).to.eql("Error: This is an error");
+    happnClient.handle_error(new Error('This is an error'), true);
+    expect(happnClient.state.errors[0].error.toString()).to.eql('Error: This is an error');
     expect(happnClient.state.errors[0].fatal).to.be(true);
     done();
   });
 
-  it("tests that the __attachpublishedAck function will callback an error if options aren't correct", function(done) {
+  it('tests that the __attachpublishedAck function will callback an error if options aren\'t correct', function(done) {
 
     var happnClient = mockHappnClient();
 
@@ -1041,7 +1059,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     };
   });
 
-  it("tests that the __attachpublishedAck function will callback with an error if timed out  ", function(done) {
+  it('tests that the __attachpublishedAck function will callback with an error if timed out  ', function(done) {
     options = {
       onPublished: function(e, results) {
         expect(e.toString()).to.eql('Error: publish timed out');
@@ -1053,23 +1071,23 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.__attachPublishedAck(options, {});
   });
 
-  it("tests the handle_ack function works when __attachPublishedAck has been called", function(done) {
+  it('tests the handle_ack function works when __attachPublishedAck has been called', function(done) {
 
     var happnClient = mockHappnClient();
 
     var message = {
-      sessionId: "1",
-      eventId: "1"
+      sessionId: '1',
+      eventId: '1'
     };
     var message2 = {
-      id: "1-1",
-      result: "Good",
-      status: "good"
+      id: '1-1',
+      result: 'Good',
+      status: 'good'
     };
     var options = {
-      onPublished: function(e, results)  {
+      onPublished: function(e, results) {
         expect(results).to.eql('Good');
-        done()
+        done();
       },
       onPublishedTimeout: 1000
     };
@@ -1077,25 +1095,25 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.handle_ack(message2);
   });
 
-  it("tests the handle_ack function throws an error on a message with status: 'error' after __attachPublishedAck has been called", function(done) {
+  it('tests the handle_ack function throws an error on a message with status: \'error\' after __attachPublishedAck has been called', function(done) {
 
     var happnClient = mockHappnClient();
 
     var message = {
-      sessionId: "1",
-      eventId: "1"
+      sessionId: '1',
+      eventId: '1'
     };
     var message2 = {
-      id: "1-1",
-      error: "Bad",
-      status: "error",
-      result: "Bad"
+      id: '1-1',
+      error: 'Bad',
+      status: 'error',
+      result: 'Bad'
     };
     var options = {
       onPublished: function(e, results) {
-        expect(e.toString()).to.eql("Error: Bad");
+        expect(e.toString()).to.eql('Error: Bad');
         expect(results).to.eql('Bad');
-        done()
+        done();
       },
       onPublishedTimeout: 100
     };
@@ -1103,58 +1121,58 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.handle_ack(message2);
   });
 
-  it("tests the handle_publication function", function(done) {
+  it('tests the handle_publication function', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__requestCallback({
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
       function(e, data) {
         expect(data).to.eql(message);
         done();
-      }, {}, "MyEvent|1");
+      }, {}, 'MyEvent|1');
     var message = {
       _meta: {
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
-      message: "Hello"
+      message: 'Hello'
     };
     happnClient.handle_publication(message);
-  })
+  });
 
-  it("tests the handle_publication function with an encrypted payload", function(done) {
+  it('tests the handle_publication function with an encrypted payload', function(done) {
     var happnClient = mockHappnClient();
     var message = {
-      encrypted: "e912552b792587572be6fe0163f9e8587ce5a4c15b58020f0a4e8e87e55a7fed2b7cf58b682c7aecf5b1c7f2d74679a9c83f5a9b3885739e2a6380cdb04d281068ca38584b7de85b86"
+      encrypted: 'b5428d67b42b083f6b1da9aebf78909e0bc4cef3d55afe318900585e7a979da144d0367489771efa9325e914c27f08223cad12bc09c9e62c2855f6c4c426ada7b0750a67d266361cbd'
     };
     var message2 = {
-      text: "unencrypted text",
+      text: 'unencrypted text',
       _meta: {
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
       sessionId: 1
     };
     happnClient.__ensureCryptoLibrary();
-    happnClient.session.secret = "Secret";
+    happnClient.session.secret = '990413ee0e4911e9ab14d663bd873d94';
     happnClient.__requestCallback({
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
       function(e, data) {
         expect(data).to.eql(message2);
         done();
-      }, {}, "MyEvent|1");
+      }, {}, 'MyEvent|1');
 
     happnClient.handle_publication(message);
-  })
+  });
 
-  it("tests the handle_publication with an encrypted login", function(done) {
+  it('tests the handle_publication with an encrypted login', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__requestCallback({
-        eventId: "login"
+        eventId: 'login'
       },
       function(e, data) {
         expect(data).to.eql(parameters);
         done();
-      }, {}, "login");
+      }, {}, 'login');
 
     var pubKey = 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG';
     happnClient.__prepareOptions({
@@ -1166,9 +1184,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var parameters = {
       publicKey: pubKey,
       username: 'Janco',
-      password: "private",
+      password: 'private',
       _meta: {
-        eventId: "login"
+        eventId: 'login'
       }
     };
     happnClient.__ensureCryptoLibrary();
@@ -1181,154 +1199,157 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.handle_publication(encryptedLogin);
   });
 
-  it("tests the handle_publication function calls __handleSystemMessage if _meta.type = 'system'", function(done) {
+  it('tests the handle_publication function calls __handleSystemMessage if _meta.type = \'system\'', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__handleSystemMessage = function(data) {
       expect(data).to.eql(message);
       done();
-    }
-    var message = {
-      _meta: {
-        type: "system",
-        eventId: "MyEvent|1"
-      },
-      message: "Hello"
     };
-    happnClient.handle_publication(message);
-  })
-
-  it("tests the handle_publication function calls handle_data if _meta.type = 'data'", function(done) {
-    var happnClient = mockHappnClient();
-    happnClient.handle_data = function(channel, data) {
-      expect(channel).to.eql("test");
-      expect(data).to.eql(message);
-      done();
-    }
     var message = {
       _meta: {
-        channel: "test",
-        type: "data",
-        eventId: "MyEvent|1"
+        type: 'system',
+        eventId: 'MyEvent|1'
       },
-      message: "Hello"
+      message: 'Hello'
     };
     happnClient.handle_publication(message);
   });
 
-  it("tests the handle_publication function calls handle_ack if _meta.type = 'ack'", function(done) {
+  it('tests the handle_publication function calls handle_data if _meta.type = \'data\'', function(done) {
+    var happnClient = mockHappnClient();
+    happnClient.handle_data = function(channel, data) {
+      expect(channel).to.eql('test');
+      expect(data).to.eql(message);
+      done();
+    };
+    var message = {
+      _meta: {
+        channel: 'test',
+        type: 'data',
+        eventId: 'MyEvent|1'
+      },
+      message: 'Hello'
+    };
+    happnClient.handle_publication(message);
+  });
+
+  it('tests the handle_publication function calls handle_ack if _meta.type = \'ack\'', function(done) {
     var happnClient = mockHappnClient();
     happnClient.handle_ack = function(data) {
       expect(data).to.eql(message);
       done();
-    }
+    };
     var message = {
       _meta: {
-        type: "ack",
-        eventId: "MyEvent|1"
+        type: 'ack',
+        eventId: 'MyEvent|1'
       },
-      message: "Hello"
+      message: 'Hello'
     };
     happnClient.handle_publication(message);
   });
 
-  it("tests the handle_publication function works when message is an array", function(done) {
+  it('tests the handle_publication function works when message is an array', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__requestCallback({
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
       function(e, data) {
-        expect(data).to.eql(["Hello"])
-        done()
-      }, {}, "MyEvent|1");
+        expect(data).to.eql(['Hello']);
+        done();
+      }, {}, 'MyEvent|1');
     var message = [
-      "Hello", {
-        eventId: "MyEvent|1"
+      'Hello', {
+        eventId: 'MyEvent|1'
       }
     ];
     happnClient.handle_publication(message);
   });
 
-  it("tests the handle_publication function can handle an error", function(done) {
+  it('tests the handle_publication function can handle an error', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__requestCallback({
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
       function(e, data) {
-        expect(e.toString()).to.eql("Error: This is an error");
+        expect(e.toString()).to.eql('Error: This is an error');
         expect(data).to.eql(message);
         done();
-      }, {}, "MyEvent|1");
+      }, {}, 'MyEvent|1');
 
     var message = {
       _meta: {
-        status: "error",
-        error: {name:'Error', message:'This is an error'},
-        eventId: "MyEvent|1"
+        status: 'error',
+        error: {
+          name: 'Error',
+          message: 'This is an error'
+        },
+        eventId: 'MyEvent|1'
       },
-      message: "Bad message with error"
+      message: 'Bad message with error'
     };
     happnClient.handle_publication(message);
-  })
+  });
 
-  it("tests the handle_response_array function", function(done) {
+  it('tests the handle_response_array function', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__requestCallback({
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
       function(e, data) {
-        expect(data).to.eql("Hello");
+        expect(data).to.eql('Hello');
         done();
-      }, {}, "MyEvent|1");
-    var response = "Hello";
+      }, {}, 'MyEvent|1');
+    var response = 'Hello';
     meta = {
-      eventId: "MyEvent|1"
+      eventId: 'MyEvent|1'
     };
     happnClient.handle_response_array(null, response, meta);
   });
 
-  it("tests the handle_response function", function(done) {
+  it('tests the handle_response function', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__requestCallback({
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
       function(e, data) {
         expect(data).to.eql(response);
         done();
-      }, {}, "MyEvent|1");
+      }, {}, 'MyEvent|1');
     var response = {
       _meta: {
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
-      message: "Hello"
+      message: 'Hello'
     };
     happnClient.handle_response(null, response);
-  })
+  });
 
-  it("tests the handle_response function, passing a timeout", function(done) {
+  it('tests the handle_response function, passing a timeout', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__requestCallback({
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
       function(e, data) {
         expect(data).to.eql(response);
         done();
       }, {
         timeout: 100
-      }, "MyEvent|1");
+      }, 'MyEvent|1');
     var response = {
       _meta: {
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
-      message: "Hello"
+      message: 'Hello'
     };
     happnClient.handle_response(null, response);
   });
 
-  it("tests the __acknowledge function", function(done) {
+  it('tests the __acknowledge function', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
+    };
     var message = {
       _meta: {
         consistency: Constants.CONSISTENCY.ACKNOWLEDGED,
@@ -1341,11 +1362,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests that the __acknowledge function will return an error in the message and not acknowledge if an error occurs in the __getDataRequest", function(done) {
+  it('tests that the __acknowledge function will return an error in the message and not acknowledge if an error occurs in the __getDataRequest', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback(new Error('Bad'));
-    }
+    };
     var message = {
       _meta: {
         consistency: Constants.CONSISTENCY.ACKNOWLEDGED,
@@ -1354,12 +1375,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     };
     happnClient.__acknowledge(message, function(result) {
       expect(result._meta.acknowledged).to.eql(false);
-      expect(result._meta.acknowledgedError.toString()).to.eql("Error: Bad");
+      expect(result._meta.acknowledgedError.toString()).to.eql('Error: Bad');
       done();
     });
   });
 
-  xit("tests the delegate_handover function when delegate runcount > count", function(done) {
+  xit('tests the delegate_handover function when delegate runcount > count', function(done) {
 
     this.timeout(5000);
 
@@ -1373,16 +1394,16 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    var message = "This is a message";
+    var message = 'This is a message';
     happnClient.delegate_handover(message, delegate);
     setTimeout(done, 2000);
   });
 
-  it("tests the delegate_handover function when runcount will equal count after 1 iteration", function(done) {
+  it('tests the delegate_handover function when runcount will equal count after 1 iteration', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__acknowledge = function(data, cb) {
       cb(data);
-    }
+    };
 
     var delegate = {
       count: 2,
@@ -1394,17 +1415,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
     var message = {
-      data: "This is a message",
-      _meta: "Meta"
+      data: 'This is a message',
+      _meta: 'Meta'
     };
     happnClient.delegate_handover(message, delegate);
   });
 
-  it("tests the delegate_handover function when count >> runcount", function(done) {
+  it('tests the delegate_handover function when count >> runcount', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__acknowledge = function(data, cb) {
       cb(data);
-    }
+    };
 
     var delegate = {
       count: 10,
@@ -1416,17 +1437,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
     var message = {
-      data: "This is a message",
-      _meta: "Meta"
+      data: 'This is a message',
+      _meta: 'Meta'
     };
     happnClient.delegate_handover(message, delegate);
   });
 
-  it("tests the handle_data function with one event handler", function(done) {
+  it('tests the handle_data function with one event handler', function(done) {
     var happnClient = mockHappnClient();
 
     happnClient.state.events = {
-      "MyEvent|1": [{
+      'MyEvent|1': [{
         handler: function(data, meta) {
           expect(data).to.eql(message.data);
           expect(meta).to.eql(message._meta);
@@ -1436,18 +1457,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     };
     happnClient.__acknowledge = function(data, cb) {
       cb(data);
-    }
+    };
 
     var message = {
       _meta: {
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
-      data: "Hello"
+      data: 'Hello'
     };
-    happnClient.handle_data("MyEvent|1", message);
+    happnClient.handle_data('MyEvent|1', message);
   });
 
-  it("tests the handle_data function with multiple handlers", function(done) {
+  it('tests the handle_data function with multiple handlers', function(done) {
     var happnClient = mockHappnClient();
     var n = 0;
     var testDone = function() {
@@ -1455,7 +1476,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (n == 2) done();
     };
     happnClient.state.events = {
-      "MyEvent|1": [{
+      'MyEvent|1': [{
           handler: function(data, meta) {
             expect(data).to.eql(message.data);
             expect(meta).to.eql(message._meta);
@@ -1470,21 +1491,21 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         }
       ]
-    }
+    };
     happnClient.__acknowledge = function(data, cb) {
       cb(data);
-    }
+    };
 
     var message = {
       _meta: {
-        eventId: "MyEvent|1"
+        eventId: 'MyEvent|1'
       },
-      data: "Hello"
+      data: 'Hello'
     };
-    happnClient.handle_data("MyEvent|1", message);
+    happnClient.handle_data('MyEvent|1', message);
   });
 
-  it("tests the __handleSystemMessage function will set status to disconnected if message event key is server-side-disconnect", function(done) {
+  it('tests the __handleSystemMessage function will set status to disconnected if message event key is server-side-disconnect', function(done) {
     var happnClient = mockHappnClient();
     var message = {
       eventKey: 'server-side-disconnect'
@@ -1494,7 +1515,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it("tests the offSystemMessage function", function(done) {
+  it('tests the offSystemMessage function', function(done) {
     var happnClient = mockHappnClient();
     expect(happnClient.onSystemMessage(function(x) {
       console.log(x);
@@ -1504,262 +1525,268 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it("tests the onSystemMessage function", function(done) {
+  it('tests the onSystemMessage function', function(done) {
     var happnClient = mockHappnClient();
-    expect(happnClient.onSystemMessage(function(x){console.log(x)})).to.eql(0);
-    expect(happnClient.onSystemMessage(function(x){console.log(x)})).to.eql(1);
+    expect(happnClient.onSystemMessage(function(x) {
+      console.log(x);
+    })).to.eql(0);
+    expect(happnClient.onSystemMessage(function(x) {
+      console.log(x);
+    })).to.eql(1);
     done();
   });
 
-  it("tests the _remoteOn function calls request callback", function(done) {
+  it('tests the _remoteOn function calls request callback', function(done) {
     var happnClient = mockHappnClient();
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       callback();
-    }
-    happnClient._remoteOn("test/path", null, function(e, r) { done();});
+    };
+    happnClient._remoteOn('test/path', null, function(e, r) {
+      done();
+    });
   });
 
-  it("tests the on function returns will create a callbackHandler and that handle_data will call it", function(done) {
+  it('tests the on function returns will create a callbackHandler and that handle_data will call it', function(done) {
     var happnClient = mockHappnClient();
     var parameters = {
-      event_type: "Call",
+      event_type: 'Call',
       meta: {}
     };
     var response = {
       _meta: {
         eventId: 1
       },
-      data: "This is a message",
-      status: "OK"
+      data: 'This is a message',
+      status: 'OK'
     };
 
     happnClient.socket.write = function(message) {
       happnClient.handle_response(null, response);
-    }
+    };
 
-    happnClient.on("MyEvent", parameters, function(data, meta) {
-        expect(data).to.eql("This is a message");
+    happnClient.on('MyEvent', parameters, function(data, meta) {
+        expect(data).to.eql('This is a message');
         expect(meta).to.eql({
           eventId: 1
         });
         done();
       },
       function(e, r) {
-        happnClient.handle_data("/CALL@MyEvent", response);
+        happnClient.handle_data('/CALL@MyEvent', response);
       });
   });
 
-  it("tests the on function throws an error if not called with a callback", function(done) {
+  it('tests the on function throws an error if not called with a callback', function(done) {
     var happnClient = mockHappnClient();
     process.on('unhandledRejection', function(error) {
-      expect(error.toString()).to.eql("Error: you cannot subscribe without passing in a subscription callback");
+      expect(error.toString()).to.eql('Error: you cannot subscribe without passing in a subscription callback');
       done();
     });
     happnClient.on();
   });
 
-  it("tests the on function throws an error if using onPublished handler (mocking handler) without a callback", function(done) {
+  it('tests the on function throws an error if using onPublished handler (mocking handler) without a callback', function(done) {
     var happnClient = mockHappnClient();
     var parameters = {
       onPublished: function(x) {
         console.log(x);
       }
     };
-    happnClient.on("test/path", parameters, 'string', undefined).catch(function(error) {
-      expect(error.toString()).to.eql("Error: callback cannot be null when using the onPublished event handler");
+    happnClient.on('test/path', parameters, 'string', undefined).catch(function(error) {
+      expect(error.toString()).to.eql('Error: callback cannot be null when using the onPublished event handler');
       done();
     });
   });
 
-  it("tests the onAll function", function(done) {
+  it('tests the onAll function', function(done) {
     var happnClient = mockHappnClient();
 
     var response = {
-      status: "OK",
+      status: 'OK',
       _meta: {
-        eventId: "1"
+        eventId: '1'
       }
     };
 
     happnClient.socket.write = function(message) {
       happnClient.handle_response(null, response);
-    }
+    };
 
     happnClient.onAll(function(data, meta) {
-        expect(data).to.eql("This is data");
-        expect(meta).to.eql("This is meta");
+        expect(data).to.eql('This is data');
+        expect(meta).to.eql('This is meta');
         done();
       },
       function(e, r) {
-        happnClient.handle_data("/ALL@*", {
-          data: "This is data",
-          _meta: "This is meta"
+        happnClient.handle_data('/ALL@*', {
+          data: 'This is data',
+          _meta: 'This is meta'
         });
       });
   });
 
-  it("tests the _remoteOff function", function(done) {
+  it('tests the _remoteOff function', function(done) {
     var happnClient = mockHappnClient();
-    happnClient.socket.write = function(message) {}
+    happnClient.socket.write = function(message) {};
 
-    var channel = "/THIS@that";
+    var channel = '/THIS@that';
     var message1 = {
       action: 'off',
       eventId: 1,
       options: {
-        referenceId:0,
-        timeout: 60000
+        referenceId: 0,
+        timeout: 5000
       },
       path: channel,
       data: null,
-      sessionId: "test"
+      sessionId: 'test'
     };
 
     happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
       expect(path).to.equal(channel);
       expect(options).to.eql({
-        referenceId:0,
-        timeout: 60000
+        referenceId: 0,
+        timeout: 5000
       });
       expect(message).to.eql(message1);
       expect(eventId).to.eql(1);
-      expect(action).to.eql("off");
+      expect(action).to.eql('off');
 
       callback(null, {
-        status: "OK"
+        status: 'OK'
       });
-    }
+    };
 
     happnClient._remoteOff('/THIS@that', function(err, data) {
       done();
     });
   });
 
-  it("tests the _offListener function", function(done) {
+  it('tests the _offListener function', function(done) {
     var happnClient = mockHappnClient();
     var path;
     happnClient._remoteOff = function(channel, listenerRef, cb) {
       if (typeof listenerRef == 'function') cb = listenerRef;
       path = channel;
       cb();
-    }
+    };
 
     happnClient.state.refCount = {
-      "A":1,
-      "B":1,
-      "C":1,
-      "D":1
+      'A': 1,
+      'B': 1,
+      'C': 1,
+      'D': 1
     };
 
     happnClient.state.events = {
-      "event1": [{
+      'event1': [{
         id: 1,
-        eventKey: "A"
+        eventKey: 'A'
       }, {
         id: 2,
-        eventKey: "B"
+        eventKey: 'B'
       }, {
         id: 3,
-        eventKey: "C"
+        eventKey: 'C'
       }],
-      "event2": [{
+      'event2': [{
         id: 5,
-        eventKey: "D"
+        eventKey: 'D'
       }]
     };
 
     happnClient._offListener(5, function() {
-      expect(path).to.eql("event2");
-      expect(happnClient.state.events["event2"]).to.be(undefined);
+      expect(path).to.eql('event2');
+      expect(happnClient.state.events['event2']).to.be(undefined);
       done();
     });
   });
 
-  it("tests the _offPath function", function(done) {
+  it('tests the _offPath function', function(done) {
     var happnClient = mockHappnClient();
     happnClient._remoteOff = function(channel, listenerRef, callback) {
-      if (typeof listenerRef == 'function'){
+      if (typeof listenerRef == 'function') {
         callback = listenerRef;
         listenerRef = 0;
       }
       callback();
-    }
+    };
     happnClient.state.events = {
-      "/EVENT1@SOMEWHERE": [{
+      '/EVENT1@SOMEWHERE': [{
         id: 1,
-        referenceId: "A"
+        referenceId: 'A'
       }, {
         id: 2,
-        referenceId: "B"
+        referenceId: 'B'
       }, {
         id: 3,
-        referenceId: "C"
+        referenceId: 'C'
       }],
-      "/EVENT2@SOMEWHERE": [{
+      '/EVENT2@SOMEWHERE': [{
         id: 1,
-        referenceId: "A"
+        referenceId: 'A'
       }, {
         id: 2,
-        referenceId: "B"
+        referenceId: 'B'
       }, {
         id: 3,
-        referenceId: "C"
+        referenceId: 'C'
       }],
-      "event2": [{
+      'event2': [{
         id: 4,
-        referenceId: "D"
+        referenceId: 'D'
       }, {
         id: 5,
-        referenceId: "E"
+        referenceId: 'E'
       }, {
         id: 6,
-        referenceId: "F"
+        referenceId: 'F'
       }]
     };
-    happnClient.offPath("SOMEWHERE", function(error, data) {
+    happnClient.offPath('SOMEWHERE', function(error, data) {
       expect(happnClient.state.events).to.eql({
-        "event2": [{
+        'event2': [{
           id: 4,
-          referenceId: "D"
+          referenceId: 'D'
         }, {
           id: 5,
-          referenceId: "E"
+          referenceId: 'E'
         }, {
           id: 6,
-          referenceId: "F"
+          referenceId: 'F'
         }]
       });
       done();
     });
   });
 
-  it("tests the offAll function", function(done) {
+  it('tests the offAll function', function(done) {
     var happnClient = mockHappnClient();
     happnClient._remoteOff = function(channel, callback) {
       expect(channel).to.eql('*');
       callback();
-    }
+    };
     happnClient.state.events = {
-      "/EVENT1@SOMEWHERE": [{
+      '/EVENT1@SOMEWHERE': [{
         id: 1,
-        referenceId: "A"
+        referenceId: 'A'
       }, {
         id: 2,
-        referenceId: "B"
+        referenceId: 'B'
       }, {
         id: 3,
-        referenceId: "C"
+        referenceId: 'C'
       }],
-      "event2": [{
+      'event2': [{
         id: 4,
-        referenceId: "D"
+        referenceId: 'D'
       }, {
         id: 5,
-        referenceId: "E"
+        referenceId: 'E'
       }, {
         id: 6,
-        referenceId: "F"
+        referenceId: 'F'
       }]
     };
     happnClient.offAll(function() {
@@ -1768,53 +1795,65 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the off function returns a callback", function(done) {
+  it('tests the off function returns a callback', function(done) {
     var happnClient = mockHappnClient();
-    happnClient.off(1, function(err, data) {done()});
+    happnClient.off(1, function(err, data) {
+      done();
+    });
   });
 
-  it("tests the off function returns an error if the handle is null", function(done) {
+  it('tests the off function returns an error if the handle is null', function(done) {
     var happnClient = mockHappnClient();
-    happnClient.off(null, function(err, data){ expect(err.toString()).to.eql("Error: handle cannot be null"); done();});
+    happnClient.off(null, function(err, data) {
+      expect(err.toString()).to.eql('Error: handle cannot be null');
+      done();
+    });
   });
 
-  it("tests the off function returns an error if the handle is NAN", function(done) {
+  it('tests the off function returns an error if the handle is NAN', function(done) {
     var happnClient = mockHappnClient();
-    happnClient.off('string', function(err, data){expect(err.toString()).to.eql("Error: handle must be a number"); done();});
+    happnClient.off('string', function(err, data) {
+      expect(err.toString()).to.eql('Error: handle must be a number');
+      done();
+    });
   });
 
-  it("tests the __connectionCleanup function will call socket.end correctly if it is mocked.", function(done) {
+  it('tests the __connectionCleanup function will call socket.end correctly if it is mocked.', function(done) {
     var happnClient = mockHappnClient();
     happnClient.socket.end = function() {
       done();
-    }
+    };
     happnClient.log.warn = function() {};
     happnClient.__connectionCleanup();
-  })
+  });
 
-  it("tests the revokeSession function calls a perform system request with revoke-session", function(done) {
+  it('tests the revokeSession function calls a perform system request with revoke-session', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__performSystemRequest = function(action, data, options, callback) {
       expect(action).to.equal('revoke-session');
       callback();
-    }
+    };
     happnClient.revokeSession(function() {
       done();
     });
   });
 
-  xit("tests the disconnect function", function(done) {
+  xit('tests the disconnect function', function(done) {
     // TODO::: ADDED A CALLBACK AT THE END OF THE FUNCTION IN client.js PASSES BUT HANGS
     // Socket issues again?
     var happnClient = mockHappnClient();
     happnClient.__performSystemRequest = function(action, data, options, callback) {
       expect(action).to.eql('disconnect');
       cb();
-    }
+    };
 
     happnClient.socket = null;
     happnClient.disconnect({}, function(e, data) {
       done();
     });
   });
+
+  // after('shows why node is still running', function(){
+  //   log();
+  // });
 });
