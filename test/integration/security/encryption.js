@@ -91,7 +91,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var encrypted = testServices.crypto.asymmetricEncrypt(generatedPublicKeyBob, generatedPrivateKeyAlice, message);
     var decrypted = testServices.crypto.asymmetricDecrypt(generatedPublicKeyAlice, generatedPrivateKeyBob, encrypted);
 
-    console.log(encrypted);
     if (message == encrypted)
       throw new Error('encrypted data matches secret message');
 

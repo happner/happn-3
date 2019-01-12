@@ -1893,8 +1893,7 @@ describe(
 
                       .then(function(clientInstance) {
                         clientInstance.disconnect(function(e) {
-                          if (e)
-                            console.warn('couldnt disconnect client:::', e);
+                          if (e) console.warn('couldnt disconnect client:::', e);
                           serviceInstance.stop(done);
                         });
                       })

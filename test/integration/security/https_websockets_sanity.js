@@ -1,3 +1,5 @@
+//const log = require('why-is-node-running');
+
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var expect = require('expect.js');
@@ -920,13 +922,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               property3: 'property3'
             }, {}, function (e, setresult) {
               if (e) return callback(new Error(e));
-
-              ////console.log('DID ON SET');
-              ////console.log(setresult);
             });
-
           });
-
       });
 
     }, function (e, listenerId) {
@@ -1046,4 +1043,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       done();
     });
   });
+
+  // after('shows why node is still running', function(callback){
+  //   this.timeout(5000);
+  //   setTimeout(function(){
+  //     log();
+  //     callback();
+  //   }, 2000);
+  // });
 });
