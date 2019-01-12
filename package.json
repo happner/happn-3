@@ -6,7 +6,7 @@
   "protocol": "4",
   "database": "1",
   "scripts": {
-    "test": "gulp lint && mocha silence.js test/integration/** test/unit/** test/backward-compatibility/**",
+    "test": "gulp lint && mocha silence.js test/integration/** test/unit/** test/backward-compatibility/** --exit",
     "test-perf": "gulp lint && mocha silence.js test/performance/subscriptions.js",
     "test-unit": "mocha silence.js test/unit/**",
     "test-cover": "istanbul cover _mocha -- silence.js test/integration/** test/unit/** test/backward-compatibility/** --exit",
