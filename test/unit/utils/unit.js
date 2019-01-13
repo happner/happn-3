@@ -204,4 +204,34 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     done();
   });
+
+  it('tests computeiv string for crypto client and server', function(done) {
+
+    var sharedUtils = require('../../../lib/services/utils/shared');
+
+    var secret = "18989811111111111111111111111111";
+
+    let result = sharedUtils.computeiv(secret);
+
+    expect(result).to.eql("1991111111111111");
+
+    try {
+      var secret = 18989811111111111111111111111111;
+      result = sharedUtils.computeiv(secret);
+    } catch (e) {
+      console.log(e);
+      expect(e.toString()).to.equal('Error: secret must be a string');
+    }
+
+    try {
+      var secret = null;
+      result = sharedUtils.computeiv(secret);
+    } catch (e) {
+      console.log(e);
+      expect(e.toString()).to.equal(
+        'Error: secret cannot be null or undefined');
+    }
+
+    done();
+  });
 });
