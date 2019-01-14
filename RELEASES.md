@@ -539,4 +539,8 @@
 
 8.2.2 2019-01-02
 ----------------
-  - fix #172: remove large unused 'trie-search' dep 
+  - fix #172: remove large unused 'trie-search' dep
+
+8.2.3 2019-01-02
+----------------
+  - fix: happn_1.3.0 protocol backward compatibility
