@@ -536,3 +536,7 @@
 ----------------
   - fix: overlapping variable depth subscriptions, different depths
   - doc: updated variable depth on readme
+
+8.2.2 2019-01-02
+----------------
+  - fix #172: remove large unused 'trie-search' dep 
