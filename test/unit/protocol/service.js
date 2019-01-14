@@ -170,4 +170,60 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
   });
+
+  it('tests the processMessageIn method, bad protocol', function(done){
+
+    var protocolMock = new Protocol({logger:{
+      createLogger:function(){
+        return {
+          $$TRACE:function(){}
+        };
+      }
+    }});
+
+    protocolMock.happn = {
+      connect:{},
+      log:{
+        warn:function(){}
+      },
+      services:{
+        session:{
+          on:function(){}
+        },
+        error:{
+          SystemError:function(message){
+            expect(message).to.be('unknown inbound protocol: bad');
+            done();
+          }
+        }
+      }
+
+    };
+
+    protocolMock.initialize({
+    }, function(e){
+
+      protocolMock.processMessageIn = function processMessageIn (message, callback) {
+
+        var _this = this;
+
+        var protocol = _this.config.protocols[message.session.protocol];
+        if (!protocol) return callback(_this.happn.services.error.SystemError('unknown inbound protocol: ' + message.session.protocol, 'protocol'));
+
+        _this.processInboundStack(message, protocol)
+        .then(function (processed) {
+          callback(null, protocol.success(processed));
+        })
+        .catch(function(e){
+          _this.__handleProtocolError(protocol, message, e, callback);
+        });
+      }.bind(protocolMock);
+
+      protocolMock.processMessageIn({
+        session:{
+          protocol:'bad'
+        }
+      });
+    });
+  });
 });
