@@ -458,9 +458,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       sessionId: 1
     };
 
-    // //needs utils to be
-    // var utils = require('../../../lib/services/utils/shared');
-    // happnClient.utils = utils;
 
     happnClient.__ensureCryptoLibrary();
     happnClient.session.secret = '990413ee0e4911e9ab14d663bd873d94';
