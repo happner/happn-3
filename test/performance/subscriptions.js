@@ -46,7 +46,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     happnInstance.stop(done);
   });
 
-  it.only('creates ' + SUBSCRIPTION_COUNT + ' random paths, and randomly selects a wildcard option for each path, subscribes, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
+  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, and randomly selects a wildcard option for each path, subscribes, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
 
     var subscriptions = [];
 
