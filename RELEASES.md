@@ -544,3 +544,7 @@
 8.2.3 2019-01-02
 ----------------
   - fix: happn_1.3.0 protocol backward compatibility
+
+8.2.4 2019-01-02
+----------------
+  - fix: happn_1.3.0 protocol backward compatibility - outbound
