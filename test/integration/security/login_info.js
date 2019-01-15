@@ -62,15 +62,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       var events = {};
 
       server1.services.session.on('connect', function (evt) {
+        console.log('on connect insecure: ', evt);
         sessionId = evt.id;
         events.connect = evt;
       });
 
       server1.services.session.on('authentic', function (evt) {
+        console.log('on authentic insecure: ', evt);
         events.authentic = evt;
       });
 
       server1.services.session.on('disconnect', function (evt) {
+        console.log('on disconnect insecure: ', evt);
         events.disconnect = evt;
       });
 

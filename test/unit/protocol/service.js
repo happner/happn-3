@@ -237,7 +237,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         }
       }
-
     };
 
     protocolMock.initialize({
@@ -257,6 +256,63 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       };
 
       protocolMock.processMessageInLayers({
+        session:{
+          protocol:'happn_1.3.0'
+        }
+      }, function(e){
+
+      });
+    });
+  });
+
+  it('tests the processMessageOutLayers method, happn_1.3.0 protocol', function(done){
+
+    var protocolMock = new Protocol({logger:{
+      createLogger:function(){
+        return {
+          $$TRACE:function(){}
+        };
+      }
+    }});
+
+    protocolMock.happn = {
+      connect:{},
+      log:{
+        warn:function(){}
+      },
+      services:{
+        session:{
+          on:function(){}
+        },
+        error:{
+          handleSystem:function(){},
+          SystemError:function(message){
+            done(new Error(message));
+          }
+        }
+      }
+    };
+
+    protocolMock.initialize({
+    }, function(e){
+
+      protocolMock.config.protocols['happn_1'] = {
+        transformOut: function(message){
+          return message;
+        },
+        emit: function(transformedPublication, session){
+          expect(session.protocol).to.be('happn_1.3.0');
+          done();
+        }
+      }
+
+      protocolMock.processLayers = function(message){
+        return new Promise(function(resolve, reject){
+          resolve(message);
+        });
+      }
+
+      protocolMock.processMessageOutLayers({
         session:{
           protocol:'happn_1.3.0'
         }

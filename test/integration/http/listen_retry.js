@@ -2,6 +2,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
+
   var service1 = happn.service;
   var service2 = happn.service;
 
@@ -49,35 +50,25 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     this.timeout(20000);
 
-    try {
+    initializeService(service1, service1Port, function (e) {
 
-      initializeService(service1, service1Port, function (e) {
+      if (e) return callback(e);
+
+      initializeService(service2, service2Port, function (e) {
 
         if (e) return callback(e);
 
-        initializeService(service2, service2Port, function (e) {
+        instances[0].listen(function (e) {
 
           if (e) return callback(e);
 
-          instances[0].listen(function (e) {
+          instances[1].listen(callback);
 
-            if (e) return callback(e);
-
-            instances[1].listen(function (e) {
-
-              if (e) return callback(e);
-              callback();
-            });
-
-            setTimeout(function () {
-              instances[0].stop();
-            }, 3000);
-          });
+          setTimeout(function () {
+            instances[0].stop();
+          }, 3000);
         });
       });
-
-    } catch (e) {
-      callback(e);
-    }
+    });
   });
 });

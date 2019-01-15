@@ -541,6 +541,14 @@
 ----------------
   - fix #172: remove large unused 'trie-search' dep
 
-8.2.3 2019-01-02
+8.2.3 2019-01-14
 ----------------
   - fix: happn_1.3.0 protocol backward compatibility
+
+8.2.4 2019-01-15
+----------------
+  - fix: happn_1.3.0 protocol backward compatibility - outbound
+
+8.3.0 2019-01-15
+----------------
+  - feature: protocol update, happn 4
