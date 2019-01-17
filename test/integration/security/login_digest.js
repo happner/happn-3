@@ -3,7 +3,7 @@ var expect = require('expect.js');
 
 var service1Name;
 //checks info is stored next to login
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe.skip(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   this.timeout(60000);
 
