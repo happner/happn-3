@@ -548,3 +548,7 @@
 8.2.4 2019-01-02
 ----------------
   - fix: happn_1.3.0 protocol backward compatibility - outbound
+  
+8.2.5 2019-01-18
+----------------
+  - fix: listUserNamesByGroup does not work on mongodb (issue 180 workaround)
