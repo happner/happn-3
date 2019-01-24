@@ -3,12 +3,11 @@ var jshint = require('gulp-jshint');
 
 var lintSrc = [
   './lib/**/*.js',
-  './test/**/*.js',
-  './index.js'
+  './test/**/*.js'
 ];
 
-gulp.task('lint', function () {
+gulp.task('lint', function() {
   return gulp.src(lintSrc)
-    .pipe(jshint({esnext:true}))
+    .pipe(jshint({ esversion: 6 }))
     .pipe(jshint.reporter('default'));
 });

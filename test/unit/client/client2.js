@@ -424,7 +424,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   it('tests the __encryptPayload function.', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__ensureCryptoLibrary();
-    happnClient.session.secret = "Secret";
+    happnClient.session.secret = "990413ee0e4911e9ab14d663bd873d94";
     var message = {
       text: "unencrypted text",
       _meta: {
@@ -452,7 +452,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       sessionId: 1
     };
     happnClient.__ensureCryptoLibrary();
-    happnClient.session.secret = "Secret";
+    happnClient.session.secret = "990413ee0e4911e9ab14d663bd873d94";
     newMessage = happnClient.__decryptPayload(message);
     expect(newMessage).to.eql(message2);
     done();
@@ -1134,7 +1134,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       sessionId: 1
     };
     happnClient.__ensureCryptoLibrary();
-    happnClient.session.secret = "Secret";
+    happnClient.session.secret = "990413ee0e4911e9ab14d663bd873d94";
     happnClient.__requestCallback({
         eventId: "MyEvent|1"
       },
