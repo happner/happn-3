@@ -159,4 +159,109 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }
   });
 
+  it('tests the __performDataRequest function set null options, no callback, uninitialized state', function (done) {
+
+    var happnClient = mockHappnClient(null, Constants.CLIENT_STATE.UNINITIALIZED);
+
+    try{
+      happnClient.__performDataRequest('/test/path', 'set', {test:'data'});
+    }catch(e){
+      expect(e.toString()).to.be('Error: client not initialized yet');
+      expect(e.detail).to.be('action: set, path: /test/path');
+      done();
+    }
+  });
+
+  it('tests the __getListener function', function () {
+
+    var happnClient = mockHappnClient();
+    //handler, parameters, path, variableDepth
+    var mockParameters = {
+      count:10,
+      event_type:'test-event',
+      initialEmit: true,
+      initialCallback: true,
+      meta: 'test-meta',
+      depth: 20
+    };
+    var listener = happnClient.__getListener('test-handler', mockParameters, 'test-path', 15);
+
+    expect(listener).to.eql({
+      handler: 'test-handler',
+      count: 10,
+      eventKey: JSON.stringify({
+        path: 'test-path',
+        event_type: 'test-event',
+        count: 10,
+        initialEmit: true,
+        initialCallback: true,
+        meta: 'test-meta',
+        depth: 20
+      }),
+      runcount: 0,
+      meta: 'test-meta',
+      id: 0,
+      initialEmit: true,
+      initialCallback: true,
+      depth: 20,
+      variableDepth: 15
+    });
+  });
+
+  it('tests the __confirmRemoteOn function, with error', function (done) {
+
+    var happnClient = mockHappnClient();
+    var path = 'test-path';
+    var parameters = {
+      count:10,
+      event_type:'test-event',
+      initialEmit: true,
+      initialCallback: true,
+      meta: 'test-meta',
+      depth: 20
+    };
+
+    var listener = {};
+
+    happnClient._remoteOn = function(path, parameters, callback){
+      callback(new Error('test-error'));
+    }
+
+    happnClient.__clearListenerState = function(){};
+
+    happnClient.__confirmRemoteOn(path, parameters, listener, function(e){
+      expect(e.toString()).to.be("Error: test-error");
+      done();
+    });
+  });
+
+  it('tests the __confirmRemoteOn function, with response error', function (done) {
+
+    var happnClient = mockHappnClient();
+    var path = 'test-path';
+    var parameters = {
+      count:10,
+      event_type:'test-event',
+      initialEmit: true,
+      initialCallback: true,
+      meta: 'test-meta',
+      depth: 20
+    };
+
+    var listener = {};
+
+    happnClient._remoteOn = function(path, parameters, callback){
+      callback(null, {
+        status: 'error',
+        payload:'test-error'
+      });
+    }
+
+    happnClient.__clearListenerState = function(){};
+
+    happnClient.__confirmRemoteOn(path, parameters, listener, function(e){
+      expect(e).to.be('test-error');
+      done();
+    });
+  });
 });

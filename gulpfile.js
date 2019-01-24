@@ -3,8 +3,7 @@ var jshint = require('gulp-jshint');
 
 var lintSrc = [
   './lib/**/*.js',
-  './test/**/*.js',
-  './index.js'
+  './test/**/*.js'
 ];
 
 gulp.task('lint', function () {
