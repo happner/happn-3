@@ -548,7 +548,12 @@
 8.2.4 2019-01-02
 ----------------
   - fix: happn_1.3.0 protocol backward compatibility - outbound
-  
+
 8.2.5 2019-01-18
 ----------------
   - fix: listUserNamesByGroup does not work on mongodb (issue 180 workaround)
+
+8.2.6 2019-01-24
+----------------
+  - issue #184 fix: cannot read status of null in .on response of client
+  - lru cache issue
