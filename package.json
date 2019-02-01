@@ -1,7 +1,7 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
-  "version": "8.2.6",
+  "version": "8.2.7",
   "main": "./lib/index",
   "protocol": "3",
   "database": "1",
@@ -36,6 +36,7 @@
     "body-parser": "1.14.1",
     "connect": "3.4.0",
     "connect-cookies": "0.0.0",
+    "dezalgo": "^1.0.3",
     "fast-clone": "1.5.3",
     "fs-extra": "2.0.0",
     "handlebars": "4.0.11",

@@ -726,7 +726,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       var session = {
         type: 0,
         user: {
-          username: 'BLAH'
+          username: 'BLAH',
+          groups:{}
         },
         policy: {
           1: {
@@ -742,17 +743,22 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         cb(null, true);
       };
 
-      happnMock.services.security.authorize(session, null, null, function (e) {
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, callback){
+        callback(null, false);
+      }
 
-        expect(e).to.not.be(null);
-        expect(e).to.not.be(undefined);
+      happnMock.services.security.authorize(session, null, null, function (e, authorized) {
 
+        if (e) return done(e);
+        expect(authorized).to.be(false);
         session.bypassAuthUser = true;
-        happnMock.services.security.authorize(session, null, null, done);
+        happnMock.services.security.authorize(session, null, null, function(e, authorized){
+          if (e) return done(e);
+          expect(authorized).to.be(true);
+          done();
+        });
       });
-
     });
-
   });
 
   it("tests the security checkpoints _authorizeSession ttl", function (done) {
