@@ -36,7 +36,6 @@
     "body-parser": "1.14.1",
     "connect": "3.4.0",
     "connect-cookies": "0.0.0",
-    "dezalgo": "^1.0.3",
     "fast-clone": "1.5.3",
     "fs-extra": "2.0.0",
     "handlebars": "4.0.11",
