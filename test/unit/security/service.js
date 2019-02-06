@@ -2435,4 +2435,208 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
   });
+
+  it('tests resetSessionPermissions method - permission-removed', function(done){
+
+    this.timeout(5000);
+
+    getService({
+      secure: true
+    }, function (e, instance) {
+
+      var client = {
+        sessionId:'1',
+        once:function(evt, handler){
+          if (evt == 'end') this.__handler = handler;
+        }.bind(client),
+        end:function(){
+          ended = true;
+          this.__handler();
+        }.bind(client)
+      };
+
+      instance.services.session.__sessions = {
+        '1':{
+          client:client,
+          data:{
+            id:1,
+            user:{
+              username: 'test-user-1',
+              groups:{
+                'test-group':{
+
+                }
+              }
+            },
+            protocol:1
+          }
+        }
+      }
+
+      instance.services.session.__sessions['1'].data.permissionSetKey = instance.services.security.generatePermissionSetKey(instance.services.session.__sessions['1'].data.user);
+
+      instance.services.security.resetSessionPermissions('permission-removed', {
+        groupName:'test-group'
+      }).then(function(effectedSessions){
+
+        expect(effectedSessions).to.eql([
+          {
+            "id":1,
+            "username": "test-user-1",
+            "isToken": false,
+            "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
+            "protocol":1,
+            "user": {
+              "username": "test-user-1",
+              "groups": {
+                "test-group": {}
+              }
+            },
+            "causeSubscriptionsRefresh": true
+          }
+        ]);
+        stopService(instance, done);
+      })
+      .catch(function(e){
+        done(e);
+      });
+    });
+  });
+
+  it('tests resetSessionPermissions method - permission-upserted', function(done){
+
+    this.timeout(5000);
+
+    getService({
+      secure: true
+    }, function (e, instance) {
+
+      var client = {
+        sessionId:'1',
+        once:function(evt, handler){
+          if (evt == 'end') this.__handler = handler;
+        }.bind(client),
+        end:function(){
+          ended = true;
+          this.__handler();
+        }.bind(client)
+      };
+
+      instance.services.session.__sessions = {
+        '1':{
+          client:client,
+          data:{
+            id:1,
+            user:{
+              username: 'test-user-1',
+              groups:{
+                'test-group':{
+
+                }
+              }
+            },
+            protocol:1
+          }
+        }
+      }
+
+      instance.services.session.__sessions['1'].data.permissionSetKey = instance.services.security.generatePermissionSetKey(instance.services.session.__sessions['1'].data.user);
+
+      instance.services.security.resetSessionPermissions('permission-upserted', {
+        groupName:'test-group'
+      }).then(function(effectedSessions){
+
+        expect(effectedSessions).to.eql([
+          {
+            "id":1,
+            "username": "test-user-1",
+            "isToken": false,
+            "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
+            "protocol":1,
+            "user": {
+              "username": "test-user-1",
+              "groups": {
+                "test-group": {}
+              }
+            },
+            "causeSubscriptionsRefresh": true
+          }
+        ]);
+        stopService(instance, done);
+      })
+      .catch(function(e){
+        done(e);
+      });
+    });
+  });
+
+  it('tests resetSessionPermissions method - upsert-user', function(done){
+
+    this.timeout(5000);
+
+    getService({
+      secure: true
+    }, function (e, instance) {
+
+      var client = {
+        sessionId:'1',
+        once:function(evt, handler){
+          if (evt == 'end') this.__handler = handler;
+        }.bind(client),
+        end:function(){
+          ended = true;
+          this.__handler();
+        }.bind(client)
+      };
+
+      instance.services.session.__sessions = {
+        '1':{
+          client:client,
+          data:{
+            id:1,
+            user:{
+              username: 'test-user-1',
+              groups:{
+                'test-group':{
+
+                }
+              }
+            },
+            protocol:1
+          }
+        }
+      }
+
+      instance.services.session.__sessions['1'].data.permissionSetKey = instance.services.security.generatePermissionSetKey(instance.services.session.__sessions['1'].data.user);
+
+      instance.services.security.users.getUser = function(username, callback){
+        callback(null, {
+          username:username
+        });
+      };
+
+      instance.services.security.resetSessionPermissions('upsert-user', {
+        username:'test-user-1'
+      }).then(function(effectedSessions){
+
+        expect(effectedSessions).to.eql([
+          {
+            "id":1,
+            "username": "test-user-1",
+            "isToken": false,
+            "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
+            "protocol":1,
+            "user": {
+              "username": "test-user-1"
+            },
+            "causeSubscriptionsRefresh": true
+          }
+        ]);
+        stopService(instance, done);
+      })
+      .catch(function(e){
+        done(e);
+      });
+    });
+  });
 });
