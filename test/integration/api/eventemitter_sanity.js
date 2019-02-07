@@ -538,7 +538,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     ];
 
-    var sift = require('sift');
+    var sift = require('sift').default;
 
     var sifted = sift({
       value: {

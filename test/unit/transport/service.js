@@ -4,12 +4,16 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var shortid = require('shortid');
   var expect = require('expect.js');
   var Transport = require('../../../lib/services/transport/service');
+  var Utils = require('../../../lib/services/utils/service');
 
   it('fails to initialize the transport service, createCertificate method raises error', function(done){
 
     var transportMock = new Transport();
 
     transportMock.happn = {
+      services:{
+        utils: new Utils()
+      },
       connect:{},
       log:{
         warn:function(){}

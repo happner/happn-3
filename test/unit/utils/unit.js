@@ -204,4 +204,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     done();
   });
+
+  it('test computeiv function', function(done){
+    var iv2 = utils.computeiv("thirtytwobitsecret12345678901234");
+    expect(iv2).to.eql('tittoisce1357913');
+
+    done();
+  });
 });

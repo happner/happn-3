@@ -41,7 +41,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         success:function(){
           done();
         }
-      }
+      };
 
       protocolMock.processInboundStack = function(message, protocol){
         expect(message.session.protocol).to.be('happn_1.3.0');
@@ -96,7 +96,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         success:function(){
           done();
         }
-      }
+      };
 
       protocolMock.processInboundStack = function(message, protocol){
         expect(message.session.protocol).to.be('happn_2');
@@ -246,7 +246,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         success:function(){
           done();
         }
-      }
+      };
 
       protocolMock.processInboundStack = function(message, protocol){
         expect(message.session.protocol).to.be('happn_1.3.0');
@@ -304,13 +304,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(session.protocol).to.be('happn_1.3.0');
           done();
         }
-      }
+      };
 
       protocolMock.processLayers = function(message){
         return new Promise(function(resolve, reject){
           resolve(message);
         });
-      }
+      };
 
       protocolMock.processMessageOutLayers({
         session:{
