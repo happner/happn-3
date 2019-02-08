@@ -163,9 +163,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     expect(checkPathTest('factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*')).to.be('ok');
     expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*', 'set')).to.be('Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
-    expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*{3}')).to.be(notOk);
     expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/$set')).to.be(notOk);
-
+    expect(checkPathTest('/test/user name/*')).to.be('ok');
     done();
   });
 
