@@ -445,4 +445,54 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     });
   });
+
+  // it('it tests _authorizeSession function, early sync return on async callback', function(done){
+  //
+  //   this.timeout(60000);
+  //
+  //   var startedTimestamp = Date.now();
+  //
+  //   var checks = [];
+  //
+  //   for (var i = 0; i < 10000000; i++){
+  //     checks.push({
+  //       session:{
+  //         policy: {}
+  //       },
+  //       path:'test/path' + i,
+  //       action:'SET'
+  //     });
+  //   }
+  //
+  //   var failureCount = 0;
+  //   var okCount = 0;
+  //
+  //   initializeCheckpoint(function (e, checkpoint) {
+  //
+  //     if (e) {
+  //       return done(e);
+  //     }
+  //
+  //     checkpoint.__cache_checkpoint_authorization = {
+  //       getSync: function(permissionCacheKey){
+  //         return false;
+  //       }
+  //     };
+  //
+  //     async.each(checks, function(check, checkCB){
+  //       checkpoint._authorizeSession(check.session, check.path, check.action, function(e){
+  //         if (e){
+  //           failureCount++;
+  //         } else {
+  //           okCount++;
+  //         }
+  //         checkCB();
+  //       });
+  //     }, function(){
+  //       var duration = Date.now() - startedTimestamp;
+  //       expect(okCount).to.be(1000000);
+  //       done();
+  //     });
+  //   });
+  // });
 });

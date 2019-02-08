@@ -118,6 +118,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   }
 
+  var removeOnPermissionByUpsertingGroup = function (permissionPath, updateSecurityDirectory, callback) {
+
+    if (!updateSecurityDirectory) return callback();
+
+    addedTestGroup.permissions[permissionPath] = {prohibit:['on']};
+
+    serviceInstance.services.security.groups.upsertGroup(addedTestGroup, addedTestuser, callback);
+  };
+
   var removeGroup = function (client, updateSecurityDirectory, callback) {
 
     if (!updateSecurityDirectory) return callback();
@@ -481,6 +490,162 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               setTimeout(function(){
                 expect(count).to.be(6);
                 expect(securityServiceEventCount).to.be(1);
+                done();
+              }, 300);
+            });
+          }, 300);
+        });
+      });
+    });
+  });
+
+  it('should do an on, check we receive events, modify the on permission, wait a sec and see we no longer receive the events, also check security service events', function (done) {
+
+    this.timeout(15000);
+
+    var count = 0;
+
+    var securityServiceEventCount = 0;
+
+    createTestClient(function (e, client) {
+
+      if (e) return done(e);
+
+      currentClient = client;
+
+      client.on('/security_directory_changed/' + test_id + '/on/1', function (message) {
+        count++;
+      }, function (e) {
+        if (e) return done(e);
+      });
+
+      doSetOperationsForOn1(client, null, function (e) {
+
+        if (e) return done(e);
+
+        expect(count).to.be(3);
+
+        serviceInstance.services.security.on('security-data-changed', function(){
+          securityServiceEventCount++;
+        });
+
+        removePermission('/security_directory_changed/' + test_id + '/on/1', true, function (e) {
+
+          if (e) return done(e);
+
+          setTimeout(function () {
+
+            doSetOperationsForOn1(client, null, function (e) {
+
+              if (e) return done(e);
+
+              setTimeout(function(){//wait in case our events have not caught up
+                expect(count).to.be(3);
+                expect(securityServiceEventCount).to.be(1);
+                done();
+              }, 300);
+            });
+          }, 300);
+        });
+      });
+    });
+  });
+
+  it('should do an on, check we receive events, modify the on permission via a group upsert, wait a sec and see we no longer receive the events, also check security service events', function (done) {
+
+    this.timeout(15000);
+
+    var count = 0;
+
+    var securityServiceEventCount = 0;
+
+    createTestClient(function (e, client) {
+
+      if (e) return done(e);
+
+      currentClient = client;
+
+      client.on('/security_directory_changed/' + test_id + '/on/1', function (message) {
+        count++;
+      }, function (e) {
+        if (e) return done(e);
+      });
+
+      doSetOperationsForOn1(client, null, function (e) {
+
+        if (e) return done(e);
+
+        expect(count).to.be(3);
+
+        serviceInstance.services.security.on('security-data-changed', function(){
+          securityServiceEventCount++;
+        });
+
+        removeOnPermissionByUpsertingGroup('/security_directory_changed/' + test_id + '/on/1', true, function (e) {
+
+          if (e) return done(e);
+
+          setTimeout(function () {
+
+            doSetOperationsForOn1(client, null, function (e) {
+
+              if (e) return done(e);
+
+              setTimeout(function(){//wait in case our events have not caught up
+                expect(count).to.be(3);
+                expect(securityServiceEventCount).to.be(1);
+                done();
+              }, 300);
+            });
+          }, 300);
+        });
+      });
+    });
+  });
+
+  it('should do an on, check we receive events, modify the on permission via a group upsert, wait a sec and see we no longer receive the events, also check security service events, negative test', function (done) {
+
+    this.timeout(15000);
+
+    var count = 0;
+
+    var securityServiceEventCount = 0;
+
+    createTestClient(function (e, client) {
+
+      if (e) return done(e);
+
+      currentClient = client;
+
+      client.on('/security_directory_changed/' + test_id + '/on/1', function (message) {
+        count++;
+      }, function (e) {
+        if (e) return done(e);
+      });
+
+      doSetOperationsForOn1(client, null, function (e) {
+
+        if (e) return done(e);
+
+        expect(count).to.be(3);
+
+        serviceInstance.services.security.on('security-data-changed', function(){
+          securityServiceEventCount++;
+        });
+
+        removeOnPermissionByUpsertingGroup('/security_directory_changed/' + test_id + '/on/1', false, function (e) {
+
+          if (e) return done(e);
+
+          setTimeout(function () {
+
+            doSetOperationsForOn1(client, null, function (e) {
+
+              if (e) return done(e);
+
+              setTimeout(function(){//wait in case our events have not caught up
+                expect(count).to.be(6);
+                expect(securityServiceEventCount).to.be(0);
                 done();
               }, 300);
             });
