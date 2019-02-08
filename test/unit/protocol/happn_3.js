@@ -244,4 +244,129 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       done();
     });
   });
+
+  it('tests the fail method', function(done) {
+
+    var inputMessage = {
+      error:new Error('test error'),
+      session: {
+        isEncrypted: false,
+        secret:'1898981'
+      },
+      request: {
+        action: 'set',
+        eventId:1,
+        sessionId:1,
+        protocol:'happn'
+      },
+      response: {
+        data: 'test'
+      }
+    };
+
+    var expectedOutputMessage = {
+      "data": "test",
+      "_meta": {
+        "type": "response",
+        "status": "error",
+        "published": false,
+        "eventId": 1,
+        "sessionId": 1,
+        "action": "set",
+        "error": {
+          "name": "Error",
+          "message": "test error"
+        }
+      },
+      "protocol": "happn"
+    };
+
+    const Protocol = require('../../../lib/services/protocol/happn_1');
+    const protocol = new Protocol();
+
+    protocol.protocolVersion = 'happn';
+
+    const CryptoService = require('../../../lib/services/crypto/service');
+    var cryptoService = new CryptoService();
+
+    cryptoService.initialize({}, function(e){
+
+      if (e) return done(e);
+
+      protocol.happn = {
+        services: {
+          crypto: cryptoService
+        }
+      }
+
+      var fail = protocol.fail(inputMessage);
+      expect(fail.response).to.eql(expectedOutputMessage);
+
+      done();
+    });
+  });
+
+  it('tests the fail method, no request', function(done) {
+
+    var inputMessage = {
+      error:new Error('test error'),
+      session: {
+        isEncrypted: false,
+        secret:'1898981'
+      },
+      request: {
+        action: 'set',
+        eventId:1,
+        sessionId:1,
+        protocol:'happn'
+      },
+      response: {
+        data: 'test'
+      }
+    };
+
+    var expectedOutputMessage = {
+      "data": "test",
+      "_meta": {
+        "type": "response",
+        "status": "error",
+        "published": false,
+        "eventId": 1,
+        "sessionId": 1,
+        "action": "set",
+        "error": {
+          "name": "Error",
+          "message": "test error"
+        }
+      },
+      "protocol": "happn"
+    };
+
+    const Protocol = require('../../../lib/services/protocol/happn_1');
+    const protocol = new Protocol();
+
+    protocol.protocolVersion = 'happn';
+
+    const CryptoService = require('../../../lib/services/crypto/service');
+    var cryptoService = new CryptoService();
+
+    cryptoService.initialize({}, function(e){
+
+      if (e) return done(e);
+
+      protocol.happn = {
+        services: {
+          crypto: cryptoService
+        }
+      }
+
+      inputMessage.raw = inputMessage.request;
+      delete inputMessage.request;
+
+      var fail = protocol.fail(inputMessage);
+      expect(fail.response).to.eql(expectedOutputMessage);
+
+      done();
+    });
+  });
 });

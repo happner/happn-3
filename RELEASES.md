@@ -557,3 +557,8 @@
 ----------------
   - issue #184 fix: cannot read status of null in .on response of client
   - lru cache issue
+
+8.2.7 2019-02-01
+----------------
+  - client now disregards permission change errors when reattaching sessions
+  - using dezalgo in more obvious security methods that early exit with callbacks
