@@ -205,8 +205,23 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   it('test computeiv function', function(done){
-    var iv2 = utils.computeiv("thirtytwobitsecret12345678901234");
+    var secret = "thirtytwobitsecret12345678901234";
+    var iv2 = utils.computeiv(secret);
     expect(iv2).to.eql('tittoisce1357913');
+
+    function tryComputeIv(secretTry){
+      try{
+        return utils.computeiv(secretTry);
+      }catch(e){
+        return e.message;
+      }
+    }
+
+    expect(tryComputeIv('test')).to.eql('secret must be 32 chars long');
+    expect(tryComputeIv(null)).to.eql('secret must be a string and cannot be null or undefined');
+    expect(tryComputeIv(undefined)).to.eql('secret must be a string and cannot be null or undefined');
+    expect(tryComputeIv(1)).to.eql('secret must be a string and cannot be null or undefined');
+    expect(tryComputeIv([])).to.eql('secret must be a string and cannot be null or undefined');
 
     done();
   });
