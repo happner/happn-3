@@ -387,4 +387,41 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       done();
     });
   });
+
+  it('tests the validate function', function(){
+
+    const Protocol = require('../../../lib/services/protocol/happn_3');
+    const protocol = new Protocol();
+
+    const UtilsService = require('../../../lib/services/utils/service');
+    const badPathMessage = 'Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ) _ -, ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*';
+
+    protocol.protocolVersion = 'happn';
+
+    protocol.happn = {
+      services:{
+        utils:new UtilsService()
+      }
+    }
+
+    expect(protocol.validate({})).to.eql({});
+
+    var testMessage = {request:{
+      action:'on',
+      path:'/test/1'
+    }};
+
+    expect(protocol.validate(testMessage)).to.eql(testMessage);
+
+    testMessage = {request:{
+      action:'on',
+      path:'\\test\\1'
+    }};
+
+    try{
+      protocol.validate(testMessage);
+    }catch(e){
+      expect(e.message).to.be(badPathMessage);
+    }
+  });
 });
