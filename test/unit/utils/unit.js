@@ -118,7 +118,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         next();
       }, function (e) {
         expect(e).to.not.be(null);
-        done();
+        sharedUtils.async([1, 2, 3], 1, function (number, index, next) {
+          expect(number == index + 1).to.be(true);
+          next();
+        }, function (e) {
+          expect(e).to.be(undefined);
+          done();
+        })
       });
     });
   });
@@ -224,5 +230,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(tryComputeIv([])).to.eql('secret must be a string and cannot be null or undefined');
 
     done();
+  });
+
+  it('test removeLast function', function(){
+    expect(utils.removeLast('test', '/')).to.eql('test');
+    expect(utils.removeLast('test/', '/')).to.eql('test');
+    expect(utils.removeLast(null)).to.eql(null);
+    expect(utils.removeLast(undefined, '/')).to.eql(undefined);
+    expect(utils.removeLast(null, '/')).to.eql(null);
+    expect(utils.removeLast('test', undefined)).to.eql('test');
+    expect(utils.removeLast('test', null)).to.eql('test');
   });
 });
