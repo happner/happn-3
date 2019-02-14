@@ -7,7 +7,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var HappnClient = require('../../../lib/client');
   var Constants = require('../../../lib/constants');
 
-  function mockHappnClient(log, state, session, serverInfo, socket, clientOptions) {
+  function mockHappnClient(log, state, session, serverInfo, socket, clientOptions, removeAllListeners, socketEnd) {
 
     var happnClient = new HappnClient();
 
@@ -25,6 +25,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.serverInfo = serverInfo || {};
 
     happnClient.socket = socket || {
+      end: socketEnd || function(){
+
+      },
+      removeAllListeners: removeAllListeners || function(){
+
+      },
       write: function(message) {
 
       },
@@ -663,5 +669,51 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       ]
     });
+  });
+
+  it('tests the __endSocket function', function(done) {
+
+    this.timeout(5000);
+
+    var happnClient = mockHappnClient(null, null, null, null, null, null, function(){
+
+    },
+    function(){
+      setTimeout(function(){
+        expect(happnClient.socket).to.be(null);
+        done();
+      }, 2000);
+    });
+
+    happnClient.log = {
+      warn: function(message){}
+    };
+
+    happnClient.__endSocket();
+  });
+
+  it('tests the __connectionCleanup function, socket present', function(done) {
+
+    this.timeout(5000);
+
+    var happnClient = mockHappnClient(null, null, null, null, null, null, function(){
+
+    },
+    function(){
+      setTimeout(function(){
+        expect(happnClient.socket).to.be(null);
+        done();
+      }, 2000);
+    });
+
+    happnClient.log = {
+      warn: function(message){}
+    };
+
+    happnClient.__connectionCleanup();
+  });
+
+  it('tests the __getConnection function ', function() {
+
   });
 });
