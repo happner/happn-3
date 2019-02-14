@@ -290,5 +290,96 @@ describe(
         expect(e.message).to.be(badPathMessage);
       }
     });
-  }
-);
+
+    function mockProtocol(){
+      const Protocol = require('../../../lib/services/protocol/happn_4');
+      const protocol = new Protocol();
+
+      const UtilsService = require('../../../lib/services/utils/service');
+
+      protocol.protocolVersion = 'happn';
+  //this.happn.services.security._keyPair.privateKey
+      protocol.happn = {
+        services:{
+          utils:new UtilsService(),
+          crypto:{
+            asymmetricDecrypt: function(pubKey, privKey, encrypted){
+              return encrypted;
+            },
+            symmetricDecryptObjectiv: function(encrypted, secret){
+              return encrypted;
+            }
+          },
+          security:{
+            _keyPair:{
+              privateKey:'mock-priv-key'
+            }
+          }
+        }
+      }
+
+      return protocol;
+    }
+
+    it('tests the transformIn method, encrypted message', function(done) {
+
+      var protocol = mockProtocol();
+
+      expect(protocol.transformIn({
+        raw:'test'
+      })).to.eql({
+        request: 'test'
+      });
+
+      expect(protocol.transformIn({
+        session:{
+          secret:'test-secretbhetshwyer342638shete'
+        },
+        raw:{
+          encrypted:'test'
+        }
+      })).to.eql({
+        request: 'test',
+        session:{
+          secret:'test-secretbhetshwyer342638shete'
+        }
+      });
+
+      done();
+    });
+
+    it('tests the transformIn method, encrypted login', function(done) {
+
+      var protocol = mockProtocol();
+
+      var transformed = protocol.transformIn({
+        session:{
+          secret:'test-secret'
+        },
+        raw:{
+          action:'login',
+          data:{
+            encrypted:JSON.stringify({"test":"object"})
+          }
+        }
+      });
+
+      expect(transformed).to.eql({
+        "session": {
+          "secret": "test-secret",
+          "isEncrypted": true
+        },
+        "request": {
+          "action": "login",
+          "data": {
+            "test": "object",
+            "isEncrypted": true
+          },
+          "eventId":undefined,
+          "publicKey":undefined
+        }
+      });
+
+      done();
+    });
+  });
