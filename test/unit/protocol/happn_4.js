@@ -382,4 +382,80 @@ describe(
 
       done();
     });
+
+    it('tests the transformSystem method, disconnect no options', function(done) {
+      var protocol = mockProtocol();
+
+      var transformed = protocol.transformSystem({
+        action:'disconnect'
+      });
+
+      expect(transformed).to.eql({
+        "action": "disconnect",
+        "response": {
+          "_meta": {
+            "type": "system"
+          },
+          "eventKey": "server-side-disconnect",
+          "data": "server side disconnect",
+          "reconnect": true
+        }
+      });
+
+      done();
+    });
+
+    it('tests the transformSystem method, disconnect with options', function(done) {
+      var protocol = mockProtocol();
+
+      var transformed = protocol.transformSystem({
+        action:'disconnect',
+        options:{
+          reconnect: false,
+          reason: 'just die'
+        }
+      });
+
+      expect(transformed).to.eql({
+        "action": "disconnect",
+        "options": {
+          "reason": "just die",
+          "reconnect": false
+        },
+        "response": {
+          "_meta": {
+            "type": "system"
+          },
+          "eventKey": "server-side-disconnect",
+          "data": "just die",
+          "reconnect": false
+        }
+      });
+
+      done();
+    });
+
+    it('tests the transformSystem method, security-data-changed', function(done) {
+      var protocol = mockProtocol();
+
+      var transformed = protocol.transformSystem({
+        eventKey:'security-data-changed',
+        data:'something happened'
+      });
+
+      expect(transformed).to.eql({
+        "data": "something happened",
+        "eventKey": "security-data-changed",
+        "request": {
+          "publication": {
+            "_meta": {
+              "type": "system"
+            },
+            "data": "something happened",
+            "eventKey": "security-data-changed"
+          }
+        }
+      });
+      done();
+    });
   });
