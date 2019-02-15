@@ -390,7 +390,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests the validate function', function(){
 
-    const Protocol = require('../../../lib/services/protocol/happn_3');
+    const Protocol = require('../../../lib/services/protocol/happn_1');
     const protocol = new Protocol();
 
     const UtilsService = require('../../../lib/services/utils/service');
