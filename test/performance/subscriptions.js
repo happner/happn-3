@@ -18,7 +18,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
   var NOSTORE = true;
   var CONSISTENCY = CONSTANTS.CONSISTENCY.TRANSACTIONAL;
 
-  this.timeout(SUBSCRIPTION_COUNT * 100);
+  this.timeout(SUBSCRIPTION_COUNT * 1000);
 
   beforeEach('should initialize the service', function (callback) {
     service.create({},
@@ -46,7 +46,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     happnInstance.stop(done);
   });
 
-  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, and randomly selects a wildcard option for each path, subscribes, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
+  it.only('creates ' + SUBSCRIPTION_COUNT + ' random paths, and randomly selects a wildcard option for each path, subscribes, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
 
     var subscriptions = [];
 
@@ -223,7 +223,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     });
   });
 
-  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in series', function (done) {
+  it.only('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in series', function (done) {
 
     var subscriptions = [];
 
@@ -261,7 +261,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     };
 
     async.eachSeries(subscriptions, function(subscription, subscriptionCB){
-      client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
+      client.on(subscription, {event_type:'set'}, handleOn.bind({path:subscription}), subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
       startedSearching = Date.now();
