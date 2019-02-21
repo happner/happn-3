@@ -121,8 +121,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*']).to.be(undefined);
-        setTimeout(callback, 2000);
+        setTimeout(function(){
+          expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*']).to.be(undefined);
+          callback();
+        }, 2000);
 
       }, function (e) {
 
@@ -821,8 +823,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event']).to.be(undefined);
-        callback();
+        setTimeout(function(){
+          expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event']).to.be(undefined);
+          callback();
+        }, 2000);
 
       }, function (e) {
 
@@ -968,8 +972,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event']).to.be(undefined);
-        callback();
+        setTimeout(function(){
+          expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event']).to.be(undefined);
+          callback();
+        }, 2000);
 
       }, function (e) {
 

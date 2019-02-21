@@ -89,7 +89,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       // console.log('event path: ' + meta.path);
       // console.log('match path: ' + this.path);
 
-      if (eventsCount % 10000 == 0){
+      if (eventsCount == 10000){
         // console.log(JSON.stringify(setResults, null, 2));
         // console.log(JSON.stringify(subscriptions, null, 2));
         console.log('handled ' + eventsCount + ' events in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
@@ -110,6 +110,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       }, function(e){
         if (e) return done(e);
         console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
+        console.log('handled ' + eventsCount + 'events in total');
         done();
       });
     });
@@ -174,7 +175,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     });
   });
 
-  it.only('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
+  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
 
     var subscriptions = [];
 

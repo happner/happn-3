@@ -81,13 +81,10 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       setResults.counters[data.counter] = true;
       eventsCount++;
 
-      // console.log('event path: ' + meta.path);
-      // console.log('match path: ' + this.path);
-
-      if (eventsCount == SEARCH_COUNT){
+      if (eventsCount % 10000 == 0){
         // console.log(JSON.stringify(setResults, null, 2));
         // console.log(JSON.stringify(subscriptions, null, 2));
-        console.log('handled ' + SEARCH_COUNT + ' events in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
+        console.log('handled ' + eventsCount + ' events in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
       }
     };
 

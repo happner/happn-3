@@ -33,7 +33,6 @@
         var randomPaths = random.randomPaths({count:SUBSCRIPTION_COUNT});
 
         randomPaths.forEach(function(path){
-
           var possibleSubscriptions = random.getWildcardPermutations(path);
           var subscriptionPath = possibleSubscriptions[random.integer(0, possibleSubscriptions.length - 1)];
           subscriptions.push(subscriptionPath);
@@ -79,11 +78,9 @@
               counter:counter++
             }, {noStore:NOSTORE, consistency: CONSISTENCY, onPublished: function(){}}, randomPathCB);
           }, function(e){
-            if (e) return done(e);
             console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
-            done();
+            process.exit(0);
           });
         });
-
       });
     });
