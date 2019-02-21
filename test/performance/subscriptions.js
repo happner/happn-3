@@ -252,15 +252,14 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       setResults[meta.path].push(data);
       setResults.counters[data.counter] = true;
       eventsCount++;
-      if (eventsCount == SEARCH_COUNT){
+      if (eventsCount % 1000 == 0){
         // console.log(JSON.stringify(setResults, null, 2));
         // console.log(JSON.stringify(subscriptions, null, 2));
-        console.log('handled ' + SEARCH_COUNT + ' events in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
-        done();
+        console.log('handled ' + eventsCount + ' events in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
       }
     };
 
-    async.eachSeries(subscriptions, function(subscription, subscriptionCB){
+    async.each(subscriptions, function(subscription, subscriptionCB){
       client.on(subscription, {event_type:'set'}, handleOn.bind({path:subscription}), subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
@@ -272,7 +271,8 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
         }, {noStore:NOSTORE, consistency: CONSISTENCY}, randomPathCB);
       }, function(e){
         if (e) return done(e);
-        console.log('handled ' + SEARCH_COUNT + ' consecutive sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
+        console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
+        done();
       });
     });
   });
