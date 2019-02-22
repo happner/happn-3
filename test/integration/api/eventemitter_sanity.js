@@ -375,12 +375,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('should contain the same payload between a merge and a normal store for first store', function (done) {
+  it.only('should contain the same payload between a merge and a normal store for first store', function (done) {
+
+    this.timeout(5000);
 
     var object = {
       param1: 10,
       param2: 20
     };
+
     var firstTime = true;
 
     listenerclient.on('mergeTest/object', {
@@ -388,12 +391,16 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       count: 2
     }, function (message, meta) {
 
-      expect(message).to.eql(object);
       if (firstTime) {
         firstTime = false;
         return;
       }
-      done();
+
+      setTimeout(()=>{
+        expect(message).to.eql(object);
+        done();
+      }, 2000);
+
     }, function (err) {
       expect(err).to.not.be.ok();
       publisherclient.set('mergeTest/object', object, {
