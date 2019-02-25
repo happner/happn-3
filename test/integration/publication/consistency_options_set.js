@@ -230,8 +230,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         serviceInstance.services.publisher.performPublication = function (publication, callback) {
           return callback(null, publication.message);
         }.bind(serviceInstance.services.publisher);
-
-        serviceInstance.services.queue.pushPublication = Promise.promisify(serviceInstance.services.publisher.performPublication);
         return Happn.client.create(clientConfig);
       })
       .then(function (client) {

@@ -375,7 +375,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it.only('should contain the same payload between a merge and a normal store for first store', function (done) {
+  it('should contain the same payload between a merge and a normal store for first store', function (done) {
 
     this.timeout(5000);
 
