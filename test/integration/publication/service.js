@@ -1,7 +1,8 @@
 var Happn = require('../../..'),
   expect = require('expect.js'),
   async = require('async'),
-  shortid = require('shortid');
+  shortid = require('shortid'),
+  CONSISTENCY = require('../../../').constants.CONSISTENCY;
 
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function() {
 
@@ -444,71 +445,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('tests the publications publish method, queued consistency', function(done) {
-
-    mockPublisherService({}, [{
-      data: {
-        action: 'SET',
-        path: '/set/some/data',
-        session: {
-          id: '1'
-        }
-      }
-    }, {
-      data: {
-        action: 'SET',
-        path: '/set/some/data',
-        session: {
-          id: '2'
-        }
-      }
-    }], function(publisherService) {
-
-      var Publication = require('../../../lib/services/publisher/publication');
-
-      var message = {
-        request: {
-          action: 'set',
-          eventId: 10,
-          path: '/set/some/data',
-          data: {
-            test: 'data'
-          },
-          options: {
-            other: 'data',
-            consistency: 0
-          }
-        },
-        session: {
-          id: '1'
-        },
-        protocol: 'happn-1.0.0',
-        response: {
-          "data": {
-            "data": {
-              "was": "set"
-            }
-          },
-          "_meta": {
-            "path": "/set/some/data",
-            "action": "set",
-            "type": "response"
-          }
-        }
-      };
-
-      var publication = new Publication(message, {}, publisherService.happn);
-
-      expect(publication.recipients.length).to.eql(2);
-
-      var myArray = [];
-
-      var processed = 0;
-
-      publication.publish(done);
-    });
-  });
-
   it('tests the publications publish method, transactional consistency', function(done) {
 
     var out = 0;
@@ -664,18 +600,20 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       publication.publish(function(e, results) {
         if (e) return done(e);
-        expect(out < 3).to.be(true);
+        expect(out).to.be(3);
+        done();
       });
     }, function(message, callback) {
-      out++;
       setTimeout(function(){
+        out++;
         callback(null, message);
-      }, 1000);
-      if (out == 3) return done();
+      }, 2000);
     });
   });
 
   it('tests the publisher service, deferred consistency', function(done) {
+
+    this.timeout(5000);
 
     var config = {};
 
@@ -717,7 +655,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           },
           options: {
             other: 'data',
-            consistency: 1
+            consistency: CONSISTENCY.DEFERRED
           }
         },
         session: {
@@ -738,8 +676,34 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
+      var published = false;
+      var gotResults = false;
+
+      mockPublisher.publication = {
+        create: function(){
+          return {
+            publish:function(callback){
+              published = true;
+              callback();
+            },
+            options:{
+              consistency:CONSISTENCY.DEFERRED
+            },
+            resultsMessage: function(){
+              gotResults = true;
+              return {};
+            }
+          }
+        }
+      }
+
       mockPublisher.processPublish(message, function(e, message){
-        done(e);
+        expect(gotResults).to.be(false);
+        expect(published).to.be(false);
+        setTimeout(() => {
+          expect(gotResults).to.be(true);
+          done(e);
+        }, 2000);
       });
     });
   });
@@ -807,7 +771,24 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
+      var published = false;
+
+      mockPublisher.publication = {
+        create: function(){
+          return {
+            publish:function(callback){
+              published = true;
+              callback();
+            },
+            options:{
+              consistency:CONSISTENCY.TRANSACTIONAL
+            }
+          }
+        }
+      }
+
       mockPublisher.processPublish(message, function(e, message){
+        expect(published).to.be(true);
         done(e);
       });
     });

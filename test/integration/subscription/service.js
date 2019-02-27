@@ -90,25 +90,20 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
-      instance.processSubscribe(prepared)
-        .then(function(result) {
-          expect(result.response._meta.status).to.be('ok');
-          return instance.processGetRecipients({
-            request: {
-              action: 'SET',
-              path: '/test/path/1'
-            }
-          });
-        })
-        .then(function(getRecipientsResult) {
-          expect(getRecipientsResult.recipients.length).to.be(1);
-          done();
-        })
-        .catch(done)
+      instance.processSubscribe(prepared, function(e, result) {
+        expect(result.response._meta.status).to.be('ok');
+        expect(instance.getRecipients({
+          request: {
+            action: 'SET',
+            path: '/test/path/1'
+          }
+        }).length).to.be(1);
+        done();
+      });
     });
   });
 
-  it('starts up the subscription service, does processSubscribe - then getRecipients, then unsubscribe and get no recipients', function(done) {
+  it.only('starts up the subscription service, does processSubscribe - then getRecipients, then unsubscribe and get no recipients', function(done) {
 
     var config = {};
 

@@ -3,7 +3,7 @@ var Happn = require('../../..'),
   expect = require('expect.js'),
   Promise = require('bluebird');
 
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3),  function () {
+xdescribe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3),  function () {
 
   var serviceInstance;
   var clientInstance;
