@@ -74,7 +74,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       .then(mockService(happn, 'Session', false))
       .then(mockService(happn, 'Protocol'))
       .then(mockService(happn, 'Publisher'))
-      .then(mockService(happn, 'Queue'))
       .then(mockService(happn, 'Data'))
       .then(mockService(happn, 'Cache'))
       .then(mockService(happn, 'System'))
