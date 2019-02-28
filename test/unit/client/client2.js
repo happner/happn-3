@@ -1051,7 +1051,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     try {
       happnClient.__attachPublishedAck({}, {});
     } catch (err) {
-      expect(err.toString()).to.eql('Error: onPublish handler in options is missing');
+      expect(err.toString()).to.eql('Error: onPublished handler in options is missing');
       done();
     };
   });
@@ -1397,7 +1397,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   it('tests the delegate_handover function when runcount will equal count after 1 iteration', function(done) {
+
     var happnClient = mockHappnClient();
+
     happnClient.__acknowledge = function(data, cb) {
       cb(data);
     };
@@ -1415,7 +1417,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       data: 'This is a message',
       _meta: 'Meta'
     };
-    happnClient.delegate_handover(message, delegate);
+    happnClient.delegate_handover(JSON.stringify(message.data), message._meta, delegate);
   });
 
   it('tests the delegate_handover function when count >> runcount', function(done) {
@@ -1437,7 +1439,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       data: 'This is a message',
       _meta: 'Meta'
     };
-    happnClient.delegate_handover(message, delegate);
+    happnClient.delegate_handover(JSON.stringify(message.data), message._meta, delegate);
   });
 
   it('tests the handle_data function with one event handler', function(done) {

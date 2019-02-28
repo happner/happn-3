@@ -5,7 +5,7 @@ var Happn = require('../../..'),
   shortid = require('shortid'),
   Promise = require('bluebird');
 
-xdescribe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3),  function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3),  function () {
 
   var serviceInstance;
   var clientInstance1;
@@ -226,10 +226,19 @@ xdescribe(require('../../__fixtures/utils/test_helper').create().testName(__file
 
         serviceInstance = instance;
 
-        //we overwrite this function - so publish never happens
-        serviceInstance.services.publisher.performPublication = function (publication, callback) {
-          return callback(null, publication.message);
-        }.bind(serviceInstance.services.publisher);
+        serviceInstance.services.publisher.publication = {
+          create: function(){
+            return {
+              publish:function(callback){
+
+              },
+              options:{
+                consistency:CONSISTENCY.DEFERRED
+              }
+            }
+          }
+        }
+
         return Happn.client.create(clientConfig);
       })
       .then(function (client) {

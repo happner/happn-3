@@ -89,6 +89,7 @@ describe(
             type: 'response',
             status: 'error',
             published: false,
+            sessionId: undefined,
             eventId: undefined,
             action: 'login',
             error: { name: 'Error', message: 'test error' }

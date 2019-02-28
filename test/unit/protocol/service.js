@@ -43,11 +43,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      protocolMock.processInboundStack = function(message, protocol){
+      protocolMock.processInboundStack = function(message, protocol, callback){
         expect(message.session.protocol).to.be('happn_1.3.0');
-        return new Promise(function(resolve, reject){
-          return resolve();
-        });
+        callback(null, message);
       };
 
       protocolMock.processMessageIn({
@@ -98,11 +96,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      protocolMock.processInboundStack = function(message, protocol){
+      protocolMock.processInboundStack = function(message, protocol, callback){
         expect(message.session.protocol).to.be('happn_2');
-        return new Promise(function(resolve, reject){
-          return resolve();
-        });
+        callback(null, message);
       };
 
       protocolMock.processMessageIn({
@@ -248,11 +244,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      protocolMock.processInboundStack = function(message, protocol){
+      protocolMock.processInboundStack = function(message, protocol, callback){
         expect(message.session.protocol).to.be('happn_1.3.0');
-        return new Promise(function(resolve, reject){
-          return resolve();
-        });
+        callback(null, message);
       };
 
       protocolMock.processMessageInLayers({
@@ -306,10 +300,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      protocolMock.processLayers = function(message){
-        return new Promise(function(resolve, reject){
-          resolve(message);
-        });
+      protocolMock.processLayers = function(message, layers, callback){
+        callback(null, message);
       };
 
       protocolMock.processMessageOutLayers({
@@ -351,9 +343,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     };
 
+    protocolMock.processInboundStack = function(message, protocol, callback){
+      expect(message.session.protocol).to.be('bad');
+      callback(null, message);
+    };
+
     protocolMock.initialize({
     }, function(e){
-
       protocolMock.processMessageInLayers({
         session:{
           protocol:'bad'

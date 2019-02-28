@@ -23,7 +23,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   Services.SessionService = require('../../../lib/services/session/service');
   Services.SystemService = require('../../../lib/services/system/service');
   Services.ErrorService = require('../../../lib/services/error/service');
-  Services.QueueService = require('../../../lib/services/queue/service');
   Services.LogService = require('../../../lib/services/log/service');
 
   var mockService = Promise.promisify(function (happn, serviceName, config, callback) {
@@ -70,7 +69,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       .then(mockService(happn, 'Session', false))
       .then(mockService(happn, 'Protocol'))
       .then(mockService(happn, 'Publisher'))
-      .then(mockService(happn, 'Queue'))
       .then(mockService(happn, 'Data'))
       .then(mockService(happn, 'Cache'))
       .then(mockService(happn, 'System'))

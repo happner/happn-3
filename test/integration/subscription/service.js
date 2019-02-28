@@ -103,7 +103,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it.only('starts up the subscription service, does processSubscribe - then getRecipients, then unsubscribe and get no recipients', function(done) {
+  it('starts up the subscription service, does processSubscribe - then getRecipients, then unsubscribe and get no recipients', function(done) {
 
     var config = {};
 
@@ -142,32 +142,35 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       var subscribePrepared = instance.prepareSubscribeMessage(subscribeMessage);
       var unsubscribePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
 
+      instance.processSubscribe = Promise.promisify(instance.processSubscribe);
+      instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
+
       instance.processSubscribe(subscribePrepared)
       .then(function(result){
         expect(result.response._meta.status).to.be('ok');
-        return instance.processGetRecipients({
+        return Promise.resolve(instance.getRecipients({
           request: {
             action: 'set',
             path: '/test/path/1',
             key: '/test/path/1'
           }
-        });
+        }));
       })
       .then(function(getRecipientsResult){
-        expect(getRecipientsResult.recipients.length).to.be(1);
-        return instance.processUnsubscribe(unsubscribePrepared)
+        expect(getRecipientsResult.length).to.be(1);
+        return instance.processUnsubscribe(unsubscribePrepared);
       })
       .then(function(unsubscribeResult){
-        return instance.processGetRecipients({
+        return Promise.resolve(instance.getRecipients({
           request: {
             action: 'set',
             path: '/test/path/1',
             key: '/test/path/1'
           }
-        });
+        }));
       })
       .then(function(getRecipientsResult){
-        expect(getRecipientsResult.recipients.length).to.be(0);
+        expect(getRecipientsResult.length).to.be(0);
         done();
       });
     });
@@ -224,6 +227,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       var subscribeMessage1Prepared = instance.prepareSubscribeMessage(subscribeMessage1);
       var unsubscribeMessagePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
 
+      instance.processSubscribe = Promise.promisify(instance.processSubscribe);
+      instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
+
       instance.processSubscribe(subscribeMessagePrepared)
       .then(function(result){
         expect(result.response._meta.status).to.be('ok');
@@ -232,30 +238,30 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       .then(function(result){
         referenceId = result.response.data.id;
         expect(result.response._meta.status).to.be('ok');
-        return instance.processGetRecipients({
+        return Promise.resolve(instance.getRecipients({
           request: {
             action: 'set',
             path: '/test/path/1',
             key: '/test/path/1'
           }
-        });
+        }));
       })
       .then(function(result){
-        expect(result.recipients.length).to.be(2);
+        expect(result.length).to.be(2);
         unsubscribeMessagePrepared.request.options.referenceId = referenceId;
         return instance.processUnsubscribe(unsubscribeMessagePrepared);
       })
       .then(function(unsubresult){
-        return instance.processGetRecipients({
+        return Promise.resolve(instance.getRecipients({
           request: {
             action: 'set',
             path: '/test/path/1',
             key: '/test/path/1'
           }
-        });
+        }));
       })
       .then(function(result){
-        expect(result.recipients.length).to.be(1);
+        expect(result.length).to.be(1);
         done();
       });
     });
@@ -311,6 +317,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       var subscribeMessagePrepared = instance.prepareSubscribeMessage(subscribeMessage);
       var subscribeMessage1Prepared = instance.prepareSubscribeMessage(subscribeMessage1);
       var unsubscribeMessagePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
+
+      instance.processSubscribe = Promise.promisify(instance.processSubscribe);
+      instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
 
       instance.processSubscribe(subscribeMessagePrepared)
       .then(function(result){
@@ -371,6 +380,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
+      instance.processSubscribe = Promise.promisify(instance.processSubscribe);
+      instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
+
       instance.processSubscribe(prepared)
       .then(function(result){
         expect(result.response._meta.status).to.be('ok');
@@ -414,6 +426,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       };
 
       var prepared = instance.prepareSubscribeMessage(subscribeMessage);
+
+      instance.processSubscribe = Promise.promisify(instance.processSubscribe);
+      instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
 
       instance.processSubscribe(prepared)
       .then(function(result){
@@ -461,28 +476,31 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
+      instance.processSubscribe = Promise.promisify(instance.processSubscribe);
+      instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
+
       instance.processSubscribe(prepared)
       .then(function(result){
         expect(result.response._meta.status).to.be('ok');
-        return instance.processGetRecipients({
+        return Promise.resolve(instance.getRecipients({
           request: {
             action: 'SET',
             path: '/test/path/1'
           }
-        });
+        }));
       })
       .then(function(result){
-        expect(result.recipients.length).to.be(1);
+        expect(result.length).to.be(1);
         instance.clearSessionSubscriptions('1');
-        return instance.processGetRecipients({
+        return Promise.resolve(instance.getRecipients({
           request: {
             action: 'SET',
             path: '/test/path/1'
           }
-        });
+        }));
       })
       .then(function(afteClearedResult){
-        expect(afteClearedResult.recipients.length).to.be(0);
+        expect(afteClearedResult.length).to.be(0);
         done();
       });
     });
