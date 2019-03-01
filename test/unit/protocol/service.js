@@ -113,7 +113,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('tests the processInboundStack method, negative test', function(done){
+  it('tests the processInboundStack method, __suppress, negative test', function(done){
 
     var protocolMock = new Protocol({logger:{
       createLogger:function(){
@@ -161,6 +161,69 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       }, protocolMock.config.protocols['happn_4'], function(e, message){
 
+      });
+    });
+  });
+
+  it('tests the processInboundStack method, processStore fails', function(done){
+
+    var protocolMock = new Protocol({logger:{
+      createLogger:function(){
+        return {
+          $$TRACE:function(){}
+        };
+      }
+    }});
+
+    protocolMock.happn = {
+      connect:{},
+      log:{
+        warn:function(){}
+      },
+      services:{
+        data:{
+          processStore:function(authorized, callback){
+            callback(new Error('a data error happened'));
+          }
+        },
+        session:{
+          on:function(){}
+        },
+        error:{
+          handleSystem:function(){
+
+          },
+          SystemError:function(message){
+            done(new Error(message));
+          }
+        },
+        security:{
+          processAuthorize:function(message, cb){
+            cb(null, message);
+          }
+        }
+      }
+    };
+
+    protocolMock.initialize({
+    }, function(e){
+
+      protocolMock.config.protocols['happn_4'] = {
+        transformIn:function(message){
+          return message;
+        }
+      };
+
+      protocolMock.processInboundStack({
+        session:{
+          protocol:'happn_4'
+        },
+        request:{
+          action:'set'
+        }
+      }, protocolMock.config.protocols['happn_4'], function(e, message){
+        expect(e.toString()).to.be('Error: a data error happened');
+        done();
       });
     });
   });
