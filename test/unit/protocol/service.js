@@ -294,6 +294,77 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
+  it('tests the processInboundStack method, action remove, processPublish fails', function(done){
+
+    var protocolMock = new Protocol({logger:{
+      createLogger:function(){
+        return {
+          $$TRACE:function(){}
+        };
+      }
+    }});
+
+    protocolMock.happn = {
+      connect:{},
+      log:{
+        warn:function(){}
+      },
+      services:{
+        data:{
+          processStore:function(authorized, callback){
+            callback(new Error('a data set error happened'));
+          },
+          processRemove:function(authorized, callback){
+            callback(null, authorized);
+          }
+        },
+        session:{
+          on:function(){}
+        },
+        error:{
+          handleSystem:function(){
+
+          },
+          SystemError:function(message){
+            done(new Error(message));
+          }
+        },
+        security:{
+          processAuthorize:function(message, cb){
+            cb(null, message);
+          }
+        },
+        publisher:{
+          processPublish:function(message, cb){
+            cb(new Error('a publish error happened'));
+          }
+        }
+      }
+    };
+    protocolMock.initialize({
+    }, function(e){
+
+      protocolMock.config.protocols['happn_4'] = {
+        transformIn:function(message){
+          return message;
+        }
+      };
+
+      protocolMock.processInboundStack({
+        session:{
+          protocol:'happn_4'
+        },
+        request:{
+          action:'remove'
+        }
+      }, protocolMock.config.protocols['happn_4'], function(e, message){
+        expect(e.toString()).to.be('Error: a publish error happened');
+        done();
+      });
+    });
+  });
+
+
   it('tests the processMessageIn method, happn_2 protocol', function(done){
 
     var protocolMock = new Protocol({logger:{
