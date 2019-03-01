@@ -441,4 +441,67 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
   });
+
+  it('tests the processSystemOut method, error', function(done){
+
+    var protocolMock = new Protocol({logger:{
+      createLogger:function(){
+        return {
+          $$TRACE:function(){}
+        };
+      }
+    }});
+
+    protocolMock.happn = {
+      connect:{},
+      log:{
+        warn:function(){}
+      },
+      services:{
+        session:{
+          on:function(){},
+          getClient: function(sessionId){
+
+          }
+        },
+        error:{
+          handleSystem:function(error){
+            expect(error.toString()).to.be('Error: test emit error');
+            done();
+          }
+        }
+      }
+    };
+
+    protocolMock.initialize({
+    }, function(e){
+
+      protocolMock.config = {
+        protocols:{
+          happn_4:{
+            transformSystem:function(message){
+              return message;
+            },
+            emit:function(evt, session){
+              throw new Error('test emit error');
+            }
+          }
+        }
+      };
+
+      protocolMock.processSystemOut({
+        session:{
+          protocol:'happn_4'
+        }
+      }, function(e, message){
+
+        expect(message).to.eql({
+          "session": {
+            "protocol": "happn_4"
+          }
+        });
+        done();
+      });
+    });
+  });
 });
