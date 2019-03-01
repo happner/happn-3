@@ -340,7 +340,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         }
       }
-
     };
 
     protocolMock.processInboundStack = function(message, protocol, callback){
@@ -354,6 +353,91 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         session:{
           protocol:'bad'
         }
+      });
+    });
+  });
+
+  it('tests the processSystem method, bad protocol', function(done){
+
+    var protocolMock = new Protocol({logger:{
+      createLogger:function(){
+        return {
+          $$TRACE:function(){}
+        };
+      }
+    }});
+
+    protocolMock.happn = {
+      connect:{},
+      log:{
+        warn:function(){}
+      },
+      services:{
+        session:{
+          on:function(){}
+        },
+        error:{
+          SystemError:function(message){
+            expect(message).to.be('unknown system protocol: bad');
+            done();
+          }
+        }
+      }
+    };
+
+    protocolMock.initialize({
+    }, function(e){
+      protocolMock.processSystem({
+        session:{
+          protocol:'bad'
+        }
+      }, function(e){
+        expect(e).to.be(undefined);
+      });
+    });
+  });
+
+  it('tests the processSystem method', function(done){
+
+    var protocolMock = new Protocol({logger:{
+      createLogger:function(){
+        return {
+          $$TRACE:function(){}
+        };
+      }
+    }});
+
+    protocolMock.happn = {
+      connect:{},
+      log:{
+        warn:function(){}
+      },
+      services:{
+        session:{
+          on:function(){}
+        },
+        error:{
+          SystemError:function(message){
+            done(new Error('was not meant to happn'));
+          }
+        }
+      }
+    };
+
+    protocolMock.initialize({
+    }, function(e){
+      protocolMock.processSystem({
+        session:{
+          protocol:'happn_4'
+        }
+      }, function(e, message){
+        expect(e).to.be(null);
+        expect(message).to.eql({
+          "session": {
+            "protocol": "happn_4"
+          }
+        });
+        done();
       });
     });
   });
