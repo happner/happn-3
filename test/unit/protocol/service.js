@@ -364,6 +364,68 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
+  it('tests the processInboundStack method, action get, processGet fails', function(done){
+
+    var protocolMock = new Protocol({logger:{
+      createLogger:function(){
+        return {
+          $$TRACE:function(){}
+        };
+      }
+    }});
+
+    protocolMock.happn = {
+      connect:{},
+      log:{
+        warn:function(){}
+      },
+      services:{
+        data:{
+          processGet:function(authorized, callback){
+            callback(new Error('a data get error happened'));
+          }
+        },
+        session:{
+          on:function(){}
+        },
+        error:{
+          handleSystem:function(){
+
+          },
+          SystemError:function(message){
+            done(new Error(message));
+          }
+        },
+        security:{
+          processAuthorize:function(message, cb){
+            cb(null, message);
+          }
+        }
+      }
+    };
+
+    protocolMock.initialize({
+    }, function(e){
+
+      protocolMock.config.protocols['happn_4'] = {
+        transformIn:function(message){
+          return message;
+        }
+      };
+
+      protocolMock.processInboundStack({
+        session:{
+          protocol:'happn_4'
+        },
+        request:{
+          action:'get'
+        }
+      }, protocolMock.config.protocols['happn_4'], function(e, message){
+        expect(e.toString()).to.be('Error: a data get error happened');
+        done();
+      });
+    });
+  });
 
   it('tests the processMessageIn method, happn_2 protocol', function(done){
 
