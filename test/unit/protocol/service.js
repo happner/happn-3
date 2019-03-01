@@ -58,6 +58,113 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
+  it('tests the processInboundStack method, __suppress', function(done){
+
+    var protocolMock = new Protocol({logger:{
+      createLogger:function(){
+        return {
+          $$TRACE:function(){}
+        };
+      }
+    }});
+
+    protocolMock.happn = {
+      connect:{},
+      log:{
+        warn:function(){}
+      },
+      services:{
+        session:{
+          on:function(){}
+        },
+        error:{
+          handleSystem:function(){},
+          SystemError:function(message){
+            done(new Error(message));
+          }
+        },
+        security:{
+          processAuthorize:function(){
+            done(new Error('this should not have happened'));
+          }
+        }
+      }
+    };
+
+    protocolMock.initialize({
+    }, function(e){
+
+      protocolMock.config.protocols['happn_4'] = {
+        transformIn:function(message){
+          message.__suppress = true;
+          return message;
+        }
+      };
+
+      protocolMock.processInboundStack({
+        session:{
+          protocol:'happn_4'
+        }
+      }, protocolMock.config.protocols['happn_4'], function(e, message){
+        if (e) return done(e);
+        expect(message.__suppress).to.be(true);
+        done();
+      });
+    });
+  });
+
+  it('tests the processInboundStack method, negative test', function(done){
+
+    var protocolMock = new Protocol({logger:{
+      createLogger:function(){
+        return {
+          $$TRACE:function(){}
+        };
+      }
+    }});
+
+    protocolMock.happn = {
+      connect:{},
+      log:{
+        warn:function(){}
+      },
+      services:{
+        session:{
+          on:function(){}
+        },
+        error:{
+          handleSystem:function(){},
+          SystemError:function(message){
+            done(new Error(message));
+          }
+        },
+        security:{
+          processAuthorize:function(){
+            done();
+          }
+        }
+      }
+    };
+
+    protocolMock.initialize({
+    }, function(e){
+
+      protocolMock.config.protocols['happn_4'] = {
+        transformIn:function(message){
+          return message;
+        }
+      };
+
+      protocolMock.processInboundStack({
+        session:{
+          protocol:'happn_4'
+        }
+      }, protocolMock.config.protocols['happn_4'], function(e, message){
+
+      });
+    });
+  });
+
   it('tests the processMessageIn method, happn_2 protocol', function(done){
 
     var protocolMock = new Protocol({logger:{
