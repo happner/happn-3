@@ -680,7 +680,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     },
     function(){
       setTimeout(function(){
-        expect(happnClient.socket).to.be(null);
+        expect(happnClient.socket).to.be(undefined);
         done();
       }, 2000);
     });
@@ -701,7 +701,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     },
     function(){
       setTimeout(function(){
-        expect(happnClient.socket).to.be(null);
+        expect(happnClient.socket).to.be(undefined);
         done();
       }, 2000);
     });
