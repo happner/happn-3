@@ -5,6 +5,7 @@ branches:
   only:
     - master
 node_js:
+  - "11"
   - "10"
   - "8"
 env:
