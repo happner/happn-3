@@ -296,10 +296,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                 expect(serviceInstance.__caches.SPECIFIC).to.not.be(undefined);
                 serviceInstance.clear('SPECIFIC', function (e) {
                   expect(serviceInstance.__caches.SPECIFIC).to.be(undefined);
-
                   done();
                 });
-
               });
             });
           });
