@@ -125,9 +125,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it('tests the __prepareOptions function with blank options', function(done) {
+  it('tests the __prepareInstanceOptions function with blank options', function(done) {
     var happnClient = mockHappnClient();
-    happnClient.__prepareOptions({});
+    happnClient.__prepareInstanceOptions({});
     expect(happnClient.options).to.eql({
       callTimeout: 60000,
       defaultVariableDepth: 5,
@@ -153,9 +153,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it('tests the __prepareOptions function with mostly blank options, including pool object', function(done) {
+  it('tests the __prepareInstanceOptions function with mostly blank options, including pool object', function(done) {
     var happnClient = mockHappnClient();
-    happnClient.__prepareOptions({
+    happnClient.__prepareInstanceOptions({
       pool: [1, 2]
     });
 
@@ -184,9 +184,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it('tests the __prepareOptions function with mostly blank options, including keyPair(security) object', function(done) {
+  it('tests the __prepareInstanceOptions function with mostly blank options, including keyPair(security) object', function(done) {
     var happnClient = mockHappnClient();
-    happnClient.__prepareOptions({
+    happnClient.__prepareInstanceOptions({
       keyPair: {
         publicKey: 123,
         privateKey: 456
@@ -273,7 +273,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   xit('tests the __connectSocket function.', function(done) {
 
     var happnClient = mockHappnClient();
-    var opts = happnClient.__prepareOptions({}, {});
+    var opts = happnClient.__prepareInstanceOptions({}, {});
 
     happnClient.__connectSocket(function(err, data) {
       //TODO::: This test passes, but causes the client and test framework to hang
@@ -398,7 +398,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var happnClient = mockHappnClient();
     var pubKey = 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG';
-    happnClient.__prepareOptions({
+    happnClient.__prepareInstanceOptions({
       keyPair: {
         privateKey: 'pqPVklZ9kdANfeEZhNFYYznGKKh/cz3qI7JUfVEJRwg=',
         publicKey: 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG'
@@ -547,7 +547,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     //TODO::: NEEDS A 32-bit buffer for nonce???
     var happnClient = mockHappnClient();
 
-    happnClient.__prepareOptions({
+    happnClient.__prepareInstanceOptions({
       keyPair: {
         privateKey: 'pqPVklZ9kdANfeEZhNFYYznGKKh/cz3qI7JUfVEJRwg=',
         publicKey: 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG'
@@ -577,7 +577,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   it('tests the __prepareLogin function will calback encrypted login paramaters serverinfo.encryptedPayloads is true.', function(done) {
     var happnClient = mockHappnClient();
     happnClient.serverInfo.encryptPayloads = true;
-    happnClient.__prepareOptions({
+    happnClient.__prepareInstanceOptions({
       keyPair: {
         privateKey: 'pqPVklZ9kdANfeEZhNFYYznGKKh/cz3qI7JUfVEJRwg=',
         publicKey: 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG'
@@ -611,7 +611,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       callback(message);
     };
 
-    happnClient.__prepareOptions({
+    happnClient.__prepareInstanceOptions({
       username: 'Janco'
     });
 
@@ -1172,7 +1172,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }, {}, 'login');
 
     var pubKey = 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG';
-    happnClient.__prepareOptions({
+    happnClient.__prepareInstanceOptions({
       keyPair: {
         privateKey: 'pqPVklZ9kdANfeEZhNFYYznGKKh/cz3qI7JUfVEJRwg=',
         publicKey: 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG'

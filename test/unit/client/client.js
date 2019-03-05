@@ -592,9 +592,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     ]);
   });
 
-  it('tests the __prepareOptions function ', function() {
+  it('tests the __preparePoolOptions function ', function() {
 
-    expect(HappnClient.__prepareOptions([{
+    expect(HappnClient.__preparePoolOptions([{
         host: '127.0.0.1',
         port: 55001
       },
@@ -622,7 +622,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       ]
     });
 
-    expect(HappnClient.__prepareOptions({
+    expect(HappnClient.__preparePoolOptions({
       host: '10.0.0.1',
       port: {
         range: [
@@ -646,7 +646,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       ]
     });
 
-    expect(HappnClient.__prepareOptions({
+    expect(HappnClient.__preparePoolOptions({
       port: 55001,
       host: {
         range: [
