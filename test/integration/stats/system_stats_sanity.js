@@ -39,11 +39,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       service.create({
           name: 'server_name',
           services: {
-            queue:{
-              config:{
-                mode:'queue'
-              }
-            },
             stats: {
               config: {
                 debug: true,
@@ -111,13 +106,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expect(lastMetrics.gauges['happn.system.memory.heapTotal']).to.not.be(undefined);
         expect(lastMetrics.gauges['happn.system.memory.heapUsed']).to.not.be(undefined);
         expect(lastMetrics.gauges['happn.system.memory.external']).to.not.be(undefined);
-
         expect(lastMetrics.gauges['happn.session.sessions'] > 0).to.be(true);
-
-        expect(lastMetrics.gauges['happn.queue.publication.length']).to.not.be(undefined);
-        expect(lastMetrics.gauges['happn.queue.inbound.length']).to.not.be(undefined);
-        expect(lastMetrics.gauges['happn.queue.outbound.length']).to.not.be(undefined);
-        expect(lastMetrics.gauges['happn.queue.failures']).to.not.be(undefined);
 
         done();
       }, 1020);
@@ -132,29 +121,4 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }, 1020);
 
     });
-
-    it('gets queue speeds', function (done) {
-
-      this.timeout(10000);
-
-      var interval = setInterval(function () {
-
-        happnClient.setAsync('/some/path', {}).catch(function (e) {
-          console.log(e);
-        });
-
-      }, 1000 / 100);
-
-      setTimeout(function () {
-
-        clearInterval(interval);
-
-        expect(lastMetrics.gauges['happn.queue.publication.rate']).to.be.greaterThan(40);
-        expect(lastMetrics.gauges['happn.queue.inbound.rate']).to.be.greaterThan(40);
-
-        done();
-
-      }, 1020);
-    });
-
   });

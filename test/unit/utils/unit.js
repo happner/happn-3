@@ -118,7 +118,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         next();
       }, function (e) {
         expect(e).to.not.be(null);
-        done();
+        sharedUtils.async([1, 2, 3], 1, function (number, index, next) {
+          expect(number == index + 1).to.be(true);
+          next();
+        }, function (e) {
+          expect(e).to.be(undefined);
+          done();
+        })
       });
     });
   });
@@ -163,9 +169,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     expect(checkPathTest('factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*')).to.be('ok');
     expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*', 'set')).to.be('Error: Bad path, if the action is \'set\' the path cannot contain the * wildcard character');
-    expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/*{3}')).to.be(notOk);
     expect(checkPathTest('factory1@I&J(western-cape)/conveyer_2/stats/$set')).to.be(notOk);
-
+    expect(checkPathTest('/test/user name/*')).to.be('ok');
     done();
   });
 
@@ -203,5 +208,37 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
 
     done();
+  });
+
+  it('test computeiv function', function(done){
+    var secret = "thirtytwobitsecret12345678901234";
+    var iv2 = utils.computeiv(secret);
+    expect(iv2).to.eql('tittoisce1357913');
+
+    function tryComputeIv(secretTry){
+      try{
+        return utils.computeiv(secretTry);
+      }catch(e){
+        return e.message;
+      }
+    }
+
+    expect(tryComputeIv('test')).to.eql('secret must be 32 chars long');
+    expect(tryComputeIv(null)).to.eql('secret must be a string and cannot be null or undefined');
+    expect(tryComputeIv(undefined)).to.eql('secret must be a string and cannot be null or undefined');
+    expect(tryComputeIv(1)).to.eql('secret must be a string and cannot be null or undefined');
+    expect(tryComputeIv([])).to.eql('secret must be a string and cannot be null or undefined');
+
+    done();
+  });
+
+  it('test removeLast function', function(){
+    expect(utils.removeLast('test', '/')).to.eql('test');
+    expect(utils.removeLast('test/', '/')).to.eql('test');
+    expect(utils.removeLast(null)).to.eql(null);
+    expect(utils.removeLast(undefined, '/')).to.eql(undefined);
+    expect(utils.removeLast(null, '/')).to.eql(null);
+    expect(utils.removeLast('test', undefined)).to.eql('test');
+    expect(utils.removeLast('test', null)).to.eql('test');
   });
 });

@@ -130,9 +130,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     try {
       fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    } catch (e) {
-
-    }
+    } catch (e) {}
 
     var clientCode = Happn.packager.browserClient({
       contentsOnly: true,
@@ -163,9 +161,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
 
     expect(clientCodeAgain.length > clientCode.length).to.be(true);
-
     done();
-
   });
 
   it('tests the client middleware is able to fetch the minified contents', function (done) {

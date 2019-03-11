@@ -121,8 +121,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*']).to.be(undefined);
-        setTimeout(callback, 2000);
+        setTimeout(function(){
+          expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event/*']).to.be(undefined);
+          callback();
+        }, 2000);
 
       }, function (e) {
 
@@ -375,10 +377,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('should contain the same payload between a merge and a normal store for first store', function (done) {
 
+    this.timeout(5000);
+
     var object = {
       param1: 10,
       param2: 20
     };
+
     var firstTime = true;
 
     listenerclient.on('mergeTest/object', {
@@ -386,12 +391,16 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       count: 2
     }, function (message, meta) {
 
-      expect(message).to.eql(object);
       if (firstTime) {
         firstTime = false;
         return;
       }
-      done();
+
+      setTimeout(()=>{
+        expect(message).to.eql(object);
+        done();
+      }, 2000);
+
     }, function (err) {
       expect(err).to.not.be.ok();
       publisherclient.set('mergeTest/object', object, {
@@ -538,7 +547,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     ];
 
-    var sift = require('sift');
+    var sift = require('sift').default;
 
     var sifted = sift({
       value: {
@@ -821,8 +830,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event']).to.be(undefined);
-        callback();
+        setTimeout(function(){
+          expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event']).to.be(undefined);
+          callback();
+        }, 2000);
 
       }, function (e) {
 
@@ -968,8 +979,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         count: 1
       }, function (message) {
 
-        expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event']).to.be(undefined);
-        callback();
+        setTimeout(function(){
+          expect(listenerclient.state.events['/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event']).to.be(undefined);
+          callback();
+        }, 2000);
 
       }, function (e) {
 

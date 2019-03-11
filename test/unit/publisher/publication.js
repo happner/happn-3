@@ -27,19 +27,28 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           test: 'set-data'
         },
         _meta: {
-          path: '/a/test/path'
+          path: '/a/test/path',
+          created:"created",
+          modified:"modified"
         }
-      },
-      recipients: []
+      }
     };
 
     var options = {
       acknowledgeTimeout: 60000
     };
 
-    var publication = require('../../../lib/services/publisher/publication').create(message, options);
+    var publication = require('../../../lib/services/publisher/publication').create(message, options, {
+      services:{
+        "subscription":{
+          getRecipients:function(){
+            return [];
+          }
+        }
+      }
+    });
 
-    expect(JSON.parse(publication.payload)).to.eql({
+    expect(publication.payload).to.eql({
       "data": {
         "test": "set-data"
       },
@@ -50,24 +59,40 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         "sessionId": "test-session-id",
         "consistency": 2,
         "publicationId": "test-session-id-10",
-        "test": 10
+        "test": 10,
+        "created": "created",
+        "modified": "modified"
       },
       "protocol": "happn_2",
       "__outbound": true
     });
 
-    expect(JSON.parse(publication.mergePayload)).to.eql({
+    expect(publication.getRecipientMessage({
+      data:{
+        "action":"SET",
+        "path":"/a/test/path",
+        "session":{
+          "id":"test-session-id"
+        },
+        "options":{
+          "merge":true
+        }
+      }
+    }).request.publication).to.eql({
       "data": {
         "test": "set-data"
       },
       "_meta": {
         "path": "/a/test/path",
         "action": "/SET@/a/test/path",
+        "channel": "/SET@/a/test/path",
         "type": "data",
         "sessionId": "test-session-id",
         "consistency": 2,
         "publicationId": "test-session-id-10",
-        "test": 10
+        "test": 10,
+        "created": "created",
+        "modified": "modified"
       },
       "protocol": "happn_2",
       "__outbound": true

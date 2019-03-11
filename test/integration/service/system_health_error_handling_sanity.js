@@ -105,27 +105,24 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         username: '_ADMIN',
         password: 'happn'
       })
-
       .then(function (client) {
 
         serviceInstance.services.subscription.__oldAddListener = serviceInstance.services.subscription.addListener.bind(serviceInstance.services.subscription);
-
-        serviceInstance.services.subscription.addListener = function (channel, key, sessionId, parameters, callback) {
-
-          return callback(new Error('test subscribe error'));
-
+        //action, path, sessionId, data
+        serviceInstance.services.subscription.addListener = function (action, path, sessionId, parameters) {
+          throw new Error('test subscribe error');
         }.bind(serviceInstance.services.subscription);
 
         client.on('/test/on', function (data) {
           //do nothing
         }, function (e) {
 
-          expect(e.toString()).to.be('SystemError: subscribe failed');
+          expect(e.toString()).to.be('Error: test subscribe error');
 
           var stats = serviceInstance.services.system.stats();
 
-          expect(stats.HEALTH.lastError.message).to.be('SystemError: subscribe failed');
-          expect(stats.HEALTH.lastError.area).to.be('ProtocolService');
+          expect(stats.HEALTH.lastError.message).to.be('Error: test subscribe error');
+          expect(stats.HEALTH.lastError.area).to.be('SubscriptionService');
           expect(stats.HEALTH.lastError.severity).to.be(1);
 
           serviceInstance.services.subscription.addListener = serviceInstance.services.subscription.__oldAddListener;
@@ -133,14 +130,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           done();
         });
       })
-
       .catch(function (e) {
         if (e) return done(e);
       });
-
   });
 
   it('tests failures in the publisher service', function (done) {
+
+    this.timeout(5000);
 
     serviceInstance.services.session.localClient({
         username: '_ADMIN',
@@ -151,9 +148,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         serviceInstance.services.publisher.__oldPublishMessage = serviceInstance.services.publisher.processPublish.bind(serviceInstance.services.publisher);
 
-        serviceInstance.services.publisher.processPublish = function (message) {
-          return Promise.reject(new Error('a test publication error'));
-        };
+        serviceInstance.services.publisher.processPublish = function (message, callback) {
+          callback(new Error('a test publication error'));
+        }.bind(serviceInstance.services.publisher);
 
         client.on('/test/publication', function (data) {
           //do nothing
@@ -167,15 +164,16 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             consistency: constants.CONSISTENCY.TRANSACTIONAL
           }, function (e) {
 
-            var stats = serviceInstance.services.system.stats();
+            expect(e.toString()).to.be('Error: a test publication error');
 
-            expect(stats.HEALTH.lastError.message).to.be('Error: a test publication error');
-            expect(stats.HEALTH.lastError.area).to.be('ProtocolService');
-            expect(stats.HEALTH.lastError.severity).to.be(1);
-
-            serviceInstance.services.publisher.publishMessage = serviceInstance.services.publisher.__oldPublishMessage;
-
-            done();
+            setTimeout(()=>{
+              var stats = serviceInstance.services.system.stats();
+              expect(stats.HEALTH.lastError.message).to.be('Error: a test publication error');
+              expect(stats.HEALTH.lastError.area).to.be('ProtocolService');
+              expect(stats.HEALTH.lastError.severity).to.be(1);
+              serviceInstance.services.publisher.processPublish = serviceInstance.services.publisher.__oldPublishMessage;
+              done();
+            }, 2000);
           });
         });
       })

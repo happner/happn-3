@@ -5,6 +5,7 @@ branches:
   only:
     - master
 node_js:
+  - "11"
   - "10"
   - "8"
 env:
@@ -12,4 +13,4 @@ env:
 # how to get the right line numbers on failure
 # script: "npm test"
 script: "npm run-script test-cover"
-after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+after_success: "npm run report-coverage"

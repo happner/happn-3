@@ -562,3 +562,7 @@
 ----------------
   - client now disregards permission change errors when reattaching sessions
   - using dezalgo in more obvious security methods that early exit with callbacks
+
+9.0.0 2019-03-01
+----------------
+  - performance optimizations for embedded version: issue #170

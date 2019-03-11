@@ -3,7 +3,8 @@
 describe(require('../__fixtures/utils/test_helper').create().testName(__filename, 3),  function () {
 
   var expect = require('expect.js');
-  var happn = require('../../lib/index');
+  var happn = require('happn');
+  var happn_client = happn.client;
   var service = happn.service;
   var async = require('async');
   var happnInstance = null;
@@ -31,22 +32,26 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
 
   var client;
   beforeEach('should initialize the client', function (callback) {
-    happnInstance.services.session.localClient(function (e, instance) {
-      if (e) return callback(e);
-      client = instance;
-      callback();
-    });
+    happn_client.create({
+        plugin: happn.client_plugins.intra_process,
+        context: happnInstance
+      }, function (e, instance) {
+        if (e) return callback(e);
+        client = instance;
+        callback();
+      }
+    );
   });
 
   afterEach('disconnect client', function (done) {
-    client.disconnect({}, done);
+    client.disconnect(done);
   });
 
   afterEach('disconnect server', function (done) {
     happnInstance.stop(done);
   });
 
-  it.only('creates ' + SUBSCRIPTION_COUNT + ' random paths, and randomly selects a wildcard option for each path, subscribes, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
+  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, and randomly selects a wildcard option for each path, subscribes, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
 
     var subscriptions = [];
 
@@ -81,7 +86,10 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       setResults.counters[data.counter] = true;
       eventsCount++;
 
-      if (eventsCount % 10000 == 0){
+      // console.log('event path: ' + meta.path);
+      // console.log('match path: ' + this.path);
+
+      if (eventsCount == 10000){
         // console.log(JSON.stringify(setResults, null, 2));
         // console.log(JSON.stringify(subscriptions, null, 2));
         console.log('handled ' + eventsCount + ' events in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
@@ -102,6 +110,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       }, function(e){
         if (e) return done(e);
         console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
+        console.log('handled ' + eventsCount + 'events in total');
         done();
       });
     });
@@ -166,7 +175,63 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
     });
   });
 
-  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
+  it.only('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in parallel', function (done) {
+
+    var subscriptions = [];
+
+    console.log('building subscriptions...');
+
+    var randomPaths = random.randomPaths({count:SUBSCRIPTION_COUNT});
+
+    randomPaths.forEach(function(path){
+      subscriptions.push(path);
+    });
+
+    var searchPaths = [];
+
+    for (var i = 0; i < SEARCH_COUNT; i++) searchPaths.push(randomPaths[random.integer(0, randomPaths.length - 1)]);
+
+    console.log('built subscriptions...');
+
+    var startedSubscribing = Date.now();
+    var setResults = {counters:{}};
+
+    var eventsCount = 0;
+    var startedSearching;
+
+    var handleOn = function(data, meta){
+      if (!setResults[meta.path]) setResults[meta.path] = [];
+      setResults[meta.path].push(data);
+      setResults.counters[data.counter] = true;
+      eventsCount++;
+
+      if (eventsCount % 1000 == 0){
+        // console.log(JSON.stringify(setResults, null, 2));
+        // console.log(JSON.stringify(subscriptions, null, 2));
+        console.log('handled ' + eventsCount + ' events in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
+      }
+    };
+
+    async.each(subscriptions, function(subscription, subscriptionCB){
+
+      client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
+    }, function(e){
+      console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
+      startedSearching = Date.now();
+      var counter = 0;
+      async.each(searchPaths, function(randomPath, randomPathCB){
+        client.set(randomPath, {
+          counter:counter++
+        }, {noStore:NOSTORE, consistency: CONSISTENCY}, randomPathCB);
+      }, function(e){
+        if (e) return done(e);
+        console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
+        done();
+      });
+    });
+  });
+
+  it('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in series', function (done) {
 
     var subscriptions = [];
 
@@ -203,7 +268,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
       }
     };
 
-    async.each(subscriptions, function(subscription, subscriptionCB){
+    async.eachSeries(subscriptions, function(subscription, subscriptionCB){
       client.on(subscription, handleOn.bind({path:subscription}), subscriptionCB);
     }, function(e){
       console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
@@ -215,61 +280,7 @@ describe(require('../__fixtures/utils/test_helper').create().testName(__filename
         }, {noStore:NOSTORE, consistency: CONSISTENCY}, randomPathCB);
       }, function(e){
         if (e) return done(e);
-        console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
-      });
-    });
-  });
-
-  it.only('creates ' + SUBSCRIPTION_COUNT + ' random paths, subscribes to each path, then loops through the paths and searches ' + SEARCH_COUNT + ' times in series', function (done) {
-
-    var subscriptions = [];
-
-    console.log('building subscriptions...');
-
-    var randomPaths = random.randomPaths({count:SUBSCRIPTION_COUNT});
-
-    randomPaths.forEach(function(path){
-      subscriptions.push(path);
-    });
-
-    var searchPaths = [];
-
-    for (var i = 0; i < SEARCH_COUNT; i++) searchPaths.push(randomPaths[random.integer(0, randomPaths.length - 1)]);
-
-    console.log('built subscriptions...');
-
-    var startedSubscribing = Date.now();
-    var setResults = {counters:{}};
-
-    var eventsCount = 0;
-    var startedSearching;
-
-    var handleOn = function(data, meta){
-      if (!setResults[meta.path]) setResults[meta.path] = [];
-      setResults[meta.path].push(data);
-      setResults.counters[data.counter] = true;
-      eventsCount++;
-      if (eventsCount % 1000 == 0){
-        // console.log(JSON.stringify(setResults, null, 2));
-        // console.log(JSON.stringify(subscriptions, null, 2));
-        console.log('handled ' + eventsCount + ' events in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
-      }
-    };
-
-    async.each(subscriptions, function(subscription, subscriptionCB){
-      client.on(subscription, {event_type:'set'}, handleOn.bind({path:subscription}), subscriptionCB);
-    }, function(e){
-      console.log('did ' + SUBSCRIPTION_COUNT + ' subscriptions in ' + ((Date.now() - startedSubscribing) / 1000).toString() + ' seconds');
-      startedSearching = Date.now();
-      var counter = 0;
-      async.each(searchPaths, function(randomPath, randomPathCB){
-        client.set(randomPath, {
-          counter:counter++
-        }, {noStore:NOSTORE, consistency: CONSISTENCY}, randomPathCB);
-      }, function(e){
-        if (e) return done(e);
-        console.log('handled ' + SEARCH_COUNT + ' parallel sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
-        done();
+        console.log('handled ' + SEARCH_COUNT + ' consecutive sets in ' + ((Date.now() - startedSearching) / 1000).toString() + ' seconds');
       });
     });
   });

@@ -7,6 +7,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var uuid = require('uuid');
   var Logger = require('happn-logger');
   var CheckPoint = require('../../../lib/services/security/checkpoint');
+  var Promise = require('bluebird');
 
   var initializeCheckpoint = function (callback, config) {
 
@@ -312,7 +313,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('should test the session filtering capability', function (done) {
 
-    var sift = require('sift');
+    var sift = require('sift').default;
 
     var testSession = {
       user: {
@@ -2097,7 +2098,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       instance.services.security.login = function(credentials, sessionId, request, callback){
         callback(null, 2);
-      }
+      };
+
+      instance.services.security.processLogin = Promise.promisify(instance.services.security.processLogin);
 
       instance.services.security.processLogin({
         session:{
