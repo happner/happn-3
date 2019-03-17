@@ -1011,5 +1011,4 @@ describe('01_websockets_embedded_sanity_encrypted_payloads', function () {
       });
     });
   });
-
 });
