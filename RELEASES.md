@@ -566,3 +566,7 @@
 9.0.0 2019-03-01
 ----------------
   - performance optimizations for embedded version: issue #170
+
+9.0.1 2019-03-17
+----------------
+  - session service configures session correctly for heartbeats
