@@ -15,7 +15,8 @@ module.exports = function (config) {
     files: [
       'browser_client.js',
       '01_security_hsts_cookie.js',
-      '02_websockets_embedded_sanity_encryptedpayloads.js'
+      '02_websockets_embedded_sanity_encryptedpayloads.js',
+      '03_heartbeats.js'
     ],
 
     // list of files / patterns to load in the browser
@@ -70,7 +71,6 @@ module.exports = function (config) {
     // Concurrency level
     // how many browser should be started simultanous
     concurrency: Infinity,
-
     browserNoActivityTimeout: 60000
   });
 };

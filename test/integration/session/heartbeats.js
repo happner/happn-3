@@ -84,7 +84,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var pongs = 0;
 
     clientInstance.onEvent('reconnect-scheduled', function(){
-      console.log('reconnect scheduled:::');
       reconnects++;
     });
 
