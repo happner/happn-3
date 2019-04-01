@@ -570,3 +570,7 @@
 9.0.1 2019-03-17
 ----------------
   - session service configures session correctly for heartbeats
+
+9.0.2 2019-03-24
+----------------
+  - latest primus-wrapper
