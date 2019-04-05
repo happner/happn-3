@@ -1,7 +1,7 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
-  "version": "9.0.2",
+  "version": "9.0.3",
   "main": "./lib/index",
   "protocol": "4",
   "database": "1",
@@ -13,7 +13,7 @@
     "test-browser": "UPDATE_BROWSER_PRIMUS=true gulp --gulpfile test/browser/gulp-01.js",
     "test-longrunning": "node test/test-longrunning/serial-run.js",
     "test-sanity": "mocha silence.js test/integration/**/*sanity.js",
-    "release": "UPDATE_BROWSER_PRIMUS=true rm -rf node_modules && rm -f package-lock.json && npm install && npm run test-cover && npm run test-browser",
+    "release": "rm -rf node_modules && rm -f package-lock.json && npm install && UPDATE_BROWSER_PRIMUS=true npm run test-cover",
     "test-010": "source ~/.nvm/nvm.sh && nvm use 0.10 && rm -rf node_modules && npm install && node_modules/mocha/bin/_mocha test/integration/**",
     "test-lint": "gulp lint",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls"
