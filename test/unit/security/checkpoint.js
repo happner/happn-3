@@ -446,53 +446,124 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  // it('it tests _authorizeSession function, early sync return on async callback', function(done){
-  //
-  //   this.timeout(60000);
-  //
-  //   var startedTimestamp = Date.now();
-  //
-  //   var checks = [];
-  //
-  //   for (var i = 0; i < 10000000; i++){
-  //     checks.push({
-  //       session:{
-  //         policy: {}
-  //       },
-  //       path:'test/path' + i,
-  //       action:'SET'
-  //     });
-  //   }
-  //
-  //   var failureCount = 0;
-  //   var okCount = 0;
-  //
-  //   initializeCheckpoint(function (e, checkpoint) {
-  //
-  //     if (e) {
-  //       return done(e);
-  //     }
-  //
-  //     checkpoint.__cache_checkpoint_authorization = {
-  //       getSync: function(permissionCacheKey){
-  //         return false;
-  //       }
-  //     };
-  //
-  //     async.each(checks, function(check, checkCB){
-  //       checkpoint._authorizeSession(check.session, check.path, check.action, function(e){
-  //         if (e){
-  //           failureCount++;
-  //         } else {
-  //           okCount++;
-  //         }
-  //         checkCB();
-  //       });
-  //     }, function(){
-  //       var duration = Date.now() - startedTimestamp;
-  //       expect(okCount).to.be(1000000);
-  //       done();
-  //     });
-  //   });
-  // });
+  xit('it tests _authorizeSession function, early sync return on async callback', function(done){
+
+    this.timeout(60000);
+
+    var startedTimestamp = Date.now();
+
+    var checks = [];
+
+    for (var i = 0; i < 1000000; i++){
+      checks.push({
+        session:{
+          policy: {}
+        },
+        path:'test/path' + i,
+        action:'SET'
+      });
+    }
+
+    var failureCount = 0;
+    var okCount = 0;
+
+    initializeCheckpoint(function (e, checkpoint) {
+
+      if (e) {
+        return done(e);
+      }
+
+      checkpoint.__cache_checkpoint_authorization = {
+        getSync: function(permissionCacheKey){
+          return false;
+        }
+      };
+
+      async.each(checks, function(check, checkCB){
+        checkpoint._authorizeSession(check.session, check.path, check.action, function(e){
+          if (e){
+            failureCount++;
+          } else {
+            okCount++;
+          }
+          checkCB();
+        });
+      }, function(){
+        var duration = Date.now() - startedTimestamp;
+        expect(okCount).to.be(1000000);
+        done();
+      });
+    });
+  });
+
+  it('it tests _authorizeSession function, session has no policy', function(done){
+
+    this.timeout(60000);
+
+    initializeCheckpoint(function (e, checkpoint) {
+
+      if (e) {
+        return done(e);
+      }
+
+      var testData = {
+        session:{
+          policy: {}
+        },
+        sessionNoPolicy:{},
+        sessionWithType:{
+          type:1,
+          policy: {
+            "1":{}
+          }
+        },
+        sessionWithTtl:{
+          timestamp:Date.now(),
+          type:1,
+          policy: {
+            "1":{ttl:1}
+          }
+        },
+        path:'test/path',
+        action:'SET'
+      }
+
+      checkpoint.__cache_checkpoint_authorization = {
+        getSync: function(permissionCacheKey){
+          return false;
+        }
+      };
+
+      checkpoint._authorizeSession(testData.session, testData.path, testData.action,
+        function(e, authorised, reason){
+          expect(e).to.be(null);
+          expect(authorised).to.be(false);
+          expect(reason).to.be('no policy for session type: undefined');
+          checkpoint._authorizeSession(testData.sessionNoPolicy, testData.path, testData.action,
+            function(e, authorised, reason){
+              expect(e).to.be(null);
+              expect(authorised).to.be(false);
+              expect(reason).to.be('no policy attached to session: {}');
+              setTimeout(function(){
+                checkpoint._authorizeSession(testData.sessionWithTtl, testData.path, testData.action,
+                  function(e, authorised, reason){
+                    expect(e).to.be(null);
+                    expect(authorised).to.be(false);
+                    expect(reason).to.be('expired session token');
+                    checkpoint._authorizeSession(testData.sessionWithType, testData.path, testData.action,
+                      function(e, authorised, reason){
+                        expect(e).to.be(null);
+                        expect(authorised).to.be(true);
+                        done();
+                      }
+                    );
+                  }
+                );
+              }, 100);
+            }
+          );
+        }
+      );
+    });
+  });
 });
