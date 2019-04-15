@@ -50,7 +50,7 @@
     "handlebars": "^4.1.0",
     "happn-logger": "^0.1.0",
     "happn-nedb": "^1.8.1",
-    "happn-password-hash-and-salt": "^1.1.0",
+    "happn-password-hash-and-salt": "^1.2.0",
     "happn-primus-wrapper": "^7.3.4",
     "happn-sillyname": "^0.1.1",
     "happn-stats": "^1.0.6",
