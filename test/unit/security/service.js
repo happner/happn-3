@@ -8,6 +8,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var Logger = require('happn-logger');
   var CheckPoint = require('../../../lib/services/security/checkpoint');
   var Promise = require('bluebird');
+  var log = require('why-is-node-running');
 
   var initializeCheckpoint = function (callback, config) {
 
@@ -236,6 +237,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }, callback);
   };
 
+  var stopServices = function (happnMock, callback){
+    async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function (serviceName, eachServiceCB) {
+      if (!happnMock.services[serviceName].stop) return eachServiceCB();
+      happnMock.services[serviceName].stop(eachServiceCB);
+    }, callback);
+  }
+
   var mockServices = function (callback, servicesConfig) {
 
     var testConfig = {
@@ -301,7 +309,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       if (!happnMock.services[serviceName].initialize) return eachServiceCB();
 
-      else testServices[serviceName].initialize(testConfig.services[serviceName], eachServiceCB);
+      else testServices[serviceName].initialize(testConfig.services[serviceName] || {}, eachServiceCB);
 
     }, function (e) {
 
@@ -310,6 +318,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       callback(null, happnMock);
     });
   };
+
+  // after('after all', function(){
+  //   log();
+  // });
 
   it('should test the session filtering capability', function (done) {
 
@@ -397,8 +409,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       expect(verifyResult).to.be(false);
 
-      done();
-
+      stopServices(happnMock, done);
     });
 
   });
@@ -421,10 +432,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       expect(verifyResult).to.be(false);
 
-      done();
-
+      stopServices(happnMock, done);
     });
-
   });
 
   it('should test the sign and verify function of the crypto service', function (done) {
@@ -444,11 +453,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       var verifyResult = happnMock.services.crypto.verify(nonce, digest, testKeyPair.publicKey);
 
       expect(verifyResult).to.be(true);
-
-      done();
-
+      stopServices(happnMock, done);
     });
-
   });
 
   it('should test the sign and verify function of the crypto service, from a generated nonce', function (done) {
@@ -466,13 +472,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       var digest = crypto.sign(nonce, testKeyPair.privateKey);
 
       var verifyResult = happnMock.services.crypto.verify(nonce, digest, testKeyPair.publicKey);
-
       expect(verifyResult).to.be(true);
-
-      done();
-
+      stopServices(happnMock, done);
     });
-
   });
 
 
@@ -670,6 +672,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           }.bind(request), 3000);
 
+          stopServices(happnMock, done);
+
           callback(null, nonce);
         }
 
@@ -688,7 +692,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
 
         clientInstance.login();
-
       });
     };
   });
@@ -713,7 +716,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       expect(session.policy[0].inactivity_threshold).to.be(Infinity);
       expect(session.policy[1].inactivity_threshold).to.be(Infinity);
 
-      done();
+      stopServices(happnMock, done);
 
     });
   });
@@ -979,8 +982,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized) {
 
               expect(authorized).to.be(true);
+              checkpoint.stop();
               done();
-
             });
           });
         }, 1500);
@@ -1090,10 +1093,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               expect(authorized).to.be(false);
               expect(reason).to.be('session inactivity threshold reached');
 
+              checkpoint.stop();
               done();
-
             });
-
           }, 1500);
         });
       });
@@ -1216,6 +1218,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                   expect(authorized).to.be(false);
                   expect(reason).to.be('session inactivity threshold reached');
 
+                  checkpoint.stop();
                   done();
                 });
 
@@ -1225,7 +1228,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         };
 
         checkSessionIsAlive();
-
       });
     });
   });
@@ -1329,6 +1331,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               expect(authorized).to.be(false);
               expect(reason).to.be('session inactivity threshold reached');
 
+              checkpoint.stop();
               done();
 
             });
@@ -1447,6 +1450,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             expect(passthrough2).to.be(undefined);
             expect(authorized).to.be(false);
 
+            checkpoint.stop();
             done();
 
           });
@@ -1456,8 +1460,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   it("tests the security checkpoints token usage limit", function (done) {
-
-    this.timeout(20000);
 
     this.timeout(20000);
 
@@ -1563,8 +1565,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
               expect(ok).to.be(false);
 
+              checkpoint.stop();
               done();
-
             });
           });
         });
@@ -1641,10 +1643,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         expect(JSON.stringify(session[propertyName])).to.be(JSON.stringify(decoded[propertyName]));
       }
 
-      done();
-
+      stopServices(happnMock, done);
     });
-
   });
 
   it('tests the security services createAuthenticationNonce and verifyAuthenticationDigest methods', function (done) {
@@ -1685,16 +1685,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             if (e) return done(e);
             expect(verified).to.be(true);
 
-            done();
-
+            stopServices(happnMock, done);
           });
-
         });
-
       });
-
     });
-
   });
 
   it('tests the security services createAuthenticationNonce method, timing out', function (done) {
@@ -1737,9 +1732,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             happnMock.services.security.verifyAuthenticationDigest(mockSession, function (e) {
 
               expect(e.toString()).to.be('Error: nonce expired or public key invalid');
-
-              done();
-
+              stopServices(happnMock, done);
             });
           }, 1000);
         });
@@ -1747,6 +1740,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
+  //issue:::
   it('should create a user with a public key, then login using a signature', function (done) {
 
     this.timeout(20000);
@@ -1841,6 +1835,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
+  //issue:::
   it('should create a user with a public key, then fail login to a using a signature - bad public key', function (done) {
 
     this.timeout(20000);
@@ -2639,6 +2634,43 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       })
       .catch(function(e){
         done(e);
+      });
+    });
+  });
+
+  it('should be able to work with configured pbkdf2Iterations', function (done) {
+
+    mockServices(function (e, happnMock) {
+      if (e) return done(e);
+      expect(happnMock.services.security.config.pbkdf2Iterations).to.be(100);
+
+      happnMock.services.security.users.__prepareUser({password:'test'}, function(e, prepared){
+        if (e) return done(e);
+        var split = prepared.password.split('$');
+        expect(split[0]).to.be('pbkdf2');
+        expect(split[1]).to.be('100');
+        stopServices(happnMock, done);
+      });
+    }, {
+      services:{
+        security:{
+          pbkdf2Iterations:100
+        }
+      }
+    });
+  });
+
+  it('should be able to work with default pbkdf2Iterations', function (done) {
+
+    mockServices(function (e, happnMock) {
+      if (e) return done(e);
+      expect(happnMock.services.security.config.pbkdf2Iterations).to.be(10000);
+      happnMock.services.security.users.__prepareUser({password:'test'}, function(e, prepared){
+        if (e) return done(e);
+        var split = prepared.password.split('$');
+        expect(split[0]).to.be('pbkdf2');
+        expect(split[1]).to.be('10000');
+        stopServices(happnMock, done);
       });
     });
   });

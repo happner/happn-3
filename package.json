@@ -97,7 +97,8 @@
     "karma-mocha-reporter": "^2.2.5",
     "mocha": "^5.2.0",
     "nyc": "^13.3.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "why-is-node-running": "^2.1.0"
   },
   "readmeFilename": "README.md"
 }
