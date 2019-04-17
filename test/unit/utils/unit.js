@@ -241,4 +241,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(utils.removeLast('test', undefined)).to.eql('test');
     expect(utils.removeLast('test', null)).to.eql('test');
   });
+
+  it('tests asyncCallback - client side dezalgo', function (done) {
+    
+    var callback = function(param1, param2, param3){
+      expect(param1).to.be('param1');
+      expect(param2).to.be('param2');
+      expect(param3).to.be('param3');
+      done();
+    }
+    utils.asyncCallback(callback, 'param1', 'param2', 'param3');
+  });
 });

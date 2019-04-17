@@ -574,3 +574,13 @@
 9.0.2 2019-03-24
 ----------------
   - latest primus-wrapper
+
+9.0.3 2019-04-11
+----------------
+  - patch: regenerated browser_primus
+
+9.0.4 2019-04-11
+----------------
+  - issue #181,#196,
+  - happn-logger version 0.1.0
+  - configurable iteration count pbkdf2
