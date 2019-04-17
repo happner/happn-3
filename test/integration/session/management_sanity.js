@@ -105,7 +105,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests active sessions and session activity logging on a secure instance', function (callback) {
 
-    this.timeout(6000);
+    this.timeout(20000);
 
     var RandomActivityGenerator = require("happn-random-activity-generator");
 
@@ -137,7 +137,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests session revocation on a secure instance', function (callback) {
 
-    this.timeout(10000);
+    this.timeout(20000);
 
     var RandomActivityGenerator = require("happn-random-activity-generator");
 
@@ -270,7 +270,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   it('tests session management, switching on session management with activity logging', function (callback) {
-    this.timeout(6000);
+
+    this.timeout(20000);
 
     getService(false, 10000, function (e) {
 
@@ -329,7 +330,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests session management, switching on session management without activity logging', function (callback) {
 
-    this.timeout(6000);
+    this.timeout(20000);
 
     getService(false, 10000, function (e) {
 
@@ -385,7 +386,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   it('tests session management, switching on session management without activity logging, then starting up activity logging', function (callback) {
 
-    this.timeout(10000);
+    this.timeout(20000);
 
     getService(false, 10000, function (e) {
 
