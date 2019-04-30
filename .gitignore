@@ -27,6 +27,9 @@ results
 report
 test-resources/c7a/test/*
 
+test/__fixtures/test/security/*pem
+test/__fixtures/test/security/*rsa
+
 dump.rdb
 
 .scannerwork

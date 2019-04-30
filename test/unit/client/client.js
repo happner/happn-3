@@ -77,14 +77,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it('tests the __performDataRequest function set null options, error state', function(done) {
+  it('tests the __performDataRequest function set null options, inactive state', function(done) {
 
     var happnClient = mockHappnClient(null, Constants.CLIENT_STATE.ERROR);
 
     happnClient.__performDataRequest('/test/path', 'set', {
       test: 'data'
     }, null, function(e, response) {
-      expect(e.toString()).to.be('Error: client in an error state');
+      expect(e.toString()).to.be('Error: client not active');
       expect(e.detail).to.be('action: set, path: /test/path');
       done();
     });
@@ -138,7 +138,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         test: 'data'
       });
     } catch (e) {
-      expect(e.toString()).to.be('Error: client in an error state');
+      expect(e.toString()).to.be('Error: client not active');
       expect(e.detail).to.be('action: set, path: /test/path');
       done();
     }
@@ -590,85 +590,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         port: 55003
       }
     ]);
-  });
-
-  it('tests the __preparePoolOptions function ', function() {
-
-    expect(HappnClient.__preparePoolOptions([{
-        host: '127.0.0.1',
-        port: 55001
-      },
-      {
-        host: '127.0.0.1',
-        port: 55002
-      },
-      {
-        host: '127.0.0.1',
-        port: 55003
-      }
-    ])).to.eql({
-      pool: [{
-          host: '127.0.0.1',
-          port: 55001
-        },
-        {
-          host: '127.0.0.1',
-          port: 55002
-        },
-        {
-          host: '127.0.0.1',
-          port: 55003
-        }
-      ]
-    });
-
-    expect(HappnClient.__preparePoolOptions({
-      host: '10.0.0.1',
-      port: {
-        range: [
-          55001,
-          55003
-        ]
-      }
-    })).to.eql({
-      pool: [{
-          host: '10.0.0.1',
-          port: 55001
-        },
-        {
-          host: '10.0.0.1',
-          port: 55002
-        },
-        {
-          host: '10.0.0.1',
-          port: 55003
-        }
-      ]
-    });
-
-    expect(HappnClient.__preparePoolOptions({
-      port: 55001,
-      host: {
-        range: [
-          '10.0.0.1',
-          '10.0.0.3'
-        ]
-      }
-    })).to.eql({
-      pool: [{
-          host: '10.0.0.1',
-          port: 55001
-        },
-        {
-          host: '10.0.0.2',
-          port: 55001
-        },
-        {
-          host: '10.0.0.3',
-          port: 55001
-        }
-      ]
-    });
   });
 
   it('tests the __endSocket function', function(done) {

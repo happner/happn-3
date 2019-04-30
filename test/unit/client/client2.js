@@ -153,37 +153,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     done();
   });
 
-  it('tests the __prepareInstanceOptions function with mostly blank options, including pool object', function(done) {
-    var happnClient = mockHappnClient();
-    happnClient.__prepareInstanceOptions({
-      pool: [1, 2]
-    });
-
-    expect(happnClient.options).to.eql({
-      pool: [1, 2],
-      callTimeout: 60000,
-      defaultVariableDepth: 5,
-      poolReconnectDelay: 0,
-      poolType: 1,
-      poolReconnectAttempts: 4,
-      socket: {
-        reconnect: {
-          retries: Infinity,
-          max: 180000
-        },
-        timeout: 30000,
-        strategy: 'disconnect,online,timeout'
-      },
-      info: {
-        _browser: false
-      },
-      loginRetry: 4,
-      loginRetryInterval: 5000,
-      loginTimeout: 60000
-    });
-    done();
-  });
-
   it('tests the __prepareInstanceOptions function with mostly blank options, including keyPair(security) object', function(done) {
     var happnClient = mockHappnClient();
     happnClient.__prepareInstanceOptions({
@@ -1023,24 +992,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     happnClient.handle_error(new Error('This is an error'), false);
     expect(happnClient.state.errors[0].error.toString()).to.eql('Error: This is an error');
-    expect(happnClient.state.errors[0].fatal).to.be(false);
-    done();
-  });
-
-  it('tests the handle_error function with a fatal error', function(done) {
-
-    // TODO::: SHOULD THE FATAL ERROR BE THROWN? OR SHOULD USER BE ALERTED SOMEHOW?
-    var happnClient = mockHappnClient();
-    happnClient.onEvent(
-      'fatal-error',
-      function(e, response) {
-        expect(e.toString()).to.eql('Error: This is an error');
-        expect(response).to.be(undefined);
-      });
-
-    happnClient.handle_error(new Error('This is an error'), true);
-    expect(happnClient.state.errors[0].error.toString()).to.eql('Error: This is an error');
-    expect(happnClient.state.errors[0].fatal).to.be(true);
     done();
   });
 
