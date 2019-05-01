@@ -45,7 +45,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   context('login', function() {
 
-    it.only('authenticates with the _ADMIN user, using the default password', function(done) {
+    it('authenticates with the _ADMIN user, using the default password', function(done) {
 
       serviceInstance.services.session.localClient({
           username: '_ADMIN',
@@ -232,7 +232,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
 
-    it.only('delegated authority: checks allowed on, and prevented from on', function(done) {
+    it('delegated authority: checks allowed on, and prevented from on', function(done) {
 
       adminClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/on', {
         onBehalfOf:testClient.session.user.username
