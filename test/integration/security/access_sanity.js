@@ -276,6 +276,30 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
 
+    it('delegated authority: checks allowed set, and prevented from set', function(done) {
+
+      adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/set', {}, {
+          onBehalfOf:testClient.session.user.username
+      }, function(e, result) {
+
+        if (e) return done(e);
+
+        expect(result._meta.path).to.be('/TEST/a7_eventemitter_security_access/' + test_id + '/set');
+
+        adminClient.set('/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/set', {
+          test: 'test'
+        }, {
+          onBehalfOf:testClient.session.user.username
+        }, function(e, result) {
+
+          if (!e) return done(new Error('you just set data that you shouldnt have permissions to set'));
+          expect(e.toString()).to.be('AccessDenied: unauthorized');
+          done();
+
+        });
+      });
+    });
+
     it('checks allowed get, and prevented from get', function(done) {
 
       adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
@@ -300,6 +324,34 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
 
+    it('delegated authority: checks allowed get, and prevented from get', function(done) {
+
+      adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
+        'test-set': 'test-set-val'
+      }, {}, function(e, setResult) {
+
+        if (e) return done(e);
+
+        adminClient.get('/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
+          onBehalfOf:testClient.session.user.username
+        }, function(e, result) {
+
+          if (e) return done(e);
+          expect(result._meta.path).to.be('/TEST/a7_eventemitter_security_access/' + test_id + '/get');
+
+          adminClient.get('/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/get', {
+            onBehalfOf:testClient.session.user.username
+          }, function(e, result) {
+
+            if (!e) return done(new Error('you managed to get data which you do not have permissions for'));
+            expect(e.toString()).to.be('AccessDenied: unauthorized');
+            done();
+
+          });
+        });
+      });
+    });
+
     it('checks allowed get but not set', function(done) {
 
       testClient.get('/TEST/a7_eventemitter_security_access/' + test_id + '/get', {}, function(e, result) {
@@ -310,6 +362,27 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
           test: 'test'
         }, {}, function(e, result) {
+          if (!e) return done(new Error('you just set data that you shouldnt have permissions to set'));
+          expect(e.toString()).to.be('AccessDenied: unauthorized');
+          done();
+        });
+      });
+    });
+
+    it('delegated authority: checks allowed get but not set', function(done) {
+
+      adminClient.get('/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
+          onBehalfOf:testClient.session.user.username
+      }, function(e, result) {
+
+        if (e) return done(e);
+        expect(result._meta.path).to.be('/TEST/a7_eventemitter_security_access/' + test_id + '/get');
+
+        adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
+          test: 'test'
+        }, {
+            onBehalfOf:testClient.session.user.username
+        }, function(e, result) {
           if (!e) return done(new Error('you just set data that you shouldnt have permissions to set'));
           expect(e.toString()).to.be('AccessDenied: unauthorized');
           done();
@@ -347,6 +420,42 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
 
+    it('delegated authority: checks allowed get and on but not set', function(done) {
+
+      adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {
+        'test-set': 'test-set-val'
+      }, {}, function(e, setResult) {
+
+        if (e) return done(e);
+        adminClient.get('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {
+          onBehalfOf:testClient.session.user.username
+        }, function(e, result) {
+
+          if (e) return done(e);
+          expect(result._meta.path).to.be('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on');
+
+          adminClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {
+            onBehalfOf:testClient.session.user.username
+          }, function(message) {}, function(e) {
+
+            if (e) return done(e);
+
+            adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {
+              test: 'test'
+            }, {
+              onBehalfOf:testClient.session.user.username
+            }, function(e, result) {
+
+              if (!e) return done(new Error('you just set data that you shouldnt have permissions to set'));
+              expect(e.toString()).to.be('AccessDenied: unauthorized');
+              done();
+            });
+
+          });
+        });
+      });
+    });
+
     it('checks allowed get but not on', function(done) {
 
       adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {
@@ -370,6 +479,32 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
 
+    it('delegated authority: checks allowed get but not on', function(done) {
+
+      adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {
+        'test-set': 'test-set-val'
+      }, {}, function(e, setResult) {
+
+        if (e) return done(e);
+        adminClient.get('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {
+          onBehalfOf:testClient.session.user.username
+        }, function(e, result) {
+
+          if (e) return done(e);
+          expect(result._meta.path).to.be('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on');
+
+          adminClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {
+            onBehalfOf:testClient.session.user.username
+          }, function(message) {}, function(e) {
+
+            if (!e) return done(new Error('this should not have been allowed...'));
+            expect(e.toString()).to.be('AccessDenied: unauthorized');
+            done();
+          });
+        });
+      });
+    });
+
     it('checks allowed on but not get', function(done) {
 
       adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {
@@ -383,6 +518,28 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           expect(e.toString()).to.be('AccessDenied: unauthorized');
 
           testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {}, function(message) {}, done);
+
+        });
+      });
+    });
+
+    it('delegated authority: checks allowed on but not get', function(done) {
+
+      adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {
+        'test-set': 'test-set-val'
+      }, {}, function(e, setResult) {
+
+        if (e) return done(e);
+        adminClient.get('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {
+          onBehalfOf:testClient.session.user.username
+        }, function(e, result) {
+
+          if (!e) return done(new Error('this should not have been allowed...'));
+          expect(e.toString()).to.be('AccessDenied: unauthorized');
+
+          adminClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {
+            onBehalfOf:testClient.session.user.username
+          }, function(message) {}, done);
 
         });
       });
@@ -405,20 +562,56 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
 
+    it('delegated authority: checks allowed set but not get', function(done) {
+
+      adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get', {
+        'test-set': 'test-set-val'
+      }, {
+        onBehalfOf:testClient.session.user.username
+      }, function(e, setResult) {
+
+        if (e) return done(e);
+        adminClient.get('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get', {
+            onBehalfOf:testClient.session.user.username
+        }, function(e, result) {
+
+          if (!e) return done(new Error('this should not have been allowed...'));
+          expect(e.toString()).to.be('AccessDenied: unauthorized');
+          done();
+
+        });
+      });
+    });
+
     it('checks allowed set but not on', function(done) {
 
       testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {
         'test-set': 'test-set-val'
       }, {}, function(e, setResult) {
-
-
         if (e) return done(e);
         testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {}, function(message) {}, function(e) {
 
           if (!e) return done(new Error('this should not have been allowed...'));
           expect(e.toString()).to.be('AccessDenied: unauthorized');
           done();
+        });
+      });
+    });
 
+    it('delegated authority: checks allowed set but not on', function(done) {
+
+      testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {
+        'test-set': 'test-set-val'
+      }, {
+        onBehalfOf:testClient.session.user.username
+      }, function(e, setResult) {
+        if (e) return done(e);
+        testClient.on('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {
+          onBehalfOf:testClient.session.user.username
+        }, function(message) {}, function(e) {
+          if (!e) return done(new Error('this should not have been allowed...'));
+          expect(e.toString()).to.be('AccessDenied: unauthorized');
+          done();
         });
       });
     });
@@ -552,7 +745,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
 
-    it('deletes the test user, tests we are notified about the session closure, then have no access', function(done) {
+    it('deletes the test user, tests we are notified about the session closure, then have no access, on delegated authority as well', function(done) {
 
       testClient.onSystemMessage(function(eventType, data) {
 
@@ -564,7 +757,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
             if (!e) return done(new Error('this should not have been allowed...'));
             expect(e.toString()).to.be('Error: client is disconnected');
-            done();
+
+            adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/set', {test:'data'}, {
+              onBehalfOf:testClient.session.user.username
+            }, function(e){
+              expect(e.toString()).to.be('AccessDenied: unauthorized');
+              done();
+            })
           });
         }
       });
