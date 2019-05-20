@@ -600,7 +600,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     it('delegated authority: checks allowed set but not on', function(done) {
 
-      testClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {
+      adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {
         'test-set': 'test-set-val'
       }, {
         onBehalfOf:testClient.session.user.username

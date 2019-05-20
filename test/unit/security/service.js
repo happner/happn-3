@@ -1,4 +1,4 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function() {
 
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
@@ -8,9 +8,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var Logger = require('happn-logger');
   var CheckPoint = require('../../../lib/services/security/checkpoint');
   var Promise = require('bluebird');
-  var log = require('why-is-node-running');
+  //var log = require('why-is-node-running');
 
-  var initializeCheckpoint = function (callback, config) {
+  var initializeCheckpoint = function(callback, config) {
 
     if (!config) config = {};
 
@@ -26,7 +26,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     var cacheServiceInst = new CacheService();
     var utilsServiceInst = new UtilsService();
 
-    cacheServiceInst.initialize(function () {
+    cacheServiceInst.initialize(function() {
 
       var happn = {
         services: {
@@ -39,7 +39,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               }
             },
             users: {
-              getUser: function (name, callback) {
+              getUser: function(name, callback) {
                 return callback(null, {
                   username: name,
                   groups: {}
@@ -47,7 +47,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               }
             },
             groups: {
-              getGroup: function (name, opts, callback) {
+              getGroup: function(name, opts, callback) {
                 return callback(null, {
                   name: name,
                   permissions: {}
@@ -67,7 +67,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         value: happn
       });
 
-      checkpoint.initialize(config, happn.services.security, function (e) {
+      checkpoint.initialize(config, happn.services.security, function(e) {
 
         if (e) return callback(e);
 
@@ -222,29 +222,29 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }
   };
 
-  var getService = function (config, callback) {
+  var getService = function(config, callback) {
     happn.service.create(config,
-      function (e, instance) {
+      function(e, instance) {
         if (e) return callback(e);
         callback(null, instance);
       }
     );
   };
 
-  var stopService = function (instance, callback) {
+  var stopService = function(instance, callback) {
     instance.stop({
       reconnect: false
     }, callback);
   };
 
-  var stopServices = function (happnMock, callback){
-    async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function (serviceName, eachServiceCB) {
+  var stopServices = function(happnMock, callback) {
+    async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function(serviceName, eachServiceCB) {
       if (!happnMock.services[serviceName].stop) return eachServiceCB();
       happnMock.services[serviceName].stop(eachServiceCB);
     }, callback);
   }
 
-  var mockServices = function (callback, servicesConfig) {
+  var mockServices = function(callback, servicesConfig) {
 
     var testConfig = {
       secure: true,
@@ -274,9 +274,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
 
     var happnMock = {
-      config:{
-        services:{
-          security:{}
+      config: {
+        services: {
+          security: {}
         }
       },
       services: {
@@ -288,7 +288,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     if (servicesConfig) testConfig = servicesConfig;
 
-    async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function (serviceName, eachServiceCB) {
+    async.eachSeries(['log', 'error', 'utils', 'crypto', 'cache', 'session', 'data', 'security'], function(serviceName, eachServiceCB) {
 
       testServices[serviceName] = new testServices[serviceName]({
         logger: Logger
@@ -298,7 +298,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       happnMock.services[serviceName] = testServices[serviceName];
 
-      if (serviceName == 'error') happnMock.services[serviceName].handleFatal = function (message, e) {
+      if (serviceName == 'error') happnMock.services[serviceName].handleFatal = function(message, e) {
         throw e;
       };
 
@@ -311,7 +311,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       else testServices[serviceName].initialize(testConfig.services[serviceName] || {}, eachServiceCB);
 
-    }, function (e) {
+    }, function(e) {
 
       if (e) return callback(e);
 
@@ -323,7 +323,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   //   log();
   // });
 
-  it('should test the session filtering capability', function (done) {
+  it('should test the session filtering capability', function(done) {
 
     var sift = require('sift').default;
 
@@ -390,9 +390,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   });
 
-  it('should test the sign and fail to verify function of the crypto service, bad digest', function (done) {
+  it('should test the sign and fail to verify function of the crypto service, bad digest', function(done) {
 
-    mockServices(function (e, happnMock) {
+    mockServices(function(e, happnMock) {
 
       if (e) return done(e);
 
@@ -414,9 +414,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   });
 
-  it('should test the sign and fail to verify function of the crypto service, bad nonce', function (done) {
+  it('should test the sign and fail to verify function of the crypto service, bad nonce', function(done) {
 
-    mockServices(function (e, happnMock) {
+    mockServices(function(e, happnMock) {
 
       if (e) return done(e);
 
@@ -436,9 +436,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('should test the sign and verify function of the crypto service', function (done) {
+  it('should test the sign and verify function of the crypto service', function(done) {
 
-    mockServices(function (e, happnMock) {
+    mockServices(function(e, happnMock) {
 
       if (e) return done(e);
 
@@ -457,9 +457,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('should test the sign and verify function of the crypto service, from a generated nonce', function (done) {
+  it('should test the sign and verify function of the crypto service, from a generated nonce', function(done) {
 
-    mockServices(function (e, happnMock) {
+    mockServices(function(e, happnMock) {
 
       if (e) return done(e);
 
@@ -478,7 +478,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
 
-  it('should test the default config settings', function (done) {
+  it('should test the default config settings', function(done) {
 
     var happn = require('../../../lib/index');
     var happn_client = happn.client;
@@ -525,7 +525,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   });
 
-  it('should test the __prepareLogin method, password', function (done) {
+  it('should test the __prepareLogin method, password', function(done) {
 
     var happn = require('../../../lib/index');
     var happn_client = happn.client;
@@ -547,12 +547,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       password: 'happnTestPWD'
     };
 
-    clientInstance.performRequest = function (path, action, data, options, cb) {
+    clientInstance.performRequest = function(path, action, data, options, cb) {
       cb(new Error('this wasnt meant to happn'));
     };
 
     //loginParameters, callback
-    clientInstance.__prepareLogin(loginParameters, function (e, prepared) {
+    clientInstance.__prepareLogin(loginParameters, function(e, prepared) {
 
       if (e) return callback(e);
 
@@ -565,7 +565,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   });
 
-  it('should test the __prepareLogin method, digest', function (done) {
+  it('should test the __prepareLogin method, digest', function(done) {
 
     var happn = require('../../../lib/index');
     var happn_client = happn.client;
@@ -591,7 +591,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       loginType: 'digest'
     };
 
-    clientInstance.__performSystemRequest = function (action, data, options, cb) {
+    clientInstance.__performSystemRequest = function(action, data, options, cb) {
 
       var nonce_requests = {};
 
@@ -614,12 +614,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    clientInstance.__ensureCryptoLibrary(function (e) {
+    clientInstance.__ensureCryptoLibrary(function(e) {
 
       if (e) return callback(e);
 
       //loginParameters, callback
-      clientInstance.__prepareLogin(loginParameters, function (e, prepared) {
+      clientInstance.__prepareLogin(loginParameters, function(e, prepared) {
 
         if (e) return callback(e);
 
@@ -633,7 +633,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('should test the login function of the happn client, passing in a digest', function () {
+  it('should test the login function of the happn client, passing in a digest', function() {
 
     var happn = require('../../../lib/index');
     var happn_client = happn.client;
@@ -646,11 +646,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     });
 
-    clientInstance.performRequest = function (path, action, data, options, callback) {
+    clientInstance.performRequest = function(path, action, data, options, callback) {
 
       var nonce_requests = {};
 
-      mockServices(function (e, happnMock) {
+      mockServices(function(e, happnMock) {
 
         if (action == 'request-nonce') {
 
@@ -666,7 +666,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
           nonce_requests[nonce] = request;
 
-          request.__timedOut = setTimeout(function () {
+          request.__timedOut = setTimeout(function() {
 
             delete nonce_requests[this.nonce];
 
@@ -696,7 +696,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     };
   });
 
-  it('tests the security services __profileSession method, default profiles', function (done) {
+  it('tests the security services __profileSession method, default profiles', function(done) {
 
     var session = {
       user: {
@@ -704,7 +704,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    mockServices(function (e, happnMock) {
+    mockServices(function(e, happnMock) {
 
       if (e) return done(e);
 
@@ -721,9 +721,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('tests the security services authorize method', function (done) {
+  it('tests the security services authorize method', function(done) {
 
-    mockServices(function (e, happnMock) {
+    mockServices(function(e, happnMock) {
 
       if (e) return done(e);
 
@@ -731,7 +731,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         type: 0,
         user: {
           username: 'BLAH',
-          groups:{}
+          groups: {}
         },
         policy: {
           1: {
@@ -743,20 +743,20 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      happnMock.services.security.__checkRevocations = function (session, cb) {
+      happnMock.services.security.__checkRevocations = function(session, cb) {
         cb(null, true);
       };
 
-      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, callback){
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, callback) {
         callback(null, false);
       }
 
-      happnMock.services.security.authorize(session, null, null, function (e, authorized) {
+      happnMock.services.security.authorize(session, null, null, function(e, authorized) {
 
         if (e) return done(e);
         expect(authorized).to.be(false);
         session.bypassAuthUser = true;
-        happnMock.services.security.authorize(session, null, null, function(e, authorized){
+        happnMock.services.security.authorize(session, null, null, function(e, authorized) {
           if (e) return done(e);
           expect(authorized).to.be(true);
           done();
@@ -765,7 +765,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the security checkpoints _authorizeSession ttl", function (done) {
+  it("tests the security checkpoints _authorizeSession ttl", function(done) {
 
     this.timeout(20000);
 
@@ -788,18 +788,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    cacheInstance.initialize({}, function (e) {
+    cacheInstance.initialize({}, function(e) {
 
       if (e) return done(e);
 
       var securityService = {
         users: {
-          getGroup: function (groupName, opts, callback) {
+          getGroup: function(groupName, opts, callback) {
             if (groups[groupName]) callback(null, groups[groupName]);
           }
         },
         groups: {
-          getGroup: function (groupName, opts, callback) {
+          getGroup: function(groupName, opts, callback) {
 
             if (groups[groupName]) callback(null, groups[groupName]);
 
@@ -811,8 +811,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         },
         cacheService: cacheInstance,
-        onDataChanged: function () {
-        }
+        onDataChanged: function() {}
       };
 
       var testSession = {
@@ -848,17 +847,17 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      checkpoint.initialize({}, securityService, function (e) {
+      checkpoint.initialize({}, securityService, function(e) {
 
         if (e) return done(e);
 
-        checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e) {
+        checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e) {
 
           if (e) return done(e);
 
-          setTimeout(function () {
+          setTimeout(function() {
 
-            checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized, reason) {
+            checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e, authorized, reason) {
 
               expect(authorized).to.be(false);
               expect(reason).to.be('expired session token');
@@ -866,7 +865,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               testSession.type = 0;
 
               //we have a more permissive ttl for stateless sessions
-              checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized) {
+              checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e, authorized) {
 
                 expect(authorized).to.be(true);
 
@@ -879,7 +878,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the security checkpoints _authorizeSession inactivity_threshold timed out", function (done) {
+  it("tests the security checkpoints _authorizeSession inactivity_threshold timed out", function(done) {
 
     this.timeout(20000);
 
@@ -902,18 +901,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    cacheInstance.initialize({}, function (e) {
+    cacheInstance.initialize({}, function(e) {
 
       if (e) return done(e);
 
       var securityService = {
         users: {
-          getGroup: function (groupName, opts, callback) {
+          getGroup: function(groupName, opts, callback) {
             if (groups[groupName]) callback(null, groups[groupName]);
           }
         },
         groups: {
-          getGroup: function (groupName, opts, callback) {
+          getGroup: function(groupName, opts, callback) {
 
             if (groups[groupName]) callback(null, groups[groupName]);
 
@@ -925,8 +924,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         },
         cacheService: cacheInstance,
-        onDataChanged: function () {
-        }
+        onDataChanged: function() {}
       };
 
       var testSession = {
@@ -964,13 +962,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      checkpoint.initialize({}, securityService, function (e) {
+      checkpoint.initialize({}, securityService, function(e) {
 
         if (e) return done(e);
 
-        setTimeout(function () {
+        setTimeout(function() {
 
-          checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized, reason) {
+          checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e, authorized, reason) {
 
             if (e) return done(e);
 
@@ -979,7 +977,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
             testSession.type = 0; //should be fine - plenty of time
 
-            checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized) {
+            checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e, authorized) {
 
               expect(authorized).to.be(true);
               checkpoint.stop();
@@ -991,7 +989,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the security checkpoints _authorizeSession inactivity_threshold active then timed out", function (done) {
+  it("tests the security checkpoints _authorizeSession inactivity_threshold active then timed out", function(done) {
 
     this.timeout(20000);
 
@@ -1014,18 +1012,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    cacheInstance.initialize({}, function (e) {
+    cacheInstance.initialize({}, function(e) {
 
       if (e) return done(e);
 
       var securityService = {
         users: {
-          getGroup: function (groupName, opts, callback) {
+          getGroup: function(groupName, opts, callback) {
             if (groups[groupName]) callback(null, groups[groupName]);
           }
         },
         groups: {
-          getGroup: function (groupName, opts, callback) {
+          getGroup: function(groupName, opts, callback) {
 
             if (groups[groupName]) callback(null, groups[groupName]);
 
@@ -1037,8 +1035,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         },
         cacheService: cacheInstance,
-        onDataChanged: function () {
-        }
+        onDataChanged: function() {}
       };
 
       var testSession = {
@@ -1076,19 +1073,19 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      checkpoint.initialize({}, securityService, function (e) {
+      checkpoint.initialize({}, securityService, function(e) {
 
         if (e) return done(e);
 
-        checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized) {
+        checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e, authorized) {
 
           if (e) return done(e);
 
           expect(authorized).to.be(true);
 
-          setTimeout(function () {
+          setTimeout(function() {
 
-            checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized, reason) {
+            checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e, authorized, reason) {
 
               expect(authorized).to.be(false);
               expect(reason).to.be('session inactivity threshold reached');
@@ -1102,7 +1099,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the security checkpoints _authorizeSession inactivity_threshold keep-alive", function (done) {
+  it("tests the security checkpoints _authorizeSession inactivity_threshold keep-alive", function(done) {
 
     this.timeout(20000);
 
@@ -1125,18 +1122,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    cacheInstance.initialize({}, function (e) {
+    cacheInstance.initialize({}, function(e) {
 
       if (e) return done(e);
 
       var securityService = {
         users: {
-          getGroup: function (groupName, opts, callback) {
+          getGroup: function(groupName, opts, callback) {
             if (groups[groupName]) callback(null, groups[groupName]);
           }
         },
         groups: {
-          getGroup: function (groupName, opts, callback) {
+          getGroup: function(groupName, opts, callback) {
 
             if (groups[groupName]) callback(null, groups[groupName]);
 
@@ -1148,8 +1145,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         },
         cacheService: cacheInstance,
-        onDataChanged: function () {
-        }
+        onDataChanged: function() {}
       };
 
       var testSession = {
@@ -1185,15 +1181,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       };
 
-      checkpoint.initialize({}, securityService, function (e) {
+      checkpoint.initialize({}, securityService, function(e) {
 
         if (e) return done(e);
 
         var counter = 0;
 
-        var checkSessionIsAlive = function () {
+        var checkSessionIsAlive = function() {
 
-          checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized) {
+          checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e, authorized) {
 
             expect(authorized).to.be(true);
 
@@ -1201,7 +1197,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
               counter++;
 
-              setTimeout(function () {
+              setTimeout(function() {
 
                 checkSessionIsAlive();
 
@@ -1211,9 +1207,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
               testSession.type = 0;
 
-              setTimeout(function () {
+              setTimeout(function() {
 
-                return checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized, reason) {
+                return checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e, authorized, reason) {
 
                   expect(authorized).to.be(false);
                   expect(reason).to.be('session inactivity threshold reached');
@@ -1232,7 +1228,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the security checkpoints _authorizeSession inactivity_threshold", function (done) {
+  it("tests the security checkpoints _authorizeSession inactivity_threshold", function(done) {
 
     this.timeout(20000);
 
@@ -1271,12 +1267,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var securityService = {
       users: {
-        getGroup: function (groupName, opts, callback) {
+        getGroup: function(groupName, opts, callback) {
           if (groups[groupName]) callback(null, groups[groupName]);
         }
       },
       groups: {
-        getGroup: function (groupName, opts, callback) {
+        getGroup: function(groupName, opts, callback) {
 
           if (groups[groupName]) callback(null, groups[groupName]);
 
@@ -1288,8 +1284,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       },
       cacheService: cacheInstance,
-      onDataChanged: function () {
-      }
+      onDataChanged: function() {}
     };
 
     var SessionService = require('../../../lib/services/session/service');
@@ -1312,21 +1307,21 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    cacheInstance.initialize({}, function (e) {
+    cacheInstance.initialize({}, function(e) {
 
       if (e) return done(e);
 
-      checkpoint.initialize({}, securityService, function (e) {
+      checkpoint.initialize({}, securityService, function(e) {
 
         if (e) return done(e);
 
-        checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized) {
+        checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e, authorized) {
 
           expect(authorized).to.be(true);
 
-          setTimeout(function () {
+          setTimeout(function() {
 
-            checkpoint._authorizeSession(testSession, '/test/blah', 'on', function (e, authorized, reason) {
+            checkpoint._authorizeSession(testSession, '/test/blah', 'on', function(e, authorized, reason) {
 
               expect(authorized).to.be(false);
               expect(reason).to.be('session inactivity threshold reached');
@@ -1342,7 +1337,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the security checkpoints _authorizeSession permissions passthrough", function (done) {
+  it("tests the security checkpoints _authorizeSession permissions passthrough", function(done) {
 
     this.timeout(20000);
 
@@ -1388,12 +1383,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var securityService = {
       users: {
-        getGroup: function (groupName, opts, callback) {
+        getGroup: function(groupName, opts, callback) {
           if (groups[groupName]) callback(null, groups[groupName]);
         }
       },
       groups: {
-        getGroup: function (groupName, opts, callback) {
+        getGroup: function(groupName, opts, callback) {
 
           if (groups[groupName]) callback(null, groups[groupName]);
 
@@ -1405,8 +1400,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       },
       cacheService: cacheInstance,
-      onDataChanged: function () {
-      }
+      onDataChanged: function() {}
     };
 
     var SessionService = require('../../../lib/services/session/service');
@@ -1429,21 +1423,21 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    cacheInstance.initialize({}, function (e) {
+    cacheInstance.initialize({}, function(e) {
 
       if (e) return done(e);
 
-      checkpoint.initialize({}, securityService, function (e) {
+      checkpoint.initialize({}, securityService, function(e) {
 
         if (e) return done(e);
 
-        checkpoint._authorizeSession(testSession, '/test/permission/24', 'on', function (e, authorized, reason, passthrough1) {
+        checkpoint._authorizeSession(testSession, '/test/permission/24', 'on', function(e, authorized, reason, passthrough1) {
 
           if (e) return done(e);
 
           expect(passthrough1).to.be(true);
 
-          checkpoint._authorizeSession(testSession, '/test1/permission/24', 'on', function (e, authorized, reason, passthrough2) {
+          checkpoint._authorizeSession(testSession, '/test1/permission/24', 'on', function(e, authorized, reason, passthrough2) {
 
             if (e) return done(e);
 
@@ -1459,7 +1453,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it("tests the security checkpoints token usage limit", function (done) {
+  it("tests the security checkpoints token usage limit", function(done) {
 
     this.timeout(20000);
 
@@ -1500,12 +1494,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var securityService = {
       users: {
-        getGroup: function (groupName, opts, callback) {
+        getGroup: function(groupName, opts, callback) {
           if (groups[groupName]) callback(null, groups[groupName]);
         }
       },
       groups: {
-        getGroup: function (groupName, opts, callback) {
+        getGroup: function(groupName, opts, callback) {
 
           if (groups[groupName]) callback(null, groups[groupName]);
 
@@ -1517,8 +1511,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       },
       cacheService: cacheInstance,
-      onDataChanged: function () {
-      }
+      onDataChanged: function() {}
     };
 
     var SessionService = require('../../../lib/services/session/service');
@@ -1541,25 +1534,25 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     };
 
-    cacheInstance.initialize({}, function (e) {
+    cacheInstance.initialize({}, function(e) {
 
       if (e) return done(e);
 
-      checkpoint.initialize({}, securityService, function (e) {
+      checkpoint.initialize({}, securityService, function(e) {
 
         if (e) return done(e);
 
-        checkpoint.__checkUsageLimit(testSession, testSession.policy[1], function (e, ok) {
+        checkpoint.__checkUsageLimit(testSession, testSession.policy[1], function(e, ok) {
 
           if (e) return done(e);
 
           expect(ok).to.be(true);
 
-          checkpoint.__checkUsageLimit(testSession, testSession.policy[1], function (e, ok) {
+          checkpoint.__checkUsageLimit(testSession, testSession.policy[1], function(e, ok) {
 
             if (e) return done(e);
 
-            checkpoint.__checkUsageLimit(testSession, testSession.policy[1], function (e, ok) {
+            checkpoint.__checkUsageLimit(testSession, testSession.policy[1], function(e, ok) {
 
               if (e) return done(e);
 
@@ -1574,7 +1567,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  var mockRequest = function (token, url, payload, method) {
+  var mockRequest = function(token, url, payload, method) {
 
     if (!token) throw new Error('you must specify a token');
     if (!url) throw new Error('you must specify an url');
@@ -1600,7 +1593,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   };
 
-  var mockLoginRequest = function (credentials, callback) {
+  var mockLoginRequest = function(credentials, callback) {
 
     var MockRequest = require('./helpsrs/mock_request');
 
@@ -1619,9 +1612,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   };
 
-  it('tests the security services generateToken and decodeToken methods', function (done) {
+  it('tests the security services generateToken and decodeToken methods', function(done) {
 
-    mockServices(function (e, happnMock) {
+    mockServices(function(e, happnMock) {
 
       if (e) return done(e);
 
@@ -1647,7 +1640,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('tests the security services createAuthenticationNonce and verifyAuthenticationDigest methods', function (done) {
+  it('tests the security services createAuthenticationNonce and verifyAuthenticationDigest methods', function(done) {
 
     this.timeout(5000);
 
@@ -1662,11 +1655,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     });
 
-    clientInstance.__ensureCryptoLibrary(function (e) {
+    clientInstance.__ensureCryptoLibrary(function(e) {
 
       if (e) return callback(e);
 
-      mockServices(function (e, happnMock) {
+      mockServices(function(e, happnMock) {
 
         var mockSession = {
           publicKey: "AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2"
@@ -1674,13 +1667,13 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         expect(happnMock.services.security.config.defaultNonceTTL).to.be(60000);
 
-        happnMock.services.security.createAuthenticationNonce(mockSession, function (e, nonce) {
+        happnMock.services.security.createAuthenticationNonce(mockSession, function(e, nonce) {
 
           if (e) return done(e);
 
           mockSession.digest = clientInstance.__signNonce(nonce);
 
-          happnMock.services.security.verifyAuthenticationDigest(mockSession, function (e, verified) {
+          happnMock.services.security.verifyAuthenticationDigest(mockSession, function(e, verified) {
 
             if (e) return done(e);
             expect(verified).to.be(true);
@@ -1692,7 +1685,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('tests the security services createAuthenticationNonce method, timing out', function (done) {
+  it('tests the security services createAuthenticationNonce method, timing out', function(done) {
 
     this.timeout(5000);
 
@@ -1707,11 +1700,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }
     });
 
-    clientInstance.__ensureCryptoLibrary(function (e) {
+    clientInstance.__ensureCryptoLibrary(function(e) {
 
       if (e) return callback(e);
 
-      mockServices(function (e, happnMock) {
+      mockServices(function(e, happnMock) {
 
         var mockSession = {
           publicKey: "AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2"
@@ -1721,15 +1714,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         happnMock.services.security.config.defaultNonceTTL = 500; //set it to something small
 
-        happnMock.services.security.createAuthenticationNonce(mockSession, function (e, nonce) {
+        happnMock.services.security.createAuthenticationNonce(mockSession, function(e, nonce) {
 
           if (e) return done(e);
 
           mockSession.digest = clientInstance.__signNonce(nonce);
 
-          setTimeout(function () {
+          setTimeout(function() {
 
-            happnMock.services.security.verifyAuthenticationDigest(mockSession, function (e) {
+            happnMock.services.security.verifyAuthenticationDigest(mockSession, function(e) {
 
               expect(e.toString()).to.be('Error: nonce expired or public key invalid');
               stopServices(happnMock, done);
@@ -1741,7 +1734,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   //issue:::
-  it('should create a user with a public key, then login using a signature', function (done) {
+  it('should create a user with a public key, then login using a signature', function(done) {
 
     this.timeout(20000);
 
@@ -1767,7 +1760,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }]
     };
 
-    getService(config, function (e, instance) {
+    getService(config, function(e, instance) {
 
       if (e) return done(e);
 
@@ -1793,42 +1786,42 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       serviceInstance.services.security.users.upsertGroup(testGroup, {
         overwrite: false
-      }, function (e, result) {
+      }, function(e, result) {
 
         if (e) return done(e);
         addedTestGroup = result;
 
         serviceInstance.services.security.users.upsertUser(testUser, {
           overwrite: false
-        }, function (e, result) {
+        }, function(e, result) {
 
           if (e) return done(e);
           addedTestuser = result;
 
-          serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function (e) {
+          serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function(e) {
 
             if (e) return done(e);
 
             happn.client.create({
 
-              username: testUser.username,
-              publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2',
-              privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=',
-              loginType: 'digest'
+                username: testUser.username,
+                publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2',
+                privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=',
+                loginType: 'digest'
 
-            })
+              })
 
-            .then(function (clientInstance) {
+              .then(function(clientInstance) {
 
-              clientInstance.disconnect(function (e) {
-                if (e) console.warn('couldnt disconnect client:::', e);
-                serviceInstance.stop(done);
+                clientInstance.disconnect(function(e) {
+                  if (e) console.warn('couldnt disconnect client:::', e);
+                  serviceInstance.stop(done);
+                });
+              })
+
+              .catch(function(e) {
+                done(e);
               });
-            })
-
-            .catch(function (e) {
-              done(e);
-            });
           });
         });
       });
@@ -1836,7 +1829,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   });
 
   //issue:::
-  it('should create a user with a public key, then fail login to a using a signature - bad public key', function (done) {
+  it('should create a user with a public key, then fail login to a using a signature - bad public key', function(done) {
 
     this.timeout(20000);
 
@@ -1867,11 +1860,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       logger: Logger
     });
 
-    crypto.initialize({}, function (e) {
+    crypto.initialize({}, function(e) {
 
       if (e) return done(e);
 
-      getService(config, function (e, instance) {
+      getService(config, function(e, instance) {
 
         if (e) return done(e);
 
@@ -1896,19 +1889,19 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         serviceInstance.services.security.users.upsertGroup(testGroup, {
           overwrite: false
-        }, function (e, result) {
+        }, function(e, result) {
 
           if (e) return done(e);
           addedTestGroup = result;
 
           serviceInstance.services.security.users.upsertUser(testUser, {
             overwrite: false
-          }, function (e, result) {
+          }, function(e, result) {
 
             if (e) return done(e);
             addedTestuser = result;
 
-            serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function (e) {
+            serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function(e) {
 
               if (e) return done(e);
 
@@ -1923,11 +1916,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
               happn.client.create(creds)
 
-                .then(function (clientInstance) {
+                .then(function(clientInstance) {
                   done(new Error('this was not meant to happn'));
                 })
 
-                .catch(function (e) {
+                .catch(function(e) {
 
                   expect(e.toString()).to.be('AccessDenied: Invalid credentials');
                   serviceInstance.stop(done);
@@ -1939,7 +1932,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('should test the policy ms settings', function (done) {
+  it('should test the policy ms settings', function(done) {
 
     var SecurityService = require('../../../lib/services/security/service.js');
 
@@ -1960,7 +1953,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     };
 
     securityService.__initializeProfiles(serviceConfig.services.security.config)
-      .then(function () {
+      .then(function() {
         expect(securityService.__cache_Profiles[0].policy.ttl).to.be(4000);
         expect(securityService.__cache_Profiles[0].policy.inactivity_threshold).to.be(2000);
         expect(securityService.__cache_Profiles[1].policy.inactivity_threshold).to.be(60000 * 60 * 48);
@@ -1969,7 +1962,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       .catch(done);
   });
 
-  it('should create a user and login, getting a token - then should be able to use the token to log in again', function (done) {
+  it('should create a user and login, getting a token - then should be able to use the token to log in again', function(done) {
 
     this.timeout(20000);
 
@@ -1995,7 +1988,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       }]
     };
 
-    getService(config, function (e, instance) {
+    getService(config, function(e, instance) {
 
       if (e) return done(e);
 
@@ -2023,19 +2016,19 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       serviceInstance.services.security.users.upsertGroup(testGroup, {
         overwrite: false
-      }, function (e, result) {
+      }, function(e, result) {
 
         if (e) return done(e);
         addedTestGroup = result;
 
         serviceInstance.services.security.users.upsertUser(testUser, {
           overwrite: false
-        }, function (e, result) {
+        }, function(e, result) {
 
           if (e) return done(e);
           addedTestuser = result;
 
-          serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function (e) {
+          serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function(e) {
 
             if (e) return done(e);
 
@@ -2048,7 +2041,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
             happn.client.create(creds)
 
-              .then(function (clientInstance) {
+              .then(function(clientInstance) {
 
                 var tokenCreds = {
                   username: testUser.username,
@@ -2057,11 +2050,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
                 happn.client.create(tokenCreds)
 
-                  .then(function (tokenClientInstance) {
+                  .then(function(tokenClientInstance) {
 
                     tokenClientInstance.set('/test/data', {
                       test: "data"
-                    }, function (e) {
+                    }, function(e) {
 
                       if (e) return done(e);
                       tokenClientInstance.disconnect();
@@ -2069,11 +2062,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                       serviceInstance.stop(done);
                     });
                   })
-                  .catch(function (e) {
+                  .catch(function(e) {
                     done(e);
                   });
               })
-              .catch(function (e) {
+              .catch(function(e) {
                 done(e);
               });
 
@@ -2083,168 +2076,164 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('tests the processLogin method, session dropped while logging in', function (done) {
+  it('tests the processLogin method, session dropped while logging in', function(done) {
 
     getService({
       secure: true
-    }, function (e, instance) {
+    }, function(e, instance) {
 
       if (e) return done(e);
 
-      instance.services.security.login = function(credentials, sessionId, request, callback){
+      instance.services.security.login = function(credentials, sessionId, request, callback) {
         callback(null, 2);
       };
 
       instance.services.security.processLogin = Promise.promisify(instance.services.security.processLogin);
 
       instance.services.security.processLogin({
-        session:{
-          id:1
-        },
-        request:{
-          data:{}
-        }
-      })
-      .then(function(message){
-        done(new Error('unexpected success'));
-      })
-      .catch(function(e){
-        expect(e.toString()).to.be('Error: session with id 1 dropped while logging in');
-        stopService(instance, done);
-      });
+          session: {
+            id: 1
+          },
+          request: {
+            data: {}
+          }
+        })
+        .then(function(message) {
+          done(new Error('unexpected success'));
+        })
+        .catch(function(e) {
+          expect(e.toString()).to.be('Error: session with id 1 dropped while logging in');
+          stopService(instance, done);
+        });
     });
   });
 
-  it('tests resetSessionPermissions method - link-group', function(done){
+  it('tests resetSessionPermissions method - link-group', function(done) {
 
     this.timeout(5000);
 
     getService({
       secure: true
-    }, function (e, instance) {
+    }, function(e, instance) {
 
       var client = {
-        sessionId:'1',
-        once:function(evt, handler){
+        sessionId: '1',
+        once: function(evt, handler) {
           if (evt == 'end') this.__handler = handler;
         }.bind(client),
-        end:function(){
+        end: function() {
           ended = true;
           this.__handler();
         }.bind(client)
       };
 
       instance.services.session.__sessions = {
-        '1':{
-          client:client,
-          data:{
-            id:1,
-            user:{
+        '1': {
+          client: client,
+          data: {
+            id: 1,
+            user: {
               username: 'test-user-1',
-              groups:{}
+              groups: {}
             },
-            protocol:1
+            protocol: 1
           }
         }
       }
 
       instance.services.security.resetSessionPermissions('link-group', {
-        _meta:{
-          path:'/_SYSTEM/_SECURITY/_USER/test-user-1/_USER_GROUP/test-group'
+        _meta: {
+          path: '/_SYSTEM/_SECURITY/_USER/test-user-1/_USER_GROUP/test-group'
         }
-      }).then(function(effectedSessions){
+      }).then(function(effectedSessions) {
 
-        expect(effectedSessions).to.eql([
-          {
-            "id": 1,
+        expect(effectedSessions).to.eql([{
+          "id": 1,
+          "username": "test-user-1",
+          "isToken": false,
+          "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
+          "user": {
             "username": "test-user-1",
-            "isToken": false,
-            "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
-            "user": {
-              "username": "test-user-1",
-              "groups": {
-                "test-group": {
-                  "_meta": {
-                    "path": "/_SYSTEM/_SECURITY/_USER/test-user-1/_USER_GROUP/test-group"
-                  }
+            "groups": {
+              "test-group": {
+                "_meta": {
+                  "path": "/_SYSTEM/_SECURITY/_USER/test-user-1/_USER_GROUP/test-group"
                 }
               }
-            },
-            "protocol": 1,
-            "causeSubscriptionsRefresh": true
-          }
-        ]);
+            }
+          },
+          "protocol": 1,
+          "causeSubscriptionsRefresh": true
+        }]);
         stopService(instance, done);
       });
     });
   });
 
-  it('tests resetSessionPermissions method - unlink-group', function(done){
+  it('tests resetSessionPermissions method - unlink-group', function(done) {
 
     this.timeout(5000);
 
     getService({
       secure: true
-    }, function (e, instance) {
+    }, function(e, instance) {
 
       if (e) return done(e);
 
       var client = {
-        sessionId:'1',
-        once:function(evt, handler){
+        sessionId: '1',
+        once: function(evt, handler) {
           if (evt == 'end') this.__handler = handler;
         }.bind(client),
-        end:function(){
+        end: function() {
           ended = true;
           this.__handler();
         }.bind(client)
       };
 
       instance.services.session.__sessions = {
-        '1':{
-          client:client,
-          data:{
-            id:1,
-            user:{
+        '1': {
+          client: client,
+          data: {
+            id: 1,
+            user: {
               username: 'test-user-1',
-              groups:{
-                'test-group':{
+              groups: {
+                'test-group': {
 
                 }
               }
             },
-            protocol:1
+            protocol: 1
           }
         }
       }
 
       instance.services.security.resetSessionPermissions('unlink-group', {
-        path:'/_SYSTEM/_SECURITY/_USER/test-user-1/_USER_GROUP/test-group'
-      }).then(function(effectedSessions){
+          path: '/_SYSTEM/_SECURITY/_USER/test-user-1/_USER_GROUP/test-group'
+        }).then(function(effectedSessions) {
 
-        expect(effectedSessions).to.eql([
-          {
-            "id":1,
+          expect(effectedSessions).to.eql([{
+            "id": 1,
             "username": "test-user-1",
             "isToken": false,
             "permissionSetKey": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
-            "protocol":1,
+            "protocol": 1,
             "user": {
               "username": "test-user-1",
               "groups": {}
             },
             "causeSubscriptionsRefresh": true
-          }
-        ]);
-        stopService(instance, done);
-      })
-      .catch(function(e){
-        done(e);
-      });
+          }]);
+          stopService(instance, done);
+        })
+        .catch(function(e) {
+          done(e);
+        });
     });
   });
 
-  it('tests resetSessionPermissions method - delete-user', function(done){
+  it('tests resetSessionPermissions method - delete-user', function(done) {
 
     this.timeout(5000);
 
@@ -2252,154 +2241,154 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     getService({
       secure: true
-    }, function (e, instance) {
+    }, function(e, instance) {
 
       var client = {
-        sessionId:'1',
-        once:function(evt, handler){
+        sessionId: '1',
+        once: function(evt, handler) {
           if (evt == 'end') this.__handler = handler;
         }.bind(client),
-        end:function(){
+        end: function() {
           ended = true;
           this.__handler();
         }.bind(client)
       };
 
       instance.services.session.__sessions = {
-        '1':{
-          client:client,
-          data:{
-            id:1,
-            user:{
+        '1': {
+          client: client,
+          data: {
+            id: 1,
+            user: {
               username: 'test-user-1',
-              groups:{
-                'test-group':{
+              groups: {
+                'test-group': {
 
                 }
               }
             },
-            protocol:1
+            protocol: 1
           }
         }
       }
 
       instance.services.security.resetSessionPermissions('delete-user', {
-        obj:{
-          _meta:{
-            path:'/_SYSTEM/_SECURITY/_USER/test-user-1'
+          obj: {
+            _meta: {
+              path: '/_SYSTEM/_SECURITY/_USER/test-user-1'
+            }
           }
-        }
-      }).then(function(effectedSessions){
+        }).then(function(effectedSessions) {
 
-        setTimeout(function(){
-          //should be empty
-          expect(effectedSessions).to.eql([]);
-          expect(ended).to.be(true);
-          stopService(instance, done);
-        }, 1000);
-      })
-      .catch(function(e){
-        done(e);
-      });
+          setTimeout(function() {
+            //should be empty
+            expect(effectedSessions).to.eql([]);
+            expect(ended).to.be(true);
+            stopService(instance, done);
+          }, 1000);
+        })
+        .catch(function(e) {
+          done(e);
+        });
     });
   });
 
-  it('tests resetSessionPermissions method - delete-group', function(done){
+  it('tests resetSessionPermissions method - delete-group', function(done) {
 
     this.timeout(5000);
 
     getService({
       secure: true
-    }, function (e, instance) {
+    }, function(e, instance) {
 
       var client = {
-        sessionId:'1',
-        once:function(evt, handler){
+        sessionId: '1',
+        once: function(evt, handler) {
           if (evt == 'end') this.__handler = handler;
         }.bind(client),
-        end:function(){
+        end: function() {
           ended = true;
           this.__handler();
         }.bind(client)
       };
 
       instance.services.session.__sessions = {
-        '1':{
-          client:client,
-          data:{
-            id:1,
-            user:{
+        '1': {
+          client: client,
+          data: {
+            id: 1,
+            user: {
               username: 'test-user-1',
-              groups:{
-                'test-group':{
+              groups: {
+                'test-group': {
 
                 }
               }
             },
-            protocol:1
+            protocol: 1
           }
         }
       }
 
       instance.services.security.resetSessionPermissions('delete-group', {
-        obj:{name:'test-group'}
-      }).then(function(effectedSessions){
+          obj: {
+            name: 'test-group'
+          }
+        }).then(function(effectedSessions) {
 
-        expect(effectedSessions).to.eql([
-          {
-            "id":1,
+          expect(effectedSessions).to.eql([{
+            "id": 1,
             "username": "test-user-1",
             "isToken": false,
             "permissionSetKey": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
-            "protocol":1,
+            "protocol": 1,
             "user": {
               "username": "test-user-1",
               "groups": {}
             },
             "causeSubscriptionsRefresh": true
-          }
-        ]);
-        stopService(instance, done);
-      })
-      .catch(function(e){
-        done(e);
-      });
+          }]);
+          stopService(instance, done);
+        })
+        .catch(function(e) {
+          done(e);
+        });
     });
   });
 
-  it('tests resetSessionPermissions method - upsert-group', function(done){
+  it('tests resetSessionPermissions method - upsert-group', function(done) {
 
     this.timeout(5000);
 
     getService({
       secure: true
-    }, function (e, instance) {
+    }, function(e, instance) {
 
       var client = {
-        sessionId:'1',
-        once:function(evt, handler){
+        sessionId: '1',
+        once: function(evt, handler) {
           if (evt == 'end') this.__handler = handler;
         }.bind(client),
-        end:function(){
+        end: function() {
           ended = true;
           this.__handler();
         }.bind(client)
       };
 
       instance.services.session.__sessions = {
-        '1':{
-          client:client,
-          data:{
-            id:1,
-            user:{
+        '1': {
+          client: client,
+          data: {
+            id: 1,
+            user: {
               username: 'test-user-1',
-              groups:{
-                'test-group':{
+              groups: {
+                'test-group': {
 
                 }
               }
             },
-            protocol:1
+            protocol: 1
           }
         }
       }
@@ -2407,16 +2396,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       instance.services.session.__sessions['1'].data.permissionSetKey = instance.services.security.generatePermissionSetKey(instance.services.session.__sessions['1'].data.user);
 
       instance.services.security.resetSessionPermissions('upsert-group', {
-        name:'test-group'
-      }).then(function(effectedSessions){
+          name: 'test-group'
+        }).then(function(effectedSessions) {
 
-        expect(effectedSessions).to.eql([
-          {
-            "id":1,
+          expect(effectedSessions).to.eql([{
+            "id": 1,
             "username": "test-user-1",
             "isToken": false,
             "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
-            "protocol":1,
+            "protocol": 1,
             "user": {
               "username": "test-user-1",
               "groups": {
@@ -2424,49 +2412,48 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               }
             },
             "causeSubscriptionsRefresh": false
-          }
-        ]);
-        stopService(instance, done);
-      })
-      .catch(function(e){
-        done(e);
-      });
+          }]);
+          stopService(instance, done);
+        })
+        .catch(function(e) {
+          done(e);
+        });
     });
   });
 
-  it('tests resetSessionPermissions method - permission-removed', function(done){
+  it('tests resetSessionPermissions method - permission-removed', function(done) {
 
     this.timeout(5000);
 
     getService({
       secure: true
-    }, function (e, instance) {
+    }, function(e, instance) {
 
       var client = {
-        sessionId:'1',
-        once:function(evt, handler){
+        sessionId: '1',
+        once: function(evt, handler) {
           if (evt == 'end') this.__handler = handler;
         }.bind(client),
-        end:function(){
+        end: function() {
           ended = true;
           this.__handler();
         }.bind(client)
       };
 
       instance.services.session.__sessions = {
-        '1':{
-          client:client,
-          data:{
-            id:1,
-            user:{
+        '1': {
+          client: client,
+          data: {
+            id: 1,
+            user: {
               username: 'test-user-1',
-              groups:{
-                'test-group':{
+              groups: {
+                'test-group': {
 
                 }
               }
             },
-            protocol:1
+            protocol: 1
           }
         }
       }
@@ -2474,16 +2461,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       instance.services.session.__sessions['1'].data.permissionSetKey = instance.services.security.generatePermissionSetKey(instance.services.session.__sessions['1'].data.user);
 
       instance.services.security.resetSessionPermissions('permission-removed', {
-        groupName:'test-group'
-      }).then(function(effectedSessions){
+          groupName: 'test-group'
+        }).then(function(effectedSessions) {
 
-        expect(effectedSessions).to.eql([
-          {
-            "id":1,
+          expect(effectedSessions).to.eql([{
+            "id": 1,
             "username": "test-user-1",
             "isToken": false,
             "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
-            "protocol":1,
+            "protocol": 1,
             "user": {
               "username": "test-user-1",
               "groups": {
@@ -2491,49 +2477,48 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               }
             },
             "causeSubscriptionsRefresh": true
-          }
-        ]);
-        stopService(instance, done);
-      })
-      .catch(function(e){
-        done(e);
-      });
+          }]);
+          stopService(instance, done);
+        })
+        .catch(function(e) {
+          done(e);
+        });
     });
   });
 
-  it('tests resetSessionPermissions method - permission-upserted', function(done){
+  it('tests resetSessionPermissions method - permission-upserted', function(done) {
 
     this.timeout(5000);
 
     getService({
       secure: true
-    }, function (e, instance) {
+    }, function(e, instance) {
 
       var client = {
-        sessionId:'1',
-        once:function(evt, handler){
+        sessionId: '1',
+        once: function(evt, handler) {
           if (evt == 'end') this.__handler = handler;
         }.bind(client),
-        end:function(){
+        end: function() {
           ended = true;
           this.__handler();
         }.bind(client)
       };
 
       instance.services.session.__sessions = {
-        '1':{
-          client:client,
-          data:{
-            id:1,
-            user:{
+        '1': {
+          client: client,
+          data: {
+            id: 1,
+            user: {
               username: 'test-user-1',
-              groups:{
-                'test-group':{
+              groups: {
+                'test-group': {
 
                 }
               }
             },
-            protocol:1
+            protocol: 1
           }
         }
       }
@@ -2541,16 +2526,15 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       instance.services.session.__sessions['1'].data.permissionSetKey = instance.services.security.generatePermissionSetKey(instance.services.session.__sessions['1'].data.user);
 
       instance.services.security.resetSessionPermissions('permission-upserted', {
-        groupName:'test-group'
-      }).then(function(effectedSessions){
+          groupName: 'test-group'
+        }).then(function(effectedSessions) {
 
-        expect(effectedSessions).to.eql([
-          {
-            "id":1,
+          expect(effectedSessions).to.eql([{
+            "id": 1,
             "username": "test-user-1",
             "isToken": false,
             "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
-            "protocol":1,
+            "protocol": 1,
             "user": {
               "username": "test-user-1",
               "groups": {
@@ -2558,93 +2542,92 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               }
             },
             "causeSubscriptionsRefresh": true
-          }
-        ]);
-        stopService(instance, done);
-      })
-      .catch(function(e){
-        done(e);
-      });
+          }]);
+          stopService(instance, done);
+        })
+        .catch(function(e) {
+          done(e);
+        });
     });
   });
 
-  it('tests resetSessionPermissions method - upsert-user', function(done){
+  it('tests resetSessionPermissions method - upsert-user', function(done) {
 
     this.timeout(5000);
 
     getService({
       secure: true
-    }, function (e, instance) {
+    }, function(e, instance) {
 
       var client = {
-        sessionId:'1',
-        once:function(evt, handler){
+        sessionId: '1',
+        once: function(evt, handler) {
           if (evt == 'end') this.__handler = handler;
         }.bind(client),
-        end:function(){
+        end: function() {
           ended = true;
           this.__handler();
         }.bind(client)
       };
 
       instance.services.session.__sessions = {
-        '1':{
-          client:client,
-          data:{
-            id:1,
-            user:{
+        '1': {
+          client: client,
+          data: {
+            id: 1,
+            user: {
               username: 'test-user-1',
-              groups:{
-                'test-group':{
+              groups: {
+                'test-group': {
 
                 }
               }
             },
-            protocol:1
+            protocol: 1
           }
         }
       }
 
       instance.services.session.__sessions['1'].data.permissionSetKey = instance.services.security.generatePermissionSetKey(instance.services.session.__sessions['1'].data.user);
 
-      instance.services.security.users.getUser = function(username, callback){
+      instance.services.security.users.getUser = function(username, callback) {
         callback(null, {
-          username:username
+          username: username
         });
       };
 
       instance.services.security.resetSessionPermissions('upsert-user', {
-        username:'test-user-1'
-      }).then(function(effectedSessions){
+          username: 'test-user-1'
+        }).then(function(effectedSessions) {
 
-        expect(effectedSessions).to.eql([
-          {
-            "id":1,
+          expect(effectedSessions).to.eql([{
+            "id": 1,
             "username": "test-user-1",
             "isToken": false,
             "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
-            "protocol":1,
+            "protocol": 1,
             "user": {
               "username": "test-user-1"
             },
             "causeSubscriptionsRefresh": true
-          }
-        ]);
-        stopService(instance, done);
-      })
-      .catch(function(e){
-        done(e);
-      });
+          }]);
+          stopService(instance, done);
+        })
+        .catch(function(e) {
+          done(e);
+        });
     });
   });
 
-  it('should be able to work with configured pbkdf2Iterations', function (done) {
+  it('should be able to work with configured pbkdf2Iterations', function(done) {
 
-    mockServices(function (e, happnMock) {
+    mockServices(function(e, happnMock) {
       if (e) return done(e);
       expect(happnMock.services.security.config.pbkdf2Iterations).to.be(100);
 
-      happnMock.services.security.users.__prepareUser({password:'test'}, function(e, prepared){
+      happnMock.services.security.users.__prepareUser({
+        password: 'test'
+      }, function(e, prepared) {
         if (e) return done(e);
         var split = prepared.password.split('$');
         expect(split[0]).to.be('pbkdf2');
@@ -2652,26 +2635,290 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         stopServices(happnMock, done);
       });
     }, {
-      services:{
-        security:{
-          pbkdf2Iterations:100
+      services: {
+        security: {
+          pbkdf2Iterations: 100
         }
       }
     });
   });
 
-  it('should be able to work with default pbkdf2Iterations', function (done) {
+  it('should be able to work with default pbkdf2Iterations', function(done) {
 
-    mockServices(function (e, happnMock) {
+    mockServices(function(e, happnMock) {
       if (e) return done(e);
       expect(happnMock.services.security.config.pbkdf2Iterations).to.be(10000);
-      happnMock.services.security.users.__prepareUser({password:'test'}, function(e, prepared){
+      happnMock.services.security.users.__prepareUser({
+        password: 'test'
+      }, function(e, prepared) {
         if (e) return done(e);
         var split = prepared.password.split('$');
         expect(split[0]).to.be('pbkdf2');
         expect(split[1]).to.be('10000');
         stopServices(happnMock, done);
       });
+    });
+  });
+
+  it('tests the authorizeOnBehalfOf method, authorized ok', function(done) {
+
+    mockServices(function(e, happnMock) {
+
+      if (e) return done(e);
+
+      var session = {
+        user: {
+          username: '_ADMIN'
+        }
+      };
+
+      var path = '/some/test/path';
+      var action = 'SET';
+      var onBehalfOf = 'test-user';
+
+      happnMock.services.security.users.getUser = function(username, callback) {
+        callback(null, {
+          username: 'test-user',
+          groups: {}
+        });
+      }
+
+      happnMock.services.security.__getOnBehalfOfSession = function(username, onBehalfOf, getOnBehalfOfCallback) {
+        getOnBehalfOfCallback(null, {
+          id: 'test-session-id',
+          user: {
+            username: 'test-user',
+            groups: {}
+          },
+          policy: {
+            "1": {}
+          },
+          type: "1"
+        })
+      };
+
+      var callback = function(err, authorized, reason, onBehalfOfSession) {
+        expect(authorized).to.be(true);
+        done();
+      }
+
+      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback){
+        authorizeSessionCallback(null, true);
+      }
+
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback){
+        authorizeUserCallback(null, true);
+      }
+
+      happnMock.services.security.authorizeOnBehalfOf(session, path, action, onBehalfOf, callback);
+    });
+  });
+
+  it('tests the authorizeOnBehalfOf method, _authorizeSession false', function(done) {
+
+    mockServices(function(e, happnMock) {
+
+      if (e) return done(e);
+
+      var session = {
+        user: {
+          username: '_ADMIN'
+        }
+      };
+
+      var path = '/some/test/path';
+      var action = 'SET';
+      var onBehalfOf = 'test-user';
+
+      happnMock.services.security.users.getUser = function(username, callback) {
+        callback(null, {
+          username: 'test-user',
+          groups: {}
+        });
+      }
+
+      happnMock.services.security.__getOnBehalfOfSession = function(username, onBehalfOf, getOnBehalfOfCallback) {
+        getOnBehalfOfCallback(null, {
+          id: 'test-session-id',
+          user: {
+            username: 'test-user',
+            groups: {}
+          },
+          policy: {
+            "1": {}
+          },
+          type: "1"
+        })
+      };
+
+      var callback = function(err, authorized, reason, onBehalfOfSession) {
+        expect(authorized).to.be(false);
+        done();
+      }
+
+      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback){
+        authorizeSessionCallback(null, false);
+      }
+
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback){
+        authorizeUserCallback(null, true);
+      }
+
+      happnMock.services.security.authorizeOnBehalfOf(session, path, action, onBehalfOf, callback);
+    });
+  });
+
+  it('tests the authorizeOnBehalfOf method, _authorizeUser false', function(done) {
+
+    mockServices(function(e, happnMock) {
+
+      if (e) return done(e);
+
+      var session = {
+        user: {
+          username: '_ADMIN'
+        }
+      };
+
+      var path = '/some/test/path';
+      var action = 'SET';
+      var onBehalfOf = 'test-user';
+
+      happnMock.services.security.users.getUser = function(username, callback) {
+        callback(null, {
+          username: 'test-user',
+          groups: {}
+        });
+      }
+
+      happnMock.services.security.__getOnBehalfOfSession = function(username, onBehalfOf, getOnBehalfOfCallback) {
+        getOnBehalfOfCallback(null, {
+          id: 'test-session-id',
+          user: {
+            username: 'test-user',
+            groups: {}
+          },
+          policy: {
+            "1": {}
+          },
+          type: "1"
+        });
+      };
+
+      var callback = function(err, authorized, reason, onBehalfOfSession) {
+        expect(authorized).to.be(false);
+        done();
+      }
+
+      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback){
+        authorizeSessionCallback(null, true);
+      }
+
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback){
+        authorizeUserCallback(null, false);
+      }
+
+      happnMock.services.security.authorizeOnBehalfOf(session, path, action, onBehalfOf, callback);
+    });
+  });
+
+  it('tests the authorizeOnBehalfOf method, onBehalfOf not found', function(done) {
+
+    mockServices(function(e, happnMock) {
+
+      if (e) return done(e);
+
+      var session = {
+        user: {
+          username: '_ADMIN'
+        }
+      };
+
+      var path = '/some/test/path';
+      var action = 'SET';
+      var onBehalfOf = 'test-user';
+
+      happnMock.services.security.users.getUser = function(username, callback) {
+        callback(null, {
+          username: 'test-user',
+          groups: {}
+        });
+      }
+
+      happnMock.services.security.__getOnBehalfOfSession = function(username, onBehalfOf, getOnBehalfOfCallback) {
+        getOnBehalfOfCallback(null, null);
+      };
+
+      var callback = function(err, authorized, reason, onBehalfOfSession) {
+        expect(authorized).to.be(false);
+        expect(reason).to.be('on behalf of user does not exist');
+        done();
+      }
+
+      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback){
+        authorizeSessionCallback(null, true);
+      }
+
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback){
+        authorizeUserCallback(null, true);
+      }
+
+      happnMock.services.security.authorizeOnBehalfOf(session, path, action, onBehalfOf, callback);
+    });
+  });
+
+  it('tests the authorizeOnBehalfOf method, onBehalfOf not _ADMIN user', function(done) {
+
+    mockServices(function(e, happnMock) {
+
+      if (e) return done(e);
+
+      var session = {
+        user: {
+          username: 'illuminaughty'
+        }
+      };
+
+      var path = '/some/test/path';
+      var action = 'SET';
+      var onBehalfOf = 'test-user';
+
+      happnMock.services.security.users.getUser = function(username, callback) {
+        callback(null, {
+          username: 'test-user',
+          groups: {}
+        });
+      }
+
+      happnMock.services.security.__getOnBehalfOfSession = function(username, onBehalfOf, getOnBehalfOfCallback) {
+        getOnBehalfOfCallback(null, {
+          id: 'test-session-id',
+          user: {
+            username: 'test-user',
+            groups: {}
+          },
+          policy: {
+            "1": {}
+          },
+          type: "1"
+        });
+      };
+
+      var callback = function(err, authorized, reason, onBehalfOfSession) {
+        expect(authorized).to.be(false);
+        expect(reason).to.be('session attempting to act on behalf of is not authorized');
+        done();
+      }
+
+      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback){
+        authorizeSessionCallback(null, true);
+      }
+
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback){
+        authorizeUserCallback(null, true);
+      }
+
+      happnMock.services.security.authorizeOnBehalfOf(session, path, action, onBehalfOf, callback);
     });
   });
 });
