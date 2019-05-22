@@ -1,3 +1,5 @@
+https_initialization.pem
+https_initialization.rsa
 lib-cov
 *.seed
 *.log
