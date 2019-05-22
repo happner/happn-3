@@ -393,7 +393,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         };
 
         listCriteria.criteria.$not._id = {
-          $regex: new RegExp(".*_notok_.*")
+          $regex: [".*_notok_.*"]
         };
 
         serviceInstance.get('/not_get/' + testId + '/*', listCriteria, function (e, search_result) {
