@@ -362,28 +362,21 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     serviceInstance.upsert('/not_get/' + testId + '/ok/1', test_obj, null, function (e) {
       expect(e == null).to.be(true);
-
       serviceInstance.upsert('/not_get/' + testId + '/_notok_/1', test_obj1, null, function (e) {
         expect(e == null).to.be(true);
-
         var listCriteria = {
           criteria: {
             $not: {}
           }
         };
-
         listCriteria.criteria.$not._id = {
-          $regex: new RegExp(".*_notok_.*")
+          $regex: [".*_notok_.*"]
         };
-
         serviceInstance.get('/not_get/' + testId + '/*', listCriteria, function (e, search_result) {
 
           expect(e == null).to.be(true);
-
           expect(search_result.length == 1).to.be(true);
-
           done();
-
         });
       });
     });
