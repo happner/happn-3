@@ -584,3 +584,7 @@
   - issue #181,#196,
   - happn-logger version 0.1.0
   - configurable iteration count pbkdf2
+
+9.0.5 2019-05-22
+----------------
+  - fix: $regex filter
