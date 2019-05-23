@@ -103,7 +103,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     expect(reconnectSuccessfulCount > 0).to.be(false);
     service = await createService();
     console.log('started service, client should reconnect...');
-    await delay(10000);
+    await delay(15000);
     await stopService(service);
     await stopClient(client);
     dns.lookup = dns.__oldLookup;
