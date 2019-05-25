@@ -588,3 +588,8 @@
 9.0.5 2019-05-22
 ----------------
   - fix: $regex filter
+
+9.1.0 2019-05-24
+----------------
+  - feature: skip capability for client search/get
+  - doc: updated README
