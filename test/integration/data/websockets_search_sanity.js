@@ -290,15 +290,10 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
                   return done(new Error('the latest result is not the latest result...'));
 
               }
-
               done();
-
             });
-
         });
-
     });
-
   });
 
   it('can get the latest record', function(done) {
@@ -371,5 +366,64 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             });
         });
     });
+  });
+
+  it('can page using skip and limit', async () => {
+
+    this.timeout(5000);
+
+    var totalRecords = 100;
+    var pageSize = 10;
+    var expectedPages = totalRecords / pageSize;
+    var indexes = [];
+
+    for (let i = 0; i < totalRecords; i++) indexes.push(i);
+
+    for (let index of indexes){
+      await searchClient.set('series/horror/' + index, {
+          name: 'nightmare on elm street',
+          genre: 'horror',
+          episode:index
+        });
+      await searchClient.set('series/fantasy/' + index, {
+          name: 'game of thrones',
+          genre: 'fantasy',
+          episode:index
+        });
+    }
+
+    var options = {
+      sort: {
+        "_meta.created": -1
+      },
+      limit: pageSize
+    };
+
+    var criteria = {
+      "genre": "horror"
+    };
+
+    var foundPages = [];
+
+    for (let i = 0; i < expectedPages; i++){
+      options.skip = foundPages.length;
+      let results = await searchClient.get('series/*', {
+          criteria: criteria,
+          options: options
+        });
+      foundPages = foundPages.concat(results);
+    }
+
+    let allResults = await searchClient.get('series/*', {
+        criteria: criteria,
+        options: {
+          sort: {
+            "_meta.created": -1
+          }
+        }
+      });
+
+    expect(allResults.length).to.eql(foundPages.length);
+    expect(allResults).to.eql(foundPages);
   });
 });

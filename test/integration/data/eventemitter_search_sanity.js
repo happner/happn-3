@@ -274,7 +274,170 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         });
 
     });
+  });
 
+  it('can page using skip and limit', async () => {
+
+    this.timeout(5000);
+
+    var totalRecords = 100;
+    var pageSize = 10;
+    var expectedPages = totalRecords / pageSize;
+    var indexes = [];
+
+    for (let i = 0; i < totalRecords; i++) indexes.push(i);
+
+    for (let index of indexes){
+      await searchClient.set('series/horror/' + index, {
+          name: 'nightmare on elm street',
+          genre: 'horror',
+          episode:index
+        });
+      await searchClient.set('series/fantasy/' + index, {
+          name: 'game of thrones',
+          genre: 'fantasy',
+          episode:index
+        });
+    }
+
+    var options = {
+      sort: {
+        "_meta.created": -1
+      },
+      limit: pageSize
+    };
+
+    var criteria = {
+      "genre": "horror"
+    };
+
+    var foundPages = [];
+
+    for (let i = 0; i < expectedPages; i++){
+      options.skip = foundPages.length;
+      let results = await searchClient.get('series/*', {
+          criteria: criteria,
+          options: options
+        });
+      foundPages = foundPages.concat(results);
+    }
+
+    let allResults = await searchClient.get('series/*', {
+        criteria: criteria,
+        options: {
+          sort: {
+            "_meta.created": -1
+          }
+        }
+      });
+
+    expect(allResults.length).to.eql(foundPages.length);
+    expect(allResults).to.eql(foundPages);
+  });
+
+  it('can get using criteria, $regex with params in array', function(done) {
+
+    searchClient.set('/regex/test/1', {
+        name: 'Loadtest_123',
+        anotherProp: 'anotherPropValue'
+      },
+      function(e, result) {
+
+        if (e) return done(e);
+
+        var options = {
+          fields: {
+            "name": 1
+          }
+        };
+
+        var criteria = {
+          "name": {
+            "$regex": [".*loadtest.*", "i"]
+          }
+        };
+
+        searchClient.get('/regex/test/*', {
+            criteria: criteria,
+            options: options
+          },
+          function(e, result) {
+            if (e) return done(e);
+            expect(result[0].anotherProp).to.be(undefined);
+            expect(result[0].name).to.be('Loadtest_123');
+            expect(result.length).to.be(1);
+            done();
+          });
+      });
+  });
+
+  it('can get using criteria, $regex as string', function(done) {
+
+    searchClient.set('/regex/test/1', {
+        name: 'Loadtest_123',
+        anotherProp: 'anotherPropValue'
+      },
+      function(e, result) {
+
+        if (e) return done(e);
+
+        var options = {
+          fields: {
+            "name": 1
+          }
+        };
+
+        var criteria = {
+          "name": {
+            "$regex": ".*Loadtest.*"
+          }
+        };
+
+        searchClient.get('/regex/test/*', {
+            criteria: criteria,
+            options: options
+          },
+          function(e, result) {
+            if (e) return done(e);
+            expect(result[0].anotherProp).to.be(undefined);
+            expect(result[0].name).to.be('Loadtest_123');
+            expect(result.length).to.be(1);
+            done();
+          });
+      });
+  });
+
+  it('can get using criteria, bad $regex as boolean', function(done) {
+
+    searchClient.set('/regex/test/1', {
+        name: 'Loadtest_123',
+        anotherProp: 'anotherPropValue'
+      },
+      function(e, result) {
+
+        if (e) return done(e);
+
+        var options = {
+          fields: {
+            "name": 1
+          }
+        };
+
+        var criteria = {
+          "name": {
+            "$regex": false
+          }
+        };
+
+        searchClient.get('/regex/test/*', {
+            criteria: criteria,
+            options: options
+          },
+          function(e, result) {
+            expect(e.toString()).to.be('SystemError: $regex parameter value must be an Array or a string');
+            done();
+          });
+      });
   });
 
   //require('benchmarket').stop();

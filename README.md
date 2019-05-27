@@ -470,14 +470,15 @@ my_client_instance.getPaths('e2e_test1/testwildcard/*', function(e, results){
 SEARCH
 ---------------------------
 
-*You can pass mongo style search parameters to look for data sets within specific key ranges*
+*You can pass mongo style search parameters to look for data sets within specific key ranges, using limit and skip*
 
 ```javascript
 
 	var options = {
       fields: {"name": 1},
       sort: {"name": 1},
-      limit: 1
+      limit: 10,
+      skip:5
     }
 
     var criteria = {
@@ -499,6 +500,103 @@ SEARCH
 	  }
 	);
 
+```
+
+*Using $regex is a bit different, you can pass in a regex string representation or an array with regex string as the first element and modifiers such as i as the second element depending on whether you want to pass in regex arguments such as case insensitive (i)*
+
+```javascript
+
+	var options = {
+      fields: {"name": 1},
+      sort: {"name": 1},
+      limit: 1
+    }
+
+    var criteria = {
+      "name": {
+        "$regex": [".*simon.*", "i"]//array with regex first, then "i" argument, does Regex.apply(null, [your array]) in backend
+      }
+    };
+
+    //alternatively - for a case sensitive simpler search:
+    var criteriaSimple = {
+      "name": {
+        "$regex": ".*simon.*"//array with regex first, then "i" argument, does Regex.apply(null, [your array]) in backend
+      }
+    };
+
+    publisherclient.get('/users/*', {
+	    criteria: criteria,//(or criteriaSimple)
+	    options: options
+	  },
+	  function (e, search_results) {
+	  	//and your results are here
+	  	search_results.map(function(user){
+	  		if (user.name == 'simon')
+	  			throw new Error('stay away from this chap, he is dodgy');
+	  	});
+	  }
+	);
+
+```
+
+*You can also use skip and limit for paging:*
+
+```javascript
+
+var totalRecords = 100;
+var pageSize = 10;
+var expectedPages = totalRecords / pageSize;
+var indexes = [];
+
+for (let i = 0; i < totalRecords; i++) indexes.push(i);
+
+for (let index of indexes){
+  await searchClient.set('series/horror/' + index, {
+      name: 'nightmare on elm street',
+      genre: 'horror',
+      episode:index
+    });
+  await searchClient.set('series/fantasy/' + index, {
+      name: 'game of thrones',
+      genre: 'fantasy',
+      episode:index
+    });
+}
+
+var options = {
+  sort: {
+    "_meta.created": -1
+  },
+  limit: pageSize
+};
+
+var criteria = {
+  "genre": "horror"
+};
+
+var foundPages = [];
+
+for (let i = 0; i < expectedPages; i++){
+  options.skip = foundPages.length;
+  let results = await searchClient.get('series/*', {
+      criteria: criteria,
+      options: options
+    });
+  foundPages = foundPages.concat(results);
+}
+
+let allResults = await searchClient.get('series/*', {
+    criteria: criteria,
+    options: {
+      sort: {
+        "_meta.created": -1
+      }
+    }
+  });
+
+expect(allResults.length).to.eql(foundPages.length);
+expect(allResults).to.eql(foundPages);
 ```
 
 DELETE / REMOVE
