@@ -41,14 +41,16 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
 
       serviceInstance.happn = happn;
-
       serviceInstance.config = config;
 
       happn.services[serviceName.toLowerCase()] = serviceInstance;
 
       if (typeof serviceInstance.initialize != 'function' || config === false) return callback();
 
-      serviceInstance.initialize(config, callback);
+      serviceInstance.initialize(config, function(e){
+        //console.log(`service ${serviceName} initialized...`);
+        callback();
+      });
 
     } catch (e) {
       callback(e);
