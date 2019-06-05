@@ -593,3 +593,7 @@
 ----------------
   - feature: skip capability for client search/get
   - doc: updated README
+
+9.1.1 2019-06-04
+----------------
+  - fix: parseFields issue with $or operator
