@@ -2,7 +2,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var log = require('why-is-node-running');
   var delay = require('await-delay');
-  //var evilDns = require('evil-dns');
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
   var service = happn.service;
