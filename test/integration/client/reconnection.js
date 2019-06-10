@@ -20,7 +20,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var events = [];
 
-  this.timeout(15000);
+  this.timeout(30000);
 
   var clientEventHandler = function (data, meta) {
     events.push({
@@ -95,7 +95,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         testEvent(function (e) {
 
           if (e) return callback(e);
-
+          console.log('we are connected:::');
           callback();
         });
       });

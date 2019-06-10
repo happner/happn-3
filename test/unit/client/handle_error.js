@@ -26,43 +26,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     happnClient.handle_error(new Error('test error'));
   });
 
-  it('tests the handle_error function, fatal error', function (done) {
-
-    var happnClient = new HappnClient();
-
-    happnClient.__initializeEvents();
-    happnClient.__initializeState();
-    happnClient.log = {
-      error:function(){}
-    };
-
-    happnClient.onEvent('fatal-error', function(error){
-      expect(happnClient.state.errors.length).to.be(1);
-      expect(happnClient.status == Constants.CLIENT_STATE.ERROR).to.be(true);
-      done();
-    });
-
-    happnClient.handle_error(new Error('test error'), true);
-  });
-
-  it('tests the handle_error function, fatal error event', function (done) {
-
-    var happnClient = new HappnClient();
-
-    happnClient.__initializeEvents();
-    happnClient.__initializeState();
-    happnClient.log = {
-      error:function(){}
-    };
-
-    happnClient.onEvent('fatal-error', function(error){
-      expect(happnClient.status == Constants.CLIENT_STATE.ERROR).to.be(true);
-      done();
-    });
-
-    happnClient.handle_error(new Error('test error'), true);
-  });
-
   it('tests the handle_error function only stores the last 100 errors', function (done) {
 
     var happnClient = new HappnClient();
