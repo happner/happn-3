@@ -98,11 +98,22 @@ Using node:
 var happn = require('happn-3');
 var my_client_instance; //this will be your client instance
 
+/**
+example options are :
+{
+  config: {
+    host: "127.0.0.1", //(default)
+    port: 55000, //(default)
+    username: 'username', //only necessary if server is secure
+    password: 'password' //only necessary if server is secure
+  }
+}
+**/
+
 happn.client.create([options], function(e, instance) {
 
 	//instance is now connected to the server listening on port 55000
 	my_client_instance = instance;
-
 });
 
 ```
@@ -169,113 +180,6 @@ service.create(function (e, happnInst) {
   });
 
 ```
-
-##Connection pool
-*the happn client can also be configured to connect to a range of happn servers - this is useful when you are connecting directly to a cluster without a load-balancer, or you have a fail-over service, the following code contains to examples of either laod-balancing randomly, or using an ordered list of fail-over services:*
-
-
-```javascript
-//
-//random "load balanced"
-//
-
-happn_client.create([
-  {port: 55001},
-  {port: 55002},
-  {port: 55003}
-], {
-  info: 'test_random',//info is appended to each connection
-  poolType: happn.constants.CONNECTION_POOL_TYPE.RANDOM,//default is 0 RANDOM
-  poolReconnectAttempts: 6, //how many switches to perform until a connection is made, 0 is infinite (we keep on retrying until something comes up)
-  socket: {
-    reconnect: {
-      retries: 1,//one retry
-      timeout: 100
-    }
-  }
-}, function (e, instance) {
-
-  //we have our instance, which will fall back randomly to the alternative server instance defined in the array passed in to the create method
-
-  instance.onEvent('reconnect-successful', function(){
-    //this event happens when we have successfully fallen back to a randomly selected alternative
-  });
-
-});
-
-//
-//ordered, so will walk down the list to the first connection that works
-//
-
-happn_client.create([
-  {port: service1Port},
-  {port: service2Port},
-  {port: service3Port}
-], {
-  info: 'redundant_ordered',//info is appended to each connection
-  poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
-  poolReconnectAttempts: 3, //how many switches to perform until a connection is made
-  socket: {
-    reconnect: {
-      retries: 1,//one retry
-      timeout: 100
-    }
-  }
-}, function (e, instance) {
-
-//we have our instance, which will fall back to the next alternative server defined in the array passed in to the create method
-
-  instance.onEvent('reconnect-successful', function(){
-    //this event happens when we have successfully fallen back to the next active alternative
-  });
-
-});
-
-//
-//port range, so ordered list of connections from port 8000 to 8005
-//
-
- happn_client.create(
-  {port: {range:[8000, 8005]}}
-, {
-  info: 'redundant_ordered',//info is appended to each connection
-  poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
-  poolReconnectAttempts: 3, //how many switches to perform until a connection is made
-  socket: {
-    reconnect: {
-      retries: 1,//one retry
-      timeout: 100
-    }
-  }
-}, function (e, instance) {
-
-});
-
-//
-//ip range, so ordered list of connections from ip 127.0.0.1 to 127.0.0.5
-//
-
- happn_client.create(
-   {host: {range:['127.0.0.1','127.0.0.5']}, port:8001}
- , {
-   info: 'redundant_ordered',//info is appended to each connection
-   poolType: happn.constants.CONNECTION_POOL_TYPE.ORDERED,//default is 0 RANDOM
-   poolReconnectAttempts: 2, //how many switches to perform until a connection is made
-   socket: {
-     reconnect: {
-       retries: 1,//one retry
-       timeout: 100
-     }
-   }
- }, function (e, instance) {
-
-});
-
-```
-
-###NB Ranges are convenience options so limited as follows:
-1. IP ranges are limited to the last octet, ie. 127.0.0.[here only]
-2. You can only range by IP or by port, but not by both at the same time.
 
 ##NB: NODE_ENV environment variable
 *Set your NODE_ENV variable to "production" when running happn in a production environment, otherwise your browser client file will be regenerated every time the happn server is restarted.*
