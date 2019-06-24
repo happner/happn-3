@@ -597,3 +597,14 @@
 9.1.1 2019-06-04
 ----------------
   - fix: parseFields issue with $or operator
+
+10.0.0 2019-06-10
+-----------------
+  - authority delegation, onBehalfOf
+
+10.0.1 2019-06-10
+-----------------
+  - cleanup: removed range code from client
+  - doc: updated readme
+  - dep: updated ws
+  - dep: updated happn-stats
