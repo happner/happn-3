@@ -1,7 +1,7 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "main": "./lib/index",
   "protocol": "4",
   "database": "1",
@@ -53,7 +53,7 @@
     "happn-password-hash-and-salt": "^1.2.0",
     "happn-primus-wrapper": "^7.3.4",
     "happn-sillyname": "^0.1.1",
-    "happn-stats": "^1.0.6",
+    "happn-stats": "^1.0.7",
     "happn-tcp-port-used": "^1.0.3",
     "happn-util-crypto": "^0.3.0",
     "happner-hyperid": "^2.0.0",
@@ -74,7 +74,8 @@
     "uglify-js": "^3.4.9",
     "underscore.string": "^3.3.5",
     "user-home": "^2.0.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "ws": "^7.0.1"
   },
   "devDependencies": {
     "await-delay": "^1.0.0",
