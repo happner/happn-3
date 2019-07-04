@@ -608,3 +608,7 @@
   - doc: updated readme
   - dep: updated ws
   - dep: updated happn-stats
+
+10.0.2 2019-07-04
+-----------------
+  - fix: issue with client error and ws v7
