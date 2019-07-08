@@ -1,4 +1,4 @@
-describe.only(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var path = require('path');
   var expect = require('expect.js');
@@ -141,6 +141,61 @@ describe.only(require('../../__fixtures/utils/test_helper').create().testName(__
           expect(response.statusCode).to.equal(403);
           expect(response.headers['content-type']).to.equal('text/html');
           expect(response.body).to.equal("<body>\nForbidden\n</body>\n");
+          callback();
+
+        });
+
+      } catch (e) {
+        callback(e);
+      }
+
+    });
+  });
+
+  context('secure mesh with invalid \'unauthorizedResponsePath\' and \'forbiddenResponsePath\'', function () {
+    var self = this;
+    setup.apply(self, [{
+      secure: true,
+      services: {
+        connect: {
+          config: {
+            middleware: {
+              security: {
+                unauthorizedResponsePath: path.join(__dirname, 'invalid/invalid.html'),
+                forbiddenResponsePath: path.join(__dirname, 'invalid/invalid.html')
+              }
+            }
+          }
+        }
+      }
+    }]);
+
+    it('the server should respond with \'500 Internal Server Error\' for invalid \'unauthorizedResponsePath\'', function (callback) {
+
+      try {
+
+        doRequest('/secure/route/test', null, false, function (response) {
+
+          expect(response.statusCode).to.equal(500);
+          expect(response.body.indexOf('ENOENT')).to.not.eql(-1);
+          callback();
+
+        });
+
+      } catch (e) {
+        callback(e);
+      }
+
+    });
+
+    it('the server should respond with \'500 Internal Server Error\' for invalid \'forbiddenResponsePath\'', function (callback) {
+
+      try {
+
+        doRequest('/secure/route/test', self.testClient.session.token, false, function (response) {
+
+          expect(response.statusCode).to.equal(500);
+          expect(response.body.indexOf('ENOENT')).to.not.eql(-1);
           callback();
 
         });
