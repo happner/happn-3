@@ -1,31 +1,22 @@
 describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
 
   var path = require('path');
+  var request = require('request');
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
   var service = happn.service;
 
-  function doRequest(path, token, query, callback, excludeToken) {
-
-    var request = require('request');
-
+  function doRequest(path, token, callback) {
     var options = {
-      url: 'http://127.0.0.1:55000' + path
+      url: 'http://127.0.0.1:55000' + path,
+      headers: {
+        'Cookie': ['happn_token=' + token]
+      }
     };
-
-    if (!excludeToken) {
-      if (!query)
-        options.headers = {
-          'Cookie': ['happn_token=' + token]
-        };
-      else
-        options.url += '?happn_token=' + token;
-    }
 
     request(options, function (error, response, body) {
       callback(response, body);
     });
-
   }
 
   context('secure mesh', function () {
@@ -38,7 +29,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       try {
 
-        doRequest('/secure/route/test', self.adminClient.session.token, false, function (response) {
+        doRequest('/secure/route/test', self.adminClient.session.token, function (response) {
 
           expect(response.statusCode).to.equal(200);
           expect(response.headers['content-type']).to.equal('application/json');
@@ -57,7 +48,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       try {
 
-        doRequest('/secure/route/test', null, false, function (response) {
+        doRequest('/secure/route/test', null, function (response) {
 
           expect(response.statusCode).to.equal(401);
           expect(response.headers['content-type']).to.equal('text/plain');
@@ -78,7 +69,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       try {
 
-        doRequest('/secure/route/test', self.testClient.session.token, false, function (response) {
+        doRequest('/secure/route/test', self.testClient.session.token, function (response) {
 
           expect(response.statusCode).to.equal(403);
           expect(response.headers['content-type']).to.equal('text/plain');
@@ -116,7 +107,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       try {
 
-        doRequest('/secure/route/test', null, false, function (response) {
+        doRequest('/secure/route/test', null, function (response) {
 
           expect(response.statusCode).to.equal(401);
           expect(response.headers['content-type']).to.equal('text/html');
@@ -136,7 +127,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       try {
 
-        doRequest('/secure/route/test', self.testClient.session.token, false, function (response) {
+        doRequest('/secure/route/test', self.testClient.session.token, function (response) {
 
           expect(response.statusCode).to.equal(403);
           expect(response.headers['content-type']).to.equal('text/html');
@@ -174,7 +165,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       try {
 
-        doRequest('/secure/route/test', null, false, function (response) {
+        doRequest('/secure/route/test', null, function (response) {
 
           expect(response.statusCode).to.equal(500);
           expect(response.body.indexOf('ENOENT')).to.not.eql(-1);
@@ -192,7 +183,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       try {
 
-        doRequest('/secure/route/test', self.testClient.session.token, false, function (response) {
+        doRequest('/secure/route/test', self.testClient.session.token, function (response) {
 
           expect(response.statusCode).to.equal(500);
           expect(response.body.indexOf('ENOENT')).to.not.eql(-1);
