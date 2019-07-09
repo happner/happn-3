@@ -709,7 +709,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
       doBearerTokenRequest('/secure/route/test', 'crap token', function (response) {
 
-        expect(response.statusCode).to.equal(403);
+        expect(response.statusCode).to.equal(401);
         callback();
       });
 
@@ -717,4 +717,5 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       callback(e);
     }
   });
+
 });
