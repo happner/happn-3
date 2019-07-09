@@ -1,5 +1,5 @@
 #happn-3 configuration options:
-*What follows is the full configuartion options for a happn server and client, showing what the defaults are when the config is omitted:*
+*What follows is the full configuration options for a happn server and client, showing what the defaults are when the config is omitted:*
 
 ##server
 ```javascript
