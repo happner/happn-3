@@ -88,7 +88,9 @@ var serverConfig = {
             exclusions: [//http paths to exclude from security checks
               '/test/excluded/specific',
               '/test/excluded/wildcard/*',
-            ]
+            ],
+            unauthorizedResponsePath: path.join(__dirname, 'files/unauthorized.html'), // 401 unauthorized response page (not logged in - token invalid)
+            forbiddenResponsePath: path.join(__dirname, 'files/forbidden.html') // 403 forbidden response page (don't have permissions - token valid)
           }
         }
       }
