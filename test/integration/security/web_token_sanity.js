@@ -718,40 +718,4 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }
   });
 
-  it('the server should respond with \'401 Unauthorized\' when request has no token', function (callback) {
-
-    try {
-
-      doRequest('/secure/route/test', null, false, function (response) {
-
-        expect(response.statusCode).to.equal(401);
-        expect(response.headers['content-type']).to.equal('text/plain');
-        expect(response.headers['www-authenticate']).to.equal('happn-auth');
-        callback();
-
-      });
-
-    } catch (e) {
-      callback(e);
-    }
-
-  });
-
-  it('the server should respond with \'403 Forbidden\' when request has token from client without permission', function (callback) {
-
-    try {
-
-      doRequest('/secure/route/test', testClient.session.token, false, function (response) {
-
-        expect(response.statusCode).to.equal(403);
-        expect(response.headers['content-type']).to.equal('text/plain');
-        callback();
-
-      });
-
-    } catch (e) {
-      callback(e);
-    }
-
-  });
 });
