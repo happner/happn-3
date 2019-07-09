@@ -69,7 +69,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         }
       }, function (e, instance) {
 
-        expect(e.error.code).to.be('ECONNREFUSED');
+        expect(e.code).to.be('ECONNREFUSED');
         callback();
       });
     } catch (e) {
