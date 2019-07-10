@@ -613,3 +613,8 @@
 -----------------
   - fix #209 - implement ability to respond with a HTML file for unauthorized/forbidden requests
   - fix #210 - respond with status code '401 Unauthorized' for invalid or missing token instead of '403 Forbidden'
+
+10.1.1 2019-07-09
+-----------------
+  - fix: issue with client error and ws v7
+  - fix: opts on convenience client methods for auth delegation

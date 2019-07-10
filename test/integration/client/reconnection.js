@@ -95,7 +95,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         testEvent(function (e) {
 
           if (e) return callback(e);
-          console.log('we are connected:::');
           callback();
         });
       });
