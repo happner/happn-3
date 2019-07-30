@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "async": "^2.6.1",
-    "bluebird": "^2.10.2",
+    "bluebird": "^3.5.0",
     "body-parser": "^1.18.3",
     "connect": "^3.6.6",
     "connect-cookies": "^0.0.0",
