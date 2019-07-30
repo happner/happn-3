@@ -11,14 +11,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var primusClient;
 
-  after(function (done) {
-    happnInstance.stop(done);
-  });
-
-  before('should initialize the service', function (callback) {
-
-    this.timeout(20000);
-
+  function startService(callback){
     try {
       service.create(function (e, happnInst) {
         if (e)
@@ -30,6 +23,19 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     } catch (e) {
       callback(e);
     }
+  }
+
+  function stopService(callback){
+    if (happnInstance) happnInstance.stop(callback);
+  }
+
+  after(function (done) {
+    stopService(done);
+  });
+
+  before('should initialize the service', function (done) {
+    this.timeout(20000);
+    startService(done);
   });
 
 
@@ -123,6 +129,108 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
         primusClient.disconnect(callback);
 
+      });
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('should initialize a client, and set up configurable options', function (callback) {
+    this.timeout(default_timeout);
+
+    try {
+
+      happn_client.create({
+        reconnect: {
+          retries: 10,//10 times
+          max: 2000//2 seconds
+        }
+      }, function (e, instance) {
+
+        if (e) return callback(e);
+        primusClient = instance;
+
+        expect(primusClient.socket.options.reconnect.retries).to.be(10);
+        expect(primusClient.socket.options.reconnect.max).to.be(2000);
+
+        expect(primusClient.socket.recovery.retries).to.be(10);
+        expect(primusClient.socket.recovery.max).to.be(2000);
+
+        primusClient.disconnect(callback);
+
+      });
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('should initialize a client, and set up configurable options - with stopped service, we check the backoff', function (callback) {
+    this.timeout(30000);
+
+    try {
+
+      happn_client.create({
+        reconnect: {
+          retries: Infinity,//10 times
+          max: 1000//1 seconds
+        }
+      }, function (e, instance) {
+
+        if (e) return callback(e);
+        primusClient = instance;
+
+        let reconnectCount = 0;
+
+        primusClient.onEvent('reconnect-scheduled', function(){
+          reconnectCount++;
+        });
+
+        stopService(function(){
+          setTimeout(function(){
+            primusClient.disconnect();
+            if (reconnectCount < 14) return callback(new Error('expected reconnecvt count too small'));
+            callback();
+          }, 15000);
+        });
+      });
+    } catch (e) {
+      callback(e);
+    }
+  });
+
+  it('should initialize a client, and set up configurable options - with stopped service, we check the allowed retries', function (callback) {
+    this.timeout(30000);
+
+    try {
+
+      startService(function(e){
+
+        if (e) return callback(e);
+
+        happn_client.create({
+          reconnect: {
+            retries: 10,//10 times
+            max: 1000//1 seconds
+          }
+        }, function (e, instance) {
+
+          if (e) return callback(e);
+          primusClient = instance;
+
+          let reconnectCount = 0;
+
+          primusClient.onEvent('reconnect-scheduled', function(){
+            reconnectCount++;
+          });
+
+          stopService(function(){
+            setTimeout(function(){
+              primusClient.disconnect();
+              if (reconnectCount != 10) return callback(new Error('expected reconnecvt count not 10'));
+              callback();
+            }, 13000);
+          });
+        });
       });
     } catch (e) {
       callback(e);
