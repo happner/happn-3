@@ -55,7 +55,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     publisherclient = await happn_client.create({config:{username:'_ADMIN', password:'happn'}});
     listenerclient = await happn_client.create({config:{username:'_ADMIN', password:'happn', defaultVariableDepth:defaultVariableDepth}});
-    listenerclient.onAsync = bluebird.promisify(listenerclient.on);
+    listenerclient.onAsync = bluebird.promisify(listenerclient.on, {multiArgs: true});
   });
 
 
@@ -190,14 +190,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       return listenerclient.onAsync('/initialEmitTest/path', {}, handleEvent);
     })
     .then(function(reference){
-      reference1 = reference;
+      reference1 = reference[0];
       expect(Object.keys(listenerclient.state.events).length).to.be(1);
       expect(listenerclient.state.refCount['{"path":"/ALL@/initialEmitTest/path","event_type":"all","count":0}']).to.be(1);
       expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(1);
       return listenerclient.onAsync('/initialEmitTest/**', {initialEmit:true}, handleEvent);
     })
     .then(function(reference){
-      reference2 = reference;
+      reference2 = reference[0];
       expect(eventData.length).to.be(1);
       expect(Object.keys(listenerclient.state.events).length).to.be(2);
       expect(listenerclient.state.events['/ALL@/initialEmitTest/**'].length).to.be(1);

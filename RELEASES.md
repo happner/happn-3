@@ -618,3 +618,7 @@
 -----------------
   - fix: issue with client error and ws v7
   - fix: opts on convenience client methods for auth delegation
+
+10.1.2 2019-07-30
+-----------------
+  - fix: 217 Update bluebird dependency

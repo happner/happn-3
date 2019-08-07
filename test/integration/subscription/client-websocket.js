@@ -45,7 +45,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       happn_client.create(function (e, instance) {
         if (e) return done(e);
         client = instance;
-        client.onAsync = Promise.promisify(client.on);
+        client.onAsync = Promise.promisify(client.on, {multiArgs: true});
         done();
       });
     }, 3000);
@@ -81,14 +81,14 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       return client.onAsync('/test/path', {}, handleEvent);
     })
     .then(function(reference){
-      reference1 = reference;
+      reference1 = reference[0];
       expect(Object.keys(client.state.events).length).to.be(1);
       expect(client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0}']).to.be(1);
       expect(Object.keys(client.state.listenerRefs).length).to.be(1);
       return client.onAsync('/test/path', {initialEmit:true}, handleEvent);
     })
     .then(function(reference){
-      reference2 = reference;
+      reference2 = reference[0];
       expect(eventData.length).to.be(1);
       expect(Object.keys(client.state.events).length).to.be(1);
       expect(client.state.events['/ALL@/test/path'].length).to.be(2);
