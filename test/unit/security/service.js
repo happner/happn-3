@@ -2,79 +2,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
-  var service = happn.service;
   var async = require('async');
   var uuid = require('uuid');
   var Logger = require('happn-logger');
   var CheckPoint = require('../../../lib/services/security/checkpoint');
   var Promise = require('bluebird');
   //var log = require('why-is-node-running');
-
-  var initializeCheckpoint = function(callback, config) {
-
-    if (!config) config = {};
-
-    var Checkpoint = require('../../../lib/services/security/checkpoint');
-
-    var checkpoint = new Checkpoint({
-      logger: Logger
-    });
-
-    var CacheService = require('../../../lib/services/cache/service');
-    var UtilsService = require('../../../lib/services/utils/service');
-
-    var cacheServiceInst = new CacheService();
-    var utilsServiceInst = new UtilsService();
-
-    cacheServiceInst.initialize(function() {
-
-      var happn = {
-        services: {
-          session: new EventEmitter(),
-          utils: utilsServiceInst,
-          security: {
-            happn: {
-              services: {
-                utils: new UtilsService()
-              }
-            },
-            users: {
-              getUser: function(name, callback) {
-                return callback(null, {
-                  username: name,
-                  groups: {}
-                });
-              }
-            },
-            groups: {
-              getGroup: function(name, opts, callback) {
-                return callback(null, {
-                  name: name,
-                  permissions: {}
-                });
-              }
-            }
-          },
-          cache: cacheServiceInst
-        }
-      };
-
-      Object.defineProperty(checkpoint, 'happn', {
-        value: happn
-      });
-
-      Object.defineProperty(cacheServiceInst, 'happn', {
-        value: happn
-      });
-
-      checkpoint.initialize(config, happn.services.security, function(e) {
-
-        if (e) return callback(e);
-
-        callback(null, checkpoint);
-      });
-    });
-  };
 
   var serviceConfig = {
     services: {
@@ -2152,6 +2085,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           "username": "test-user-1",
           "isToken": false,
           "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
+          "happn": undefined,
           "user": {
             "username": "test-user-1",
             "groups": {
@@ -2219,6 +2153,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             "isToken": false,
             "permissionSetKey": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
             "protocol": 1,
+            "happn": undefined,
             "user": {
               "username": "test-user-1",
               "groups": {}
@@ -2342,6 +2277,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             "isToken": false,
             "permissionSetKey": "2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
             "protocol": 1,
+            "happn": undefined,
             "user": {
               "username": "test-user-1",
               "groups": {}
@@ -2405,6 +2341,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             "isToken": false,
             "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
             "protocol": 1,
+            "happn": undefined,
             "user": {
               "username": "test-user-1",
               "groups": {
@@ -2470,6 +2407,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             "isToken": false,
             "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
             "protocol": 1,
+            "happn": undefined,
             "user": {
               "username": "test-user-1",
               "groups": {
@@ -2535,6 +2473,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             "isToken": false,
             "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
             "protocol": 1,
+            "happn": undefined,
             "user": {
               "username": "test-user-1",
               "groups": {
@@ -2606,6 +2545,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
             "isToken": false,
             "permissionSetKey": "5xfClf+YJ9/4BdiLw/kvXH2uvh0=",
             "protocol": 1,
+            "happn": undefined,
             "user": {
               "username": "test-user-1"
             },

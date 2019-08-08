@@ -622,3 +622,8 @@
 10.1.2 2019-07-30
 -----------------
   - fix: 217 Update bluebird dependency
+
+10.1.3 2019-07-30
+-----------------
+  - security update: include happn leaf in permission identity
+  - fix: issue with client error and ws v7, handle old ws

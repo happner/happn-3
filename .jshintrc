@@ -1,5 +1,28 @@
 {
-  "globals"      : {
-      "Promise"   : true
+  "eqnull": true,
+  "esversion": 8,
+  "expr": true,
+  "multistr": true,
+  "node": true,
+  "sub": true,
+  "undef": true,
+  "unused": true,
+  "globals"   : {
+    "$"          : false,
+    "after"      : false,
+    "afterEach"  : false,
+    "angular"    : false,
+    "before"     : false,
+    "beforeEach" : false,
+    "context"    : false,
+    "d3"         : false,
+    "describe"   : false,
+    "document"   : false,
+    "expect"     : false,
+    "it"         : false,
+    "MeshClient" : false,
+    "Promise"    : false,
+    "should"     : false,
+    "window"     : false
   }
 }
