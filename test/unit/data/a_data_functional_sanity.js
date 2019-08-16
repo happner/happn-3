@@ -137,6 +137,18 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
+  it('catches exception in provider', function (callback) {
+    let oldProviderCount = serviceInstance.defaultProvider.count;
+    serviceInstance.defaultProvider.count = function (path, options, cb) {
+      throw new Error('Provider exception');
+    }.bind(serviceInstance.defaultProvider);
+    serviceInstance.count('/count/**', {}, function (err) {
+      expect(err.message).to.eql('Provider exception')
+      serviceInstance.defaultProvider.count = oldProviderCount.bind(serviceInstance.defaultProvider);
+      callback();
+    });
+  });
+
   it('counts data', function (callback) {
 
     let count = 10;
