@@ -320,7 +320,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     });
   });
 
-  it('the listener can call count for data', function (done) {
+  it('pass the provider error back to the client', function (done) {
     let oldProviderCount = happnInstance.services.data.defaultProvider.count;
     happnInstance.services.data.defaultProvider.count = function (path, options, cb) {
       cb(new Error('Provider error'));
