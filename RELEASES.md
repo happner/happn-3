@@ -627,3 +627,7 @@
 -----------------
   - security update: include happn leaf in permission identity
   - fix: issue with client error and ws v7, handle old ws
+
+10.2.0 2019-08-16
+-----------------
+  - Issue #222 - Add count capability to data provider

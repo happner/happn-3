@@ -2,6 +2,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
   this.timeout(20000);
 
+  var async = require('async');
+
   var expect = require('expect.js');
 
   var Utils = require('../../../lib/services/utils/service');
@@ -110,6 +112,50 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         callback();
 
       });
+    });
+  });
+
+  it('pass an error back if the provider does not implement a count', function (callback) {
+    let oldProviderCount = serviceInstance.defaultProvider.count;
+    serviceInstance.defaultProvider.count = undefined;
+    serviceInstance.count('/count/**', function (err) {
+      expect(err.message).to.eql('Database provider does not support count')
+      serviceInstance.defaultProvider.count = oldProviderCount.bind(serviceInstance.defaultProvider);
+      callback();
+    });
+  });
+
+  it('pass provider error back', function (callback) {
+    let oldProviderCount = serviceInstance.defaultProvider.count;
+    serviceInstance.defaultProvider.count = function (path, options, cb) {
+      cb(new Error('Provider error'));
+    }.bind(serviceInstance.defaultProvider);
+    serviceInstance.count('/count/**', {}, function (err) {
+      expect(err.message).to.eql('Provider error')
+      serviceInstance.defaultProvider.count = oldProviderCount.bind(serviceInstance.defaultProvider);
+      callback();
+    });
+  });
+
+  it('counts data', function (callback) {
+
+    let count = 10;
+
+    async.times(10, function (n, cb) {
+      serviceInstance.upsert('/count/' + testId + '/' + n, {
+        "test": "data"
+      }, {}, function (e, response) {
+        if (e) return cb(e);
+        expect(response.data.test).to.equal("data");
+        cb();
+      });
+    }, function (err) {
+      if (err) return callback(err);
+      serviceInstance.count('/count/**', function (err, result) {
+        if (err) return callback(err);
+        expect(result.data.value).to.eql(count);
+        callback();
+      })
     });
   });
 
@@ -586,7 +632,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     provider.increment = undefined;
 
-    serviceInstance.upsert(test_base_url, 'counter', {increment: 1, noPublish: true}, function(e){
+    serviceInstance.upsert(test_base_url, 'counter', {increment: 1, noPublish: true}, function (e) {
 
       expect(e.toString()).to.be('Error: db provider does not have an increment function');
 
@@ -603,7 +649,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var provider = serviceInstance.db(test_base_url);
 
-    serviceInstance.upsert(test_base_url, null, {increment: 1, noPublish: true}, function(e){
+    serviceInstance.upsert(test_base_url, null, {increment: 1, noPublish: true}, function (e) {
 
       expect(e.toString()).to.be('Error: invalid increment counter field name, must be a string');
 
@@ -618,7 +664,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var provider = serviceInstance.db(test_base_url);
 
-    serviceInstance.upsert(test_base_url, undefined, {increment: 1, noPublish: true}, function(e){
+    serviceInstance.upsert(test_base_url, undefined, {increment: 1, noPublish: true}, function (e) {
 
       expect(e.toString()).to.be('Error: invalid increment counter field name, must be a string');
 
@@ -633,7 +679,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var provider = serviceInstance.db(test_base_url);
 
-    serviceInstance.upsert(test_base_url, {test:'fieldname'}, {increment: 1, noPublish: true}, function(e){
+    serviceInstance.upsert(test_base_url, {test: 'fieldname'}, {increment: 1, noPublish: true}, function (e) {
 
       expect(e.toString()).to.be('Error: invalid increment counter field name, must be a string');
 
@@ -648,7 +694,7 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
 
     var provider = serviceInstance.db(test_base_url);
 
-    serviceInstance.upsert(test_base_url, 'counter', {increment: 'blah', noPublish: true}, function(e){
+    serviceInstance.upsert(test_base_url, 'counter', {increment: 'blah', noPublish: true}, function (e) {
 
       expect(e.toString()).to.be('Error: increment option value must be a number');
 

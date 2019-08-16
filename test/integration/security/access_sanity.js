@@ -396,6 +396,30 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       });
     });
 
+    it('checks allowed count, and prevented from count', function(done) {
+
+      adminClient.set('/TEST/a7_eventemitter_security_access/' + test_id + '/count', {
+        'test-set': 'test-set-val'
+      }, {}, function(e) {
+
+        if (e) return done(e);
+
+        testClient.count('/TEST/a7_eventemitter_security_access/' + test_id + '/count', {}, function(e, result) {
+
+          if (e) return done(e);
+          expect(result.value).to.be(1);
+
+          testClient.get('/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/count', {}, function(e, result) {
+
+            if (!e) return done(new Error('you managed to get data which you do not have permissions for'));
+            expect(e.toString()).to.be('AccessDenied: unauthorized');
+            done();
+
+          });
+        });
+      });
+    });
+
     it('checks allowed get but not set', function(done) {
 
       testClient.get('/TEST/a7_eventemitter_security_access/' + test_id + '/get', {}, function(e, result) {
