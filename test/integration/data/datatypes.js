@@ -304,6 +304,35 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     }
   });
 
+  it('the listener can call count for data', function (done) {
+    var test_string = require('shortid').generate();
+    var test_base_url = '/count_happn/' + test_id + '/set/string/' + test_string;
+
+    publisherclient.set(test_base_url, test_string, {
+      noPublish: true
+    }, function (e) {
+      expect(e).to.not.exist;
+      listenerclient.count(test_base_url, function (e, count) {
+        expect(e).to.not.exist;
+        expect(count.value).to.eql(1);
+        done();
+      });
+    });
+  });
+
+  it('pass the provider error back to the client', function (done) {
+    let oldProviderCount = happnInstance.services.data.defaultProvider.count;
+    happnInstance.services.data.defaultProvider.count = function (path, options, cb) {
+      cb(new Error('Provider error'));
+    }.bind(happnInstance.services.data.defaultProvider);
+
+    listenerclient.count('anyString', function (e, count) {
+      expect(e.message).to.eql('Provider error');
+      happnInstance.services.data.defaultProvider.count = oldProviderCount.bind(happnInstance.services.data.defaultProvider);
+      done();
+    });
+  });
+
   it('wildcards, the listener should pick up a single wildcard event', function (callback) {
 
     this.timeout(default_timeout);

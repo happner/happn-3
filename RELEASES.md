@@ -627,3 +627,11 @@
 -----------------
   - security update: include happn leaf in permission identity
   - fix: issue with client error and ws v7, handle old ws
+
+10.2.0 2019-08-16
+-----------------
+  - Issue #222 - Add count capability to data provider
+
+10.2.1 2019-08-16
+-----------------
+  - Issue: access denied security logs username and password via JSON.stringify
