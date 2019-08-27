@@ -23,8 +23,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     return happn.client.create({ config, secure: true});
   }
 
-  var http = require('http');
-
   async function doEventRoundTripClient(client) {
     return new Promise((resolve, reject) => {
       var timeout = this.setTimeout(()=>{
@@ -123,15 +121,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (e) return done(e);
 
       serviceInstance = service;
-
-      serviceInstance.connect.use('/TEST/WEB/ROUTE', function (req, res, next) {
-
+      serviceInstance.connect.use('/TEST/WEB/ROUTE', function (req, res) {
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify({
           "secure": "value"
         }));
       });
-
       done();
     });
   });

@@ -1,7 +1,7 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
-  "version": "10.2.2-prerelease-0",
+  "version": "10.2.2",
   "main": "./lib/index",
   "protocol": "4",
   "database": "1",
@@ -87,7 +87,9 @@
     "gulp": "^4.0.0",
     "gulp-jshint": "^2.1.0",
     "happn": "^2.21.3",
+    "happn-cluster": "^8.1.3",
     "happn-random-activity-generator": "0.2.1",
+    "happn-service-mongo-2": "^2.2.0",
     "happner-serial-mocha": "^1.5.2",
     "jshint": "^2.10.1",
     "jsprim": "^2.0.0",
@@ -97,6 +99,7 @@
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.5",
     "mocha": "^5.2.0",
+    "mongodb": "^3.3.1",
     "nyc": "^13.3.0",
     "request": "^2.88.0",
     "why-is-node-running": "^2.1.0"
