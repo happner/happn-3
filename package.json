@@ -1,7 +1,7 @@
 {
   "name": "happn-3",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
-  "version": "10.2.1",
+  "version": "10.2.2-prerelease-0",
   "main": "./lib/index",
   "protocol": "4",
   "database": "1",
@@ -75,7 +75,7 @@
     "underscore.string": "^3.3.5",
     "user-home": "^2.0.0",
     "uuid": "^3.3.2",
-    "ws": "^7.0.1"
+    "ws": "6.1.4"
   },
   "devDependencies": {
     "await-delay": "^1.0.0",
