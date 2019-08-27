@@ -635,3 +635,10 @@
 10.2.1 2019-08-16
 -----------------
   - Issue: access denied security logs username and password via JSON.stringify
+
+10.2.2 2019-08-16
+-----------------
+  - session logs browser primus writer
+  - revokeSession revokes token, including across the cluster
+  - persisted cache updates if finds data from dataSource
+  - reverted to v6 of ws
