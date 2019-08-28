@@ -632,12 +632,12 @@
 -----------------
   - Issue #222 - Add count capability to data provider
 
-10.2.1 2019-08-16
+10.2.1 2019-08-23
 -----------------
   - Issue: access denied security logs username and password via JSON.stringify
 
-10.2.2 2019-08-16
+10.2.2 2019-08-28
 -----------------
   - session logs browser primus writer
   - revokeSession revokes token, including across the cluster
-  - reverted to v6 of ws
+  - reverted to v6 of ws - backward compatibility issue
