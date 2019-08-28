@@ -640,5 +640,4 @@
 -----------------
   - session logs browser primus writer
   - revokeSession revokes token, including across the cluster
-  - persisted cache updates if finds data from dataSource
   - reverted to v6 of ws

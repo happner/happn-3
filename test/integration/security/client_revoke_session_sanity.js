@@ -379,4 +379,53 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       client2.disconnect();
     }
   });
+
+  it('ensures revoking a session on a child client (login from parent token) revokes the token on the parent as well', async () => {
+    let client1 = await getClient({username: testUser.username, password: 'TEST PWD'});
+    let client2 = await getClient({token: client1.session.token});
+    await doEventRoundTripClient(client1);
+    await client2.disconnect({revokeSession: true});
+    try{
+      await delay(1000);
+      await doEventRoundTripClient(client1);
+      throw new Error('was not meant to happen');
+    }catch(e){
+      expect(e.message).to.be('unauthorized');
+      client1.disconnect();
+    }
+  });
+
+  it('ensures revoking a session on a child client (login from parent token) revokes the token on the parent as well, 3 levels deep', async () => {
+    let client1 = await getClient({username: testUser.username, password: 'TEST PWD'});
+    let client2 = await getClient({token: client1.session.token});
+    let client3 = await getClient({token: client2.session.token});
+    await doEventRoundTripClient(client1);
+    await client3.disconnect({revokeSession: true});
+    try{
+      await delay(1000);
+      await doEventRoundTripClient(client1);
+      throw new Error('was not meant to happen');
+    }catch(e){
+      expect(e.message).to.be('unauthorized');
+      client1.disconnect();
+      client2.disconnect();
+    }
+  });
+
+  it('ensures revoking a token on 1 client revokes the token on all clients using the token, 3 levels deep', async () => {
+    let client1 = await getClient({username: testUser.username, password: 'TEST PWD'});
+    let client2 = await getClient({token: client1.session.token});
+    let client3 = await getClient({token: client2.session.token});
+    await doEventRoundTripClient(client3);
+    await client1.disconnect({revokeSession: true});
+    try{
+      await delay(1000);
+      await doEventRoundTripClient(client3);
+      throw new Error('was not meant to happen');
+    }catch(e){
+      expect(e.message).to.be('unauthorized');
+      client2.disconnect();
+      client3.disconnect();
+    }
+  });
 });
