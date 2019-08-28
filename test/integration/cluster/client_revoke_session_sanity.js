@@ -187,4 +187,34 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       client3.disconnect();
     }
   });
+
+  function restoreSession(sessionId){
+    return new Promise((resolve, reject) => {
+      clusterServices[0].services.security.restoreSession(sessionId, function(e){
+        if (e) return reject(e);
+        resolve();
+      });
+    });
+  }
+
+  it('ensures revoking a token on 1 client revokes the token on all clients using the token - then restoring the session allows access again, 3 levels deep', async () => {
+    let client1 = await getClient({username: testUser.username, password: 'TEST PWD', port:56000});
+    let client1SessionId = client1.session.id;
+    let client2 = await getClient({token: client1.session.token, port:56001});
+    let client3 = await getClient({token: client2.session.token, port:56001});
+    await doEventRoundTripClient(client3);
+    await client1.disconnect({revokeSession: true});
+    try{
+      await delay(1000);
+      await doEventRoundTripClient(client3);
+      throw new Error('was not meant to happen');
+    }catch(e){
+      expect(e.message).to.be('unauthorized');
+      await restoreSession(client1SessionId);
+      await delay(1000);
+      await doEventRoundTripClient(client3);
+      client2.disconnect();
+      client3.disconnect();
+    }
+  });
 });
