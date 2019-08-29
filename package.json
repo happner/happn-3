@@ -51,7 +51,7 @@
     "happn-logger": "^0.1.1",
     "happn-nedb": "^1.8.1",
     "happn-password-hash-and-salt": "^1.2.0",
-    "happn-primus-wrapper": "^7.3.4",
+    "happn-primus-wrapper": "^7.3.5",
     "happn-sillyname": "^0.1.1",
     "happn-stats": "^1.0.8",
     "happn-tcp-port-used": "^1.0.3",
