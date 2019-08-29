@@ -286,34 +286,23 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     mockServices(function (e, happn) {
 
       if (e) return done(e);
-
       var session = mockSession(1, 'TEST_SESSION', 'TEST_USER', 60000, happn.services.security);
 
       happn.services.security.revokeSession(session, function (e) {
-
         if (e) return done(e);
-
         happn.services.security.listRevokedSessions(function (e, list) {
-
           if (e) return done(e);
-
           expect(list.length).to.be(1);
-
           happn.services.security.__checkRevocations('TEST_SESSION', function (e, authorized, reason) {
 
             expect(authorized).to.be(false);
-            expect(reason).to.be('session with id TEST_SESSION has been revoked');
+            expect(reason).to.be('session from origin session id TEST_SESSION has been revoked');
 
             happn.services.security.restoreSession('TEST_SESSION', function (e) {
-
               if (e) return done(e);
-
               happn.services.security.listRevokedSessions(function (e, list) {
-
                 if (e) return done(e);
-
                 expect(list.length).to.be(0);
-
                 happn.services.security.__checkRevocations('TEST_SESSION', done);
               });
             });

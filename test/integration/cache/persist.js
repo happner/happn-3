@@ -3,17 +3,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   this.timeout(20000);
 
   var expect = require('expect.js');
-
   var service = require('../../../lib/services/cache/service');
-
   var dataService = require('../../../lib/services/data/service');
-
   var serviceInstance = new service();
-
   var dataServiceInstance = new dataService();
-
   var testId = require('shortid').generate();
-
   var async = require('async');
 
   var config = {
@@ -188,12 +182,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     };
 
     serviceInstance.get('totallyCrazyPath', opts, function (e, item) {
-
       if (e) return done(e);
-
       expect(item.data).to.be('foundMe');
       expect(serviceInstance.__defaultCache.__cache.totallyCrazyPath.data.data).to.be('foundMe');
-
       done();
     });
   });

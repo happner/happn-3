@@ -3,6 +3,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var happn = require('../../../lib/index');
   var serviceInstance;
   var expect = require('expect.js');
+  var delay = require('await-delay');
+  this.timeout(10000);
 
   var getService = function (config, callback) {
 
@@ -17,7 +19,53 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
     );
   };
 
-  var http = require('http');
+  async function getClient(config){
+    return happn.client.create({ config, secure: true});
+  }
+
+  async function doEventRoundTripClient(client) {
+    return new Promise((resolve, reject) => {
+      var timeout = this.setTimeout(()=>{
+        reject(new Error('timed out'));
+      }, 3000);
+      client.on('client-revoke-session-sanity', (data) => {
+        this.clearTimeout(timeout);
+        expect(data).to.eql({test:'data'});
+        resolve();
+      }, (e) => {
+        if (e) return reject(e);
+        client.set('client-revoke-session-sanity', {test:'data'}, (e)=>{
+          if (e) return reject(e);
+        });
+      });
+    });
+  }
+
+  function doEventRoundTripToken(token, callback) {
+
+    happn.client.create({
+        config: {
+          token
+        },
+        secure: true
+      })
+      .then(function(client){
+        var timeout = this.setTimeout(()=>{
+          callback(new Error('timed out'));
+        }, 3000);
+        client.on('client-revoke-session-sanity', (data) => {
+          this.clearTimeout(timeout);
+          expect(data).to.eql({test:'data'});
+          callback();
+        }, (e) => {
+          if (e) return callback(e);
+          client.set('client-revoke-session-sanity', {test:'data'}, (e)=>{
+            if (e) return callback(e);
+          });
+        });
+      })
+      .catch(callback);
+  }
 
   function doRequest(path, token, query, callback, excludeToken) {
 
@@ -73,15 +121,12 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       if (e) return done(e);
 
       serviceInstance = service;
-
-      serviceInstance.connect.use('/TEST/WEB/ROUTE', function (req, res, next) {
-
+      serviceInstance.connect.use('/TEST/WEB/ROUTE', function (req, res) {
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify({
           "secure": "value"
         }));
       });
-
       done();
     });
   });
@@ -93,6 +138,9 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
   var testGroup = {
     name: 'TEST GROUP',
     permissions: {
+      'client-revoke-session-sanity': {
+        actions: ['*']
+      },
       '/TEST/DATA/*': {
         actions: ['*']
       },
@@ -150,34 +198,29 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         testClient = clientInstance;
 
         var sessionToken = testClient.session.token;
+        var sessionId = testClient.session.id;
 
         doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
-
           expect(response.statusCode).to.equal(200);
-
           testClient.disconnect({
             revokeSession: true
           }, function (e) {
-
             if (e) return done(e);
-
             setTimeout(function () {
-
               doRequest('/TEST/WEB/ROUTE', sessionToken, false, function (response) {
-
                 expect(response.statusCode).to.equal(403);
-
-                done();
+                doEventRoundTripToken(sessionToken, function(e) {
+                  expect(e.message).to.be(`session with id ${sessionId} has been revoked`);
+                  done();
+                });
               });
             }, 2000);
           });
         });
       })
-
       .catch(function (e) {
         done(e);
       });
-
   });
 
   it('logs in with the ws user - we then test a call to a web-method, then disconnects with the revokeToken flag set to false, we try and reuse the token and ensure that it succeeds', function (done) {
@@ -320,5 +363,69 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
       .catch(function (e) {
         done(e);
       });
+  });
+
+  it('ensures revoking a token on 1 client revokes the token on all clients using the token', async () => {
+    let client1 = await getClient({username: testUser.username, password: 'TEST PWD'});
+    let client2 = await getClient({token: client1.session.token});
+    await doEventRoundTripClient(client2);
+    await client1.disconnect({revokeSession: true});
+    try{
+      await delay(1000);
+      await doEventRoundTripClient(client2);
+      throw new Error('was not meant to happen');
+    }catch(e){
+      expect(e.message).to.be('unauthorized');
+      client2.disconnect();
+    }
+  });
+
+  it('ensures revoking a session on a child client (login from parent token) revokes the token on the parent as well', async () => {
+    let client1 = await getClient({username: testUser.username, password: 'TEST PWD'});
+    let client2 = await getClient({token: client1.session.token});
+    await doEventRoundTripClient(client1);
+    await client2.disconnect({revokeSession: true});
+    try{
+      await delay(1000);
+      await doEventRoundTripClient(client1);
+      throw new Error('was not meant to happen');
+    }catch(e){
+      expect(e.message).to.be('unauthorized');
+      client1.disconnect();
+    }
+  });
+
+  it('ensures revoking a session on a child client (login from parent token) revokes the token on the parent as well, 3 levels deep', async () => {
+    let client1 = await getClient({username: testUser.username, password: 'TEST PWD'});
+    let client2 = await getClient({token: client1.session.token});
+    let client3 = await getClient({token: client2.session.token});
+    await doEventRoundTripClient(client1);
+    await client3.disconnect({revokeSession: true});
+    try{
+      await delay(1000);
+      await doEventRoundTripClient(client1);
+      throw new Error('was not meant to happen');
+    }catch(e){
+      expect(e.message).to.be('unauthorized');
+      client1.disconnect();
+      client2.disconnect();
+    }
+  });
+
+  it('ensures revoking a token on 1 client revokes the token on all clients using the token, 3 levels deep', async () => {
+    let client1 = await getClient({username: testUser.username, password: 'TEST PWD'});
+    let client2 = await getClient({token: client1.session.token});
+    let client3 = await getClient({token: client2.session.token});
+    await doEventRoundTripClient(client3);
+    await client1.disconnect({revokeSession: true});
+    try{
+      await delay(1000);
+      await doEventRoundTripClient(client3);
+      throw new Error('was not meant to happen');
+    }catch(e){
+      expect(e.message).to.be('unauthorized');
+      client2.disconnect();
+      client3.disconnect();
+    }
   });
 });
