@@ -640,4 +640,4 @@
 -----------------
   - session logs browser primus writer
   - revokeSession revokes token, including across the cluster
-  - reverted to v6 of ws - backward compatibility issue
+  - reverted to v6.1 of ws - backward compatibility issue, ws 6.2+ checks sec header format causing failures of devices in the field
