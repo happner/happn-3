@@ -53,7 +53,7 @@
     "happn-password-hash-and-salt": "^1.2.0",
     "happn-primus-wrapper": "^7.3.4",
     "happn-sillyname": "^0.1.1",
-    "happn-stats": "^1.0.7",
+    "happn-stats": "^1.0.8",
     "happn-tcp-port-used": "^1.0.3",
     "happn-util-crypto": "^0.3.0",
     "happner-hyperid": "^2.0.0",
