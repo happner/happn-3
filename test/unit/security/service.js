@@ -3031,7 +3031,6 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
           }
         }
       }, {})).to.eql(null);
-
       expect(warningHappened).to.be(true);
       done();
     });
