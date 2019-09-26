@@ -2642,11 +2642,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         done();
       }
 
-      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback){
+      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback) {
         authorizeSessionCallback(null, true);
       }
 
-      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback){
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback) {
         authorizeUserCallback(null, true);
       }
 
@@ -2696,11 +2696,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         done();
       }
 
-      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback){
+      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback) {
         authorizeSessionCallback(null, false);
       }
 
-      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback){
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback) {
         authorizeUserCallback(null, true);
       }
 
@@ -2750,11 +2750,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         done();
       }
 
-      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback){
+      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback) {
         authorizeSessionCallback(null, true);
       }
 
-      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback){
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback) {
         authorizeUserCallback(null, false);
       }
 
@@ -2795,11 +2795,11 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         done();
       }
 
-      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback){
+      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback) {
         authorizeSessionCallback(null, true);
       }
 
-      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback){
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback) {
         authorizeUserCallback(null, true);
       }
 
@@ -2850,15 +2850,189 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         done();
       }
 
-      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback){
+      happnMock.services.security.checkpoint._authorizeSession = function(session, path, action, authorizeSessionCallback) {
         authorizeSessionCallback(null, true);
       }
 
-      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback){
+      happnMock.services.security.checkpoint._authorizeUser = function(session, path, action, authorizeUserCallback) {
         authorizeUserCallback(null, true);
       }
 
       happnMock.services.security.authorizeOnBehalfOf(session, path, action, onBehalfOf, callback);
+    });
+  });
+
+  it('tests the __getOnBehalfOfSession method - uncached', function(done) {
+
+    mockServices(function(e, happnMock) {
+
+      if (e) return done(e);
+
+      var session = {
+        user: {
+          username: 'illuminaughty'
+        },
+        happn: {
+          happn: 'info'
+        }
+      };
+
+      var onBehalfOf = 'test-user';
+      var wasCached = false;
+      let fetchedUserFromDb = false;
+
+      happnMock.services.security.__cache_session_on_behalf_of = {
+        getSync: () => {
+          return null;
+        },
+        setSync: (username, user) => {
+          wasCached = user;
+        }
+      };
+
+      happnMock.services.security.users.getUser = function(username, callback) {
+        fetchedUserFromDb = true;
+        callback(null, {
+          username: 'test-user',
+          groups: {}
+        });
+      };
+
+      happnMock.services.security.__getOnBehalfOfSession(session, onBehalfOf, (e, onBehalfOf) => {
+        if (e) return done(e);
+        expect(fetchedUserFromDb).to.be(true);
+        expect(onBehalfOf.user).to.eql({
+          username: 'test-user',
+          groups: {}
+        });
+        expect(onBehalfOf.happn).to.eql({
+          happn: 'info'
+        });
+        expect(wasCached.user).to.eql({
+          username: 'test-user',
+          groups: {}
+        });
+        done();
+      });
+    });
+  });
+
+  it('tests the __getOnBehalfOfSession method - cached', function(done) {
+
+    mockServices(function(e, happnMock) {
+
+      if (e) return done(e);
+
+      var session = {
+        user: {
+          username: 'illuminaughty'
+        }
+      };
+
+      var onBehalfOf = 'test-user';
+
+      happnMock.services.security.__cache_session_on_behalf_of = {
+        getSync: () => {
+          return {
+            cached: true,
+            user: {
+              username: 'test-user',
+              groups: {}
+            }
+          };
+        },
+        setSync: () => {
+
+        }
+      };
+
+      let fetchedUserFromDb = false;
+
+      happnMock.services.security.users.getUser = function(username, callback) {
+        fetchedUserFromDb = true;
+        callback(null, {
+          username: 'test-user',
+          groups: {}
+        });
+      };
+
+      happnMock.services.security.__getOnBehalfOfSession(session, onBehalfOf, (e, onBehalfOf) => {
+        if (e) return done(e);
+        expect(fetchedUserFromDb).to.be(false);
+        expect(onBehalfOf.user).to.eql({
+          username: 'test-user',
+          groups: {}
+        });
+        done();
+      });
+    });
+  });
+
+  it('tests the sessionFromRequest method', function(done) {
+    mockServices(function(e, happnMock) {
+      if (e) return done(e);
+      let warningHappened = false;
+      happnMock.services.security.log = {
+        warn: (message) => {
+          expect(message.indexOf('failed decoding session token from request')).to.be(0);
+          warningHappened = true;
+        }
+      };
+      happnMock.services.security.decodeToken = (token) => {
+        return token;
+      };
+      happnMock.services.system = {
+        getDescription: () => {
+          return {
+            name: 'test-description'
+          };
+        }
+      };
+      expect(happnMock.services.security.sessionFromRequest({
+        happn_session: {
+          test: 'session'
+        }
+      }, {})).to.eql({
+        test: 'session'
+      });
+      expect(happnMock.services.security.sessionFromRequest({
+        cookies: {
+          get: (cookieName) => {
+            return {
+              token: 'TEST-TOKEN',
+              cookieName
+            };
+          }
+        }
+      }, {})).to.eql({
+        token: 'TEST-TOKEN',
+        cookieName: 'happn_token',
+        type: 0,
+        happn: {
+          name: 'test-description'
+        }
+      });
+
+      expect(warningHappened).to.be(false);
+
+      happnMock.services.system = {
+        getDescription: () => {
+          throw new Error('test error');
+        }
+      };
+
+      expect(happnMock.services.security.sessionFromRequest({
+        cookies: {
+          get: (cookieName) => {
+            return {
+              token: 'TEST-TOKEN',
+              cookieName
+            };
+          }
+        }
+      }, {})).to.eql(null);
+      expect(warningHappened).to.be(true);
+      done();
     });
   });
 });

@@ -641,3 +641,8 @@
   - session logs browser primus writer
   - revokeSession revokes token, including across the cluster
   - reverted to v6.1 of ws - backward compatibility issue, ws 6.2+ checks sec header format causing failures of devices in the field
+
+10.2.3 2019-09-12
+-----------------
+  - getOnBehalfOfSession now includes the delegate sessions happn property
+  - sessionFromRequest includes happn property fetched from system service
