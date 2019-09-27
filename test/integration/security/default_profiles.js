@@ -1,211 +1,220 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3),  function () {
+describe(
+  require('../../__fixtures/utils/test_helper')
+    .create()
+    .testName(__filename, 3),
+  function() {
+    this.timeout(30000);
 
-  this.timeout(30000);
+    var expect = require('expect.js');
+    var happn = require('../../../lib/index');
+    var service = happn.service;
+    var async = require('async');
 
-  var expect = require('expect.js');
-  var happn = require('../../../lib/index');
-  var service = happn.service;
-  var async = require('async');
+    var happnInstance1 = null;
 
-  var happnInstance1 = null;
+    var http = require('http');
 
-  var http = require('http');
+    var Crypto = require('happn-util-crypto');
+    var crypto = new Crypto();
 
-  var Crypto = require('happn-util-crypto');
-  var crypto = new Crypto();
-
-  var serviceConfig1 = {
-    port: 10000,
-    secure: true,
-    encryptPayloads: true,
-    services: {
-      security: {
-        config: {
-          sessionTokenSecret: 'h1_test-secret',
-          keyPair: {
-            privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=',
-            publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
-          },
-          profiles: [ //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
-            {
-              name: "token-not-allowed",
-              session: {
-                $and: [{
-                  user: {
-                    username: {
-                      $eq: '_ADMIN'
+    var serviceConfig1 = {
+      port: 10000,
+      secure: true,
+      encryptPayloads: true,
+      services: {
+        security: {
+          config: {
+            sessionTokenSecret: 'h1_test-secret',
+            keyPair: {
+              privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=',
+              publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
+            },
+            profiles: [
+              //profiles are in an array, in descending order of priority, so if you fit more than one profile, the top profile is chosen
+              {
+                name: 'token-not-allowed',
+                session: {
+                  $and: [
+                    {
+                      user: {
+                        username: {
+                          $eq: '_ADMIN'
+                        }
+                      },
+                      info: {
+                        tokenNotAllowedForLogin: {
+                          $eq: true
+                        }
+                      }
                     }
-                  },
-                  info: {
-                    tokenNotAllowedForLogin: {
-                      $eq: true
-                    }
-                  }
-                }]
+                  ]
+                },
+                policy: {
+                  disallowTokenLogins: true
+                }
               },
-              policy: {
-                disallowTokenLogins: true
-              }
-            }, {
-              name: "short-session",
-              session: {
-                $and: [{
-                  user: {
-                    username: {
-                      $eq: '_ADMIN'
+              {
+                name: 'short-session',
+                session: {
+                  $and: [
+                    {
+                      user: {
+                        username: {
+                          $eq: '_ADMIN'
+                        }
+                      },
+                      info: {
+                        shortSession: {
+                          $eq: true
+                        }
+                      }
                     }
-                  },
-                  info: {
-                    shortSession: {
-                      $eq: true
-                    }
-                  }
-                }]
+                  ]
+                },
+                policy: {
+                  ttl: '2 seconds'
+                }
               },
-              policy: {
-                ttl: '2 seconds'
-              }
-            }, {
-              name: "browser-session",
-              session: {
-                $and: [{
-                  user: {
-                    username: {
-                      $eq: '_ADMIN'
+              {
+                name: 'browser-session',
+                session: {
+                  $and: [
+                    {
+                      user: {
+                        username: {
+                          $eq: '_ADMIN'
+                        }
+                      },
+                      info: {
+                        _browser: {
+                          $eq: true
+                        }
+                      }
                     }
-                  },
-                  info: {
-                    _browser: {
-                      $eq: true
-                    }
-                  }
-                }]
+                  ]
+                },
+                policy: {
+                  ttl: '7 days'
+                }
               },
-              policy: {
-                ttl: '7 days'
-              }
-            }, {
-              name: "locked-session",
-              session: {
-                $and: [{
-                  user: {
-                    username: {
-                      $eq: '_ADMIN'
+              {
+                name: 'locked-session',
+                session: {
+                  $and: [
+                    {
+                      user: {
+                        username: {
+                          $eq: '_ADMIN'
+                        }
+                      },
+                      info: {
+                        tokenOriginLocked: {
+                          $eq: true
+                        }
+                      }
                     }
-                  },
-                  info: {
-                    tokenOriginLocked: {
-                      $eq: true
-                    }
-                  }
-                }]
+                  ]
+                },
+                policy: {
+                  ttl: 0, // no ttl
+                  lockTokenToOrigin: true
+                }
               },
-              policy: {
-                ttl: 0, // no ttl
-                lockTokenToOrigin: true
-              }
-            }, {
-              name: "node-session",
-              session: {
-                $and: [{
-                  user: {
-                    username: {
-                      $eq: '_ADMIN'
+              {
+                name: 'node-session',
+                session: {
+                  $and: [
+                    {
+                      user: {
+                        username: {
+                          $eq: '_ADMIN'
+                        }
+                      },
+                      _browser: false
                     }
-                  },
-                  _browser: false
-                }]
-              },
-              policy: {
-                ttl: 0 // no ttl
+                  ]
+                },
+                policy: {
+                  ttl: 0 // no ttl
+                }
               }
-            }
-          ]
+            ]
+          }
         }
       }
-    }
-  };
+    };
 
-  before('should initialize the service', function (callback) {
+    before('should initialize the service', function(callback) {
+      this.timeout(20000);
 
-    this.timeout(20000);
+      try {
+        service.create(serviceConfig1, function(e, happnInst1) {
+          if (e) return callback(e);
 
-    try {
+          happnInstance1 = happnInst1;
 
-      service.create(serviceConfig1, function (e, happnInst1) {
-
-        if (e) return callback(e);
-
-        happnInstance1 = happnInst1;
-
-        callback();
-
-      });
-    } catch (e) {
-      callback(e);
-    }
-  });
-
-  after(function (done) {
-
-    if (happnInstance1) happnInstance1.stop()
-      .then(done)
-      .catch(done);
-    else done();
-  });
-
-  it('tests the default browser profile', function (done) {
-
-    var session = {
-      info: {
-        _browser: true
+          callback();
+        });
+      } catch (e) {
+        callback(e);
       }
-    };
+    });
 
-    happnInstance1.services.security.__profileSession(session);
+    after(function(done) {
+      if (happnInstance1)
+        happnInstance1
+          .stop()
+          .then(done)
+          .catch(done);
+      else done();
+    });
 
-    expect(session.policy[0].ttl).to.be(7 * 24 * 60 * 60 * 1000); // 7 days
+    it('tests the default browser profile', function(done) {
+      var session = {
+        info: {
+          _browser: true
+        }
+      };
 
-    expect(session.policy[0].inactivity_threshold).to.be(60 * 60 * 1000); // 1 hour
+      happnInstance1.services.security.__profileSession(session);
 
-    expect(session.policy[1].ttl).to.be(7 * 24 * 60 * 60 * 1000); // 7 days
+      expect(session.policy[0].ttl).to.be(7 * 24 * 60 * 60 * 1000); // 7 days
 
-    expect(session.policy[1].inactivity_threshold).to.be(60 * 60 * 1000); // 1 hour
+      expect(session.policy[0].inactivity_threshold).to.be(60 * 60 * 1000); // 1 hour
 
-    done();
+      expect(session.policy[1].ttl).to.be(7 * 24 * 60 * 60 * 1000); // 7 days
 
-  });
+      expect(session.policy[1].inactivity_threshold).to.be(60 * 60 * 1000); // 1 hour
 
-  it('tests the default stateful profile', function (done) {
+      done();
+    });
 
-    var session = {
-      type: 1
-    };
+    it('tests the default stateful profile', function(done) {
+      var session = {
+        type: 1
+      };
 
-    happnInstance1.services.security.__profileSession(session);
+      happnInstance1.services.security.__profileSession(session);
 
-    expect(session.policy[1].ttl).to.be(0); // never
+      expect(session.policy[1].ttl).to.be(0); // never
 
-    expect(session.policy[1].inactivity_threshold).to.be(Infinity); // never
+      expect(session.policy[1].inactivity_threshold).to.be(Infinity); // never
 
-    done();
+      done();
+    });
 
-  });
+    it('tests the default stateless profile', function(done) {
+      var session = {
+        type: 0
+      };
 
-  it('tests the default stateless profile', function (done) {
+      happnInstance1.services.security.__profileSession(session);
 
-    var session = {
-      type: 0
-    };
+      expect(session.policy[1].ttl).to.be(0); // never
 
-    happnInstance1.services.security.__profileSession(session);
+      expect(session.policy[1].inactivity_threshold).to.be(Infinity); // never
 
-    expect(session.policy[1].ttl).to.be(0); // never
-
-    expect(session.policy[1].inactivity_threshold).to.be(Infinity); // never
-
-    done();
-
-  });
-
-});
+      done();
+    });
+  }
+);

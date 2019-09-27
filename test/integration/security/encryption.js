@@ -1,119 +1,121 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(
+  require('../../__fixtures/utils/test_helper')
+    .create()
+    .testName(__filename, 3),
+  function() {
+    var expect = require('expect.js');
+    var happn = require('../../../lib/index');
+    var service = happn.service;
+    var async = require('async');
+    var Logger = require('happn-logger');
 
-  var expect = require('expect.js');
-  var happn = require('../../../lib/index');
-  var service = happn.service;
-  var async = require('async');
-  var Logger = require('happn-logger');
+    var Crypto = require('happn-util-crypto');
+    var crypto = new Crypto();
 
-  var Crypto = require('happn-util-crypto');
-  var crypto = new Crypto();
+    var testConfigs = {};
 
-  var testConfigs = {};
+    testConfigs.data = {};
 
-  testConfigs.data = {};
+    testConfigs.crypto = {};
 
-  testConfigs.crypto = {};
+    var testServices = {};
 
-  var testServices = {};
+    testServices.crypto = require('../../../lib/services/crypto/service');
+    testServices.utils = require('../../../lib/services/utils/service');
 
-  testServices.crypto = require('../../../lib/services/crypto/service');
-  testServices.utils = require('../../../lib/services/utils/service');
-
-  before('should initialize the service', function (callback) {
-
-    var happnMock = {
-      services: {
-        system:{
-          package:require('../../../package.json')
+    before('should initialize the service', function(callback) {
+      var happnMock = {
+        services: {
+          system: {
+            package: require('../../../package.json')
+          }
         }
-      }
-    };
+      };
 
-    async.eachSeries(['utils', 'crypto'], function (serviceName, eachServiceCB) {
+      async.eachSeries(
+        ['utils', 'crypto'],
+        function(serviceName, eachServiceCB) {
+          testServices[serviceName] = new testServices[serviceName]({
+            logger: Logger
+          });
+          testServices[serviceName].happn = happnMock;
 
-      testServices[serviceName] = new testServices[serviceName]({
-        logger: Logger
-      });
-      testServices[serviceName].happn = happnMock;
+          happnMock.services[serviceName] = testServices[serviceName];
 
-      happnMock.services[serviceName] = testServices[serviceName];
+          if (!happnMock.services[serviceName].initialize) return eachServiceCB();
+          else testServices[serviceName].initialize(happnMock.services[serviceName], eachServiceCB);
+        },
+        callback
+      );
+    });
 
-      if (!happnMock.services[serviceName].initialize) return eachServiceCB();
+    var bobKeyPair = crypto.createKeyPair();
 
-      else testServices[serviceName].initialize(happnMock.services[serviceName], eachServiceCB);
+    var generatedPrivateKeyBob = bobKeyPair.privateKey;
+    var generatedPublicKeyBob = bobKeyPair.publicKey;
 
-    }, callback);
-  });
+    var generatedPrivateKeyAlice;
+    var generatedPublicKeyAlice;
 
-  var bobKeyPair = crypto.createKeyPair();
+    var dataToEncrypt = 'this is a secret';
+    var encryptedData;
 
-  var generatedPrivateKeyBob = bobKeyPair.privateKey;
-  var generatedPublicKeyBob = bobKeyPair.publicKey;
+    var badPrivateKey;
+    var malformedPublicKey;
 
-  var generatedPrivateKeyAlice;
-  var generatedPublicKeyAlice;
+    it('should generate a keypair', function(callback) {
+      var keyPair = testServices.crypto.createKeyPair();
 
-  var dataToEncrypt = 'this is a secret';
-  var encryptedData;
+      generatedPrivateKeyAlice = keyPair.privateKey;
+      generatedPublicKeyAlice = keyPair.publicKey;
 
-  var badPrivateKey;
-  var malformedPublicKey;
+      callback();
+    });
 
-  it('should generate a keypair', function (callback) {
+    it('should serialize and deserialize a keypair', function(callback) {
+      var keyPair = testServices.crypto.createKeyPair();
+      var keyPairSerialized = testServices.crypto.serializeKeyPair(keyPair);
+      var keyPairDeserialized = testServices.crypto.deserializeKeyPair(keyPairSerialized);
 
-    var keyPair = testServices.crypto.createKeyPair();
+      expect(typeof keyPairSerialized).to.be('string');
+      expect(keyPairDeserialized.publicKey.toString()).to.be(keyPair.publicKey.toString());
+      expect(keyPairDeserialized.privateKey.toString()).to.be(keyPair.privateKey.toString());
 
-    generatedPrivateKeyAlice = keyPair.privateKey;
-    generatedPublicKeyAlice = keyPair.publicKey;
+      callback();
+    });
 
-    callback();
+    it('should encrypt and decrypt data using the security layer', function(callback) {
+      var message = 'this is a secret';
 
-  });
+      var encrypted = testServices.crypto.asymmetricEncrypt(
+        generatedPublicKeyBob,
+        generatedPrivateKeyAlice,
+        message
+      );
+      var decrypted = testServices.crypto.asymmetricDecrypt(
+        generatedPublicKeyAlice,
+        generatedPrivateKeyBob,
+        encrypted
+      );
 
-  it('should serialize and deserialize a keypair', function (callback) {
+      if (message == encrypted) throw new Error('encrypted data matches secret message');
 
-    var keyPair = testServices.crypto.createKeyPair();
-    var keyPairSerialized = testServices.crypto.serializeKeyPair(keyPair);
-    var keyPairDeserialized = testServices.crypto.deserializeKeyPair(keyPairSerialized);
+      if (message != decrypted) throw new Error('decrypted data does not match secret message');
 
-    expect(typeof keyPairSerialized).to.be('string');
-    expect(keyPairDeserialized.publicKey.toString()).to.be(keyPair.publicKey.toString());
-    expect(keyPairDeserialized.privateKey.toString()).to.be(keyPair.privateKey.toString());
+      callback();
+    });
 
-    callback();
-
-  });
-
-  it('should encrypt and decrypt data using the security layer', function (callback) {
-    var message = 'this is a secret';
-
-    var encrypted = testServices.crypto.asymmetricEncrypt(generatedPublicKeyBob, generatedPrivateKeyAlice, message);
-    var decrypted = testServices.crypto.asymmetricDecrypt(generatedPublicKeyAlice, generatedPrivateKeyBob, encrypted);
-
-    if (message == encrypted)
-      throw new Error('encrypted data matches secret message');
-
-    if (message != decrypted)
-      throw new Error('decrypted data does not match secret message');
-
-    callback();
-
-  });
-
-  it('should encrypt and decrypt data using symmetric hashing in the security layer', function (callback) {
-
-    var message = 'this is a secret';
-    var hashed = testServices.crypto.generateHash(message, function (e, hash) {
-      if (e) return callback(e);
-
-      var verified = testServices.crypto.verifyHash(message, hash, function (e, verified) {
-
+    it('should encrypt and decrypt data using symmetric hashing in the security layer', function(callback) {
+      var message = 'this is a secret';
+      var hashed = testServices.crypto.generateHash(message, function(e, hash) {
         if (e) return callback(e);
-        expect(verified).to.be(true);
-        callback();
 
+        var verified = testServices.crypto.verifyHash(message, hash, function(e, verified) {
+          if (e) return callback(e);
+          expect(verified).to.be(true);
+          callback();
+        });
       });
     });
-  });
-});
+  }
+);

@@ -5,504 +5,485 @@ var Happn = require('../../..'),
   shortid = require('shortid'),
   Promise = require('bluebird');
 
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3),  function () {
+describe(
+  require('../../__fixtures/utils/test_helper')
+    .create()
+    .testName(__filename, 3),
+  function() {
+    var serviceInstance;
+    var clientInstance1;
+    var clientInstance2;
 
-  var serviceInstance;
-  var clientInstance1;
-  var clientInstance2;
+    var CONSISTENCY = Happn.constants.CONSISTENCY;
 
-  var CONSISTENCY = Happn.constants.CONSISTENCY;
+    afterEach('stop the client 1', function(done) {
+      if (clientInstance1) clientInstance1.disconnect(done);
+      else done();
+    });
 
-  afterEach('stop the client 1', function (done) {
-    if (clientInstance1) clientInstance1.disconnect(done);
-    else done();
-  });
+    afterEach('stop the client 2', function(done) {
+      if (clientInstance2) clientInstance2.disconnect(done);
+      else done();
+    });
 
-  afterEach('stop the client 2', function (done) {
-    if (clientInstance2) clientInstance2.disconnect(done);
-    else done();
-  });
+    afterEach('stop the server', function(done) {
+      if (serviceInstance) serviceInstance.stop(done);
+      else done();
+    });
 
-  afterEach('stop the server', function (done) {
-    if (serviceInstance) serviceInstance.stop(done);
-    else done();
-  });
+    it('does a set with a publish, deferred consistency, picks up publication log from the onPublished event handler', function(done) {
+      var clientConfig = {};
 
-  it('does a set with a publish, deferred consistency, picks up publication log from the onPublished event handler', function (done) {
-
-    var clientConfig = {};
-
-    var config = {
-      services: {
-        subscription: {
-          config: {}
+      var config = {
+        services: {
+          subscription: {
+            config: {}
+          }
         }
-      }
-    };
+      };
 
-    var ran1 = false,
-      ran2 = false;
+      var ran1 = false,
+        ran2 = false;
 
-    var subscription1, subscription2;
+      var subscription1, subscription2;
 
-    service.create(config)
-      .then(function (instance) {
-        serviceInstance = instance;
-        return Happn.client.create(clientConfig);
-      })
-      .then(function (client) {
+      service
+        .create(config)
+        .then(function(instance) {
+          serviceInstance = instance;
+          return Happn.client.create(clientConfig);
+        })
+        .then(function(client) {
+          clientInstance1 = client;
+          return Happn.client.create(clientConfig);
+        })
+        .then(function(client) {
+          clientInstance2 = client;
 
-        clientInstance1 = client;
-        return Happn.client.create(clientConfig);
-      })
-      .then(function (client) {
-
-        clientInstance2 = client;
-
-        return clientInstance1.on('/test/path/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran1 = true;
-          }
-        });
-      })
-      .then(function (subscription) {
-
-        subscription1 = subscription;
-
-        return clientInstance2.on('/test/path/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran2 = true;
-          }
-        });
-      })
-      .then(function (subscription) {
-
-        subscription2 = subscription;
-
-        return new Promise(function (resolve, reject) {
-
-          clientInstance1.set('/test/path/1', {
-            test: 'data'
-          }, {
-            consistency: CONSISTENCY.DEFERRED,
-            onPublished: function (e, results) {
-
-              expect(Object.keys(clientInstance2.state.ackHandlers).length == 0).to.be(true);
-
-              if (e) return reject(e);
-              resolve(results);
+          return clientInstance1.on('/test/path/*', {
+            meta: {
+              publish: true
+            },
+            onPublished: function(data) {
+              ran1 = true;
             }
-          }, function (e) {
-            if (e) return reject(e);
           });
-        });
-      })
-      .then(function (results) {
+        })
+        .then(function(subscription) {
+          subscription1 = subscription;
 
-        expect(results.queued).to.be(2);
-        expect(results.successful).to.be(2);
-
-        //TODO: test unsubscribe
-
-        done();
-      })
-      .catch(done);
-
-  });
-
-  it('does a set with a publish, transactional (default) consistency publishResults:true, picks up publication log the set results meta', function (done) {
-
-    var clientConfig = {};
-
-    var config = {
-      services: {
-        subscription: {
-          config: {}
-        }
-      }
-    };
-
-    var ran1 = false,
-      ran2 = false;
-
-    var subscription1, subscription2;
-
-    service.create(config)
-      .then(function (instance) {
-        serviceInstance = instance;
-        return Happn.client.create(clientConfig);
-      })
-      .then(function (client) {
-
-        clientInstance1 = client;
-        return Happn.client.create(clientConfig);
-      })
-      .then(function (client) {
-
-        clientInstance2 = client;
-
-        return clientInstance1.on('/test/path/transactional/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran1 = true;
-          }
-        });
-      })
-      .then(function (subscription) {
-
-        subscription1 = subscription;
-
-        return clientInstance2.on('/test/path/transactional/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran2 = true;
-          }
-        });
-      })
-      .then(function (subscription) {
-
-        subscription2 = subscription;
-
-        return new Promise(function (resolve, reject) {
-
-          clientInstance1.set('/test/path/transactional/1', {
-            test: 'data'
-          }, {
-            consistency: CONSISTENCY.TRANSACTIONAL,
-            publishResults: true
-          }, function (e, response) {
-            if (e) return reject(e);
-            else resolve(response);
+          return clientInstance2.on('/test/path/*', {
+            meta: {
+              publish: true
+            },
+            onPublished: function(data) {
+              ran2 = true;
+            }
           });
-        });
-      })
-      .then(function (results) {
+        })
+        .then(function(subscription) {
+          subscription2 = subscription;
 
-        expect(results._meta.publishResults.queued).to.be(2);
-        expect(results._meta.publishResults.successful).to.be(2);
-
-        //TODO: test unsubscribe
-
-        done();
-      })
-      .catch(done);
-
-  });
-
-  it('does a set with a publish, deferred consistency, times the publication out', function (done) {
-
-    this.timeout(10000);
-
-    var clientConfig = {};
-
-    var config = {
-      services: {
-        subscription: {
-          config: {}
-        }
-      }
-    };
-
-    var ran1 = false,
-      ran2 = false;
-
-    var subscription1, subscription2;
-
-    var oldPerformPublication;
-
-    service.create(config)
-
-      .then(function (instance) {
-
-        serviceInstance = instance;
-
-        serviceInstance.services.publisher.publication = {
-          create: function(){
-            return {
-              publish:function(callback){
-
+          return new Promise(function(resolve, reject) {
+            clientInstance1.set(
+              '/test/path/1',
+              {
+                test: 'data'
               },
-              options:{
-                consistency:CONSISTENCY.DEFERRED
+              {
+                consistency: CONSISTENCY.DEFERRED,
+                onPublished: function(e, results) {
+                  expect(Object.keys(clientInstance2.state.ackHandlers).length == 0).to.be(true);
+
+                  if (e) return reject(e);
+                  resolve(results);
+                }
+              },
+              function(e) {
+                if (e) return reject(e);
+              }
+            );
+          });
+        })
+        .then(function(results) {
+          expect(results.queued).to.be(2);
+          expect(results.successful).to.be(2);
+
+          //TODO: test unsubscribe
+
+          done();
+        })
+        .catch(done);
+    });
+
+    it('does a set with a publish, transactional (default) consistency publishResults:true, picks up publication log the set results meta', function(done) {
+      var clientConfig = {};
+
+      var config = {
+        services: {
+          subscription: {
+            config: {}
+          }
+        }
+      };
+
+      var ran1 = false,
+        ran2 = false;
+
+      var subscription1, subscription2;
+
+      service
+        .create(config)
+        .then(function(instance) {
+          serviceInstance = instance;
+          return Happn.client.create(clientConfig);
+        })
+        .then(function(client) {
+          clientInstance1 = client;
+          return Happn.client.create(clientConfig);
+        })
+        .then(function(client) {
+          clientInstance2 = client;
+
+          return clientInstance1.on('/test/path/transactional/*', {
+            meta: {
+              publish: true
+            },
+            onPublished: function(data) {
+              ran1 = true;
+            }
+          });
+        })
+        .then(function(subscription) {
+          subscription1 = subscription;
+
+          return clientInstance2.on('/test/path/transactional/*', {
+            meta: {
+              publish: true
+            },
+            onPublished: function(data) {
+              ran2 = true;
+            }
+          });
+        })
+        .then(function(subscription) {
+          subscription2 = subscription;
+
+          return new Promise(function(resolve, reject) {
+            clientInstance1.set(
+              '/test/path/transactional/1',
+              {
+                test: 'data'
+              },
+              {
+                consistency: CONSISTENCY.TRANSACTIONAL,
+                publishResults: true
+              },
+              function(e, response) {
+                if (e) return reject(e);
+                else resolve(response);
+              }
+            );
+          });
+        })
+        .then(function(results) {
+          expect(results._meta.publishResults.queued).to.be(2);
+          expect(results._meta.publishResults.successful).to.be(2);
+
+          //TODO: test unsubscribe
+
+          done();
+        })
+        .catch(done);
+    });
+
+    it('does a set with a publish, deferred consistency, times the publication out', function(done) {
+      this.timeout(10000);
+
+      var clientConfig = {};
+
+      var config = {
+        services: {
+          subscription: {
+            config: {}
+          }
+        }
+      };
+
+      var ran1 = false,
+        ran2 = false;
+
+      var subscription1, subscription2;
+
+      var oldPerformPublication;
+
+      service
+        .create(config)
+
+        .then(function(instance) {
+          serviceInstance = instance;
+
+          serviceInstance.services.publisher.publication = {
+            create: function() {
+              return {
+                publish: function(callback) {},
+                options: {
+                  consistency: CONSISTENCY.DEFERRED
+                }
+              };
+            }
+          };
+
+          return Happn.client.create(clientConfig);
+        })
+        .then(function(client) {
+          clientInstance1 = client;
+          return Happn.client.create(clientConfig);
+        })
+        .then(function(client) {
+          clientInstance2 = client;
+
+          return clientInstance1.on('/test/path/*', {
+            meta: {
+              publish: true
+            },
+            onPublished: function(data) {
+              ran1 = true;
+            }
+          });
+        })
+        .then(function(subscription) {
+          subscription1 = subscription;
+
+          return clientInstance2.on('/test/path/*', {
+            meta: {
+              publish: true
+            },
+            onPublished: function(data) {
+              ran2 = true;
+            }
+          });
+        })
+        .then(function(subscription) {
+          subscription2 = subscription;
+          setHappened = false;
+
+          clientInstance1.set(
+            '/test/path/1',
+            {
+              test: 'data'
+            },
+            {
+              consistency: CONSISTENCY.DEFERRED,
+
+              onPublishedTimeout: 5000,
+
+              onPublished: function(e, results) {
+                if (!e) return done(new Error('should have failed'));
+
+                expect(e.toString()).to.be('Error: publish timed out');
+
+                expect(setHappened).to.be(true);
+
+                done();
+              }
+            },
+            function(e) {
+              if (e) return done(e);
+              setHappened = true;
+            }
+          );
+        })
+        .catch(done);
+    });
+
+    it('does a set with a publish, acknowledged consistency, picks up publication log in the onPublished event handler', function(done) {
+      this.timeout(10000);
+
+      var clientConfig = {};
+
+      var config = {
+        services: {
+          subscription: {
+            config: {}
+          }
+        }
+      };
+
+      var ran1 = false,
+        ran2 = false;
+
+      var subscription1, subscription2;
+
+      service
+        .create(config)
+
+        .then(function(instance) {
+          serviceInstance = instance;
+          return Happn.client.create(clientConfig);
+        })
+
+        .then(function(client) {
+          clientInstance1 = client;
+          return Happn.client.create(clientConfig);
+        })
+
+        .then(function(client) {
+          clientInstance2 = client;
+
+          return clientInstance1.on('/test/path/acknowledged/*', {
+            meta: {
+              publish: true
+            },
+            onPublished: function(data) {
+              ran1 = true;
+            }
+          });
+        })
+
+        .then(function(subscription) {
+          subscription1 = subscription;
+
+          return clientInstance2.on('/test/path/acknowledged/*', {
+            meta: {
+              publish: true
+            },
+            onPublished: function(data) {
+              ran2 = true;
+            }
+          });
+        })
+
+        .then(function(subscription) {
+          subscription2 = subscription;
+
+          return new Promise(function(resolve, reject) {
+            clientInstance1.set(
+              '/test/path/acknowledged/1',
+              {
+                test: 'data'
+              },
+              {
+                consistency: CONSISTENCY.ACKNOWLEDGED,
+
+                onPublished: function(e, results) {
+                  if (e) return reject(e);
+
+                  resolve(results);
+                }
+              },
+              function(e) {
+                if (e) return reject(e);
+              }
+            );
+          });
+        })
+
+        .then(function(results) {
+          expect(results.queued).to.be(2);
+          expect(results.successful).to.be(2);
+          expect(results.acknowledged).to.be(2);
+
+          //TODO: test unsubscribe
+
+          done();
+        })
+        .catch(done);
+    });
+
+    it('does a set with a publish, acknowledged consistency, times one of the acknowledgements out', function(done) {
+      this.timeout(10000);
+
+      var clientConfig = {};
+
+      var config = {
+        services: {
+          subscription: {
+            config: {}
+          },
+          publisher: {
+            config: {
+              publicationOptions: {
+                acknowledgeTimeout: 2000
               }
             }
           }
         }
+      };
 
-        return Happn.client.create(clientConfig);
-      })
-      .then(function (client) {
+      var ran1 = false,
+        ran2 = false;
 
-        clientInstance1 = client;
-        return Happn.client.create(clientConfig);
-      })
-      .then(function (client) {
+      var subscription1, subscription2;
 
-        clientInstance2 = client;
+      service
+        .create(config)
 
-        return clientInstance1.on('/test/path/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran1 = true;
-          }
-        });
-      })
-      .then(function (subscription) {
+        .then(function(instance) {
+          serviceInstance = instance;
 
-        subscription1 = subscription;
+          return Happn.client.create(clientConfig);
+        })
+        .then(function(client) {
+          clientInstance1 = client;
+          return Happn.client.create(clientConfig);
+        })
+        .then(function(client) {
+          clientInstance2 = client;
 
-        return clientInstance2.on('/test/path/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran2 = true;
-          }
-        });
-      })
-      .then(function (subscription) {
+          clientInstance2.__acknowledge = function(message, callback) {
+            //so no ack reached the server
+            callback(message);
+          };
 
-        subscription2 = subscription;
-        setHappened = false;
-
-        clientInstance1.set('/test/path/1', {
-          test: 'data'
-        }, {
-
-          consistency: CONSISTENCY.DEFERRED,
-
-          onPublishedTimeout: 5000,
-
-          onPublished: function (e, results) {
-
-            if (!e) return done(new Error('should have failed'));
-
-            expect(e.toString()).to.be('Error: publish timed out');
-
-            expect(setHappened).to.be(true);
-
-            done();
-          }
-        }, function (e) {
-
-          if (e) return done(e);
-          setHappened = true;
-        });
-
-      })
-      .catch(done);
-
-  });
-
-  it('does a set with a publish, acknowledged consistency, picks up publication log in the onPublished event handler', function (done) {
-
-    this.timeout(10000);
-
-    var clientConfig = {};
-
-    var config = {
-      services: {
-        subscription: {
-          config: {}
-        }
-      }
-    };
-
-    var ran1 = false,
-      ran2 = false;
-
-    var subscription1, subscription2;
-
-    service.create(config)
-
-      .then(function (instance) {
-
-        serviceInstance = instance;
-        return Happn.client.create(clientConfig);
-      })
-
-      .then(function (client) {
-
-        clientInstance1 = client;
-        return Happn.client.create(clientConfig);
-      })
-
-      .then(function (client) {
-
-        clientInstance2 = client;
-
-        return clientInstance1.on('/test/path/acknowledged/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran1 = true;
-          }
-        });
-      })
-
-      .then(function (subscription) {
-
-        subscription1 = subscription;
-
-        return clientInstance2.on('/test/path/acknowledged/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran2 = true;
-          }
-        });
-      })
-
-      .then(function (subscription) {
-
-        subscription2 = subscription;
-
-        return new Promise(function (resolve, reject) {
-
-          clientInstance1.set('/test/path/acknowledged/1', {
-            test: 'data'
-          }, {
-
-            consistency: CONSISTENCY.ACKNOWLEDGED,
-
-            onPublished: function (e, results) {
-
-              if (e) return reject(e);
-
-              resolve(results);
+          return clientInstance1.on('/test/path/acknowledged_timed_out/*', {
+            meta: {
+              publish: true
+            },
+            onPublished: function(data) {
+              ran1 = true;
             }
-          }, function (e) {
-
-            if (e) return reject(e);
           });
-        });
-      })
+        })
+        .then(function(subscription) {
+          subscription1 = subscription;
 
-      .then(function (results) {
-
-        expect(results.queued).to.be(2);
-        expect(results.successful).to.be(2);
-        expect(results.acknowledged).to.be(2);
-
-        //TODO: test unsubscribe
-
-        done();
-      })
-      .catch(done);
-
-  });
-
-  it('does a set with a publish, acknowledged consistency, times one of the acknowledgements out', function (done) {
-
-    this.timeout(10000);
-
-    var clientConfig = {};
-
-    var config = {
-      services: {
-        subscription: {
-          config: {}
-        },
-        publisher: {
-          config: {
-            publicationOptions: {
-              acknowledgeTimeout: 2000
+          return clientInstance2.on('/test/path/acknowledged_timed_out/*', {
+            meta: {
+              publish: true
+            },
+            onPublished: function(data) {
+              ran2 = true;
             }
-          }
-        }
-      }
-    };
+          });
+        })
+        .then(function(subscription) {
+          subscription2 = subscription;
 
-    var ran1 = false,
-      ran2 = false;
+          clientInstance1.set(
+            '/test/path/acknowledged_timed_out/1',
+            {
+              test: 'data'
+            },
+            {
+              consistency: CONSISTENCY.ACKNOWLEDGED,
 
-    var subscription1, subscription2;
+              onPublishedTimeout: 5000,
 
-    service.create(config)
+              onPublished: function(e, results) {
+                if (!e) return done(new Error('should have failed'));
 
-      .then(function (instance) {
+                expect(e.toString()).to.be('Error: unacknowledged publication');
 
-        serviceInstance = instance;
-
-        return Happn.client.create(clientConfig);
-      })
-      .then(function (client) {
-
-        clientInstance1 = client;
-        return Happn.client.create(clientConfig);
-      })
-      .then(function (client) {
-
-        clientInstance2 = client;
-
-        clientInstance2.__acknowledge = function (message, callback) {
-          //so no ack reached the server
-          callback(message);
-        };
-
-        return clientInstance1.on('/test/path/acknowledged_timed_out/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran1 = true;
-          }
-        });
-      })
-      .then(function (subscription) {
-
-        subscription1 = subscription;
-
-        return clientInstance2.on('/test/path/acknowledged_timed_out/*', {
-          meta: {
-            publish: true
-          },
-          onPublished: function (data) {
-            ran2 = true;
-          }
-        });
-      })
-      .then(function (subscription) {
-
-        subscription2 = subscription;
-
-        clientInstance1.set('/test/path/acknowledged_timed_out/1', {
-          test: 'data'
-        }, {
-
-          consistency: CONSISTENCY.ACKNOWLEDGED,
-
-          onPublishedTimeout: 5000,
-
-          onPublished: function (e, results) {
-
-            if (!e) return done(new Error('should have failed'));
-
-            expect(e.toString()).to.be('Error: unacknowledged publication');
-
-            done();
-          }
-        }, function (e) {
-          if (e) return done(e);
-        });
-
-      })
-      .catch(done);
-
-  });
-
-});
+                done();
+              }
+            },
+            function(e) {
+              if (e) return done(e);
+            }
+          );
+        })
+        .catch(done);
+    });
+  }
+);

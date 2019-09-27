@@ -1,155 +1,155 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(
+  require('../../__fixtures/utils/test_helper')
+    .create()
+    .testName(__filename, 3),
+  function() {
+    var expect = require('expect.js');
+    var happn = require('../../../lib/index');
+    var service = happn.service;
 
-  var expect = require('expect.js');
-  var happn = require('../../../lib/index');
-  var service = happn.service;
+    this.timeout(120000);
 
-  this.timeout(120000);
+    function doRequest(path, token, query, callback, port) {
+      var request = require('request');
 
-  function doRequest(path, token, query, callback, port) {
+      if (!port) port = 55000;
 
-    var request = require('request');
+      if (path[0] != '/') path = '/' + path;
 
-    if (!port) port = 55000;
+      var options = {
+        url: 'http://127.0.0.1:' + port.toString() + path
+      };
 
-    if (path[0] != '/')
-      path = '/' + path;
+      if (token) {
+        if (!query)
+          options.headers = {
+            Cookie: ['happn_token=' + token]
+          };
+        else options.url += '?happn_token=' + token;
+      }
 
-    var options = {
-      url: 'http://127.0.0.1:' + port.toString() + path
-    };
-
-    if (token) {
-      if (!query)
-        options.headers = {
-          'Cookie': ['happn_token=' + token]
-        };
-      else
-        options.url += '?happn_token=' + token;
+      request(options, function(error, response, body) {
+        callback(body);
+      });
     }
 
-    request(options, function (error, response, body) {
-      callback(body);
-    });
+    var httpServer;
+    var connections = {};
 
-  }
+    before('it starts up a web server that uses port 55000', function(callback) {
+      var http = require('http');
 
-  var httpServer;
-  var connections = {};
+      httpServer = http
+        .createServer(function(req, res) {
+          res.writeHead(200, {
+            'Content-Type': 'text/plain'
+          });
+          res.end('TEST OUTPUT');
+        })
+        .listen(55000);
 
-  before('it starts up a web server that uses port 55000', function (callback) {
-
-    var http = require('http');
-
-    httpServer = http.createServer(function (req, res) {
-      res.writeHead(200, {
-        'Content-Type': 'text/plain'
+      httpServer.on('connection', function(conn) {
+        var key = conn.remoteAddress + ':' + conn.remotePort;
+        connections[key] = conn;
+        conn.on('close', function() {
+          delete connections[key];
+        });
       });
-      res.end('TEST OUTPUT');
-    }).listen(55000);
 
-    httpServer.on('connection', function (conn) {
-      var key = conn.remoteAddress + ':' + conn.remotePort;
-      connections[key] = conn;
-      conn.on('close', function () {
-        delete connections[key];
-      });
-    });
-
-    doRequest('/', null, null, function (body) {
-      expect(body).to.be('TEST OUTPUT');
-      callback();
-    });
-  });
-
-  var happnInstance;
-
-  before('should initialize the service without listening', function (callback) {
-
-    service.create({
-        deferListen: true
-      })
-
-      .then(function (happnInst) {
-        happnInstance = happnInst;
+      doRequest('/', null, null, function(body) {
+        expect(body).to.be('TEST OUTPUT');
         callback();
-      })
+      });
+    });
 
-      .catch(callback);
+    var happnInstance;
 
-  });
+    before('should initialize the service without listening', function(callback) {
+      service
+        .create({
+          deferListen: true
+        })
 
-  var intraProcClientInstance;
+        .then(function(happnInst) {
+          happnInstance = happnInst;
+          callback();
+        })
 
-  it('should connect to the service with an intra-proc client, perform a set, get and remove', function (callback) {
+        .catch(callback);
+    });
 
-    happnInstance.services.session.localClient(function (e, instance) {
+    var intraProcClientInstance;
 
-      if (e) return callback(e);
-
-      intraProcClientInstance = instance;
-
-      intraProcClientInstance.set('/test/', {
-        "test": "data"
-      }, function (e, response) {
+    it('should connect to the service with an intra-proc client, perform a set, get and remove', function(callback) {
+      happnInstance.services.session.localClient(function(e, instance) {
         if (e) return callback(e);
 
-        intraProcClientInstance.get('/test/', function (e, response) {
-          if (e) return callback(e);
+        intraProcClientInstance = instance;
 
-          expect(response.test).to.be('data');
-
-          intraProcClientInstance.remove('/test/', function (e, response) {
+        intraProcClientInstance.set(
+          '/test/',
+          {
+            test: 'data'
+          },
+          function(e, response) {
             if (e) return callback(e);
-            expect(response.removed).to.be(1);
-            callback();
-          });
-        });
+
+            intraProcClientInstance.get('/test/', function(e, response) {
+              if (e) return callback(e);
+
+              expect(response.test).to.be('data');
+
+              intraProcClientInstance.remove('/test/', function(e, response) {
+                if (e) return callback(e);
+                expect(response.removed).to.be(1);
+                callback();
+              });
+            });
+          }
+        );
       });
     });
-  });
 
-  it('should stop the service, even though it hasnt started listening', function (callback) {
-    happnInstance.stop(callback);
-  });
-
-  it('should initialize the service without listening again', function (callback) {
-    service.create({
-        deferListen: true
-      })
-      .then(function (happnInst) {
-        happnInstance = happnInst;
-        callback();
-      })
-      .catch(callback);
-  });
-
-  it('should try and start the service, but fail with EADDRINUSE, then kill the http server, then successfully retry', function (callback) {
-    happnInstance.listen(function (e) {
-      //cannot listen
-      expect(e.toString()).to.be("Error: timeout");
-      for (var key in connections) {
-        connections[key].destroy();
-      }
-      httpServer.close();
-      setTimeout(function () {
-        happnInstance.listen(function (e) {
-          expect(e).to.be(null);
-
-          doRequest('version', null, null, function (body) {
-            expect(body.version).to.not.be(null);
-            callback();
-          });
-        });
-      }, 2000);
+    it('should stop the service, even though it hasnt started listening', function(callback) {
+      happnInstance.stop(callback);
     });
-  });
 
-  after(function (done) {
+    it('should initialize the service without listening again', function(callback) {
+      service
+        .create({
+          deferListen: true
+        })
+        .then(function(happnInst) {
+          happnInstance = happnInst;
+          callback();
+        })
+        .catch(callback);
+    });
 
-    if (happnInstance)
-      happnInstance.stop(done);
-    else done();
-  });
+    it('should try and start the service, but fail with EADDRINUSE, then kill the http server, then successfully retry', function(callback) {
+      happnInstance.listen(function(e) {
+        //cannot listen
+        expect(e.toString()).to.be('Error: timeout');
+        for (var key in connections) {
+          connections[key].destroy();
+        }
+        httpServer.close();
+        setTimeout(function() {
+          happnInstance.listen(function(e) {
+            expect(e).to.be(null);
 
-});
+            doRequest('version', null, null, function(body) {
+              expect(body.version).to.not.be(null);
+              callback();
+            });
+          });
+        }, 2000);
+      });
+    });
+
+    after(function(done) {
+      if (happnInstance) happnInstance.stop(done);
+      else done();
+    });
+  }
+);

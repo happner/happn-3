@@ -1,103 +1,106 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(
+  require('../../__fixtures/utils/test_helper')
+    .create()
+    .testName(__filename, 3),
+  function() {
+    var expect = require('expect.js');
+    var Happn = require('../../../lib/index');
+    var server, client;
 
-  var expect = require('expect.js');
-  var Happn = require('../../../lib/index');
-  var server, client;
+    var startServer = function(done) {
+      Happn.service
+        .create()
+        .then(function(_server) {
+          server = _server;
+        })
+        .then(done)
+        .catch(done);
+    };
 
-  var startServer = function (done) {
-    Happn.service.create()
-      .then(function (_server) {
-        server = _server;
-      })
-      .then(done).catch(done);
-  };
+    before('start server', startServer);
 
-  before('start server', startServer);
+    before('start client', function(done) {
+      Happn.client
+        .create()
+        .then(function(_client) {
+          client = _client;
+        })
+        .then(done)
+        .catch(done);
+    });
 
-  before('start client', function (done) {
-    Happn.client.create()
-      .then(function (_client) {
-        client = _client;
-      })
-      .then(done).catch(done);
-  });
+    after('stop server', function(done) {
+      if (!server) return done();
+      server.stop(
+        {
+          reconnect: false
+        },
+        done
+      );
+    });
 
-  after('stop server', function (done) {
-    if (!server) return done();
-    server.stop({
-      reconnect: false
-    }, done);
-  });
+    it('can disconnect client when server offline', function(done) {
+      // ...and stops the reconnect attempts
 
-  it('can disconnect client when server offline', function (done) {
-    // ...and stops the reconnect attempts
+      this.timeout(30 * 1000);
 
-    this.timeout(30 * 1000);
+      if (!client) return done(new Error('missing client'));
 
-    if (!client) return done(new Error('missing client'));
-
-    client.on('/test/subscription', function () {}, function (e) {
-
-      if (e) return done(e);
-
-      var disconnectCalled = false;
-      var reconnectCount = 0;
-
-      client.socket.on('reconnect scheduled', function () {
-
-        reconnectCount++;
-
-        if (disconnectCalled) return;
-
-        disconnectCalled = true;
-
-        var reconnected = false;
-
-        client.socket.on('reconnected', function () {
-
-          reconnected = true;
-
-        });
-
-        client.disconnect(function (e) {
-
+      client.on(
+        '/test/subscription',
+        function() {},
+        function(e) {
           if (e) return done(e);
 
-          setTimeout(function () {
+          var disconnectCalled = false;
+          var reconnectCount = 0;
 
-            // should only have first reconnect
-            expect(reconnectCount).to.eql(1);
+          client.socket.on('reconnect scheduled', function() {
+            reconnectCount++;
 
-            // start server to confirm no reconnect happens
-            startServer(function (e) {
+            if (disconnectCalled) return;
 
-              if (e) return done(e);
+            disconnectCalled = true;
 
-              setTimeout(function () {
+            var reconnected = false;
 
-                expect(reconnected).to.eql(false);
-
-                done();
-
-              }, 2000);
-
+            client.socket.on('reconnected', function() {
+              reconnected = true;
             });
 
-          }, 1000);
+            client.disconnect(function(e) {
+              if (e) return done(e);
 
-        });
+              setTimeout(function() {
+                // should only have first reconnect
+                expect(reconnectCount).to.eql(1);
 
-      });
+                // start server to confirm no reconnect happens
+                startServer(function(e) {
+                  if (e) return done(e);
 
-      server.stop({
-        reconnect: true
-      }, function (e) {
+                  setTimeout(function() {
+                    expect(reconnected).to.eql(false);
 
-        if (e) return done(e);
+                    done();
+                  }, 2000);
+                });
+              }, 1000);
+            });
+          });
 
-        server = undefined;
+          server.stop(
+            {
+              reconnect: true
+            },
+            function(e) {
+              if (e) return done(e);
 
-      });
+              server = undefined;
+            }
+          );
+        }
+      );
     });
-  });
-});
+  }
+);
