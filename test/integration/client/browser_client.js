@@ -39,7 +39,9 @@ describe(
 
       try {
         fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
 
       var clientCode = Happn.packager.browserClient({
         contentsOnly: true,
@@ -87,7 +89,9 @@ describe(
 
       try {
         fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
 
       var clientCode = Happn.packager.browserClient({
         contentsOnly: true,
@@ -127,7 +131,9 @@ describe(
 
       try {
         fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
 
       var clientCode = Happn.packager.browserClient({
         contentsOnly: true,
@@ -148,7 +154,9 @@ describe(
 
       try {
         fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
 
       clientCode = Happn.packager.browserClient({
         contentsOnly: true,
@@ -164,7 +172,9 @@ describe(
 
       try {
         fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
 
       process.env.NODE_ENV = 'test';
 
@@ -179,7 +189,9 @@ describe(
 
       try {
         fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
 
       var Middleware = require('../../../lib/services/connect/middleware/client');
       var middleware = new Middleware();

@@ -32,7 +32,9 @@ describe(
       try {
         try {
           require('fs').unlinkSync(__dirname + '/tmp/1_eventemitter_sanity.json');
-        } catch (e) {}
+        } catch (e) {
+          // ignore
+        }
         service.create(config, function(e, happnInst) {
           if (e) return callback(e);
 

@@ -29,7 +29,6 @@
     "no-useless-return": "error",
     "prettier/prettier": "error",
     "no-unused-vars": "off",
-    "no-undef": "off",
-    "no-empty": "off"
+    "no-undef": "off"
   }
 }
