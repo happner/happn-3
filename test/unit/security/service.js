@@ -537,7 +537,7 @@ describe(
 
       //loginParameters, callback
       clientInstance.__prepareLogin(loginParameters, function(e, prepared) {
-        if (e) return callback(e);
+        if (e) return done(e);
 
         expect(prepared.username).to.be(clientInstance.options.username);
         expect(prepared.password).to.be('happnTestPWD');
@@ -593,11 +593,11 @@ describe(
       };
 
       clientInstance.__ensureCryptoLibrary(function(e) {
-        if (e) return callback(e);
+        if (e) return done(e);
 
         //loginParameters, callback
         clientInstance.__prepareLogin(loginParameters, function(e, prepared) {
-          if (e) return callback(e);
+          if (e) return done(e);
 
           var verificationResult = crypto.verify(
             nonce,
@@ -612,7 +612,7 @@ describe(
       });
     });
 
-    it('should test the login function of the happn client, passing in a digest', function() {
+    it('should test the login function of the happn client, passing in a digest', function(done) {
       var happn = require('../../../lib/index');
       var happn_client = happn.client;
 
@@ -1590,7 +1590,7 @@ describe(
       });
 
       clientInstance.__ensureCryptoLibrary(function(e) {
-        if (e) return callback(e);
+        if (e) return done(e);
 
         mockServices(function(e, happnMock) {
           var mockSession = {
@@ -1633,7 +1633,7 @@ describe(
       });
 
       clientInstance.__ensureCryptoLibrary(function(e) {
-        if (e) return callback(e);
+        if (e) return done(e);
 
         mockServices(function(e, happnMock) {
           var mockSession = {
@@ -2069,6 +2069,7 @@ describe(
 
     it('tests resetSessionPermissions method - link-group', function(done) {
       this.timeout(5000);
+      let ended = false;
 
       getService(
         {
@@ -2136,6 +2137,7 @@ describe(
 
     it('tests resetSessionPermissions method - unlink-group', function(done) {
       this.timeout(5000);
+      let ended = false;
 
       getService(
         {
@@ -2262,6 +2264,7 @@ describe(
 
     it('tests resetSessionPermissions method - delete-group', function(done) {
       this.timeout(5000);
+      let ended = false;
 
       getService(
         {
@@ -2328,6 +2331,7 @@ describe(
 
     it('tests resetSessionPermissions method - upsert-group', function(done) {
       this.timeout(5000);
+      let ended = false;
 
       getService(
         {
@@ -2400,6 +2404,7 @@ describe(
 
     it('tests resetSessionPermissions method - permission-removed', function(done) {
       this.timeout(5000);
+      let ended = false;
 
       getService(
         {
@@ -2472,6 +2477,7 @@ describe(
 
     it('tests resetSessionPermissions method - permission-upserted', function(done) {
       this.timeout(5000);
+      let ended = false;
 
       getService(
         {
@@ -2544,6 +2550,7 @@ describe(
 
     it('tests resetSessionPermissions method - upsert-user', function(done) {
       this.timeout(5000);
+      let ended = false;
 
       getService(
         {

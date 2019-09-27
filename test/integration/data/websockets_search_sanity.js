@@ -259,7 +259,7 @@ describe(
           );
         },
         function(e) {
-          if (e) return callback(e);
+          if (e) return done(e);
 
           var options = {
             sort: {
@@ -291,7 +291,7 @@ describe(
               expect(latestResult._meta.created).to.not.be(undefined);
 
               searchClient.get('movie/family/*', function(e, result) {
-                if (e) return callback(e);
+                if (e) return done(e);
 
                 for (var resultItemIndex in result) {
                   //if (resultItemIndex == '_meta') continue;
@@ -333,7 +333,7 @@ describe(
           );
         },
         function(e) {
-          if (e) return callback(e);
+          if (e) return done(e);
 
           var options = {
             sort: {
@@ -365,7 +365,7 @@ describe(
               expect(latestResult._meta.created).to.not.be(undefined);
 
               searchClient.get('movie/family/*', function(e, result) {
-                if (e) return callback(e);
+                if (e) return done(e);
 
                 for (var resultItemIndex in result) {
                   if (resultItemIndex == '_meta') continue;

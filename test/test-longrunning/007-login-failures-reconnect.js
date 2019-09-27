@@ -101,7 +101,7 @@ describe(require('path').basename(__filename), function() {
   }
 
   function stopService() {
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
       if (!server1) resolve();
 
       server1.stop(function(e) {

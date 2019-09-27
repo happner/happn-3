@@ -1704,7 +1704,7 @@ describe(
           hits++;
         },
         function(e, eventId) {
-          if (e) return callback(e);
+          if (e) return done(e);
 
           currentEventId = eventId;
 

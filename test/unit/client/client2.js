@@ -90,7 +90,7 @@ describe(
     it('tests the __prepareConnectionOptions function.', function(done) {
       var happnClient = mockHappnClient();
 
-      opts = happnClient.__prepareConnectionOptions({}, {});
+      const opts = happnClient.__prepareConnectionOptions({}, {});
       expect(opts).to.eql({
         host: '127.0.0.1',
         port: 55000,
@@ -108,7 +108,7 @@ describe(
         username: 'Janco',
         password: 'private'
       };
-      opts = happnClient.__prepareConnectionOptions({}, defaults);
+      const opts = happnClient.__prepareConnectionOptions({}, defaults);
       expect(opts).to.eql({
         allowSelfSignedCerts: true,
         username: 'Janco',
@@ -378,14 +378,14 @@ describe(
       };
       happnClient.__ensureCryptoLibrary();
 
-      encryptedLogin = happnClient.__encryptLogin(parameters, pubKey);
+      const encryptedLogin = happnClient.__encryptLogin(parameters, pubKey);
 
       expect(encryptedLogin.publicKey).to.eql(pubKey);
       expect(encryptedLogin.loginType).to.eql('password');
       // encryptedLogin.encrypted returns a buffer
       // Had to test encrypt and decrypt together
       happnClient.serverInfo.publicKey = pubKey;
-      decryptedLogin = happnClient.__decryptLogin(encryptedLogin);
+      const decryptedLogin = happnClient.__decryptLogin(encryptedLogin);
       expect(decryptedLogin).to.eql(parameters);
       done();
     });
@@ -405,7 +405,7 @@ describe(
         },
         sessionId: 1
       };
-      newMessage = happnClient.__encryptPayload(message);
+      const newMessage = happnClient.__encryptPayload(message);
 
       var re = /^[a-zA-Z0-9]*$/;
       expect(newMessage.sessionId).to.eql(1);
@@ -428,7 +428,7 @@ describe(
 
       happnClient.__ensureCryptoLibrary();
       happnClient.session.secret = '990413ee0e4911e9ab14d663bd873d94';
-      newMessage = happnClient.__decryptPayload(message);
+      const newMessage = happnClient.__decryptPayload(message);
       expect(newMessage).to.eql(message2);
       done();
     });
@@ -451,7 +451,7 @@ describe(
     it('tests the __payloadToError function.', function(done) {
       var happnClient = mockHappnClient();
       var payload = 'This is an error';
-      e = happnClient.__payloadToError(payload);
+      const e = happnClient.__payloadToError(payload);
       expect(e.toString()).to.eql('Error: This is an error');
       done();
     });
@@ -461,7 +461,7 @@ describe(
       var payload = {
         message: 'This is an error'
       };
-      e = happnClient.__payloadToError(payload);
+      const e = happnClient.__payloadToError(payload);
       expect(e.toString()).to.eql('Error: This is an error');
       done();
     });
@@ -522,7 +522,7 @@ describe(
 
       happnClient.__ensureCryptoLibrary();
 
-      a = happnClient.__signNonce(':::32 Bit buffer???');
+      const a = happnClient.__signNonce(':::32 Bit buffer???');
       console.log(a);
       done();
     });
@@ -560,7 +560,7 @@ describe(
       };
 
       happnClient.__prepareLogin(loginParameters, function(e, data) {
-        decryptedLogin = happnClient.__decryptLogin(data);
+        const decryptedLogin = happnClient.__decryptLogin(data);
         expect(decryptedLogin).to.eql(loginParameters);
         done();
       });
@@ -1013,7 +1013,7 @@ describe(
     });
 
     it('tests that the __attachpublishedAck function will callback with an error if timed out  ', function(done) {
-      options = {
+      const options = {
         onPublished: function(e, results) {
           expect(e.toString()).to.eql('Error: publish timed out');
           done();
@@ -1154,7 +1154,7 @@ describe(
         }
       };
       happnClient.__ensureCryptoLibrary();
-      encryptedLogin = happnClient.__encryptLogin(parameters, pubKey);
+      const encryptedLogin = happnClient.__encryptLogin(parameters, pubKey);
       encryptedLogin._meta = {
         type: 'login'
       };
@@ -1278,7 +1278,7 @@ describe(
         'MyEvent|1'
       );
       var response = 'Hello';
-      meta = {
+      const meta = {
         eventId: 'MyEvent|1'
       };
       happnClient.handle_response_array(null, response, meta);
@@ -1878,7 +1878,7 @@ describe(
       var happnClient = mockHappnClient();
       happnClient.__performSystemRequest = function(action, data, options, callback) {
         expect(action).to.eql('disconnect');
-        cb();
+        // TODO: needs work to pass before done() is called
       };
 
       happnClient.socket = null;

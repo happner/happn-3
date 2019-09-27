@@ -193,8 +193,6 @@ describe(
             expect(result.custom_data.customNumber == subGroup.custom_data.customNumber).to.be(
               true
             );
-
-            addedSubGroup = result;
             callback();
           }
         );

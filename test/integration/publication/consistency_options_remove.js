@@ -232,6 +232,7 @@ describe(
 
       var ran1 = false,
         ran2 = false;
+      var setHappened = false;
 
       var subscription1, subscription2;
 
@@ -296,7 +297,7 @@ describe(
             },
             {},
             function(e) {
-              if (e) return reject(e);
+              if (e) return done(e);
 
               clientInstance1.remove(
                 '/test/path/deferred/1',
@@ -440,6 +441,7 @@ describe(
 
       var ran1 = false,
         ran2 = false;
+      var setHappened = false;
 
       var subscription1, subscription2;
 
@@ -494,7 +496,7 @@ describe(
             },
             {},
             function(e) {
-              if (e) return reject(e);
+              if (e) return done(e);
 
               clientInstance1.remove(
                 '/test/path/acknowledged_timed_out/1',

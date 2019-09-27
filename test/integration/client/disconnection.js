@@ -18,7 +18,7 @@ describe(
     before('should initialize the services', function(callback) {
       this.timeout(10000);
 
-      test_id = Date.now() + '_' + require('shortid').generate();
+      const test_id = Date.now() + '_' + require('shortid').generate();
 
       try {
         service.create(

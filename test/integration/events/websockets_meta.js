@@ -12,6 +12,7 @@ describe(
     var default_timeout = 10000;
     var happnInstance = null;
     var publisherclient;
+    var listenerclient;
 
     after(function(done) {
       this.timeout(10000);
@@ -50,10 +51,7 @@ describe(
       }
     });
 
-    /*
-   We are initializing 2 clients to test saving data against the database, one client will push data into the
-   database whilst another listens for changes.
-   */
+    /* We are initializing 2 clients to test saving data against the database, one client will push data into the database whilst another listens for changes. */
     before('should initialize the clients', function(callback) {
       this.timeout(default_timeout);
 

@@ -9,14 +9,13 @@ describe(
     var service = happn.service;
     var happn_client = old_happn.client;
     var async = require('async');
+    const test_id = Date.now() + '_' + require('shortid').generate();
 
     var happnInstance = null;
 
     this.timeout(5000);
 
     before('should initialize the service', function(callback) {
-      test_id = Date.now() + '_' + require('shortid').generate();
-
       try {
         service.create(function(e, happnInst) {
           if (e) return callback(e);
@@ -873,7 +872,7 @@ describe(
           hits++;
         },
         function(e, eventId) {
-          if (e) return callback(e);
+          if (e) return done(e);
 
           currentEventId = eventId;
 

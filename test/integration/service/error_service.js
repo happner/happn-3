@@ -1,4 +1,4 @@
-expect = require('expect.js');
+const expect = require('expect.js');
 
 describe(
   require('../../__fixtures/utils/test_helper')

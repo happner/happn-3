@@ -501,12 +501,13 @@ describe(
       ).to.eql([{ test: 'data', _meta: 'test-meta' }, { test: 'data-1', _meta: 'test-meta-1' }]);
     });
 
-    it('tests the __encryptMessage function', function() {
+    it('tests the __encryptMessage function', function(done) {
       mockProtocol(function(e, protocol) {
         if (e) return done(e);
         expect(protocol.__encryptMessage({ test: 'message' }, 'secret')).to.eql(
           '21d200969337ede62f5d82578a737328a574'
         );
+        done();
       });
     });
 

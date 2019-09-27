@@ -48,7 +48,7 @@ describe(
       };
       var count = 0;
       var arr = [];
-      for (i = 0; i < 1000000; i++) {
+      for (let i = 0; i < 1000000; i++) {
         arr.push(i);
       }
       async.each(

@@ -258,7 +258,7 @@ describe(
             })
 
             .then(function(clientInstance) {
-              admClient1 = clientInstance;
+              const admClient1 = clientInstance;
 
               admClient1.on(
                 '/an/encrypted/payload/target/event',

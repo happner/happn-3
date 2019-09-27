@@ -1527,7 +1527,7 @@ describe(
                 '/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/catch_all',
                 null,
                 function(e, del_result) {
-                  if (e) return done(e);
+                  if (e) return callback(e);
                 }
               );
             }
@@ -1958,7 +1958,7 @@ describe(
           hits++;
         },
         function(e, eventId) {
-          if (e) return callback(e);
+          if (e) return done(e);
 
           currentEventId = eventId;
 

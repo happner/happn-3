@@ -212,6 +212,7 @@ describe(
 
       var ran1 = false,
         ran2 = false;
+      var setHappened = false;
 
       var subscription1, subscription2;
 

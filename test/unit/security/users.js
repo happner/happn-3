@@ -118,7 +118,7 @@ describe(
             users,
             function(user, userCB) {
               happn.services.security.users.upsertUser(user, function(e, upsertedUser) {
-                if (e) return groupCB(e);
+                if (e) return userCB(e);
 
                 upsertedUsers.push(upsertedUser);
 

@@ -1,4 +1,4 @@
-Happn = require('../../..');
+const Happn = require('../../..');
 var expect = require('expect.js');
 
 describe(

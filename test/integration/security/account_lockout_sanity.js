@@ -91,7 +91,7 @@ describe(
     }
 
     function stopService() {
-      return new Promise(function(resolve) {
+      return new Promise(function(resolve, reject) {
         if (!server1) resolve();
 
         var stopService = function(clientE) {

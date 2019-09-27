@@ -284,7 +284,7 @@ describe('longrunning/001_db_compaction', function() {
   it('starts a db with 2 files, does some random activity, compacts the db, checks that both files have been compacted', function(callback) {
     getService(serviceConfig4, function(e, serviceInstance) {
       if (e) return callback(e);
-      serviceInstance4 = serviceInstance;
+      const serviceInstance4 = serviceInstance;
       testServices.push(serviceInstance4);
       getClient(clientConfig4, function(e, client) {
         if (e) return callback(e);

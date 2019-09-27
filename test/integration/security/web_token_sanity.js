@@ -377,7 +377,7 @@ describe(
         };
 
         happnInstance.services.security.users.upsertGroup(testGroup, {}, function(e, group) {
-          if (e) return done(e);
+          if (e) return callback(e);
           expect(group.permissions['/@HTTP/secure/route/test']).to.eql({
             actions: ['get']
           });
@@ -527,7 +527,7 @@ describe(
           overwrite: false
         },
         function(e, result) {
-          if (e) return done(e);
+          if (e) return callback(e);
           addedTestGroup1 = result;
 
           happnInstance.services.security.users.upsertUser(
@@ -536,14 +536,14 @@ describe(
               overwrite: false
             },
             function(e, result) {
-              if (e) return done(e);
+              if (e) return callback(e);
               addedTestuser1 = result;
 
               happnInstance.services.security.users.linkGroup(
                 addedTestGroup1,
                 addedTestuser1,
                 function(e) {
-                  if (e) return done(e);
+                  if (e) return callback(e);
 
                   happn.client
                     .create({
@@ -587,7 +587,7 @@ describe(
                     })
 
                     .catch(function(e) {
-                      done(e);
+                      callback(e);
                     });
                 }
               );

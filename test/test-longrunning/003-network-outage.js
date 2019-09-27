@@ -99,7 +99,9 @@ describe(filename, function() {
 
   ////////////////////////////////
 
-  var socketProxy = new SocketProxy((listen = 55000), (target = 49000));
+  const listen = 55000;
+  const target = 49000;
+  var socketProxy = new SocketProxy(listen, target);
 
   context('subscriptions', function() {
     it('subscriptions are resumed without duplication after network outage', function(done) {

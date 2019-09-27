@@ -44,7 +44,7 @@ describe(testName, function() {
       try {
         require('fs').unlinkSync(fileName);
       } catch (e) {
-        console.log('error unlining file: ' + filename);
+        console.log('error unlining file: ' + fileName);
       }
     });
   });

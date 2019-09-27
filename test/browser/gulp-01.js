@@ -47,7 +47,7 @@ gulp.task('default', async () => {
     }
   });
 
-  happnInstance2 = await serverHelper.createServer({
+  const happnInstance2 = await serverHelper.createServer({
     secure: true,
     port: 55002,
     services: {

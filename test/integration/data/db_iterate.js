@@ -76,6 +76,7 @@ describe(
     };
 
     var serviceInstance1;
+    var serviceInstance2;
 
     var client1;
     var client2;
