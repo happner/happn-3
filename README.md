@@ -1,9 +1,7 @@
-[![Build Status](https://travis-ci.com/FieldServer/happn-3.svg?token=HPAyz8BhzPLszVxys36G&branch=master)](https://travis-ci.com/FieldServer/happn-3)  
-NOTE on Coveralls Badge: get the badge markdown from the Coveralls page for this repo, then delete this line.
-  [![Coverage Status](https://coveralls.io/repos/github/FieldServer/npm_module_init/badge.svg?t=9dsZHa)](https://coveralls.io/github/FieldServer/npm_module_init)
-
-
-[![npm](https://img.shields.io/npm/v/happn-3.svg)](https://www.npmjs.com/package/happn-3) [![Build Status](https://travis-ci.org/happner/happn-3.svg?branch=master)](https://travis-ci.org/happner/happn-3) [![Coverage Status](https://coveralls.io/repos/happner/happn-3/badge.svg?branch=master&service=github)](https://coveralls.io/github/happner/happn-3?branch=master) [![David](https://img.shields.io/david/happner/happn-3.svg)](https://img.shields.io/david/happner/happn-3.svg)
+[![npm](https://img.shields.io/npm/v/happn-3.svg)](https://www.npmjs.com/package/happn-3)
+[![Build Status](https://travis-ci.org/happner/happn-3.svg?branch=master)](https://travis-ci.org/happner/happn-3)
+[![Coverage Status](https://coveralls.io/repos/happner/happn-3/badge.svg?branch=master&service=github)](https://coveralls.io/github/happner/happn-3?branch=master)
+[![David](https://img.shields.io/david/happner/happn-3.svg)](https://img.shields.io/david/happner/happn-3.svg)
 
 <img src="https://raw.githubusercontent.com/happner/happner-website/master/images/HAPPN%20Logo%20B.png" width="300"></img>
 
