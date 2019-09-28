@@ -612,62 +612,6 @@ describe(
       });
     });
 
-    it('should test the login function of the happn client, passing in a digest', function(done) {
-      var happn = require('../../../lib/index');
-      var happn_client = happn.client;
-
-      var clientInstance = happn_client.__instance({
-        username: '_ADMIN',
-        keyPair: {
-          publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2',
-          privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M='
-        }
-      });
-
-      clientInstance.performRequest = function(path, action, data, options, callback) {
-        var nonce_requests = {};
-
-        mockServices(function(e, happnMock) {
-          if (action == 'request-nonce') {
-            var Crypto = require('happn-util-crypto');
-            var crypto = new Crypto();
-
-            var nonce = crypto.generateNonce();
-
-            var request = {
-              nonce: nonce,
-              publicKey: data.publicKey
-            };
-
-            nonce_requests[nonce] = request;
-
-            request.__timedOut = setTimeout(
-              function() {
-                delete nonce_requests[this.nonce];
-              }.bind(request),
-              3000
-            );
-
-            stopServices(happnMock, done);
-
-            callback(null, nonce);
-          }
-
-          if (action == 'login') {
-            if (data.digest) {
-              if (nonce_requests[data.nonce] !== null) {
-                clearTimeout(nonce_requests[data.nonce].__timedOut);
-
-                happnMock.services.crypto.verify(data.nonce, data.digest, data.publicKey);
-              } else callback(new Error('could not find nonce request for nonce: ' + data.nonce));
-            }
-          }
-
-          clientInstance.login();
-        });
-      };
-    });
-
     it('tests the security services __profileSession method, default profiles', function(done) {
       var session = {
         user: {
