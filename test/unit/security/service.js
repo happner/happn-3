@@ -762,16 +762,6 @@ describe(
         if (e) return done(e);
 
         var securityService = {
-          users: {
-            getGroup: function(groupName, opts, callback) {
-              if (groups[groupName]) callback(null, groups[groupName]);
-            }
-          },
-          groups: {
-            getGroup: function(groupName, opts, callback) {
-              if (groups[groupName]) callback(null, groups[groupName]);
-            }
-          },
           happn: {
             services: {
               utils: utils
@@ -873,16 +863,6 @@ describe(
         if (e) return done(e);
 
         var securityService = {
-          users: {
-            getGroup: function(groupName, opts, callback) {
-              if (groups[groupName]) callback(null, groups[groupName]);
-            }
-          },
-          groups: {
-            getGroup: function(groupName, opts, callback) {
-              if (groups[groupName]) callback(null, groups[groupName]);
-            }
-          },
           happn: {
             services: {
               utils: utils
@@ -983,16 +963,6 @@ describe(
         if (e) return done(e);
 
         var securityService = {
-          users: {
-            getGroup: function(groupName, opts, callback) {
-              if (groups[groupName]) callback(null, groups[groupName]);
-            }
-          },
-          groups: {
-            getGroup: function(groupName, opts, callback) {
-              if (groups[groupName]) callback(null, groups[groupName]);
-            }
-          },
           happn: {
             services: {
               utils: utils
@@ -1089,16 +1059,6 @@ describe(
         if (e) return done(e);
 
         var securityService = {
-          users: {
-            getGroup: function(groupName, opts, callback) {
-              if (groups[groupName]) callback(null, groups[groupName]);
-            }
-          },
-          groups: {
-            getGroup: function(groupName, opts, callback) {
-              if (groups[groupName]) callback(null, groups[groupName]);
-            }
-          },
           happn: {
             services: {
               utils: utils
@@ -1218,16 +1178,6 @@ describe(
       };
 
       var securityService = {
-        users: {
-          getGroup: function(groupName, opts, callback) {
-            if (groups[groupName]) callback(null, groups[groupName]);
-          }
-        },
-        groups: {
-          getGroup: function(groupName, opts, callback) {
-            if (groups[groupName]) callback(null, groups[groupName]);
-          }
-        },
         happn: {
           services: {
             utils: utils
@@ -1328,16 +1278,6 @@ describe(
       };
 
       var securityService = {
-        users: {
-          getGroup: function(groupName, opts, callback) {
-            if (groups[groupName]) callback(null, groups[groupName]);
-          }
-        },
-        groups: {
-          getGroup: function(groupName, opts, callback) {
-            if (groups[groupName]) callback(null, groups[groupName]);
-          }
-        },
         happn: {
           services: {
             utils: utils
@@ -1439,18 +1379,7 @@ describe(
           }
         }
       };
-
       var securityService = {
-        users: {
-          getGroup: function(groupName, opts, callback) {
-            if (groups[groupName]) callback(null, groups[groupName]);
-          }
-        },
-        groups: {
-          getGroup: function(groupName, opts, callback) {
-            if (groups[groupName]) callback(null, groups[groupName]);
-          }
-        },
         happn: {
           services: {
             utils: utils
