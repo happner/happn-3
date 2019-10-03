@@ -907,7 +907,46 @@ function (e, myHappn3Instance) {
 });
 ```
 
-#### NB! permissions are separate to the group, so when upserting the group and it allready exists with other permissions the current upserts permissions are merged with the existing ones, down to action level
+### list groups
+
+```javascript
+
+var happn = require('happn')
+var happnInstance; //this will be your server instance
+
+happn.service.create({secure:true, adminUser:{password:'testPWD'}},
+function (e, myHappn3Instance) {
+
+  var myGroup = {
+    name:'TEST',
+    permissions:{
+      '/test/path/*':{actions:['get', 'set']}, //allow only gets and sets to this path
+      '/test/allow/all':{actions:['*']} //allow all actions to this path
+    },
+    custom_data:{//any custom data you want
+      test:'data'
+    }
+  };
+
+  //NB! permissions are stored separately to the group, so when upserting the group and it allready exists
+  //with other permissions the current upserts permissions are merged with the existing ones, down to action level
+
+  myHappn3Instance.services.security.groups.upsertGroup(myGroup)
+  .then(function(upserted){
+    //group added
+    return myHappn3Instance.services.security.groups.listGroups('TES*', {
+      criteria:{
+        name:{$eq:'TEST'}
+      }
+    });
+  })
+  .then(function(group){
+    //group just added would be returned
+  });
+});
+```
+
+#### NB! permissions are separate to the group, so when upserting the group and it already exists with other permissions the current upserts permissions are merged with the existing ones, down to action level
 
 ### add a user
 
@@ -966,7 +1005,7 @@ function (e, myHappn3Instance) {
 ```
 
 ### list users
-*user can be listed by group name (exact match) or by a username (partial match with wildcard)*
+*user can be listed by group name (exact match) or by a username (partial match with wildcard - with optional additional criteria)*
 ```javascript
 
 var happn = require('happn')
@@ -975,8 +1014,10 @@ var happnInstance; //this will be your server instance
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
 function (e, myHappn3Instance) {
 
-  //by username
-  myHappn3Instance.services.security.users.listUsers('TEST*')
+  //by username, with more specific criteria (mongo style)
+  myHappn3Instance.services.security.users.listUsers('TEST*', {
+    criteria:{username:{$eq:'TESTUSER1'}}
+  })
   .then(function(users){
 
     //returns:

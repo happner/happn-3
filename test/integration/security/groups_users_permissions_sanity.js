@@ -5,8 +5,6 @@ describe(
   function() {
     context('manage users and groups and permissions', function() {
       var expect = require('expect.js');
-      var happn = require('../../../lib/index');
-      var service = happn.service;
       var async = require('async');
       var Logger = require('happn-logger');
 
@@ -149,7 +147,17 @@ describe(
         name: 'TEST SUB GROUP' + test_id,
         custom_data: {
           customString: 'customSub1',
-          customNumber: 1
+          customNumber: 1,
+          cadre:1
+        }
+      };
+
+      var anotherSubGroup = {
+        name: 'TEST SUB GROUP ANOTHER' + test_id,
+        custom_data: {
+          customString: 'customSub2',
+          customNumber: 2,
+          cadre:1
         }
       };
 
@@ -161,7 +169,14 @@ describe(
         }
       };
 
-      var testPermissions = [];
+      var anotherTestUser = {
+        username: 'TEST USER1@blah.com' + test_id,
+        password: 'TEST PWD',
+        custom_data: {
+          something: 'usefull'
+        }
+      };
+
       var addedGroup;
 
       it('should create a group', function(callback) {
@@ -198,13 +213,34 @@ describe(
         );
       });
 
+      it('should create another sub group', function(callback) {
+        testServices.security.users.upsertGroup(
+          anotherSubGroup,
+          {
+            parent: addedGroup
+          },
+          function(e, result) {
+            if (e) return callback(e);
+
+            expect(result.name == anotherSubGroup.name).to.be(true);
+            expect(result.custom_data.customString == anotherSubGroup.custom_data.customString).to.be(
+              true
+            );
+            expect(result.custom_data.customNumber == anotherSubGroup.custom_data.customNumber).to.be(
+              true
+            );
+            callback();
+          }
+        );
+      });
+
       it('should fail to create a group as it already exists', function(callback) {
         testServices.security.users.upsertGroup(
           testGroup,
           {
             overwrite: false
           },
-          function(e, result) {
+          function(e) {
             if (
               e &&
               e.toString() ==
@@ -221,7 +257,7 @@ describe(
         testServices.security.users.listGroups('TEST*', function(e, results) {
           if (e) return callback(e);
 
-          expect(results.length).to.be(2);
+          expect(results.length).to.be(3);
           callback();
         });
       });
@@ -232,6 +268,18 @@ describe(
 
           expect(group.name).to.be(testGroup.name);
 
+          callback();
+        });
+      });
+
+      it('should get groups matching special criteria', function(callback) {
+        testServices.security.users.listGroups('TEST*', {
+          criteria:{
+            "custom_data.cadre":{$gt:0}
+          }
+        }, function(e, results) {
+          if (e) return callback(e);
+          expect(results.length).to.be(2);
           callback();
         });
       });
@@ -398,6 +446,13 @@ describe(
           );
         });
 
+        it('should add another user', function(callback) {
+          testServices.security.users.upsertUser(
+            anotherTestUser,
+            { overwrite: false },
+            callback);
+        });
+
         it('should not add another user with the same name', function(callback) {
           testUser.username += '.org';
           testUser.password = 'TSTPWD';
@@ -467,7 +522,7 @@ describe(
           });
         });
 
-        it('should list users', function(callback) {
+        it('should list users, by username and criteria', function(callback) {
           testServices.security.users.listUsers(testUser.username, function(e, users) {
             if (e) return callback(e);
 
@@ -476,9 +531,17 @@ describe(
             testServices.security.users.listUsers('*', function(e, users) {
               if (e) return callback(e);
 
-              expect(users.length).to.be(4);
+              expect(users.length).to.be(5);
 
-              callback();
+              testServices.security.users.listUsers('*', {
+                criteria:{
+                  "custom_data.something":{$eq:'usefull'}
+                }
+              }, function(e, users) {
+                if (e) return callback(e);
+                expect(users.length).to.be(3);
+                callback();
+              });
             });
           });
         });
