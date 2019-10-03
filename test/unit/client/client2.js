@@ -1577,13 +1577,16 @@ describe(
 
     it('tests the on function throws an error if not called with a callback', function(done) {
       var happnClient = mockHappnClient();
-      process.on('unhandledRejection', function(error) {
+      happnClient.on()
+      .then(function(){
+        done(new Error('this should not have happened'));
+      })
+      .catch(function(error){
         expect(error.toString()).to.eql(
           'Error: you cannot subscribe without passing in a subscription callback'
         );
         done();
       });
-      happnClient.on();
     });
 
     it('tests the on function throws an error if using onPublished handler (mocking handler) without a callback', function(done) {
