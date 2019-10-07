@@ -1,0 +1,32 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jquery": true,
+    "mocha": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+  "globals": {
+    "angular": "readonly",
+    "d3": "readonly",
+    "Crypto": "writable",
+    "MeshClient": "readonly"
+  },
+  "plugins": [
+    "prettier"
+  ],
+  "rules": {
+    "default-case": "error",
+    "eqeqeq": ["error", "always", {"null": "ignore"}],
+    "no-console": "warn",
+    "no-useless-return": "error",
+    "prettier/prettier": "error"
+  }
+}

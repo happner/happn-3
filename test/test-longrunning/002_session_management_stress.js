@@ -1,5 +1,4 @@
-describe('longrunning/002_session_management_sanity', function () {
-
+describe('longrunning/002_session_management_sanity', function() {
   var expect = require('expect.js');
   var happn = require('../../lib/index');
   var service = happn.service;
@@ -9,37 +8,29 @@ describe('longrunning/002_session_management_sanity', function () {
   var serviceInstance;
   var clientInstance;
 
-  var disconnectClient = function (callback) {
-    if (clientInstance)
-      clientInstance.disconnect(callback);
-    else
-      callback();
+  var disconnectClient = function(callback) {
+    if (clientInstance) clientInstance.disconnect(callback);
+    else callback();
   };
 
-  var stopService = function (callback) {
-    if (serviceInstance)
-      serviceInstance.stop(callback);
-    else
-      callback();
+  var stopService = function(callback) {
+    if (serviceInstance) serviceInstance.stop(callback);
+    else callback();
   };
 
-  var getService = function (activateSessionManagement, sessionActivityTTL, callback, port) {
-
+  var getService = function(activateSessionManagement, sessionActivityTTL, callback, port) {
     if (!port) port = 55556;
 
-    if (typeof activateSessionManagement == 'function') {
-
+    if (typeof activateSessionManagement === 'function') {
       callback = activateSessionManagement;
       activateSessionManagement = true;
       sessionActivityTTL = 60000 * 60 * 24 * 30;
     }
 
-    disconnectClient(function (e) {
-
+    disconnectClient(function(e) {
       if (e) return callback(e);
 
-      stopService(function (e) {
-
+      stopService(function(e) {
         if (e) return callback(e);
 
         var serviceConfig = {
@@ -56,14 +47,13 @@ describe('longrunning/002_session_management_sanity', function () {
           }
         };
 
-        service.create(serviceConfig,
-          function (e, happnInst) {
-            if (e)
-              return callback(e);
+        service.create(serviceConfig, function(e, happnInst) {
+          if (e) return callback(e);
 
-            serviceInstance = happnInst;
+          serviceInstance = happnInst;
 
-            happn_client.create({
+          happn_client.create(
+            {
               config: {
                 port: port,
                 username: '_ADMIN',
@@ -72,179 +62,168 @@ describe('longrunning/002_session_management_sanity', function () {
               info: {
                 from: 'startup'
               }
-            }, function (e, instance) {
-
+            },
+            function(e, instance) {
               if (e) return callback(e);
 
               clientInstance = instance;
 
               callback();
-              
-            });
-          }
-        );
+            }
+          );
+        });
       });
     });
   };
 
-  it('tests session management, multiple clients in series', function (callback) {
-
+  it('tests session management, multiple clients in series', function(callback) {
     var times = 20;
 
     this.timeout(times * 6000 + 10000);
 
     var session_results = [];
 
-    getService(true, 500000, function (e) {
-
-      async.timesSeries(times, function (timeIndex, timeCB) {
-
-        happn_client.create({
-          config: {
-            port: 55556,
-            username: '_ADMIN',
-            password: 'happn'
-          }
-        }, function (e, instance) {
-
-          if (e) return callback(e);
-
-          var sessionData = {};
-
-          sessionData.client = instance;
-
-          var RandomActivityGenerator = require("happn-random-activity-generator");
-          var randomActivity = new RandomActivityGenerator(instance);
-
-          sessionData.random = randomActivity;
-
-          randomActivity.generateActivityStart("test", function () {
-
-            setTimeout(function () {
-
-              randomActivity.generateActivityEnd("test", function (aggregatedLog) {
-
-                sessionData.results = aggregatedLog;
-                sessionData.client = instance;
-
-                console.log('collected data:::', aggregatedLog);
-
-                session_results.push(sessionData);
-
-                timeCB();
-
-              });
-            }, 1500);
-          });
-        });
-
-      }, function (e) {
-
-        if (e) return callback(e);
-
-        setTimeout(function () {
-
-          serviceInstance.services.security.listActiveSessions(function (e, list) {
-
-            if (e) return callback(e);
-
-            expect(list.length).to.be(times + 1); //+1 for connected client
-
-            serviceInstance.services.security.listSessionActivity(function (e, list) {
-
+    getService(true, 500000, function(e) {
+      async.timesSeries(
+        times,
+        function(timeIndex, timeCB) {
+          happn_client.create(
+            {
+              config: {
+                port: 55556,
+                username: '_ADMIN',
+                password: 'happn'
+              }
+            },
+            function(e, instance) {
               if (e) return callback(e);
 
-              expect(list.length).to.be(times);
+              var sessionData = {};
 
-              callback();
+              sessionData.client = instance;
 
+              var RandomActivityGenerator = require('happn-random-activity-generator');
+              var randomActivity = new RandomActivityGenerator(instance);
+
+              sessionData.random = randomActivity;
+
+              randomActivity.generateActivityStart('test', function() {
+                setTimeout(function() {
+                  randomActivity.generateActivityEnd('test', function(aggregatedLog) {
+                    sessionData.results = aggregatedLog;
+                    sessionData.client = instance;
+
+                    console.log('collected data:::', aggregatedLog);
+
+                    session_results.push(sessionData);
+
+                    timeCB();
+                  });
+                }, 1500);
+              });
+            }
+          );
+        },
+        function(e) {
+          if (e) return callback(e);
+
+          setTimeout(function() {
+            serviceInstance.services.security.listActiveSessions(function(e, list) {
+              if (e) return callback(e);
+
+              expect(list.length).to.be(times + 1); //+1 for connected client
+
+              serviceInstance.services.security.listSessionActivity(function(e, list) {
+                if (e) return callback(e);
+
+                expect(list.length).to.be(times);
+
+                callback();
+              });
             });
-          });
-
-        }, 10000);
-      });
+          }, 10000);
+        }
+      );
     });
   });
 
-  it('tests session management, multiple clients in parallel', function (callback) {
-
+  it('tests session management, multiple clients in parallel', function(callback) {
     var times = 20;
 
     this.timeout(times * 6000 + 10000);
 
     var session_results = [];
 
-    getService(true, 500000, function (e) {
+    getService(
+      true,
+      500000,
+      function(e) {
+        async.times(
+          times,
+          function(timeIndex, timeCB) {
+            happn_client.create(
+              {
+                config: {
+                  port: 55557,
+                  username: '_ADMIN',
+                  password: 'happn'
+                }
+              },
+              function(e, instance) {
+                if (e) return callback(e);
 
-      async.times(times, function (timeIndex, timeCB) {
+                var sessionData = {};
 
-        happn_client.create({
-          config: {
-            port: 55557,
-            username: '_ADMIN',
-            password: 'happn'
-          }
-        }, function (e, instance) {
-
-          if (e) return callback(e);
-
-          var sessionData = {};
-
-          sessionData.client = instance;
-
-          var RandomActivityGenerator = require("happn-random-activity-generator");
-          var randomActivity = new RandomActivityGenerator(instance);
-
-          sessionData.random = randomActivity;
-
-          randomActivity.generateActivityStart("test", function () {
-
-            setTimeout(function () {
-
-              randomActivity.generateActivityEnd("test", function (aggregatedLog) {
-
-                sessionData.results = aggregatedLog;
                 sessionData.client = instance;
 
-                console.log('collected data:::', timeIndex + 1);
+                var RandomActivityGenerator = require('happn-random-activity-generator');
+                var randomActivity = new RandomActivityGenerator(instance);
 
-                session_results.push(sessionData);
+                sessionData.random = randomActivity;
 
-                timeCB();
+                randomActivity.generateActivityStart('test', function() {
+                  setTimeout(function() {
+                    randomActivity.generateActivityEnd('test', function(aggregatedLog) {
+                      sessionData.results = aggregatedLog;
+                      sessionData.client = instance;
 
-              });
-            }, 2500);
-          });
-        });
+                      console.log('collected data:::', timeIndex + 1);
 
-      }, function (e) {
+                      session_results.push(sessionData);
 
-        if (e) return callback(e);
-
-        setTimeout(function () {
-
-          serviceInstance.services.security.listActiveSessions(function (e, list) {
-
+                      timeCB();
+                    });
+                  }, 2500);
+                });
+              }
+            );
+          },
+          function(e) {
             if (e) return callback(e);
 
-            console.log('active sessions:::', list.length);
+            setTimeout(function() {
+              serviceInstance.services.security.listActiveSessions(function(e, list) {
+                if (e) return callback(e);
 
-            expect(list.length).to.be(times + 1); //+1 for connected client
+                console.log('active sessions:::', list.length);
 
-            serviceInstance.services.security.listSessionActivity(function (e, list) {
+                expect(list.length).to.be(times + 1); //+1 for connected client
 
-              if (e) return callback(e);
+                serviceInstance.services.security.listSessionActivity(function(e, list) {
+                  if (e) return callback(e);
 
-              console.log('sessions activity:::', list.length);
+                  console.log('sessions activity:::', list.length);
 
-              expect(list.length).to.be(times);
+                  expect(list.length).to.be(times);
 
-              callback();
-            });
-          });
-        }, 10000);
-      });
-    }, 55557);
+                  callback();
+                });
+              });
+            }, 10000);
+          }
+        );
+      },
+      55557
+    );
   });
-
 });

@@ -4,213 +4,213 @@ var Happn = require('../../..'),
   path = require('path'),
   fs = require('fs-extra');
 
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3),  function () {
+describe(
+  require('../../__fixtures/utils/test_helper')
+    .create()
+    .testName(__filename, 3),
+  function() {
+    it('builds the happn browser client, returns the filepath', function(done) {
+      var clientCode = Happn.packager.browserClient();
 
-  it('builds the happn browser client, returns the filepath', function (done) {
+      expect(clientCode).to.be(
+        homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js'
+      );
 
-    var clientCode = Happn.packager.browserClient();
-
-    expect(clientCode).to.be(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-
-    done();
-  });
-
-  it('builds the happn browser client, returns the contents', function (done) {
-
-    var clientCode = Happn.packager.browserClient({
-      contentsOnly: true
+      done();
     });
 
-    expect(clientCode.length > (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length).to.be(true);
+    it('builds the happn browser client, returns the contents', function(done) {
+      var clientCode = Happn.packager.browserClient({
+        contentsOnly: true
+      });
 
-    done();
-  });
+      expect(
+        clientCode.length >
+          (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length
+      ).to.be(true);
 
-  it('builds the happn browser client, in production mode - ensures we are using the cached file contents', function (done) {
-
-    process.env.NODE_ENV = 'production';
-
-    Happn.packager.__cachedBrowserClient = null;
-
-    try {
-      fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    } catch (e) {
-
-    }
-
-    var clientCode = Happn.packager.browserClient({
-      contentsOnly: true,
-      id: 'TEST_UNIQUE_ID'
+      done();
     });
 
-    expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
+    it('builds the happn browser client, in production mode - ensures we are using the cached file contents', function(done) {
+      process.env.NODE_ENV = 'production';
 
-    var clientCodeAgain = Happn.packager.browserClient({
-      contentsOnly: true
-    });
+      Happn.packager.__cachedBrowserClient = null;
 
-    expect(clientCodeAgain.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
-
-    process.env.NODE_ENV = 'test';
-
-    done();
-  });
-
-  it('tests the client middleware is able to fetch the contents', function (done) {
-
-    var Middleware = require('../../../lib/services/connect/middleware/client');
-    var middleware = new Middleware();
-    var req = {
-      url: '/browser_client'
-    };
-
-    var res = {
-      setHeader: function (key, val) {
-
-      },
-      end: function (content) {
-        expect(content.length > (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length).to.be(true);
-        done();
+      try {
+        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+      } catch (e) {
+        // ignore
       }
-    };
 
-    middleware.process(req, res);
+      var clientCode = Happn.packager.browserClient({
+        contentsOnly: true,
+        id: 'TEST_UNIQUE_ID'
+      });
 
-  });
+      expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
-  it('tests the client middleware is able to fetch the cached contents', function (done) {
+      var clientCodeAgain = Happn.packager.browserClient({
+        contentsOnly: true
+      });
 
-    process.env.NODE_ENV = 'production';
+      expect(clientCodeAgain.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
-    Happn.packager.__cachedBrowserClient = null;
+      process.env.NODE_ENV = 'test';
 
-    try {
-      fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    } catch (e) {
-
-    }
-
-    var clientCode = Happn.packager.browserClient({
-      contentsOnly: true,
-      id: 'TEST_UNIQUE_ID'
+      done();
     });
 
-    expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
+    it('tests the client middleware is able to fetch the contents', function(done) {
+      var Middleware = require('../../../lib/services/connect/middleware/client');
+      var middleware = new Middleware();
+      var req = {
+        url: '/browser_client'
+      };
 
-    var Middleware = require('../../../lib/services/connect/middleware/client');
-    var middleware = new Middleware();
+      var res = {
+        setHeader: function(key, val) {},
+        end: function(content) {
+          expect(
+            content.length >
+              (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length
+          ).to.be(true);
+          done();
+        }
+      };
 
-    var req = {
-      url: '/browser_client'
-    };
+      middleware.process(req, res);
+    });
 
-    var res = {
-      setHeader: function (key, val) {
+    it('tests the client middleware is able to fetch the cached contents', function(done) {
+      process.env.NODE_ENV = 'production';
 
-      },
-      end: function (content) {
+      Happn.packager.__cachedBrowserClient = null;
 
-        expect(content.length > (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length).to.be(true);
-        expect(content.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
-
-        process.env.NODE_ENV = 'test';
-        done();
+      try {
+        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+      } catch (e) {
+        // ignore
       }
-    };
 
-    middleware.process(req, res);
+      var clientCode = Happn.packager.browserClient({
+        contentsOnly: true,
+        id: 'TEST_UNIQUE_ID'
+      });
 
-  });
+      expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
-  it('tests the minify option', function (done) {
+      var Middleware = require('../../../lib/services/connect/middleware/client');
+      var middleware = new Middleware();
 
-    process.env.NODE_ENV = 'production';
+      var req = {
+        url: '/browser_client'
+      };
 
-    Happn.packager.__cachedBrowserClient = null;
+      var res = {
+        setHeader: function(key, val) {},
+        end: function(content) {
+          expect(
+            content.length >
+              (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length
+          ).to.be(true);
+          expect(content.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
-    try {
-      fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    } catch (e) {}
+          process.env.NODE_ENV = 'test';
+          done();
+        }
+      };
 
-    var clientCode = Happn.packager.browserClient({
-      contentsOnly: true,
-      id: 'TEST_UNIQUE_ID'
+      middleware.process(req, res);
     });
 
-    expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
+    it('tests the minify option', function(done) {
+      process.env.NODE_ENV = 'production';
 
-    var clientCodeAgain = Happn.packager.browserClient({
-      contentsOnly: true
-    });
+      Happn.packager.__cachedBrowserClient = null;
 
-    expect(clientCodeAgain.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
-
-    process.env.NODE_ENV = 'test';
-
-    Happn.packager.__cachedBrowserClient = null;
-
-    try {
-      fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    } catch (e) {
-
-    }
-
-    clientCode = Happn.packager.browserClient({
-      contentsOnly: true,
-      min: true
-    });
-
-    expect(clientCodeAgain.length > clientCode.length).to.be(true);
-    done();
-  });
-
-  it('tests the client middleware is able to fetch the minified contents', function (done) {
-
-    Happn.packager.__cachedBrowserClient = null;
-
-    try {
-      fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    } catch (e) {
-
-    }
-
-    process.env.NODE_ENV = 'test';
-
-    var clientCode = Happn.packager.browserClient({
-      contentsOnly: true,
-      overwrite: true
-    });
-
-    process.env.NODE_ENV = 'production';
-
-    Happn.packager.__cachedBrowserClient = null;
-
-    try {
-      fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
-    } catch (e) {
-
-    }
-
-    var Middleware = require('../../../lib/services/connect/middleware/client');
-    var middleware = new Middleware();
-
-    var req = {
-      url: '/browser_client'
-    };
-
-    var res = {
-      setHeader: function (key, val) {
-
-      },
-      end: function (content) {
-
-        expect(clientCode.length > content.length).to.be(true);
-        done();
+      try {
+        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+      } catch (e) {
+        // ignore
       }
-    };
 
-    middleware.process(req, res, function (e) {
-      if (e) return done(e);
+      var clientCode = Happn.packager.browserClient({
+        contentsOnly: true,
+        id: 'TEST_UNIQUE_ID'
+      });
+
+      expect(clientCode.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
+
+      var clientCodeAgain = Happn.packager.browserClient({
+        contentsOnly: true
+      });
+
+      expect(clientCodeAgain.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
+
+      process.env.NODE_ENV = 'test';
+
+      Happn.packager.__cachedBrowserClient = null;
+
+      try {
+        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+      } catch (e) {
+        // ignore
+      }
+
+      clientCode = Happn.packager.browserClient({
+        contentsOnly: true,
+        min: true
+      });
+
+      expect(clientCodeAgain.length > clientCode.length).to.be(true);
+      done();
     });
-  });
-});
+
+    it('tests the client middleware is able to fetch the minified contents', function(done) {
+      Happn.packager.__cachedBrowserClient = null;
+
+      try {
+        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+      } catch (e) {
+        // ignore
+      }
+
+      process.env.NODE_ENV = 'test';
+
+      var clientCode = Happn.packager.browserClient({
+        contentsOnly: true,
+        overwrite: true
+      });
+
+      process.env.NODE_ENV = 'production';
+
+      Happn.packager.__cachedBrowserClient = null;
+
+      try {
+        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+      } catch (e) {
+        // ignore
+      }
+
+      var Middleware = require('../../../lib/services/connect/middleware/client');
+      var middleware = new Middleware();
+
+      var req = {
+        url: '/browser_client'
+      };
+
+      var res = {
+        setHeader: function(key, val) {},
+        end: function(content) {
+          expect(clientCode.length > content.length).to.be(true);
+          done();
+        }
+      };
+
+      middleware.process(req, res, function(e) {
+        if (e) return done(e);
+      });
+    });
+  }
+);

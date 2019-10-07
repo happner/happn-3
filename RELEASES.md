@@ -646,3 +646,9 @@
 -----------------
   - getOnBehalfOfSession now includes the delegate sessions happn property
   - sessionFromRequest includes happn property fetched from system service
+
+10.3.0 2019-09-12
+-----------------
+  - prettier and eslint updates
+  - using uglify-es for minify in packager
+  - listUsers and listGroups now allow for mongo filters

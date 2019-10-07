@@ -1,164 +1,182 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(
+  require('../../__fixtures/utils/test_helper')
+    .create()
+    .testName(__filename, 3),
+  function() {
+    this.timeout(5000);
 
-  this.timeout(5000);
+    var expect = require('expect.js');
+    var happn = require('../../../lib/index');
+    var async = require('async');
+    var Logger = require('happn-logger');
+    var EventEmitter = require('events').EventEmitter;
+    var Checkpoint = require('../../../lib/services/security/checkpoint');
 
-  var expect = require('expect.js');
-  var happn = require('../../../lib/index');
-  var async = require('async');
-  var Logger = require('happn-logger');
-  var EventEmitter = require('events').EventEmitter;
-  var Checkpoint = require('../../../lib/services/security/checkpoint');
+    var initializeCheckpoint = function(callback, config) {
+      if (!config) config = {};
 
-  var initializeCheckpoint = function (callback, config) {
+      var checkpoint = new Checkpoint({
+        logger: Logger
+      });
 
-    if (!config) config = {};
+      var CacheService = require('../../../lib/services/cache/service');
+      var UtilsService = require('../../../lib/services/utils/service');
 
-    var checkpoint = new Checkpoint({
-      logger: Logger
-    });
+      var cacheServiceInst = new CacheService();
+      var utilsServiceInst = new UtilsService();
 
-    var CacheService = require('../../../lib/services/cache/service');
-    var UtilsService = require('../../../lib/services/utils/service');
+      cacheServiceInst.initialize(function() {
+        var happn = {
+          services: {
+            session: new EventEmitter(),
+            utils: utilsServiceInst,
+            security: {
+              happn: {
+                services: {
+                  utils: new UtilsService()
+                }
+              },
+              users: {
+                getUser: function(name, callback) {
+                  return callback(null, {
+                    username: name,
+                    groups: {}
+                  });
+                }
+              },
+              groups: {
+                getGroup: function(name, opts, callback) {
+                  var returnGroup = {
+                    name: name,
+                    permissions: {}
+                  };
 
-    var cacheServiceInst = new CacheService();
-    var utilsServiceInst = new UtilsService();
+                  if (name == 'TEST_GROUP')
+                    returnGroup = {
+                      name: 'TEST_GROUP',
+                      permissions: {
+                        '/test/group/explicit': {
+                          action: ['set']
+                        },
+                        '/test/group/*': {
+                          action: ['*']
+                        }
+                      }
+                    };
 
-    cacheServiceInst.initialize(function () {
+                  if (name == 'TEST_GROUP_1')
+                    returnGroup = {
+                      name: 'TEST_GROUP_1',
+                      permissions: {
+                        '/test/group/*': {
+                          action: ['*']
+                        }
+                      }
+                    };
 
-      var happn = {
-        services: {
-          session: new EventEmitter(),
-          utils: utilsServiceInst,
-          security: {
-            happn: {
-              services: {
-                utils: new UtilsService()
+                  if (name == 'TEST_GROUP_2')
+                    returnGroup = {
+                      name: 'TEST_GROUP_2',
+                      permissions: {
+                        '/test/explicit': {
+                          actions: ['set']
+                        },
+                        '/test/wild/*': {
+                          actions: ['*']
+                        }
+                      }
+                    };
+
+                  if (name == 'TEST_GROUP_3')
+                    returnGroup = {
+                      name: 'TEST_GROUP_3',
+                      permissions: {
+                        '/test/wild/*': {
+                          actions: ['*']
+                        }
+                      }
+                    };
+
+                  return callback(null, returnGroup);
+                }
               }
             },
-            users: {
-              getUser: function (name, callback) {
-                return callback(null, {
-                  username: name,
-                  groups: {}
-                });
-              }
+            cache: cacheServiceInst
+          }
+        };
+
+        Object.defineProperty(checkpoint, 'happn', {
+          value: happn
+        });
+
+        Object.defineProperty(cacheServiceInst, 'happn', {
+          value: happn
+        });
+
+        checkpoint.initialize(config, happn.services.security, function(e) {
+          if (e) return callback(e);
+
+          callback(null, checkpoint);
+        });
+      });
+    };
+
+    it('tests the security checkpoints __loadPermissionSet function', function(done) {
+      var groups = {
+        TEST_GROUP: {
+          permissions: {
+            '/test/group/explicit': {
+              action: ['set']
             },
-            groups: {
-              getGroup: function (name, opts, callback) {
-
-                var returnGroup = {
-                  name: name,
-                  permissions: {}
-                };
-
-                if (name == 'TEST_GROUP')
-                  returnGroup = {
-                    name:'TEST_GROUP',
-                    permissions: {
-                      '/test/group/explicit': {
-                        action: ['set']
-                      },
-                      '/test/group/*': {
-                        action: ['*']
-                      }
-                    }
-                  };
-
-
-                if (name == 'TEST_GROUP_1')
-                  returnGroup = {
-                    name:'TEST_GROUP_1',
-                    permissions: {
-                      '/test/group/*': {
-                        action: ['*']
-                      }
-                    }
-                  };
-
-
-                if (name == 'TEST_GROUP_2')
-                  returnGroup = {
-                    name:'TEST_GROUP_2',
-                    permissions: {
-                      '/test/explicit': {
-                        actions: ['set']
-                      },
-                      '/test/wild/*': {
-                        actions: ['*']
-                      }
-                    }
-                  };
-
-                if (name == 'TEST_GROUP_3')
-                  returnGroup = {
-                    name:'TEST_GROUP_3',
-                    permissions: {
-                      '/test/wild/*': {
-                        actions: ['*']
-                      }
-                    }
-                  };
-
-                return callback(null, returnGroup);
-              }
+            '/test/group/*': {
+              action: ['*']
             }
-          },
-          cache: cacheServiceInst
+          }
+        },
+        TEST_GROUP_1: {
+          permissions: {
+            '/test/group/*': {
+              action: ['*']
+            }
+          }
         }
       };
 
-      Object.defineProperty(checkpoint, 'happn', {
-        value: happn
-      });
+      var identity = {
+        user: {
+          groups: groups
+        }
+      };
 
-      Object.defineProperty(cacheServiceInst, 'happn', {
-        value: happn
-      });
+      initializeCheckpoint(function(e, checkpoint) {
+        if (e) return done(e);
 
-      checkpoint.initialize(config, happn.services.security, function (e) {
+        checkpoint.__loadPermissionSet(identity, function(e, permissionSet) {
+          if (e) return done(e);
 
-        if (e) return callback(e);
+          expect(permissionSet.explicit['/test/group/explicit'].action[0]).to.be('set');
+          expect(permissionSet.wildcard['/test/group/*'].action[0]).to.be('*');
+          expect(Object.keys(permissionSet.wildcard).length).to.be(1);
 
-        callback(null, checkpoint);
+          done();
+        });
       });
     });
-  };
 
-  it("tests the security checkpoints __loadPermissionSet function", function (done) {
-
-    var groups = {
-      'TEST_GROUP': {
-        permissions: {
-          '/test/group/explicit': {
-            action: ['set']
-          },
-          '/test/group/*': {
-            action: ['*']
-          }
+    it('tests the security checkpoints __createPermissionSet function', function(done) {
+      var permissions = {
+        '/test/group/explicit': {
+          action: ['set']
+        },
+        '/test/group/*': {
+          action: ['*']
         }
-      },
-      'TEST_GROUP_1': {
-        permissions: {
-          '/test/group/*': {
-            action: ['*']
-          }
-        }
-      }
-    };
+      };
 
-    var identity = {
-      user: {
-        groups: groups
-      }
-    };
-
-    initializeCheckpoint(function (e, checkpoint) {
-
-      if (e) return done(e);
-
-      checkpoint.__loadPermissionSet(identity, function (e, permissionSet) {
-
+      initializeCheckpoint(function(e, checkpoint) {
         if (e) return done(e);
+
+        var permissionSet = checkpoint.__createPermissionSet(permissions);
 
         expect(permissionSet.explicit['/test/group/explicit'].action[0]).to.be('set');
         expect(permissionSet.wildcard['/test/group/*'].action[0]).to.be('*');
@@ -167,391 +185,417 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
         done();
       });
     });
-  });
 
-  it("tests the security checkpoints __createPermissionSet function", function (done) {
+    it('tests the security checkpoints __authorized function', function(done) {
+      var groups = {
+        TEST_GROUP_2: {
+          permissions: {
+            '/test/explicit': {
+              actions: ['set']
+            },
+            '/test/wild/*': {
+              actions: ['*']
+            }
+          }
+        },
+        TEST_GROUP_3: {
+          permissions: {
+            '/test/wild/*': {
+              actions: ['*']
+            }
+          }
+        }
+      };
 
-    var permissions = {
-      '/test/group/explicit': {
-        action: ['set']
-      },
-      '/test/group/*': {
-        action: ['*']
-      }
-    };
+      var identity = {
+        user: {
+          groups: groups
+        }
+      };
 
-    initializeCheckpoint(function (e, checkpoint) {
+      initializeCheckpoint(function(e, checkpoint) {
+        if (e) return done(e);
 
-      if (e) return done(e);
+        checkpoint.__loadPermissionSet(identity, function(e, permissionSet) {
+          if (e) return done(e);
 
-      var permissionSet = checkpoint.__createPermissionSet(permissions);
+          expect(permissionSet.explicit['/test/explicit'].actions[0]).to.be('set');
+          expect(permissionSet.wildcard['/test/wild/*'].actions[0]).to.be('*');
+          expect(Object.keys(permissionSet.wildcard).length).to.be(1);
 
-      expect(permissionSet.explicit['/test/group/explicit'].action[0]).to.be('set');
-      expect(permissionSet.wildcard['/test/group/*'].action[0]).to.be('*');
-      expect(Object.keys(permissionSet.wildcard).length).to.be(1);
+          expect(checkpoint.__authorized(permissionSet, '/test/explicit', 'set')).to.be(true);
+          expect(checkpoint.__authorized(permissionSet, '/test/wild/blah', 'on')).to.be(true);
+          expect(checkpoint.__authorized(permissionSet, '/test/explicit/1', 'set')).to.be(false);
+          expect(checkpoint.__authorized(permissionSet, '/test', 'get')).to.be(false);
 
-      done();
-
+          done();
+        });
+      });
     });
-  });
 
-  it("tests the security checkpoints __authorized function", function (done) {
+    it('tests caching in checkpoint, __permissionCache', function(done) {
+      initializeCheckpoint(function(e, checkpoint) {
+        if (e) return done(e);
 
-    var groups = {
-      'TEST_GROUP_2': {
-        permissions: {
-          '/test/explicit': {
-            actions: ['set']
+        expect(
+          checkpoint.__cache_checkpoint_authorization.getSync(
+            'TEST-SESSION-ID' + '/test/path' + 'set'
+          )
+        ).to.be(null);
+
+        //session, path, action, callback
+        checkpoint._authorizeUser(
+          {
+            id: 'TEST-SESSION-ID',
+            username: 'TEST',
+            user: {
+              groups: {
+                TEST1: {
+                  permissions: {}
+                },
+                TEST2: {
+                  permissions: {}
+                }
+              }
+            }
           },
-          '/test/wild/*': {
-            actions: ['*']
+          '/test/path',
+          'set',
+          function(e, authorized) {
+            if (e) return done(e);
+
+            expect(authorized).to.be(false);
+
+            var cached = checkpoint.__cache_checkpoint_authorization.getSync(
+              'TEST-SESSION-ID' + '/test/path' + 'set'
+            );
+
+            expect(cached === false).to.be(true);
+
+            checkpoint.clearCaches();
+
+            expect(
+              checkpoint.__cache_checkpoint_authorization.getSync(
+                'TEST-SESSION-ID' + '/test/path' + 'set'
+              )
+            ).to.be(null);
+
+            done();
           }
-        }
-      },
-      'TEST_GROUP_3': {
-        permissions: {
-          '/test/wild/*': {
-            actions: ['*']
-          }
-        }
-      }
-    };
-
-    var identity = {
-      user: {
-        groups: groups
-      }
-    };
-
-    initializeCheckpoint(function (e, checkpoint) {
-
-      if (e) return done(e);
-
-      checkpoint.__loadPermissionSet(identity, function (e, permissionSet) {
-
-        if (e) return done(e);
-
-        expect(permissionSet.explicit['/test/explicit'].actions[0]).to.be('set');
-        expect(permissionSet.wildcard['/test/wild/*'].actions[0]).to.be('*');
-        expect(Object.keys(permissionSet.wildcard).length).to.be(1);
-
-
-        expect(checkpoint.__authorized(permissionSet, '/test/explicit', 'set')).to.be(true);
-        expect(checkpoint.__authorized(permissionSet, '/test/wild/blah', 'on')).to.be(true);
-        expect(checkpoint.__authorized(permissionSet, '/test/explicit/1', 'set')).to.be(false);
-        expect(checkpoint.__authorized(permissionSet, '/test', 'get')).to.be(false);
-
-        done();
-
+        );
       });
     });
-  });
 
-  it('tests caching in checkpoint, __permissionCache', function (done) {
+    it('tests caching in checkpoint, __permissionSets', function(done) {
+      var testPermissionSetKey = require('crypto')
+        .createHash('sha1')
+        .update(['TEST1', 'TEST2'].join('/'))
+        .digest('base64');
 
-    initializeCheckpoint(function (e, checkpoint) {
-
-      if (e) return done(e);
-
-      expect(checkpoint.__cache_checkpoint_authorization.getSync('TEST-SESSION-ID' + '/test/path' + 'set')).to.be(null);
-
-      //session, path, action, callback
-      checkpoint._authorizeUser({
-        id: 'TEST-SESSION-ID',
-        username: 'TEST',
-        user: {
-          groups: {
-            'TEST1': {
-              permissions: {}
-            },
-            'TEST2': {
-              permissions: {}
-            }
-          }
-        }
-      }, '/test/path', 'set', function (e, authorized) {
-
+      initializeCheckpoint(function(e, checkpoint) {
         if (e) return done(e);
 
-        expect(authorized).to.be(false);
-
-        var cached = checkpoint.__cache_checkpoint_authorization.getSync('TEST-SESSION-ID' + '/test/path' + 'set');
-
-        expect(cached === false).to.be(true);
-
-        checkpoint.clearCaches();
-
-        expect(checkpoint.__cache_checkpoint_authorization.getSync('TEST-SESSION-ID' + '/test/path' + 'set')).to.be(null);
-
-        done();
-      });
-    });
-  });
-
-  it('tests caching in checkpoint, __permissionSets', function (done) {
-
-    var testPermissionSetKey = require('crypto').createHash('sha1').update(['TEST1', 'TEST2'].join('/')).digest('base64');
-
-    initializeCheckpoint(function (e, checkpoint) {
-
-      if (e) return done(e);
-
-      expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(null);
-
-      //session, path, action, callback
-      checkpoint._authorizeUser({
-        permissionSetKey: require('crypto').createHash('sha1').update(['TEST1', 'TEST2'].join('/')).digest('base64'),
-        id: 'TEST-SESSION-ID',
-        username: 'TEST',
-        user: {
-          groups: {
-            'TEST1': {
-              permissions: {}
-            },
-            'TEST2': {
-              permissions: {}
-            }
-          }
-        }
-      }, '/test/path', 'set', function (e, authorized) {
-
-        if (e) return done(e);
-
-        expect(authorized).to.be(false);
-
-        var cached = checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey);
-
-        expect(cached).to.not.be(null);
-
-        checkpoint.clearCaches();
-
-        expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(null);
-
-        done();
-      });
-    });
-  });
-
-  it('tests caching in checkpoint, cache size 5', function (done) {
-
-    initializeCheckpoint(function (e, checkpoint) {
-
-      if (e) return done(e);
-
-      async.timesSeries(10, function (time, timeCB) {
-
-        var testPermissionSetKey = require('crypto').createHash('sha1').update(['TEST1', 'TEST2', 'TEST_TIME' + time].join('/')).digest('base64');
+        expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(
+          null
+        );
 
         //session, path, action, callback
-        checkpoint._authorizeUser({
-          permissionSetKey: testPermissionSetKey,
-          id: 'TEST-SESSION-ID' + time,
-          username: 'TEST' + time,
-          user: {
-            groups: {
-              'TEST1': {
-                permissions: {}
-              },
-              'TEST2': {
-                permissions: {}
+        checkpoint._authorizeUser(
+          {
+            permissionSetKey: require('crypto')
+              .createHash('sha1')
+              .update(['TEST1', 'TEST2'].join('/'))
+              .digest('base64'),
+            id: 'TEST-SESSION-ID',
+            username: 'TEST',
+            user: {
+              groups: {
+                TEST1: {
+                  permissions: {}
+                },
+                TEST2: {
+                  permissions: {}
+                }
               }
             }
-          }
-        }, '/test/path', 'set', function (e, authorized) {
+          },
+          '/test/path',
+          'set',
+          function(e, authorized) {
+            if (e) return done(e);
 
+            expect(authorized).to.be(false);
+
+            var cached = checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey);
+
+            expect(cached).to.not.be(null);
+
+            checkpoint.clearCaches();
+
+            expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(
+              null
+            );
+
+            done();
+          }
+        );
+      });
+    });
+
+    it('tests caching in checkpoint, cache size 5', function(done) {
+      initializeCheckpoint(
+        function(e, checkpoint) {
           if (e) return done(e);
 
-          expect(authorized).to.be(false);
+          async.timesSeries(
+            10,
+            function(time, timeCB) {
+              var testPermissionSetKey = require('crypto')
+                .createHash('sha1')
+                .update(['TEST1', 'TEST2', 'TEST_TIME' + time].join('/'))
+                .digest('base64');
 
-          var cached = checkpoint.__cache_checkpoint_permissionset.get(testPermissionSetKey);
+              //session, path, action, callback
+              checkpoint._authorizeUser(
+                {
+                  permissionSetKey: testPermissionSetKey,
+                  id: 'TEST-SESSION-ID' + time,
+                  username: 'TEST' + time,
+                  user: {
+                    groups: {
+                      TEST1: {
+                        permissions: {}
+                      },
+                      TEST2: {
+                        permissions: {}
+                      }
+                    }
+                  }
+                },
+                '/test/path',
+                'set',
+                function(e, authorized) {
+                  if (e) return done(e);
 
-          expect(cached).to.not.be(null);
+                  expect(authorized).to.be(false);
 
-          timeCB();
-        });
+                  var cached = checkpoint.__cache_checkpoint_permissionset.get(
+                    testPermissionSetKey
+                  );
 
-      }, function (e) {
+                  expect(cached).to.not.be(null);
 
-        if (e) return done(e);
+                  timeCB();
+                }
+              );
+            },
+            function(e) {
+              if (e) return done(e);
 
-        expect(checkpoint.__cache_checkpoint_permissionset.values().length).to.be(5);
-        expect(checkpoint.__cache_checkpoint_authorization.values().length).to.be(5);
+              expect(checkpoint.__cache_checkpoint_permissionset.values().length).to.be(5);
+              expect(checkpoint.__cache_checkpoint_authorization.values().length).to.be(5);
 
-        done();
-      });
-    }, {
-      __cache_checkpoint_permissionset: {
-        max: 5
-      },
-      __cache_checkpoint_authorization: {
-        max: 5
-      }
-    });
-  });
-
-  it('tests caching in checkpoint, cache size 10', function (done) {
-
-    initializeCheckpoint(function (e, checkpoint) {
-
-      if (e) return done(e);
-
-      async.timesSeries(10, function (time, timeCB) {
-
-        var testPermissionSetKey = require('crypto').createHash('sha1').update(['TEST1', 'TEST2', 'TEST_TIME' + time].join('/')).digest('base64');
-
-        //session, path, action, callback
-        checkpoint._authorizeUser({
-          permissionSetKey: testPermissionSetKey,
-          id: 'TEST-SESSION-ID' + time,
-          username: 'TEST' + time,
-          user: {
-            groups: {
-              'TEST1': {
-                permissions: {}
-              },
-              'TEST2': {
-                permissions: {}
-              }
+              done();
             }
+          );
+        },
+        {
+          __cache_checkpoint_permissionset: {
+            max: 5
+          },
+          __cache_checkpoint_authorization: {
+            max: 5
           }
-        }, '/test/path', 'set', function (e, authorized) {
+        }
+      );
+    });
 
+    it('tests caching in checkpoint, cache size 10', function(done) {
+      initializeCheckpoint(
+        function(e, checkpoint) {
           if (e) return done(e);
 
-          expect(authorized).to.be(false);
+          async.timesSeries(
+            10,
+            function(time, timeCB) {
+              var testPermissionSetKey = require('crypto')
+                .createHash('sha1')
+                .update(['TEST1', 'TEST2', 'TEST_TIME' + time].join('/'))
+                .digest('base64');
 
-          var cached = checkpoint.__cache_checkpoint_permissionset.get(testPermissionSetKey);
+              //session, path, action, callback
+              checkpoint._authorizeUser(
+                {
+                  permissionSetKey: testPermissionSetKey,
+                  id: 'TEST-SESSION-ID' + time,
+                  username: 'TEST' + time,
+                  user: {
+                    groups: {
+                      TEST1: {
+                        permissions: {}
+                      },
+                      TEST2: {
+                        permissions: {}
+                      }
+                    }
+                  }
+                },
+                '/test/path',
+                'set',
+                function(e, authorized) {
+                  if (e) return done(e);
 
-          expect(cached).to.not.be(null);
+                  expect(authorized).to.be(false);
 
-          timeCB();
-        });
+                  var cached = checkpoint.__cache_checkpoint_permissionset.get(
+                    testPermissionSetKey
+                  );
 
-      }, function (e) {
+                  expect(cached).to.not.be(null);
 
-        if (e) return done(e);
+                  timeCB();
+                }
+              );
+            },
+            function(e) {
+              if (e) return done(e);
 
-        expect(checkpoint.__cache_checkpoint_permissionset.values().length).to.be(10);
-        expect(checkpoint.__cache_checkpoint_authorization.values().length).to.be(10);
+              expect(checkpoint.__cache_checkpoint_permissionset.values().length).to.be(10);
+              expect(checkpoint.__cache_checkpoint_authorization.values().length).to.be(10);
 
-        done();
-      });
-    }, {
-      __cache_checkpoint_permissionset: {
-        max: 10
-      },
-      __cache_checkpoint_authorization: {
-        max: 10
-      }
-    });
-  });
-
-  xit('it tests _authorizeSession function, early sync return on async callback', function(done){
-
-    this.timeout(60000);
-
-    var startedTimestamp = Date.now();
-
-    var checks = [];
-
-    for (var i = 0; i < 1000000; i++){
-      checks.push({
-        session:{
-          policy: {}
+              done();
+            }
+          );
         },
-        path:'test/path' + i,
-        action:'SET'
-      });
-    }
-
-    var failureCount = 0;
-    var okCount = 0;
-
-    initializeCheckpoint(function (e, checkpoint) {
-
-      if (e) {
-        return done(e);
-      }
-
-      checkpoint.__cache_checkpoint_authorization = {
-        getSync: function(permissionCacheKey){
-          return false;
+        {
+          __cache_checkpoint_permissionset: {
+            max: 10
+          },
+          __cache_checkpoint_authorization: {
+            max: 10
+          }
         }
-      };
+      );
+    });
 
-      async.each(checks, function(check, checkCB){
-        checkpoint._authorizeSession(check.session, check.path, check.action, function(e){
-          if (e){
-            failureCount++;
-          } else {
-            okCount++;
-          }
-          checkCB();
+    xit('it tests _authorizeSession function, early sync return on async callback', function(done) {
+      this.timeout(60000);
+
+      var startedTimestamp = Date.now();
+
+      var checks = [];
+
+      for (var i = 0; i < 1000000; i++) {
+        checks.push({
+          session: {
+            policy: {}
+          },
+          path: 'test/path' + i,
+          action: 'SET'
         });
-      }, function(){
-        var duration = Date.now() - startedTimestamp;
-        expect(okCount).to.be(1000000);
-        done();
+      }
+
+      var failureCount = 0;
+      var okCount = 0;
+
+      initializeCheckpoint(function(e, checkpoint) {
+        if (e) {
+          return done(e);
+        }
+
+        checkpoint.__cache_checkpoint_authorization = {
+          getSync: function(permissionCacheKey) {
+            return false;
+          }
+        };
+
+        async.each(
+          checks,
+          function(check, checkCB) {
+            checkpoint._authorizeSession(check.session, check.path, check.action, function(e) {
+              if (e) {
+                failureCount++;
+              } else {
+                okCount++;
+              }
+              checkCB();
+            });
+          },
+          function() {
+            var duration = Date.now() - startedTimestamp;
+            expect(okCount).to.be(1000000);
+            done();
+          }
+        );
       });
     });
-  });
 
-  it('it tests _authorizeSession function, session has no policy', function(done){
+    it('it tests _authorizeSession function, session has no policy', function(done) {
+      this.timeout(60000);
 
-    this.timeout(60000);
-
-    initializeCheckpoint(function (e, checkpoint) {
-
-      if (e) {
-        return done(e);
-      }
-
-      var testData = {
-        session:{
-          policy: {}
-        },
-        sessionNoPolicy:{},
-        sessionWithType:{
-          type:1,
-          policy: {
-            "1":{}
-          }
-        },
-        sessionWithTtl:{
-          timestamp:Date.now(),
-          type:1,
-          policy: {
-            "1":{ttl:1}
-          }
-        },
-        path:'test/path',
-        action:'SET'
-      }
-
-      checkpoint.__cache_checkpoint_authorization = {
-        getSync: function(permissionCacheKey){
-          return false;
+      initializeCheckpoint(function(e, checkpoint) {
+        if (e) {
+          return done(e);
         }
-      };
 
-      checkpoint._authorizeSession(testData.session, testData.path, testData.action,
-        function(e, authorised, reason){
+        var testData = {
+          session: {
+            policy: {}
+          },
+          sessionNoPolicy: {},
+          sessionWithType: {
+            type: 1,
+            policy: {
+              '1': {}
+            }
+          },
+          sessionWithTtl: {
+            timestamp: Date.now(),
+            type: 1,
+            policy: {
+              '1': { ttl: 1 }
+            }
+          },
+          path: 'test/path',
+          action: 'SET'
+        };
+
+        checkpoint.__cache_checkpoint_authorization = {
+          getSync: function(permissionCacheKey) {
+            return false;
+          }
+        };
+
+        checkpoint._authorizeSession(testData.session, testData.path, testData.action, function(
+          e,
+          authorised,
+          reason
+        ) {
           expect(e).to.be(null);
           expect(authorised).to.be(false);
           expect(reason).to.be('no policy for session type: undefined');
-          checkpoint._authorizeSession(testData.sessionNoPolicy, testData.path, testData.action,
-            function(e, authorised, reason){
+          checkpoint._authorizeSession(
+            testData.sessionNoPolicy,
+            testData.path,
+            testData.action,
+            function(e, authorised, reason) {
               expect(e).to.be(null);
               expect(authorised).to.be(false);
               expect(reason).to.be('no policy attached to session: {}');
-              setTimeout(function(){
-                checkpoint._authorizeSession(testData.sessionWithTtl, testData.path, testData.action,
-                  function(e, authorised, reason){
+              setTimeout(function() {
+                checkpoint._authorizeSession(
+                  testData.sessionWithTtl,
+                  testData.path,
+                  testData.action,
+                  function(e, authorised, reason) {
                     expect(e).to.be(null);
                     expect(authorised).to.be(false);
                     expect(reason).to.be('expired session token');
-                    checkpoint._authorizeSession(testData.sessionWithType, testData.path, testData.action,
-                      function(e, authorised, reason){
+                    checkpoint._authorizeSession(
+                      testData.sessionWithType,
+                      testData.path,
+                      testData.action,
+                      function(e, authorised, reason) {
                         expect(e).to.be(null);
                         expect(authorised).to.be(true);
                         done();
@@ -562,8 +606,8 @@ describe(require('../../__fixtures/utils/test_helper').create().testName(__filen
               }, 100);
             }
           );
-        }
-      );
+        });
+      });
     });
-  });
-});
+  }
+);

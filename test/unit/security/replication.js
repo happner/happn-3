@@ -1,157 +1,141 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(
+  require('../../__fixtures/utils/test_helper')
+    .create()
+    .testName(__filename, 3),
+  function() {
+    var Promise = require('bluebird');
+    var expect = require('expect.js');
+    var SecurityService = require('../../../lib/services/security/service');
 
-  var Promise = require('bluebird');
-  var expect = require('expect.js');
-  var SecurityService = require('../../../lib/services/security/service');
-
-  var opts = {
-    logger: {
-      createLogger: function () {
-        return {
-          $$TRACE: function () {},
-          createLogger: function () {
-            return {
-              $$TRACE: function () {}
-            };
-          }
-        };
+    var opts = {
+      logger: {
+        createLogger: function() {
+          return {
+            $$TRACE: function() {},
+            createLogger: function() {
+              return {
+                $$TRACE: function() {}
+              };
+            }
+          };
+        }
       }
+    };
+
+    var replicationSubscriptions = {};
+    var replicatedData = {};
+
+    function createMockHappn(obj) {
+      obj.happn = {};
+      obj.happn.services = {};
+      obj.happn.config = {
+        services: {
+          security: {}
+        }
+      };
+
+      obj.happn.services.cache = {
+        new: function() {}
+      };
+
+      obj.happn.services.data = {};
+
+      obj.happn.services.error = {
+        handleFatal: function(str, e) {
+          console.error(str, e);
+        }
+      };
+
+      obj.happn.services.replicator = {
+        on: function(eventName, handler) {
+          replicationSubscriptions[eventName] = handler;
+        },
+        send: function(eventName, payload, callback) {
+          replicatedData[eventName] = payload;
+          callback();
+        }
+      };
     }
-  };
 
-  var replicationSubscriptions = {};
-  var replicatedData = {};
-
-  function createMockHappn(obj) {
-    obj.happn = {};
-    obj.happn.services = {};
-    obj.happn.config = {
-      services:{
-        security:{}
-      }
-    };
-
-    obj.happn.services.cache = {
-      new: function () {}
-    };
-
-    obj.happn.services.data = {};
-
-    obj.happn.services.error = {
-      handleFatal: function (str, e) {
-        console.error(str, e);
-      }
-    };
-
-    obj.happn.services.replicator = {
-      on: function (eventName, handler) {
-        replicationSubscriptions[eventName] = handler;
-      },
-      send: function (eventName, payload, callback) {
-        replicatedData[eventName] = payload;
-        callback();
-      }
-    };
-  }
-
-  function stubInitializationSteps(obj) {
-    obj.__initializeGroups = function () {
-      return Promise.resolve();
-    };
-
-    obj.__initializeUsers = function () {
-    };
-
-    obj.__initializeProfiles = function () {
-    };
-
-    obj.__ensureKeyPair = function () {
-    };
-
-    obj.__initializeCheckPoint = function () {
-    };
-
-    obj.__initializeSessionManagement = function () {
-    };
-
-    obj.__ensureAdminUser = function () {
-    };
-  }
-
-  function stubDataChangedSteps(obj) {
-
-    obj.users = {
-      clearCaches: function () {
+    function stubInitializationSteps(obj) {
+      obj.__initializeGroups = function() {
         return Promise.resolve();
-      }
-    };
+      };
 
-    obj.groups = {
-      clearCaches: function () {
-      }
-    };
+      obj.__initializeUsers = function() {};
 
-    obj.resetSessionPermissions = function () {
-    };
+      obj.__initializeProfiles = function() {};
 
-    obj.checkpoint = {
-      clearCaches: function () {
-      }
-    };
+      obj.__ensureKeyPair = function() {};
 
-    obj.emitChanges = function () {
-    };
-  }
+      obj.__initializeCheckPoint = function() {};
 
-  it('subscribes to replication service security updates', function (done) {
+      obj.__initializeSessionManagement = function() {};
 
-    replicationSubscriptions = {};
+      obj.__ensureAdminUser = function() {};
+    }
 
-    var security = new SecurityService(opts);
+    function stubDataChangedSteps(obj) {
+      obj.users = {
+        clearCaches: function() {
+          return Promise.resolve();
+        }
+      };
 
-    createMockHappn(security);
-    stubInitializationSteps(security);
+      obj.groups = {
+        clearCaches: function() {}
+      };
 
-    security.initialize({}, function (e) {
+      obj.resetSessionPermissions = function() {};
 
-      if (e) return done(e);
+      obj.checkpoint = {
+        clearCaches: function() {}
+      };
 
-      expect(Object.keys(replicationSubscriptions)).to.eql(['/security/dataChanged']);
+      obj.emitChanges = function() {};
+    }
 
-      done();
+    it('subscribes to replication service security updates', function(done) {
+      replicationSubscriptions = {};
 
-    });
+      var security = new SecurityService(opts);
 
-  });
+      createMockHappn(security);
+      stubInitializationSteps(security);
 
-  it('replicates the security updates', function (done) {
+      security.initialize({}, function(e) {
+        if (e) return done(e);
 
-    replicatedData = {};
+        expect(Object.keys(replicationSubscriptions)).to.eql(['/security/dataChanged']);
 
-    var security = new SecurityService(opts);
-
-    createMockHappn(security);
-    stubDataChangedSteps(security);
-
-    security.dataChanged('whatHappnd', 'changedData', 'additionalInfo', function (e) {
-
-      if (e) return done(e);
-
-      try {
-        expect(replicatedData).to.eql({
-          '/security/dataChanged': {
-            additionalInfo: 'additionalInfo',
-            changedData: 'changedData',
-            whatHappnd: 'whatHappnd'
-          }
-        });
         done();
-      } catch (err) {
-        done(err);
-      }
-
+      });
     });
 
-  });
+    it('replicates the security updates', function(done) {
+      replicatedData = {};
 
-});
+      var security = new SecurityService(opts);
+
+      createMockHappn(security);
+      stubDataChangedSteps(security);
+
+      security.dataChanged('whatHappnd', 'changedData', 'additionalInfo', function(e) {
+        if (e) return done(e);
+
+        try {
+          expect(replicatedData).to.eql({
+            '/security/dataChanged': {
+              additionalInfo: 'additionalInfo',
+              changedData: 'changedData',
+              whatHappnd: 'whatHappnd'
+            }
+          });
+          done();
+        } catch (err) {
+          done(err);
+        }
+      });
+    });
+  }
+);

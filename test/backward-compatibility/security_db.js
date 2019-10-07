@@ -1,70 +1,79 @@
-describe(require('../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(
+  require('../__fixtures/utils/test_helper')
+    .create()
+    .testName(__filename, 3),
+  function() {
+    this.timeout(30000);
 
-  this.timeout(30000);
+    var happn = require('../../lib/index');
+    var service = happn.service;
 
-  var happn = require('../../lib/index');
-  var service = happn.service;
+    var path = require('path');
 
-  var path = require('path');
+    var happnInstance = null;
 
-  var happnInstance = null;
+    var http = require('http');
 
-  var http = require('http');
-
-  var serviceConfig = {
-    port: 10000,
-    secure: true,
-    services: {
-      data: {
-        config: {
-          autoUpdateDBVersion:true,
-          filename: path.resolve(__dirname, '..', '__fixtures', 'test', 'integration', 'security', 'backward_compatibility.nedb')
+    var serviceConfig = {
+      port: 10000,
+      secure: true,
+      services: {
+        data: {
+          config: {
+            autoUpdateDBVersion: true,
+            filename: path.resolve(
+              __dirname,
+              '..',
+              '__fixtures',
+              'test',
+              'integration',
+              'security',
+              'backward_compatibility.nedb'
+            )
+          }
         }
       }
-    }
-  };
+    };
 
-  before('should initialize the service', function (callback) {
+    before('should initialize the service', function(callback) {
+      this.timeout(20000);
 
-    this.timeout(20000);
+      try {
+        service.create(serviceConfig, function(e, happnInst) {
+          if (e) return callback(e);
 
-    try {
+          happnInstance = happnInst;
 
-      service.create(serviceConfig, function (e, happnInst) {
+          callback();
+        });
+      } catch (e) {
+        callback(e);
+      }
+    });
 
-        if (e) return callback(e);
+    after(function(done) {
+      if (happnInstance)
+        happnInstance
+          .stop()
+          .then(done)
+          .catch(done);
+      else done();
+    });
 
-        happnInstance = happnInst;
+    it('logs in with the correct admin password', function(done) {
+      happnInstance.services.session
+        .localClient({
+          username: '_ADMIN',
+          password: 'password'
+        })
 
-        callback();
+        .then(function(clientInstance) {
+          done();
+        })
 
-      });
-    } catch (e) {
-      callback(e);
-    }
-  });
-
-  after(function (done) {
-
-    if (happnInstance) happnInstance.stop()
-      .then(done)
-      .catch(done);
-    else done();
-  });
-
-  it('logs in with the correct admin password', function (done) {
-
-    happnInstance.services.session.localClient({
-        username: '_ADMIN',
-        password: 'password'
-      })
-
-      .then(function (clientInstance) {
-        done();
-      })
-
-      .catch(function (e) {
-        done(e);
-      });
-  });
-});
+        .catch(function(e) {
+          done(e);
+        });
+    });
+  }
+);

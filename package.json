@@ -1,43 +1,36 @@
 {
   "name": "happn-3",
+  "version": "10.3.0",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
-  "version": "10.2.3",
-  "main": "./lib/index",
-  "protocol": "4",
-  "database": "1",
-  "scripts": {
-    "test": "gulp lint && mocha --exit silence.js test/integration/** test/unit/** test/backward-compatibility/**",
-    "test-perf": "gulp lint && mocha silence.js test/performance/subscriptions.js",
-    "test-unit": "mocha silence.js test/unit/**",
-    "test-cover": "nyc _mocha --exit -- silence.js test/integration/** test/unit/** test/backward-compatibility/**",
-    "test-browser": "UPDATE_BROWSER_PRIMUS=true gulp --gulpfile test/browser/gulp-01.js",
-    "test-longrunning": "node test/test-longrunning/serial-run.js",
-    "test-sanity": "mocha silence.js test/integration/**/*sanity.js",
-    "release": "rm -rf node_modules && rm -f package-lock.json && npm install && UPDATE_BROWSER_PRIMUS=true npm run test-cover",
-    "test-010": "source ~/.nvm/nvm.sh && nvm use 0.10 && rm -rf node_modules && npm install && node_modules/mocha/bin/_mocha test/integration/**",
-    "test-lint": "gulp lint",
-    "report-coverage": "nyc report --reporter=text-lcov | coveralls"
-  },
-  "author": "Tenacious and NSOFT",
-  "license": "MIT",
   "keywords": [
     "mongo",
-    "redis",
     "nedb",
     "primus",
+    "redis",
     "websockets"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/happner/happn-3.git"
   },
-  "nyc": {
-    "exclude": [
-      "test",
-      "docs",
-      "gulpfile.js",
-      "lib/services/connect/public/browser_primus.js"
-    ]
+  "license": "MIT",
+  "author": "Tenacious and NSOFT",
+  "main": "./lib/index",
+  "scripts": {
+    "coverage": "npm run test-cover && npm run report",
+    "lint": "eslint '**/*.js'",
+    "lint-fix": "eslint '**/*.js' --fix",
+    "release": "rm -rf node_modules && rm -f package-lock.json && npm install && UPDATE_BROWSER_PRIMUS=true npm run test-cover",
+    "report-coverage": "nyc report --reporter=text-lcov | coveralls",
+    "test": "npm run lint && mocha --exit silence.js test/integration/** test/unit/** test/backward-compatibility/**",
+    "test-010": "source ~/.nvm/nvm.sh && nvm use 0.10 && rm -rf node_modules && npm install && node_modules/mocha/bin/_mocha test/integration/**",
+    "test-browser": "UPDATE_BROWSER_PRIMUS=true gulp --gulpfile test/browser/gulp-01.js",
+    "test-cover": "nyc _mocha --exit silence.js test/integration/** test/unit/** test/backward-compatibility/**",
+    "test-lint": "npm run lint",
+    "test-longrunning": "node test/test-longrunning/serial-run.js",
+    "test-perf": "npm run lint && mocha silence.js test/performance/subscriptions.js",
+    "test-sanity": "mocha silence.js test/integration/**/*sanity.js",
+    "test-unit": "mocha silence.js test/unit/**"
   },
   "dependencies": {
     "async": "^2.6.1",
@@ -71,7 +64,7 @@
     "sift": "^7.0.1",
     "tame-search": "^1.4.1",
     "traverse": "^0.6.6",
-    "uglify-js": "^3.4.9",
+    "uglify-es": "^3.3.9",
     "underscore.string": "^3.3.5",
     "user-home": "^2.0.0",
     "uuid": "^3.3.2",
@@ -81,8 +74,11 @@
     "await-delay": "^1.0.0",
     "byline": "5.0.0",
     "chai": "^4.2.0",
-    "coveralls": "^3.0.2",
+    "coveralls": "^3.0.6",
     "debug": "4.1.1",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "expect.js": "0.3.1",
     "gulp": "^4.0.0",
     "gulp-jshint": "^2.1.0",
@@ -98,11 +94,22 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.5",
-    "mocha": "^5.2.0",
+    "mocha": "^6.2.0",
     "mongodb": "^3.3.1",
     "nyc": "^13.3.0",
+    "prettier": "^1.18.2",
     "request": "^2.88.0",
     "why-is-node-running": "^2.1.0"
   },
+  "database": "1",
+  "nyc": {
+    "exclude": [
+      "test",
+      "docs",
+      "gulpfile.js",
+      "lib/services/connect/public/browser_primus.js"
+    ]
+  },
+  "protocol": "4",
   "readmeFilename": "README.md"
 }

@@ -1,136 +1,138 @@
-describe(require('../../__fixtures/utils/test_helper').create().testName(__filename, 3), function () {
+describe(
+  require('../../__fixtures/utils/test_helper')
+    .create()
+    .testName(__filename, 3),
+  function() {
+    this.timeout(20000);
 
-  this.timeout(20000);
+    var expect = require('expect.js');
 
-  var expect = require('expect.js');
+    var service = require('../../../lib/services/cache/service');
+    var serviceInstance = new service();
 
-  var service = require('../../../lib/services/cache/service');
-  var serviceInstance = new service();
+    var testId = require('shortid').generate();
 
-  var testId = require('shortid').generate();
+    var async = require('async');
 
-  var async = require('async');
-
-  var lru_config = {
-    defaultCacheOpts: {
-      type: 'LRU',
-      cache: {
-        max: 300,
-        maxAge: 0
-      }
-    }
-  };
-
-  before('should initialize the service', function (callback) {
-
-    var UtilService = require('../../../lib/services/utils/service');
-    var utilService = new UtilService();
-
-    serviceInstance.happn = {
-      services: {
-        utils: utilService
+    var lru_config = {
+      defaultCacheOpts: {
+        type: 'LRU',
+        cache: {
+          max: 300,
+          maxAge: 0
+        }
       }
     };
 
-    serviceInstance.initialize(lru_config, callback);
-  });
+    before('should initialize the service', function(callback) {
+      var UtilService = require('../../../lib/services/utils/service');
+      var utilService = new UtilService();
 
-  after(function (done) {
+      serviceInstance.happn = {
+        services: {
+          utils: utilService
+        }
+      };
 
-    serviceInstance.stop(done);
-  });
+      serviceInstance.initialize(lru_config, callback);
+    });
 
-  it('sets data, ensures when we get a value back it is cloned by default', function (done) {
+    after(function(done) {
+      serviceInstance.stop(done);
+    });
 
-    var key = testId + 'test1';
+    it('sets data, ensures when we get a value back it is cloned by default', function(done) {
+      var key = testId + 'test1';
 
-    var data = {"dkey": key};
+      var data = { dkey: key };
 
-    serviceInstance.set(key, data)
+      serviceInstance
+        .set(key, data)
 
-      .then(function (result) {
+        .then(function(result) {
+          serviceInstance.__defaultCache
+            .get(key)
+            .then(function(result) {
+              expect(result === data).to.be(false);
+              done();
+            })
+            .catch(done);
+        })
 
-        serviceInstance.__defaultCache.get(key)
-          .then(function (result) {
-            expect(result === data).to.be(false);
-            done();
-          })
-          .catch(done);
-      })
+        .catch(done);
+    });
 
-      .catch(done);
-  });
+    it('sets data with clone: false, ensures when we get a value back it is not cloned', function(done) {
+      var key = testId + 'test1';
 
-  it('sets data with clone: false, ensures when we get a value back it is not cloned', function (done) {
+      var data = { dkey: key };
 
-    var key = testId + 'test1';
+      serviceInstance
+        .set(key, data, { clone: false })
 
-    var data = {"dkey": key};
+        .then(function(result) {
+          serviceInstance.__defaultCache
+            .get(key)
+            .then(function(result) {
+              expect(result === data).to.be(true);
+              done();
+            })
+            .catch(done);
+        })
 
-    serviceInstance.set(key, data, {clone:false})
+        .catch(done);
+    });
 
-      .then(function (result) {
+    it('specific cache, sets data, ensures when we get a value back it is cloned by default', function(done) {
+      var key = testId + 'test1';
 
-        serviceInstance.__defaultCache.get(key)
-          .then(function (result) {
-            expect(result === data).to.be(true);
-            done();
-          })
-          .catch(done);
-      })
+      var data = { dkey: key };
 
-      .catch(done);
-  });
+      var Cache = require('../../../lib/services/cache/cache_lru');
 
-  it('specific cache, sets data, ensures when we get a value back it is cloned by default', function (done) {
+      var cache = new Cache();
 
-    var key = testId + 'test1';
+      cache.utilities = require('../../../lib/services/utils/shared');
 
-    var data = {"dkey": key};
+      cache
+        .set(key, data)
 
-    var Cache = require('../../../lib/services/cache/cache_lru');
+        .then(function(result) {
+          cache
+            .get(key)
+            .then(function(result) {
+              expect(result === data).to.be(false);
+              done();
+            })
+            .catch(done);
+        })
 
-    var cache = new Cache();
+        .catch(done);
+    });
 
-    cache.utilities = require('../../../lib/services/utils/shared');
+    it('specific cache, sets data with clone: false, ensures when we get a value back it is not cloned', function(done) {
+      var key = testId + 'test1';
 
-    cache.set(key, data)
+      var data = { dkey: key };
 
-      .then(function (result) {
+      var Cache = require('../../../lib/services/cache/cache_lru');
 
-        cache.get(key)
-          .then(function (result) {
-            expect(result === data).to.be(false);
-            done();
-          })
-          .catch(done);
-      })
+      var cache = new Cache();
 
-      .catch(done);
-  });
+      cache
+        .set(key, data, { clone: false })
 
-  it('specific cache, sets data with clone: false, ensures when we get a value back it is not cloned', function (done) {
+        .then(function(result) {
+          cache
+            .get(key)
+            .then(function(result) {
+              expect(result === data).to.be(true);
+              done();
+            })
+            .catch(done);
+        })
 
-    var key = testId + 'test1';
-
-    var data = {"dkey": key};
-
-    var Cache = require('../../../lib/services/cache/cache_lru');
-
-    var cache = new Cache();
-
-    cache.set(key, data, {clone:false})
-
-      .then(function (result) {
-
-        cache.get(key)
-          .then(function (result) {
-            expect(result === data).to.be(true);
-            done();
-          })
-          .catch(done);
-      })
-
-      .catch(done);
-  });
-});
+        .catch(done);
+    });
+  }
+);

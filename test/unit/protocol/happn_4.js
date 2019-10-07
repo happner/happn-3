@@ -4,8 +4,8 @@ describe(
   require('../../__fixtures/utils/test_helper')
     .create()
     .testName(__filename, 4),
-  function () {
-    it('tests the fail method, not login action, encrypted payloads', function (done) {
+  function() {
+    it('tests the fail method, not login action, encrypted payloads', function(done) {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
@@ -13,7 +13,7 @@ describe(
       var cryptoService = new CryptoService();
       const utils = require('../../../lib/services/utils/shared');
 
-      cryptoService.initialize({}, function (e) {
+      cryptoService.initialize({}, function(e) {
         if (e) return done(e);
 
         protocol.happn = {
@@ -47,18 +47,16 @@ describe(
       });
     });
 
-    it('tests the fail method, login action, encrypted payloads', function (done) {
+    it('tests the fail method, login action, encrypted payloads', function(done) {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
       const utils = require('../../../lib/services/utils/shared');
 
-
-
       const CryptoService = require('../../../lib/services/crypto/service');
       var cryptoService = new CryptoService();
 
-      cryptoService.initialize({}, function (e) {
+      cryptoService.initialize({}, function(e) {
         if (e) return done(e);
 
         protocol.happn = {
@@ -101,7 +99,7 @@ describe(
       });
     });
 
-    it('tests the fail method, not login action, encrypted payloads, negative', function (done) {
+    it('tests the fail method, not login action, encrypted payloads, negative', function(done) {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
@@ -110,7 +108,7 @@ describe(
       const CryptoService = require('../../../lib/services/crypto/service');
       var cryptoService = new CryptoService();
 
-      cryptoService.initialize({}, function (e) {
+      cryptoService.initialize({}, function(e) {
         if (e) return done(e);
 
         protocol.happn = {
@@ -157,19 +155,18 @@ describe(
       });
     });
 
-    it('tests the success method, encrypted payloads', function (done) {
+    it('tests the success method, encrypted payloads', function(done) {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
       const utils = require('../../../lib/services/utils/shared');
-
 
       protocol.protocolVersion = 'happn';
 
       const CryptoService = require('../../../lib/services/crypto/service');
       var cryptoService = new CryptoService();
 
-      cryptoService.initialize({}, function (e) {
+      cryptoService.initialize({}, function(e) {
         if (e) return done(e);
 
         protocol.happn = {
@@ -204,7 +201,7 @@ describe(
       });
     });
 
-    it('tests the success method, encrypted payloads, negative', function (done) {
+    it('tests the success method, encrypted payloads, negative', function(done) {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
@@ -213,7 +210,7 @@ describe(
       const CryptoService = require('../../../lib/services/crypto/service');
       var cryptoService = new CryptoService();
 
-      cryptoService.initialize({}, function (e) {
+      cryptoService.initialize({}, function(e) {
         if (e) return done(e);
 
         protocol.happn = {
@@ -255,94 +252,101 @@ describe(
       });
     });
 
-    it('tests the validate function', function(){
-
+    it('tests the validate function', function() {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
       const UtilsService = require('../../../lib/services/utils/service');
-      const badPathMessage = 'Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ) _ -, ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*';
+      const badPathMessage =
+        'Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ) _ -, ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*';
 
       protocol.protocolVersion = 'happn';
 
       protocol.happn = {
-        services:{
-          utils:new UtilsService()
+        services: {
+          utils: new UtilsService()
         }
-      }
+      };
 
       expect(protocol.validate({})).to.eql({});
 
-      var testMessage = {request:{
-        action:'on',
-        path:'/test/1'
-      }};
+      var testMessage = {
+        request: {
+          action: 'on',
+          path: '/test/1'
+        }
+      };
 
       expect(protocol.validate(testMessage)).to.eql(testMessage);
 
-      testMessage = {request:{
-        action:'on',
-        path:'\\test\\1'
-      }};
+      testMessage = {
+        request: {
+          action: 'on',
+          path: '\\test\\1'
+        }
+      };
 
-      try{
+      try {
         protocol.validate(testMessage);
-      }catch(e){
+      } catch (e) {
         expect(e.message).to.be(badPathMessage);
       }
     });
 
-    function mockProtocol(){
+    function mockProtocol() {
       const Protocol = require('../../../lib/services/protocol/happn_4');
       const protocol = new Protocol();
 
       const UtilsService = require('../../../lib/services/utils/service');
 
       protocol.protocolVersion = 'happn';
-  //this.happn.services.security._keyPair.privateKey
+      //this.happn.services.security._keyPair.privateKey
       protocol.happn = {
-        services:{
-          utils:new UtilsService(),
-          crypto:{
-            asymmetricDecrypt: function(pubKey, privKey, encrypted){
+        services: {
+          utils: new UtilsService(),
+          crypto: {
+            asymmetricDecrypt: function(pubKey, privKey, encrypted) {
               return encrypted;
             },
-            symmetricDecryptObjectiv: function(encrypted, secret){
+            symmetricDecryptObjectiv: function(encrypted, secret) {
               return encrypted;
             }
           },
-          security:{
-            _keyPair:{
-              privateKey:'mock-priv-key'
+          security: {
+            _keyPair: {
+              privateKey: 'mock-priv-key'
             }
           }
         }
-      }
+      };
 
       return protocol;
     }
 
     it('tests the transformIn method, encrypted message', function(done) {
-
       var protocol = mockProtocol();
 
-      expect(protocol.transformIn({
-        raw:'test'
-      })).to.eql({
+      expect(
+        protocol.transformIn({
+          raw: 'test'
+        })
+      ).to.eql({
         request: 'test'
       });
 
-      expect(protocol.transformIn({
-        session:{
-          secret:'test-secretbhetshwyer342638shete'
-        },
-        raw:{
-          encrypted:'test'
-        }
-      })).to.eql({
+      expect(
+        protocol.transformIn({
+          session: {
+            secret: 'test-secretbhetshwyer342638shete'
+          },
+          raw: {
+            encrypted: 'test'
+          }
+        })
+      ).to.eql({
         request: 'test',
-        session:{
-          secret:'test-secretbhetshwyer342638shete'
+        session: {
+          secret: 'test-secretbhetshwyer342638shete'
         }
       });
 
@@ -350,34 +354,33 @@ describe(
     });
 
     it('tests the transformIn method, encrypted login', function(done) {
-
       var protocol = mockProtocol();
 
       var transformed = protocol.transformIn({
-        session:{
-          secret:'test-secret'
+        session: {
+          secret: 'test-secret'
         },
-        raw:{
-          action:'login',
-          data:{
-            encrypted:JSON.stringify({"test":"object"})
+        raw: {
+          action: 'login',
+          data: {
+            encrypted: JSON.stringify({ test: 'object' })
           }
         }
       });
 
       expect(transformed).to.eql({
-        "session": {
-          "secret": "test-secret",
-          "isEncrypted": true
+        session: {
+          secret: 'test-secret',
+          isEncrypted: true
         },
-        "request": {
-          "action": "login",
-          "data": {
-            "test": "object",
-            "isEncrypted": true
+        request: {
+          action: 'login',
+          data: {
+            test: 'object',
+            isEncrypted: true
           },
-          "eventId":undefined,
-          "publicKey":undefined
+          eventId: undefined,
+          publicKey: undefined
         }
       });
 
@@ -388,18 +391,18 @@ describe(
       var protocol = mockProtocol();
 
       var transformed = protocol.transformSystem({
-        action:'disconnect'
+        action: 'disconnect'
       });
 
       expect(transformed).to.eql({
-        "action": "disconnect",
-        "response": {
-          "_meta": {
-            "type": "system"
+        action: 'disconnect',
+        response: {
+          _meta: {
+            type: 'system'
           },
-          "eventKey": "server-side-disconnect",
-          "data": "server side disconnect",
-          "reconnect": true
+          eventKey: 'server-side-disconnect',
+          data: 'server side disconnect',
+          reconnect: true
         }
       });
 
@@ -410,26 +413,26 @@ describe(
       var protocol = mockProtocol();
 
       var transformed = protocol.transformSystem({
-        action:'disconnect',
-        options:{
+        action: 'disconnect',
+        options: {
           reconnect: false,
           reason: 'just die'
         }
       });
 
       expect(transformed).to.eql({
-        "action": "disconnect",
-        "options": {
-          "reason": "just die",
-          "reconnect": false
+        action: 'disconnect',
+        options: {
+          reason: 'just die',
+          reconnect: false
         },
-        "response": {
-          "_meta": {
-            "type": "system"
+        response: {
+          _meta: {
+            type: 'system'
           },
-          "eventKey": "server-side-disconnect",
-          "data": "just die",
-          "reconnect": false
+          eventKey: 'server-side-disconnect',
+          data: 'just die',
+          reconnect: false
         }
       });
 
@@ -440,23 +443,24 @@ describe(
       var protocol = mockProtocol();
 
       var transformed = protocol.transformSystem({
-        eventKey:'security-data-changed',
-        data:'something happened'
+        eventKey: 'security-data-changed',
+        data: 'something happened'
       });
 
       expect(transformed).to.eql({
-        "data": "something happened",
-        "eventKey": "security-data-changed",
-        "request": {
-          "publication": {
-            "_meta": {
-              "type": "system"
+        data: 'something happened',
+        eventKey: 'security-data-changed',
+        request: {
+          publication: {
+            _meta: {
+              type: 'system'
             },
-            "data": "something happened",
-            "eventKey": "security-data-changed"
+            data: 'something happened',
+            eventKey: 'security-data-changed'
           }
         }
       });
       done();
     });
-  });
+  }
+);
