@@ -148,7 +148,7 @@ describe(
         custom_data: {
           customString: 'customSub1',
           customNumber: 1,
-          cadre:1
+          cadre: 1
         }
       };
 
@@ -157,7 +157,7 @@ describe(
         custom_data: {
           customString: 'customSub2',
           customNumber: 2,
-          cadre:1
+          cadre: 1
         }
       };
 
@@ -222,13 +222,13 @@ describe(
           function(e, result) {
             if (e) return callback(e);
 
-            expect(result.name == anotherSubGroup.name).to.be(true);
-            expect(result.custom_data.customString == anotherSubGroup.custom_data.customString).to.be(
-              true
-            );
-            expect(result.custom_data.customNumber == anotherSubGroup.custom_data.customNumber).to.be(
-              true
-            );
+            expect(result.name === anotherSubGroup.name).to.be(true);
+            expect(
+              result.custom_data.customString == anotherSubGroup.custom_data.customString
+            ).to.be(true);
+            expect(
+              result.custom_data.customNumber == anotherSubGroup.custom_data.customNumber
+            ).to.be(true);
             callback();
           }
         );
@@ -273,15 +273,19 @@ describe(
       });
 
       it('should get groups matching special criteria', function(callback) {
-        testServices.security.users.listGroups('TEST*', {
-          criteria:{
-            "custom_data.cadre":{$gt:0}
+        testServices.security.users.listGroups(
+          'TEST*',
+          {
+            criteria: {
+              'custom_data.cadre': { $gt: 0 }
+            }
+          },
+          function(e, results) {
+            if (e) return callback(e);
+            expect(results.length).to.be(2);
+            callback();
           }
-        }, function(e, results) {
-          if (e) return callback(e);
-          expect(results.length).to.be(2);
-          callback();
-        });
+        );
       });
 
       it('should add permissions to a group', function(callback) {
@@ -447,10 +451,7 @@ describe(
         });
 
         it('should add another user', function(callback) {
-          testServices.security.users.upsertUser(
-            anotherTestUser,
-            { overwrite: false },
-            callback);
+          testServices.security.users.upsertUser(anotherTestUser, { overwrite: false }, callback);
         });
 
         it('should not add another user with the same name', function(callback) {
@@ -533,15 +534,19 @@ describe(
 
               expect(users.length).to.be(5);
 
-              testServices.security.users.listUsers('*', {
-                criteria:{
-                  "custom_data.something":{$eq:'usefull'}
+              testServices.security.users.listUsers(
+                '*',
+                {
+                  criteria: {
+                    'custom_data.something': { $eq: 'usefull' }
+                  }
+                },
+                function(e, users) {
+                  if (e) return callback(e);
+                  expect(users.length).to.be(3);
+                  callback();
                 }
-              }, function(e, users) {
-                if (e) return callback(e);
-                expect(users.length).to.be(3);
-                callback();
-              });
+              );
             });
           });
         });
