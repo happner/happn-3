@@ -24,7 +24,7 @@
   ],
   "rules": {
     "default-case": "error",
-    "eqeqeq": "off",
+    "eqeqeq": ["error", "always", {"null": "ignore"}],
     "no-console": "off",
     "no-useless-return": "error",
     "prettier/prettier": "error"
