@@ -329,7 +329,7 @@ describe(
             criteria: {
               'custom_data.cadre': { $gt: 0 }
             },
-            count:true
+            count: true
           },
           function(e, results) {
             if (e) return callback(e);
@@ -346,7 +346,7 @@ describe(
             criteria: {
               'custom_data.cadre': { $eq: 'lizard' }
             },
-            count:true
+            count: true
           },
           function(e, results) {
             if (e) return callback(e);
@@ -636,7 +636,7 @@ describe(
                   criteria: {
                     'custom_data.something': { $eq: 'usefull' }
                   },
-                  count:true
+                  count: true
                 },
                 function(e, users) {
                   if (e) return callback(e);
@@ -665,7 +665,7 @@ describe(
                   criteria: {
                     'custom_data.something': { $eq: 'lizard' }
                   },
-                  count:true
+                  count: true
                 },
                 function(e, users) {
                   if (e) return callback(e);
@@ -694,7 +694,7 @@ describe(
                   criteria: {
                     'custom_data.something': { $eq: 'usefull' }
                   },
-                  limit:1
+                  limit: 1
                 },
                 function(e, users) {
                   if (e) return callback(e);
@@ -723,7 +723,7 @@ describe(
                   criteria: {
                     'custom_data.something': { $eq: 'usefull' }
                   },
-                  skip:1
+                  skip: 1
                 },
                 function(e, users) {
                   if (e) return callback(e);
@@ -752,8 +752,8 @@ describe(
                   criteria: {
                     'custom_data.something': { $eq: 'usefull' }
                   },
-                  limit:1,
-                  count:true
+                  limit: 1,
+                  count: true
                 },
                 function(e, users) {
                   if (e) return callback(e);
@@ -782,8 +782,8 @@ describe(
                   criteria: {
                     'custom_data.something': { $eq: 'usefull' }
                   },
-                  count:true,
-                  skip:1
+                  count: true,
+                  skip: 1
                 },
                 function(e, users) {
                   if (e) return callback(e);
