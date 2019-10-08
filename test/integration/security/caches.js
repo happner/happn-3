@@ -319,36 +319,4 @@ describe(testHelper.testName(__filename, 3), function() {
       }
     );
   });
-
-  it('lists all users, checks we have the all users list cached, then update a user and ensure the cache is cleared', function(done) {
-    expect(serviceInstance.services.security.users.__cache_list_all_users).to.be(null);
-
-    serviceInstance.services.security.users.listUsers('*', function(e, allUsers) {
-      if (e) return done(e);
-
-      expect(serviceInstance.services.security.users.__cache_list_all_users).to.eql(allUsers);
-
-      serviceInstance.services.security.users.__cache_list_all_users.push({ test: 'data' });
-
-      serviceInstance.services.security.users.listUsers('*', function(e, allUsers) {
-        if (e) return done(e);
-
-        //check we got the cached version - which we sneakily added some data to
-        expect(allUsers.pop().test).to.be('data');
-
-        var user = {
-          username: 'TEST_USR_ALL_TEST',
-          password: 'TEST_USR_ALL_TEST'
-        };
-        //add a user - ensure our cache is clear
-        serviceInstance.services.security.users.upsertUser(user, function(e) {
-          if (e) return done(e);
-
-          expect(serviceInstance.services.security.users.__cache_list_all_users).to.be(null);
-
-          done();
-        });
-      });
-    });
-  });
 });

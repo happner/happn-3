@@ -7,11 +7,6 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
-    var Promise = require('bluebird');
-
-    var test_secret = 'test_secret';
-    var mode = 'embedded';
     var default_timeout = 4000;
     var happnInstance = null;
 
