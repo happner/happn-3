@@ -1792,5 +1792,59 @@ describe(
         }
       );
     });
+
+    it('tests an aggregated search fails, due to unimplemented error', function(callback) {
+      listenerclient.get(
+        '/searches-and-aggregation/*',
+        {
+          criteria: {
+            'data.group': {
+              $eq: 'odd'
+            }
+          },
+          aggregate: [
+            {
+              $group: {
+                _id: '$data.custom',
+                total: {
+                  $sum: '$data.id'
+                }
+              }
+            }
+          ]
+        },
+        function(e) {
+          expect(e.toString()).to.be(
+            'SystemError: aggregate feature not available for provider on path: /searches-and-aggregation/*'
+          );
+          callback();
+        }
+      );
+    });
+
+    it('tests a search with a case-insensitive collation fails, due to unimplemented error', function(callback) {
+      listenerclient.get(
+        '/searches-and-aggregation/*',
+        {
+          criteria: {
+            'data.group': {
+              $eq: 'odd'
+            }
+          },
+          options: {
+            collation: {
+              locale: 'en_US',
+              strength: 1
+            }
+          }
+        },
+        function(e, items) {
+          expect(e.toString()).to.be(
+            'SystemError: collation feature not available for provider on path: /searches-and-aggregation/*'
+          );
+          callback();
+        }
+      );
+    });
   }
 );
