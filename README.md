@@ -937,7 +937,12 @@ function (e, myHappn3Instance) {
     return myHappn3Instance.services.security.groups.listGroups('TES*', {
       criteria:{
         name:{$eq:'TEST'}
-      }
+      },
+      /* optional
+      skip:2,
+      limit:5,
+      count:true //will only return the groups count
+      */
     });
   })
   .then(function(group){
@@ -1016,7 +1021,12 @@ function (e, myHappn3Instance) {
 
   //by username, with more specific criteria (mongo style)
   myHappn3Instance.services.security.users.listUsers('TEST*', {
-    criteria:{username:{$eq:'TESTUSER1'}}
+    criteria:{username:{$eq:'TESTUSER1'}},
+    /* optional
+    skip:2,
+    limit:5,
+    count:true //will only return the users count
+    */
   })
   .then(function(users){
 

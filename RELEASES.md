@@ -655,5 +655,5 @@
 
 10.4.0 2019-10-08
 -----------------
-  - listUsers and listGroups now allow for search options
+  - listUsers and listGroups now allow for extended search options (sort, limit, skip, count)
   - updates to data provider to allow for aggregate, collation and count in mongodb
