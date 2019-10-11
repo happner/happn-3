@@ -288,6 +288,74 @@ describe(
         );
       });
 
+      it('should get groups matching special criteria with limit', function(callback) {
+        testServices.security.users.listGroups(
+          'TEST*',
+          {
+            criteria: {
+              'custom_data.cadre': { $gt: 0 }
+            },
+            limit: 1
+          },
+          function(e, results) {
+            if (e) return callback(e);
+            expect(results.length).to.be(1);
+            callback();
+          }
+        );
+      });
+
+      it('should get groups matching special criteria with skip', function(callback) {
+        testServices.security.users.listGroups(
+          'TEST*',
+          {
+            criteria: {
+              'custom_data.cadre': { $gt: 0 }
+            },
+            skip: 1
+          },
+          function(e, results) {
+            if (e) return callback(e);
+            expect(results.length).to.be(1);
+            callback();
+          }
+        );
+      });
+
+      it('should get groups matching special criteria with count', function(callback) {
+        testServices.security.users.listGroups(
+          'TEST*',
+          {
+            criteria: {
+              'custom_data.cadre': { $gt: 0 }
+            },
+            count: true
+          },
+          function(e, results) {
+            if (e) return callback(e);
+            expect(results.value).to.be(2);
+            callback();
+          }
+        );
+      });
+
+      it('should get groups matching special criteria with count, no data', function(callback) {
+        testServices.security.users.listGroups(
+          'TEST*',
+          {
+            criteria: {
+              'custom_data.cadre': { $eq: 'lizard' }
+            },
+            count: true
+          },
+          function(e, results) {
+            if (e) return callback(e);
+            expect(results.value).to.be(0);
+            callback();
+          }
+        );
+      });
+
       it('should add permissions to a group', function(callback) {
         testGroup.permissions = {};
 
@@ -544,6 +612,182 @@ describe(
                 function(e, users) {
                   if (e) return callback(e);
                   expect(users.length).to.be(3);
+                  callback();
+                }
+              );
+            });
+          });
+        });
+
+        it('should list users, by username, criteria and count', function(callback) {
+          testServices.security.users.listUsers(testUser.username, function(e, users) {
+            if (e) return callback(e);
+
+            expect(users.length).to.be(1);
+
+            testServices.security.users.listUsers('*', function(e, users) {
+              if (e) return callback(e);
+
+              expect(users.length).to.be(5);
+
+              testServices.security.users.listUsers(
+                '*',
+                {
+                  criteria: {
+                    'custom_data.something': { $eq: 'usefull' }
+                  },
+                  count: true
+                },
+                function(e, users) {
+                  if (e) return callback(e);
+                  expect(users.value).to.be(3);
+                  callback();
+                }
+              );
+            });
+          });
+        });
+
+        it('should list users, by username, criteria and count, no data', function(callback) {
+          testServices.security.users.listUsers(testUser.username, function(e, users) {
+            if (e) return callback(e);
+
+            expect(users.length).to.be(1);
+
+            testServices.security.users.listUsers('*', function(e, users) {
+              if (e) return callback(e);
+
+              expect(users.length).to.be(5);
+
+              testServices.security.users.listUsers(
+                '*',
+                {
+                  criteria: {
+                    'custom_data.something': { $eq: 'lizard' }
+                  },
+                  count: true
+                },
+                function(e, users) {
+                  if (e) return callback(e);
+                  expect(users.value).to.be(0);
+                  callback();
+                }
+              );
+            });
+          });
+        });
+
+        it('should list users, by username and criteria with limit', function(callback) {
+          testServices.security.users.listUsers(testUser.username, function(e, users) {
+            if (e) return callback(e);
+
+            expect(users.length).to.be(1);
+
+            testServices.security.users.listUsers('*', function(e, users) {
+              if (e) return callback(e);
+
+              expect(users.length).to.be(5);
+
+              testServices.security.users.listUsers(
+                '*',
+                {
+                  criteria: {
+                    'custom_data.something': { $eq: 'usefull' }
+                  },
+                  limit: 1
+                },
+                function(e, users) {
+                  if (e) return callback(e);
+                  expect(users.length).to.be(1);
+                  callback();
+                }
+              );
+            });
+          });
+        });
+
+        it('should list users, by username and criteria with skip', function(callback) {
+          testServices.security.users.listUsers(testUser.username, function(e, users) {
+            if (e) return callback(e);
+
+            expect(users.length).to.be(1);
+
+            testServices.security.users.listUsers('*', function(e, users) {
+              if (e) return callback(e);
+
+              expect(users.length).to.be(5);
+
+              testServices.security.users.listUsers(
+                '*',
+                {
+                  criteria: {
+                    'custom_data.something': { $eq: 'usefull' }
+                  },
+                  skip: 1
+                },
+                function(e, users) {
+                  if (e) return callback(e);
+                  expect(users.length).to.be(2);
+                  callback();
+                }
+              );
+            });
+          });
+        });
+
+        it('should list users, by username, criteria, count and limit', function(callback) {
+          testServices.security.users.listUsers(testUser.username, function(e, users) {
+            if (e) return callback(e);
+
+            expect(users.length).to.be(1);
+
+            testServices.security.users.listUsers('*', function(e, users) {
+              if (e) return callback(e);
+
+              expect(users.length).to.be(5);
+
+              testServices.security.users.listUsers(
+                '*',
+                {
+                  criteria: {
+                    'custom_data.something': { $eq: 'usefull' }
+                  },
+                  limit: 1,
+                  count: true
+                },
+                function(e, users) {
+                  if (e) return callback(e);
+                  expect(users.value).to.be(1);
+                  callback();
+                }
+              );
+            });
+          });
+        });
+
+        it('should list users, by username, criteria, count and skip', function(callback) {
+          testServices.security.users.listUsers(testUser.username, function(e, users) {
+            if (e) return callback(e);
+
+            expect(users.length).to.be(1);
+
+            testServices.security.users.listUsers('*', function(e, users) {
+              if (e) return callback(e);
+
+              expect(users.length).to.be(5);
+
+              testServices.security.users.listUsers(
+                '*',
+                {
+                  criteria: {
+                    'custom_data.something': { $eq: 'usefull' }
+                  },
+                  count: true,
+                  skip: 1
+                },
+                function(e, users) {
+                  if (e) return callback(e);
+                  expect(users.value).to.be(2);
                   callback();
                 }
               );
