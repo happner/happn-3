@@ -658,7 +658,8 @@
   - listUsers and listGroups now allow for extended search options (sort, limit, skip, count)
   - updates to data provider to allow for aggregate, collation and count in mongodb
 
-10.4.1 2019-10-08
+10.4.1 2019-10-14
 -----------------
   - listUsers collation fix
   - mongodb listUsers and listGroups tests
+  - fix: broken browser client, due to lint fix, undeclared _this
