@@ -10,7 +10,7 @@ class HappnTestHelper {
     return new HappnTestHelper(serverConfig);
   }
 
-  async createService() {
+  createService() {
     return new Promise((resolve, reject) => {
       service.create(this.serverConfig, (e, happnInst) => {
         if (e) return reject(e);
