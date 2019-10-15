@@ -24,9 +24,10 @@
   ],
   "rules": {
     "default-case": "error",
-    "eqeqeq": ["error", "always", {"null": "ignore"}],
-    "no-console": "warn",
+    "eqeqeq": "off",
+    "no-console": "off",
     "no-useless-return": "error",
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "no-unused-vars": "off"
   }
 }
