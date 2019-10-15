@@ -101,7 +101,6 @@ describe(
       expect(usersUnFiltered.length).to.be(4);
     });
 
-    //not ready yet in happn-3
     it('tests the listGroups method with and without criteria', async () => {
       await happnInstance.services.security.users.upsertGroup({
         name: 'TESTGROUP_LIST1',
