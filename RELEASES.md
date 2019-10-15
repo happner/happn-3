@@ -663,3 +663,4 @@
   - listUsers collation fix
   - mongodb listUsers and listGroups tests
   - fix: broken browser client, due to lint fix, undeclared _this
+  - Object.assign polyfill

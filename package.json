@@ -20,7 +20,7 @@
     "coverage": "npm run test-cover && npm run report",
     "lint": "eslint '**/*.js'",
     "lint-fix": "eslint '**/*.js' --fix",
-    "release": "rm -rf node_modules && rm -f package-lock.json && npm install && UPDATE_BROWSER_PRIMUS=true npm run test-cover",
+    "release": "rm -rf node_modules && rm -f package-lock.json && npm install && npm run test-browser && UPDATE_BROWSER_PRIMUS=true npm run test-cover",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "npm run lint && mocha --exit silence.js test/integration/** test/unit/** test/backward-compatibility/**",
     "test-010": "source ~/.nvm/nvm.sh && nvm use 0.10 && rm -rf node_modules && npm install && node_modules/mocha/bin/_mocha test/integration/**",
