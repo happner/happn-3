@@ -652,3 +652,8 @@
   - prettier and eslint updates
   - using uglify-es for minify in packager
   - listUsers and listGroups now allow for mongo filters
+
+10.3.1 2019-09-15
+-----------------
+  - _this undeclared in packager fix
+  - Object.assign polyfill
