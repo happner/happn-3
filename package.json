@@ -1,6 +1,6 @@
 {
   "name": "happn-3",
-  "version": "10.4.0",
+  "version": "10.4.1",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "keywords": [
     "mongo",
@@ -20,7 +20,7 @@
     "coverage": "npm run test-cover && npm run report",
     "lint": "eslint '**/*.js'",
     "lint-fix": "eslint '**/*.js' --fix",
-    "release": "rm -rf node_modules && rm -f package-lock.json && npm install && UPDATE_BROWSER_PRIMUS=true npm run test-cover",
+    "release": "rm -rf node_modules && rm -f package-lock.json && npm install && npm run test-browser && UPDATE_BROWSER_PRIMUS=true npm run test-cover",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "npm run lint && mocha --exit silence.js test/integration/** test/unit/** test/backward-compatibility/**",
     "test-010": "source ~/.nvm/nvm.sh && nvm use 0.10 && rm -rf node_modules && npm install && node_modules/mocha/bin/_mocha test/integration/**",
@@ -85,7 +85,7 @@
     "happn": "^2.21.3",
     "happn-cluster": "^8.1.3",
     "happn-random-activity-generator": "0.2.1",
-    "happn-service-mongo-2": "^2.2.0",
+    "happn-service-mongo-2": "^3.0.0",
     "happner-serial-mocha": "^1.5.2",
     "jshint": "^2.10.1",
     "jsprim": "^2.0.0",
