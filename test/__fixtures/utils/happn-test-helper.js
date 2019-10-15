@@ -19,7 +19,7 @@ class HappnTestHelper {
     });
   }
 
-  async createLocalClient() {
+  createLocalClient() {
     if (this.serverConfig.secure)
       return new Promise((resolve, reject) => {
         this.service.services.session.localAdminClient((e, instance) => {
@@ -41,7 +41,7 @@ class HappnTestHelper {
     this.publisherclient = await this.createLocalClient();
   }
 
-  async tearDown() {
+  tearDown() {
     return new Promise((resolve, reject) => {
       this.service.stop(function(e) {
         if (e) return reject(e);
