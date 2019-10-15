@@ -19,8 +19,6 @@ describe(
     });
 
     before(function(done) {
-      global.TESTING_USER_MANAGEMENT = true; //.............
-
       Happn.service.create(
         {
           secure: true,
