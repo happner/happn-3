@@ -3,22 +3,13 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
-
-    var test_secret = 'test_secret';
     var happnInstanceSecure = null;
     var happnInstance = null;
-    var test_id;
-
     this.timeout(5000);
-
     before('should initialize the services', function(callback) {
-      test_id = Date.now() + '_' + require('shortid').generate();
-
       try {
         service.create(
           {
@@ -26,9 +17,7 @@ describe(
           },
           function(e, happnInst) {
             if (e) return callback(e);
-
             happnInstance = happnInst;
-
             service.create(
               {
                 secure: true,
@@ -36,9 +25,7 @@ describe(
               },
               function(e, happnInst) {
                 if (e) return callback(e);
-
                 happnInstanceSecure = happnInst;
-
                 callback();
               }
             );
@@ -90,7 +77,6 @@ describe(
 
                         happnInstanceSecure.stop(function(e) {
                           if (e) console.warn('issue stopping secure instance');
-
                           done();
                         });
                       });
@@ -103,11 +89,6 @@ describe(
         }
       );
     });
-
-    /*
-   We are initializing 2 clients to test saving data against the database, one client will push data into the
-   database whilst another listens for changes.
-   */
     before('should initialize the clients', function(callback) {
       happn_client.create(
         {
@@ -116,9 +97,6 @@ describe(
         function(e, instance) {
           if (e) return callback(e);
           client = instance;
-
-          //console.log('created client:::');
-
           happn_client.create(
             {
               port: 55002
@@ -126,9 +104,6 @@ describe(
             function(e, instance) {
               if (e) return callback(e);
               middleman = instance;
-
-              //console.log('created middleman:::');
-
               happn_client.create(
                 {
                   port: 55003,
@@ -138,9 +113,6 @@ describe(
                 function(e, instance) {
                   if (e) return callback(e);
                   secureClient = instance;
-
-                  //console.log('created secure client:::');
-
                   happn_client.create(
                     {
                       port: 55003,
@@ -150,9 +122,6 @@ describe(
                     function(e, instance) {
                       if (e) return callback(e);
                       secureMiddleman = instance;
-
-                      //console.log('created secure middleman:::');
-
                       callback();
                     }
                   );
@@ -171,19 +140,14 @@ describe(
 
       middleman.on(
         '/targeted/*',
-        function(message) {
-          //console.log('MIDDLEMAN HAS MESSAGE:::', message);
+        function() {
           middlemanGotMessage = true;
         },
         function(e) {
           if (e) return callback(e);
-
-          //console.log('attached middleman:::');
-
           client.on(
             '/targeted/*',
-            function(message) {
-              //console.log('HAVE MESSAGE:::', message);
+            function() {
               setTimeout(function() {
                 if (middlemanGotMessage) return callback(new Error('middleman got message!!'));
                 callback();
@@ -191,9 +155,6 @@ describe(
             },
             function(e) {
               if (e) return callback(e);
-
-              //console.log('attached client:::', client.session.id);
-
               client.set(
                 '/targeted/test',
                 {
@@ -204,8 +165,6 @@ describe(
                 },
                 function(e) {
                   if (e) return callback(e);
-
-                  //console.log('did unsecured set:::');
                 }
               );
             }
@@ -221,19 +180,14 @@ describe(
 
       middleman.on(
         '/grouptargeted/*',
-        function(message) {
-          //console.log('MIDDLEMAN HAS MESSAGE:::', message);
+        function() {
           middlemanGotMessage = true;
         },
         function(e) {
           if (e) return callback(e);
-
-          //console.log('attached middleman:::');
-
           client.on(
             '/grouptargeted/*',
-            function(message) {
-              //console.log('HAVE MESSAGE:::', message);
+            function() {
               setTimeout(function() {
                 if (!middlemanGotMessage) return callback(new Error('middleman got no message!!'));
                 callback();
@@ -241,9 +195,6 @@ describe(
             },
             function(e) {
               if (e) return callback(e);
-
-              //console.log('attached client:::', client.session.id);
-
               client.set(
                 '/grouptargeted/test',
                 {
@@ -254,8 +205,6 @@ describe(
                 },
                 function(e) {
                   if (e) return callback(e);
-
-                  //console.log('did unsecured set:::');
                 }
               );
             }
@@ -271,19 +220,14 @@ describe(
 
       middleman.on(
         '/untargeted/*',
-        function(message) {
-          //console.log('MIDDLEMAN HAS MESSAGE:::', message);
+        function() {
           middlemanGotMessage = true;
         },
         function(e) {
           if (e) return callback(e);
-
-          //console.log('attached middleman:::');
-
           client.on(
             '/untargeted/*',
-            function(message) {
-              //console.log('HAVE MESSAGE:::', message);
+            function() {
               setTimeout(function() {
                 if (!middlemanGotMessage) return callback(new Error('middleman got no message!!'));
                 callback();
@@ -291,9 +235,6 @@ describe(
             },
             function(e) {
               if (e) return callback(e);
-
-              //console.log('attached client:::', client.session.id);
-
               client.set(
                 '/untargeted/test',
                 {
@@ -301,8 +242,6 @@ describe(
                 },
                 function(e) {
                   if (e) return callback(e);
-
-                  //console.log('did unsecured set:::');
                 }
               );
             }
@@ -318,21 +257,14 @@ describe(
 
       secureMiddleman.on(
         '/targeted/*',
-        function(message) {
-          //console.log('MIDDLEMAN HAS MESSAGE:::', message);
+        function() {
           secureMiddlemanGotMessage = true;
         },
         function(e) {
-          //console.log('attached secureMiddleman:::', e);
-
           if (e) return callback(e);
-
-          //console.log('attached secureMiddleman:::');
-
           secureClient.on(
             '/targeted/*',
-            function(message) {
-              //console.log('HAVE MESSAGE:::', message);
+            function() {
               setTimeout(function() {
                 if (secureMiddlemanGotMessage)
                   return callback(new Error('secureMiddleman got message!!'));
@@ -341,9 +273,6 @@ describe(
             },
             function(e) {
               if (e) return callback(e);
-
-              //console.log('attached secureClient:::', secureClient.session.id);
-
               secureClient.set(
                 '/targeted/test',
                 {
@@ -354,8 +283,6 @@ describe(
                 },
                 function(e) {
                   if (e) return callback(e);
-
-                  //console.log('did unsecured set:::');
                 }
               );
             }
@@ -366,24 +293,17 @@ describe(
 
     it('ensure an targeted publish gets to both secured secureClients', function(callback) {
       this.timeout(10000);
-
       var secureMiddlemanGotMessage = false;
-
       secureMiddleman.on(
         '/grouptargeted/*',
-        function(message) {
-          //console.log('MIDDLEMAN HAS MESSAGE:::', message);
+        function() {
           secureMiddlemanGotMessage = true;
         },
         function(e) {
           if (e) return callback(e);
-
-          //console.log('attached secureMiddleman:::');
-
           secureClient.on(
             '/grouptargeted/*',
-            function(message) {
-              //console.log('HAVE MESSAGE:::', message);
+            function() {
               setTimeout(function() {
                 if (!secureMiddlemanGotMessage)
                   return callback(new Error('secureMiddleman got no message!!'));
@@ -392,9 +312,6 @@ describe(
             },
             function(e) {
               if (e) return callback(e);
-
-              //console.log('attached secureClient:::', secureClient.session.id);
-
               secureClient.set(
                 '/grouptargeted/test',
                 {
@@ -405,8 +322,6 @@ describe(
                 },
                 function(e) {
                   if (e) return callback(e);
-
-                  //console.log('did unsecured set:::');
                 }
               );
             }
@@ -422,19 +337,14 @@ describe(
 
       secureMiddleman.on(
         '/untargeted/*',
-        function(message) {
-          //console.log('MIDDLEMAN HAS MESSAGE:::', message);
+        function() {
           secureMiddlemanGotMessage = true;
         },
         function(e) {
           if (e) return callback(e);
-
-          //console.log('attached secureMiddleman:::');
-
           secureClient.on(
             '/untargeted/*',
-            function(message) {
-              //console.log('HAVE MESSAGE:::', message);
+            function() {
               setTimeout(function() {
                 if (!secureMiddlemanGotMessage)
                   return callback(new Error('secureMiddleman got no message!!'));
@@ -443,9 +353,6 @@ describe(
             },
             function(e) {
               if (e) return callback(e);
-
-              //console.log('attached secureClient:::', secureClient.session.id);
-
               secureClient.set(
                 '/untargeted/test',
                 {
@@ -453,8 +360,6 @@ describe(
                 },
                 function(e) {
                   if (e) return callback(e);
-
-                  //console.log('did unsecured set:::');
                 }
               );
             }
