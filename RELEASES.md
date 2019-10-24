@@ -664,3 +664,7 @@
   - mongodb listUsers and listGroups tests
   - fix: broken browser client, due to lint fix, undeclared _this
   - Object.assign polyfill (IE11 support)
+
+10.4.2 2019-10-23
+-----------------
+  - lint prettier tests

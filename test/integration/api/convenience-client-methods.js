@@ -100,7 +100,6 @@ describe(
 
     it('tests get paths: websockets', function(callback) {
       var test_path_end = require('shortid').generate();
-
       websocketsclient.set(
         'e2e_test1/testwildcard/' + test_path_end,
         {
@@ -109,7 +108,7 @@ describe(
           property3: 'property3'
         },
         null,
-        function(e, insertResult) {
+        function(e) {
           expect(e == null).to.be(true);
           websocketsclient.set(
             'e2e_test1/testwildcard/' + test_path_end + '/1',
@@ -119,23 +118,20 @@ describe(
               property3: 'property3'
             },
             null,
-            function(e, insertResult) {
+            function(e) {
               expect(e == null).to.be(true);
-
               websocketsclient.get('e2e_test1/testwildcard/' + test_path_end + '*', null, function(
                 e,
                 results
               ) {
-                expect(results.length == 2).to.be(true);
+                expect(results.length === 2).to.be(true);
                 expect(results[0].property1).to.be('property1');
-
                 websocketsclient.getPaths(
                   'e2e_test1/testwildcard/' + test_path_end + '*',
                   {},
                   function(e, results) {
-                    expect(results.length == 2).to.be(true);
+                    expect(results.length === 2).to.be(true);
                     expect(results[0].property1).to.be(undefined);
-
                     callback(e);
                   }
                 );
@@ -159,7 +155,7 @@ describe(
             property2: 'sib_post_property2'
           },
           {},
-          function(e, results) {
+          function(e) {
             expect(e == null).to.be(true);
 
             websocketsclient.setSibling(
@@ -169,7 +165,7 @@ describe(
                 property2: 'sib_post_property2'
               },
               {},
-              function(e, results) {
+              function(e) {
                 expect(e == null).to.be(true);
 
                 //the child method returns a child in the collection with a specified id
@@ -178,7 +174,7 @@ describe(
                   getresults
                 ) {
                   expect(e == null).to.be(true);
-                  expect(getresults.length == 2).to.be(true);
+                  expect(getresults.length === 2).to.be(true);
                   callback(e);
                 });
               }

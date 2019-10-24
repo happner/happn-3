@@ -59,8 +59,6 @@ describe('03_heartbeats', function() {
     this.timeout(default_timeout);
 
     var reconnects = 0;
-    var pongs = 0;
-
     clientInstance.onEvent('reconnect-scheduled', function() {
       reconnects++;
     });
@@ -68,7 +66,7 @@ describe('03_heartbeats', function() {
     var oldWrite = clientInstance.socket._write.bind(clientInstance.socket);
 
     var newWrite = function(data) {
-      if (data.indexOf && data.indexOf('primus::pong') == 0) return;
+      if (data.indexOf && data.indexOf('primus::pong') === 0) return;
       oldWrite(data);
     };
 
@@ -76,7 +74,6 @@ describe('03_heartbeats', function() {
 
     clientInstance.socket.on('outgoing::pong', function() {
       console.log('pong received...still testing please be patient.');
-      pongs++;
     });
 
     setTimeout(function() {

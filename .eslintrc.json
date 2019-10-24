@@ -14,6 +14,8 @@
     "prettier"
   ],
   "globals": {
+    "XMLHttpRequest": "writable",
+    "xit": "readonly",
     "angular": "readonly",
     "d3": "readonly",
     "Crypto": "writable",
