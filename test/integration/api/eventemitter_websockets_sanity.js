@@ -960,48 +960,38 @@ describe(
     });
 
     it('the listener should pick up a single published event', function(callback) {
-      try {
-        listenerclient.on(
-          '/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event',
-          {
-            event_type: 'set',
-            count: 1
-          },
-          function() {
-            setTimeout(function() {
-              expect(
-                listenerclient.state.events[
-                  '/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event'
-                ]
-              ).to.be(undefined);
-              callback();
-            }, 2000);
-          },
-          function(e) {
-            if (!e) {
-              expect(
-                listenerclient.state.events[
-                  '/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event'
-                ].length
-              ).to.be(1);
-              publisherclient.set(
-                '/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event',
-                {
-                  property1: 'property1',
-                  property2: 'property2',
-                  property3: 'property3'
-                },
-                null,
-                function() {
-                  // do nothing
-                }
-              );
-            } else callback(e);
-          }
-        );
-      } catch (e) {
-        callback(e);
-      }
+      this.timeout(default_timeout);
+      listenerclient.on(
+        '/e2e_test1/testsubscribe/data/event',
+        {
+          event_type: 'set',
+          count: 1
+        },
+        function() {
+          expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.be(
+            undefined
+          );
+          callback();
+        },
+        function(e) {
+          if (e) return callback(e);
+          expect(
+            listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length
+          ).to.be(1);
+          publisherclient.set(
+            '/e2e_test1/testsubscribe/data/event',
+            {
+              property1: 'property1',
+              property2: 'property2',
+              property3: 'property3'
+            },
+            null,
+            function() {
+              //do nothing
+            }
+          );
+        }
+      );
     });
 
     it('the publisher should set new data ', function(callback) {
@@ -1120,50 +1110,39 @@ describe(
     });
 
     it('the listener should pick up a single published event', function(callback) {
-      try {
-        //first listen for the change
-        listenerclient.on(
-          '/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event',
-          {
-            event_type: 'set',
-            count: 1
-          },
-          function() {
-            setTimeout(function() {
-              expect(
-                listenerclient.state.events[
-                  '/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event'
-                ]
-              ).to.be(undefined);
-              callback();
-            }, 2000);
-          },
-          function(e) {
-            if (!e) {
-              expect(
-                listenerclient.state.events[
-                  '/SET@/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event'
-                ].length
-              ).to.be(1);
-              //then make the change
-              publisherclient.set(
-                '/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/event',
-                {
-                  property1: 'property1',
-                  property2: 'property2',
-                  property3: 'property3'
-                },
-                null,
-                function() {
-                  // do nothing
-                }
-              );
-            } else callback(e);
-          }
-        );
-      } catch (e) {
-        callback(e);
-      }
+      this.timeout(default_timeout);
+      listenerclient.on(
+        '/e2e_test1/testsubscribe/data/event',
+        {
+          event_type: 'set',
+          count: 1
+        },
+        function() {
+          expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.be(
+            undefined
+          );
+          callback();
+        },
+        function(e) {
+          if (!e) {
+            expect(
+              listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length
+            ).to.be(1);
+            publisherclient.set(
+              '/e2e_test1/testsubscribe/data/event',
+              {
+                property1: 'property1',
+                property2: 'property2',
+                property3: 'property3'
+              },
+              null,
+              function() {
+                //do nothing
+              }
+            );
+          } else callback(e);
+        }
+      );
     });
 
     it('should get using a wildcard', function(callback) {
