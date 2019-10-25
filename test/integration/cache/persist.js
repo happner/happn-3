@@ -282,7 +282,7 @@ describe(
                     expect(result).to.be(null);
 
                     expect(serviceInstance.__caches.SPECIFIC).to.not.be(undefined);
-                    serviceInstance.clear('SPECIFIC', function(e) {
+                    serviceInstance.clear('SPECIFIC', function() {
                       expect(serviceInstance.__caches.SPECIFIC).to.be(undefined);
                       done();
                     });
@@ -348,7 +348,7 @@ describe(
               {
                 ttl: 500
               },
-              function(e, result) {
+              function(e) {
                 if (e) return done(e);
 
                 setTimeout(function() {
@@ -513,7 +513,7 @@ describe(
                   {
                     dkey: key
                   },
-                  function(e, result) {
+                  function(e) {
                     if (e) return done(e);
 
                     serviceInstance.get(key, function(e, data) {
@@ -648,7 +648,7 @@ describe(
       this.timeout(5000);
       var key = testId + 'test1DefaultItemNotFound';
 
-      serviceInstance.clear('specific', function(e) {
+      serviceInstance.clear('specific', function() {
         var specific = serviceInstance.new('specific');
 
         specific.get(
@@ -727,7 +727,7 @@ describe(
           var key = 'sync_key_' + time;
           var opts = {};
 
-          if (time == 4) opts.ttl = 2000;
+          if (time !== 4) opts.ttl = 2000;
 
           specific.set(
             key,
@@ -757,8 +757,8 @@ describe(
             expect(Object.keys(specific.__cache).length).to.be(5);
             expect(specific.__synced).to.be(true);
 
-            specific.on('item-timed-out', function(data) {
-              //console.log('ITEM TIMED OUT:::', data);
+            specific.on('item-timed-out', function() {
+              //do nothing
             });
 
             setTimeout(function() {
@@ -782,7 +782,7 @@ describe(
             var key = 'sync_key_' + time;
             var opts = {};
 
-            if (time == 4) opts.ttl = 2000;
+            if (time !== 4) opts.ttl = 2000;
 
             specific.set(
               key,
@@ -827,7 +827,7 @@ describe(
             var key = 'sync_key_' + time;
             var opts = {};
 
-            if (time == 4) opts.ttl = 2000;
+            if (time !== 4) opts.ttl = 2000;
 
             specific.set(
               key,
@@ -876,7 +876,7 @@ describe(
             var key = 'sync_key_' + time;
             var opts = {};
 
-            if (time == 4) opts.ttl = 2000;
+            if (time !== 4) opts.ttl = 2000;
 
             specific.set(
               key,
