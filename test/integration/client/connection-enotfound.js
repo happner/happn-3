@@ -3,17 +3,11 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    var log = require('why-is-node-running');
     var delay = require('await-delay');
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
-    var test_secret = 'test_secret';
-    var happnInstance = null;
-    var test_id;
-
     this.timeout(40000);
 
     async function createService() {
@@ -77,7 +71,7 @@ describe(
 
       client.onEvent('reconnect-scheduled', function() {
         reconnectCount++;
-        if (reconnectCount == 1) {
+        if (reconnectCount === 1) {
           dns.lookup = function(domain, options, callback) {
             if (typeof options === 'function') {
               callback = options;
@@ -110,6 +104,8 @@ describe(
       await delay(15000);
       await stopService(service);
       await stopClient(client);
+
+      // eslint-disable-next-line require-atomic-updates
       dns.lookup = dns.__oldLookup;
       expect(reconnectCount > 3).to.be(true);
       expect(reconnectSuccessfulCount > 0).to.be(true);

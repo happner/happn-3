@@ -1,8 +1,6 @@
-var path = require('path');
 var Promise = require('bluebird');
 var expect = require('expect.js');
 var Happn = require('../../../');
-var why = require('why-is-node-running');
 
 describe(
   require('../../__fixtures/utils/test_helper')
@@ -29,20 +27,6 @@ describe(
         },
         function(e) {
           if (e) return callback(e);
-          server = undefined; // ?? perhaps also on e, messy
-          callback();
-        }
-      );
-    };
-
-    var stopServerReconnect = function(callback) {
-      if (!server) return callback();
-      server.stop(
-        {
-          reconnect: true
-        },
-        function(e) {
-          if (e) return callback(e);
           server = undefined;
           callback();
         }
@@ -50,17 +34,9 @@ describe(
     };
 
     before('start server', startServer);
-
     after('stop server', stopServerDisconnect);
 
-    // after('why is node up', function(){
-    //   why();
-    // });
-
     it('fails to login', function(done) {
-      var client;
-      var reconnectScheduledFired = false;
-
       Promise.resolve()
 
         .then(function() {

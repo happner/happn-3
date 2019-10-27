@@ -6,8 +6,6 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
-
-    var test_secret = 'test_secret';
     var happnInstance = null;
 
     it('should initialize the service', function(callback) {

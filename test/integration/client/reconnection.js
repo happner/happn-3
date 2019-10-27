@@ -1,9 +1,4 @@
-var path = require('path');
-
-var expect = require('expect.js');
-
 var Happn = require('../../../');
-
 var shortid = require('shortid');
 
 describe(
@@ -55,7 +50,7 @@ describe(
           setTimeout(function() {
             var eventData = events[events.length - 1];
 
-            if (eventData.data.id != eventId)
+            if (eventData.data.id !== eventId)
               return callback(new Error('no event data found for id: ' + eventId));
 
             callback();
@@ -132,7 +127,7 @@ describe(
     after('disconnect client and stop server', tearDown);
 
     it('kills the server, then restarts it, then tests the subscriptions still exist and work', function(done) {
-      webSocketsClient.onEvent('reconnect-successful', function(data) {
+      webSocketsClient.onEvent('reconnect-successful', function() {
         testEvent(done);
       });
 

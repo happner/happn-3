@@ -9,17 +9,11 @@ describe(
     var async = require('async');
     var expect = require('expect.js');
 
-    var test_secret = 'test_secret';
-
     var Service1;
-
     var Service2;
 
     before('should initialize the services', function(callback) {
       this.timeout(10000);
-
-      const test_id = Date.now() + '_' + require('shortid').generate();
-
       try {
         service.create(
           {
@@ -115,7 +109,7 @@ describe(
           username: '_ADMIN',
           password: 'happn'
         },
-        function(e, wsClients, localClients) {
+        function(e) {
           if (e) return callback(e);
 
           Service2.services.session.disconnectAllClients(function(e) {

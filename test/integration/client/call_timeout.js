@@ -4,8 +4,6 @@ describe(
     .testName(__filename, 3),
   function() {
     var expect = require('expect.js');
-    var async = require('async');
-    var fs = require('fs');
     var happn = require('../../../lib/index');
 
     var currentService = null;
@@ -13,7 +11,7 @@ describe(
     var stopService = function(callback) {
       if (currentService) {
         currentService.stop(function(e) {
-          if (e && e.toString() != 'Error: Not running') return callback(e);
+          if (e && e.toString() !== 'Error: Not running') return callback(e);
           callback();
         });
       } else callback();
@@ -22,9 +20,7 @@ describe(
     var initService = function(name, callback) {
       var doInitService = function() {
         var serviceConfig = {};
-
         serviceConfig.name = name;
-
         happn.service.create(serviceConfig, function(e, happnService) {
           if (e) return callback(e);
           currentService = happnService;

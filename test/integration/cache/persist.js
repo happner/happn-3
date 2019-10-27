@@ -919,7 +919,6 @@ describe(
 
     it('test the cache is synced even if there is no data in the database', function(done) {
       var specific = serviceInstance.new('specific_sync_empty');
-
       specific.sync(function(e) {
         if (e) return done(e);
 

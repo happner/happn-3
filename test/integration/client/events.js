@@ -6,8 +6,6 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
-    var async = require('async');
-
     var serviceConfig = {
       secure: true
     };
@@ -17,10 +15,8 @@ describe(
 
     function createService(callback) {
       serviceConfig.port = 55555;
-
       service.create(serviceConfig, function(e, happnInst) {
         if (e) return callback(e);
-
         serviceInstance = happnInst;
         callback();
       });
@@ -54,7 +50,7 @@ describe(
         })
 
         .then(function(clientInstance) {
-          clientInstance.onEvent('connection-ended', function(opts) {
+          clientInstance.onEvent('connection-ended', function() {
             //give the process some time to clean up the address/port
 
             clientInstance.disconnect({ reconnect: false });
@@ -73,7 +69,7 @@ describe(
             {
               test: 'data'
             },
-            function(e, response) {
+            function(e) {
               if (e) return callback(e);
 
               serviceInstance.stop(
@@ -105,11 +101,11 @@ describe(
         })
 
         .then(function(clientInstance) {
-          clientInstance.onEvent('reconnect-scheduled', function(opts) {
+          clientInstance.onEvent('reconnect-scheduled', function() {
             eventsFired['reconnect-scheduled'] = true;
           });
 
-          clientInstance.onEvent('reconnect-successful', function(opts) {
+          clientInstance.onEvent('reconnect-successful', function() {
             eventsFired['reconnect-successful'] = true;
           });
 
@@ -164,7 +160,7 @@ describe(
       });
 
       client.initialize(function(e) {
-        if (e && e.code == 'ECONNREFUSED') return;
+        if (e && e.code === 'ECONNREFUSED') return;
 
         eventsFired['reconnect-scheduled'] = false;
 
@@ -175,7 +171,7 @@ describe(
         }, 5000);
       });
 
-      client.onEvent('reconnect-scheduled', function(opts) {
+      client.onEvent('reconnect-scheduled', function() {
         eventsFired['reconnect-scheduled'] = true;
       });
     });
