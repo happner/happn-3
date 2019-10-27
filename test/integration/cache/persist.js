@@ -727,7 +727,7 @@ describe(
           var key = 'sync_key_' + time;
           var opts = {};
 
-          if (time !== 4) opts.ttl = 2000;
+          if (time === 4) opts.ttl = 2000;
 
           specific.set(
             key,
