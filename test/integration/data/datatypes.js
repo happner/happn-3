@@ -6,9 +6,6 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
-    var async = require('async');
-
-    var test_secret = 'test_secret';
     var default_timeout = 10000;
     var happnInstance = null;
     var test_id;
@@ -316,7 +313,7 @@ describe(
         cb(new Error('Provider error'));
       }.bind(happnInstance.services.data.defaultProvider);
 
-      listenerclient.count('anyString', function(e, count) {
+      listenerclient.count('anyString', function(e) {
         expect(e.message).to.eql('Provider error');
         happnInstance.services.data.defaultProvider.count = oldProviderCount.bind(
           happnInstance.services.data.defaultProvider
@@ -340,9 +337,7 @@ describe(
           },
           function(message) {
             expect(listenerclient.state.events['/SET@' + test_base_url + '/*']).to.be(undefined);
-
-            expect(message.value == 'test string').to.be(true);
-
+            expect(message.value === 'test string').to.be(true);
             callback();
           },
           function(e) {
@@ -353,7 +348,9 @@ describe(
                 test_base_url + '/' + test_path_end,
                 'test string',
                 null,
-                function(e, result) {}
+                function() {
+                  //do nothing
+                }
               );
             } else callback(e);
           }

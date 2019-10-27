@@ -7,9 +7,6 @@ describe(
     var async = require('async');
     var fs = require('fs');
     var happn = require('../../../lib/index');
-
-    var test_secret = 'test_secret';
-
     var tempFile1 = __dirname + '/tmp/testdata_' + require('shortid').generate() + '.db';
     var test_id = Date.now() + '_' + require('shortid').generate();
 
@@ -125,10 +122,10 @@ describe(
             property3: 'property3'
           },
           {},
-          function(e, result) {
+          function(e) {
             if (!e) {
               singleClient.get(test_path, null, function(e, results) {
-                expect(results.property1 == 'property1').to.be(true);
+                expect(results.property1 === 'property1').to.be(true);
                 callback(e);
               });
             } else callback(e);
@@ -154,10 +151,10 @@ describe(
             property3: 'property3'
           },
           {},
-          function(e, result) {
+          function(e) {
             if (!e) {
               multipleClient.get(test_path, null, function(e, results) {
-                expect(results.property1 == 'property1').to.be(true);
+                expect(results.property1 === 'property1').to.be(true);
                 callback(e);
               });
             } else callback(e);
@@ -185,7 +182,7 @@ describe(
 
             var record = JSON.parse(line);
 
-            if (record._id == path) {
+            if (record._id === path) {
               found = true;
               stream.end();
               return callback(null, record);
@@ -217,10 +214,10 @@ describe(
             property3: 'property3'
           },
           {},
-          function(e, result) {
+          function(e) {
             if (!e) {
               multipleClient.get(test_path, null, function(e, results) {
-                expect(results.property1 == 'property1').to.be(true);
+                expect(results.property1 === 'property1').to.be(true);
 
                 findRecordInDataFile(test_path, tempFile1, function(e, record) {
                   if (e) return callback(e);
@@ -254,10 +251,10 @@ describe(
             property3: 'property3'
           },
           {},
-          function(e, result) {
+          function(e) {
             if (!e) {
               multipleClient.get(test_path, null, function(e, results) {
-                expect(results.property1 == 'property1').to.be(true);
+                expect(results.property1 === 'property1').to.be(true);
 
                 findRecordInDataFile(test_path, tempFile1, function(e, record) {
                   if (e) return callback(e);
@@ -288,10 +285,10 @@ describe(
             property3: 'property3'
           },
           {},
-          function(e, result) {
+          function(e) {
             if (!e) {
               multipleClient.get(test_path, null, function(e, results) {
-                expect(results.property1 == 'property1').to.be(true);
+                expect(results.property1 === 'property1').to.be(true);
 
                 findRecordInDataFile(test_path, tempFile1, function(e, record) {
                   if (e) return callback(e);
@@ -323,10 +320,10 @@ describe(
             property3: 'property3'
           },
           {},
-          function(e, result) {
+          function(e) {
             if (!e) {
               multipleClient.get(test_path, null, function(e, results) {
-                expect(results.property1 == 'property1').to.be(true);
+                expect(results.property1 === 'property1').to.be(true);
 
                 findRecordInDataFile(test_path, tempFile1, function(e, record) {
                   if (e) return callback(e);
@@ -359,10 +356,10 @@ describe(
             property3: 'property3'
           },
           {},
-          function(e, result) {
+          function(e) {
             if (!e) {
               multipleClient.get(test_path, null, function(e, results) {
-                expect(results.property1 == 'property1').to.be(true);
+                expect(results.property1 === 'property1').to.be(true);
 
                 findRecordInDataFile(test_path, tempFile1, function(e, record) {
                   if (e) return callback(e);
@@ -397,10 +394,7 @@ describe(
         {
           noPublish: true
         },
-        function(e, result) {
-          ////////////////////console.log('did set');
-          ////////////////////console.log([e, result]);
-
+        function(e) {
           if (e) return callback(e);
 
           multipleClient.set(
@@ -412,8 +406,6 @@ describe(
               noPublish: true
             },
             function(e, result) {
-              //console.log(e);
-
               if (e) return callback(e);
 
               expect(result.data.property1).to.be('property1');
@@ -443,8 +435,6 @@ describe(
     });
 
     it('check the same event should be raised, regardless of what data source we are pushing to', function(callback) {
-      var caught = {};
-
       this.timeout(10000);
       var caughtCount = 0;
 
@@ -455,11 +445,11 @@ describe(
       multipleClient.onAll(
         function(eventData, meta) {
           if (
-            meta.action == '/SET@' + memoryTestPath ||
-            meta.action == '/SET@' + persistedTestPath
+            meta.action === '/SET@' + memoryTestPath ||
+            meta.action === '/SET@' + persistedTestPath
           ) {
             caughtCount++;
-            if (caughtCount == 2) {
+            if (caughtCount === 2) {
               findRecordInDataFile(persistedTestPath, tempFile1, function(e, record) {
                 if (e) return callback(e);
 
@@ -480,7 +470,7 @@ describe(
               property3: 'property3'
             },
             null,
-            function(e, put_result) {
+            function(e) {
               if (e) return callback(e);
 
               multipleClient.set(
@@ -491,7 +481,7 @@ describe(
                   property3: 'property3'
                 },
                 null,
-                function(e, put_result) {
+                function(e) {
                   if (e) return callback(e);
                 }
               );
@@ -516,10 +506,10 @@ describe(
             property3: 'property3'
           },
           {},
-          function(e, result) {
+          function(e) {
             if (!e) {
               multipleClient.get(test_path, null, function(e, results) {
-                expect(results.property1 == 'property1').to.be(true);
+                expect(results.property1 === 'property1').to.be(true);
 
                 findRecordInDataFile(test_path, tempFile1, function(e, record) {
                   if (e) return callback(e);
@@ -554,16 +544,12 @@ describe(
             property3: 'property3'
           },
           {},
-          function(e, result) {
+          function(e) {
             if (!e) {
               multipleClient.get(test_path, null, function(e, results) {
-                expect(results.property1 == 'property1').to.be(true);
-
+                expect(results.property1 === 'property1').to.be(true);
                 findRecordInDataFile(test_path, tempFile1, function(e, record) {
                   if (e) return callback(e);
-
-                  //console.log('rec: ', record);
-
                   if (record) callback();
                   else callback(new Error('record not found in persisted file'));
                 });
@@ -585,7 +571,7 @@ describe(
         var patternExists = false;
 
         for (var pattern1 in services[1].services.data.dataroutes) {
-          if (pattern1 == test_path) {
+          if (pattern1 === test_path) {
             patternExists = true;
             break;
           }
@@ -598,7 +584,7 @@ describe(
         services[1].services.data.removeDataStoreFilter(test_path);
 
         for (var pattern2 in services[1].services.data.dataroutes) {
-          if (pattern2 == test_path) {
+          if (pattern2 === test_path) {
             patternExists = true;
             break;
           }
