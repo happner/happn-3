@@ -7,9 +7,6 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
-
-    var test_secret = 'test_secret';
     var default_timeout = 10000;
     var happnInstance = null;
 

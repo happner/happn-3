@@ -1,4 +1,3 @@
-var path = require('path');
 var Promise = require('bluebird');
 var expect = require('expect.js');
 var Happn = require('../../../');
@@ -94,37 +93,37 @@ describe(
         Promise.resolve()
 
           .then(function() {
-            return normalClient.onAsync('/some/path/to/set/on', function(data, meta) {
+            return normalClient.onAsync('/some/path/to/set/on', function(data /*, meta*/) {
               emitted['normalClient /some/path/to/set/on'] = data;
             });
           })
 
           .then(function() {
-            return normalClient.onAsync('/*/*/to/set/on', function(data, meta) {
+            return normalClient.onAsync('/*/*/to/set/on', function(data /*, meta*/) {
               emitted['normalClient /*/*/to/set/on'] = data;
             });
           })
 
           .then(function() {
-            return intraProcessClient.onAsync('/some/path/to/set/on', function(data, meta) {
+            return intraProcessClient.onAsync('/some/path/to/set/on', function(data /*, meta*/) {
               emitted['intraProcessClient /some/path/to/set/on'] = data;
             });
           })
 
           .then(function() {
-            return intraProcessClient.onAsync('/*/*/to/set/on', function(data, meta) {
+            return intraProcessClient.onAsync('/*/*/to/set/on', function(data /*, meta*/) {
               emitted['intraProcessClient /*/*/to/set/on'] = data;
             });
           })
 
           .then(function() {
-            return clusterPeer.onAsync('/some/path/to/set/on', function(data, meta) {
+            return clusterPeer.onAsync('/some/path/to/set/on', function(data /*, meta*/) {
               emitted['clusterPeer /some/path/to/set/on'] = data;
             });
           })
 
           .then(function() {
-            return clusterPeer.onAsync('/*/*/to/set/on', function(data, meta) {
+            return clusterPeer.onAsync('/*/*/to/set/on', function(data /*, meta*/) {
               emitted['clusterPeer /*/*/to/set/on'] = data;
             });
           })
@@ -181,37 +180,37 @@ describe(
           })
 
           .then(function() {
-            return normalClient.onAsync('/some/path/to/remove/on', function(data, meta) {
+            return normalClient.onAsync('/some/path/to/remove/on', function(data /*, meta*/) {
               emitted['normalClient /some/path/to/remove/on'] = data;
             });
           })
 
           .then(function() {
-            return normalClient.onAsync('/*/*/to/remove/on', function(data, meta) {
+            return normalClient.onAsync('/*/*/to/remove/on', function(data /*, meta*/) {
               emitted['normalClient /*/*/to/remove/on'] = data;
             });
           })
 
           .then(function() {
-            return intraProcessClient.onAsync('/some/path/to/remove/on', function(data, meta) {
+            return intraProcessClient.onAsync('/some/path/to/remove/on', function(data /*, meta*/) {
               emitted['intraProcessClient /some/path/to/remove/on'] = data;
             });
           })
 
           .then(function() {
-            return intraProcessClient.onAsync('/*/*/to/remove/on', function(data, meta) {
+            return intraProcessClient.onAsync('/*/*/to/remove/on', function(data /*, meta*/) {
               emitted['intraProcessClient /*/*/to/remove/on'] = data;
             });
           })
 
           .then(function() {
-            return clusterPeer.onAsync('/some/path/to/remove/on', function(data, meta) {
+            return clusterPeer.onAsync('/some/path/to/remove/on', function(data /*, meta*/) {
               emitted['clusterPeer /some/path/to/remove/on'] = data;
             });
           })
 
           .then(function() {
-            return clusterPeer.onAsync('/*/*/to/remove/on', function(data, meta) {
+            return clusterPeer.onAsync('/*/*/to/remove/on', function(data /*, meta*/) {
               emitted['clusterPeer /*/*/to/remove/on'] = data;
             });
           })
@@ -261,19 +260,19 @@ describe(
           })
 
           .then(function() {
-            return normalClient.onAsync('/some/data/to/tag', function(data, meta) {
+            return normalClient.onAsync('/some/data/to/tag', function(/*data, meta*/) {
               emitted['normalClient /some/path/to/remove/on'] = 1;
             });
           })
 
           .then(function() {
-            return intraProcessClient.onAsync('/some/data/to/tag', function(data, meta) {
+            return intraProcessClient.onAsync('/some/data/to/tag', function(/*data, meta*/) {
               emitted['intraProcessClient /some/path/to/remove/on'] = 1;
             });
           })
 
           .then(function() {
-            return clusterPeer.onAsync('/some/data/to/tag', function(data, meta) {
+            return clusterPeer.onAsync('/some/data/to/tag', function(/*data, meta*/) {
               emitted['clusterPeer /some/path/to/remove/on'] = 1;
             });
           })
@@ -314,19 +313,19 @@ describe(
           })
 
           .then(function() {
-            return normalClient.onAsync('/some/data/to/merge', function(data, meta) {
+            return normalClient.onAsync('/some/data/to/merge', function(data /*, meta*/) {
               emitted['normalClient /some/data/to/merge'] = data;
             });
           })
 
           .then(function() {
-            return intraProcessClient.onAsync('/some/data/to/merge', function(data, meta) {
+            return intraProcessClient.onAsync('/some/data/to/merge', function(data /*, meta*/) {
               emitted['intraProcessClient /some/data/to/merge'] = data;
             });
           })
 
           .then(function() {
-            return clusterPeer.onAsync('/some/data/to/merge', function(data, meta) {
+            return clusterPeer.onAsync('/some/data/to/merge', function(data /*, meta*/) {
               emitted['clusterPeer /some/data/to/merge'] = data;
             });
           })

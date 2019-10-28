@@ -7,9 +7,6 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
-
-    var test_secret = 'test_secret';
     var happnInstance = null;
 
     this.timeout(20000);
@@ -62,7 +59,7 @@ describe(
           event_type: 'set',
           count: 0
         },
-        function(message) {
+        function(/*message*/) {
           if (pathOnRan) return callback(new Error('subscription was not removed by path'));
           else pathOnRan = true;
 
@@ -75,7 +72,7 @@ describe(
                 event_type: 'set',
                 count: 0
               },
-              function(message) {
+              function(/*message*/) {
                 if (onRan) return callback(new Error('subscription was not removed'));
                 else {
                   onRan = true;
@@ -90,7 +87,7 @@ describe(
                         property3: 'property3'
                       },
                       {},
-                      function(e, setresult) {
+                      function(e /*, setresult*/) {
                         if (e) return callback(new Error(e));
                         setTimeout(callback, 2000);
                       }
@@ -111,7 +108,7 @@ describe(
                     property3: 'property3'
                   },
                   {},
-                  function(e, setresult) {
+                  function(e /*, setresult*/) {
                     if (e) return callback(new Error(e));
                   }
                 );
@@ -140,8 +137,6 @@ describe(
     });
 
     it('should unsubscribe from an event path', function(callback) {
-      var currentListenerId;
-      var onRan = false;
       var pathOnRan = false;
 
       listenerclient.on(
@@ -150,7 +145,7 @@ describe(
           event_type: 'set',
           count: 0
         },
-        function(message) {
+        function(/*message*/) {
           if (pathOnRan) return callback(new Error('subscription was not removed by path'));
           else pathOnRan = true;
 
@@ -191,17 +186,13 @@ describe(
     });
 
     it('should unsubscribe from an event path using a wildcard', function(callback) {
-      var currentListenerId;
-      var onRan = false;
-      var pathOnRan = false;
-
       listenerclient.on(
         '/e2e_test1/testsubscribe/data/wildcard_path_off_test/*',
         {
           event_type: 'set',
           count: 0
         },
-        function(message) {
+        function(/*message*/) {
           return callback(new Error('not meant to happen'));
         },
         function(e) {
@@ -209,7 +200,7 @@ describe(
 
           listenerclient.on(
             '/e2e_test1/testsubscribe/data/wildcard_path_off_test/data/*',
-            function(data) {
+            function(/*data*/) {
               return callback(new Error('not meant to happen'));
             },
             function(e) {
@@ -260,7 +251,7 @@ describe(
       var onHappened = false;
 
       listenerclient.onAll(
-        function(message) {
+        function(/*message*/) {
           onHappened = true;
           callback(new Error('this wasnt meant to happen'));
         },
@@ -273,7 +264,7 @@ describe(
               event_type: 'set',
               count: 0
             },
-            function(message) {
+            function(/*message*/) {
               onHappened = true;
               callback(new Error('this wasnt meant to happen'));
             },
@@ -291,7 +282,7 @@ describe(
                     property3: 'property3'
                   },
                   null,
-                  function(e, put_result) {
+                  function(e /*, put_result*/) {
                     if (e) return callback(e);
 
                     setTimeout(function() {

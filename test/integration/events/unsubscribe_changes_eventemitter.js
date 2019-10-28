@@ -7,8 +7,6 @@ describe(
     var Promise = require('bluebird');
     var happn = require('../../../lib/index');
     var service = happn.service;
-    var async = require('async');
-    var test_secret = 'test_secret';
     var default_timeout = 4000;
     var happnInstance = null;
 
@@ -64,12 +62,6 @@ describe(
       listenerclient.handle_data = originalHandleData;
     });
 
-    // if (bucketType == 'strict_bucket') {
-    //   return; // dont test strict bucket, unsubscribing there does not seem to work at all...
-    //
-    //   // TODO: move all this (testing) into c9_unsubscribe_changes_websocket too...
-    // }
-
     it('should unsubscribe from an event', function(callback) {
       var path = '/e2e_test1/testsubscribe/data/on_off_test';
 
@@ -83,7 +75,7 @@ describe(
           event_type: 'set',
           count: 0
         },
-        function(message) {
+        function(/*message*/) {
           if (pathOnRan) return callback(new Error('subscription was not removed by path'));
           else pathOnRan = true;
 
@@ -96,7 +88,7 @@ describe(
                 event_type: 'set',
                 count: 0
               },
-              function(message) {
+              function(/*message*/) {
                 if (onRan) return callback(new Error('subscription was not removed'));
                 else {
                   onRan = true;
@@ -111,7 +103,7 @@ describe(
                         property3: 'property3'
                       },
                       {},
-                      function(e, setresult) {
+                      function(e /*, setresult*/) {
                         if (e) return callback(new Error(e));
                         setTimeout(callback, 500);
                       }
@@ -132,7 +124,7 @@ describe(
                     property3: 'property3'
                   },
                   {},
-                  function(e, setresult) {
+                  function(e /*, setresult*/) {
                     if (e) return callback(new Error(e));
                   }
                 );
@@ -171,7 +163,7 @@ describe(
           event_type: 'set',
           count: 0
         },
-        function(message) {
+        function(/*message*/) {
           if (pathOnRan) return callback(new Error('subscription was not removed by path'));
           else pathOnRan = true;
 
@@ -213,18 +205,13 @@ describe(
 
     it('should unsubscribe from an event path using a wildcard', function(callback) {
       var path = '/e2e_test1/testsubscribe/data/wildcard_path_off_test';
-
-      var currentListenerId;
-      var onRan = false;
-      var pathOnRan = false;
-
       listenerclient.on(
         path + '/*',
         {
           event_type: 'set',
           count: 0
         },
-        function(message) {
+        function(/*message*/) {
           return callback(new Error('not meant to happen'));
         },
         function(e) {
@@ -232,7 +219,7 @@ describe(
 
           listenerclient.on(
             path + '/data/*',
-            function(data) {
+            function(/*data*/) {
               return callback(new Error('not meant to happen'));
             },
             function(e) {
@@ -283,7 +270,7 @@ describe(
       var onHappened = false;
 
       listenerclient.onAll(
-        function(message) {
+        function(/*message*/) {
           onHappened = true;
           callback(new Error('this wasnt meant to happen'));
         },
@@ -296,7 +283,7 @@ describe(
               event_type: 'set',
               count: 0
             },
-            function(message) {
+            function(/*message*/) {
               onHappened = true;
               callback(new Error('this wasnt meant to happen'));
             },
@@ -314,7 +301,7 @@ describe(
                     property3: 'property3'
                   },
                   null,
-                  function(e, put_result) {
+                  function(e /*, put_result*/) {
                     if (e) return callback(e);
 
                     setTimeout(function() {
@@ -340,7 +327,7 @@ describe(
           {
             event_type: 'set'
           },
-          function(data, meta) {
+          function(/*data, meta*/) {
             results[1] = true;
           }
         ),
@@ -349,7 +336,7 @@ describe(
           {
             event_type: 'set'
           },
-          function(data, meta) {
+          function(/*data, meta*/) {
             results[2] = true;
           }
         ),
@@ -358,15 +345,13 @@ describe(
           {
             event_type: 'set'
           },
-          function(data, meta) {
+          function(/*data, meta*/) {
             results[3] = true;
           }
         )
       ])
 
-        .spread(function(result1, result2, result3) {
-          console.log('results', result1, result2, result3);
-          // unsubscribe from 2nd subscription only
+        .spread(function(result1, result2) {
           return listenerclient.off(result2);
         })
 
@@ -402,7 +387,7 @@ describe(
           {
             event_type: 'set'
           },
-          function(data, meta) {
+          function(/*data, meta*/) {
             results[1] = true;
           }
         ),
@@ -411,7 +396,7 @@ describe(
           {
             event_type: 'set'
           },
-          function(data, meta) {
+          function(/*data, meta*/) {
             results[2] = true;
           }
         ),
@@ -420,20 +405,16 @@ describe(
           {
             event_type: 'set'
           },
-          function(data, meta) {
+          function(/*data, meta*/) {
             results[3] = true;
           }
         )
       ])
 
         .spread(function(result1, result2, result3) {
-          //console.log('1,2,3',result1[0], result2[0], result3[0]);
-
           listenerId1 = result1;
           listenerId2 = result2;
           listenerId3 = result3;
-
-          // unsubscribe from 2nd subscription only
           return listenerclient.off(listenerId2);
         })
 
@@ -461,10 +442,7 @@ describe(
         })
 
         .then(function() {
-          // no longer subscribed to any, ensure the publication does not erroneously get sent to
-          // listenerclient anyway... and be filtered out clientside
-
-          listenerclient.handle_data = function(path, data) {
+          listenerclient.handle_data = function(path /*, data*/) {
             emittedPath = path;
             originalHandleData.apply(this, arguments);
           };
@@ -505,7 +483,7 @@ describe(
           {
             event_type: 'set'
           },
-          function(data, meta) {
+          function(/*data, meta*/) {
             results[1] = true;
           }
         ),
@@ -514,7 +492,7 @@ describe(
           {
             event_type: 'set'
           },
-          function(data, meta) {
+          function(/*data, meta*/) {
             results[2] = true;
           }
         ),
@@ -523,7 +501,7 @@ describe(
           {
             event_type: 'set'
           },
-          function(data, meta) {
+          function(/*data, meta*/) {
             results[3] = true;
           }
         )
@@ -534,9 +512,6 @@ describe(
         })
 
         .then(function() {
-          // no longer subscribed to any, ensure the publication does not erroneously get sent to
-          // listenerclient anyway... and be filtered out clientside
-
           listenerclient.handle_data = function(path) {
             emittedPath = path;
             originalHandleData.apply(this, arguments);

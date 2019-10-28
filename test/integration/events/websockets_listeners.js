@@ -7,9 +7,6 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
-
-    var test_secret = 'test_secret';
     var default_timeout = 10000;
     var happnInstance = null;
 
@@ -75,7 +72,7 @@ describe(
             event_type: 'set',
             count: 1
           },
-          function(message, meta) {
+          function(/*message, meta*/) {
             expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event/*']).to.be(
               undefined
             );
@@ -96,8 +93,50 @@ describe(
                   property3: 'property3'
                 },
                 null,
-                function(e, result) {
-                  //console.log('put happened - listening for result');
+                function(/*e, result*/) {
+                  //do nothing
+                }
+              );
+            } else callback(e);
+          }
+        );
+      } catch (e) {
+        callback(e);
+      }
+    });
+
+    it('the listener should pick up a single published event', function(callback) {
+      this.timeout(default_timeout);
+
+      try {
+        listenerclient.on(
+          '/e2e_test1/testsubscribe/data/event',
+          {
+            event_type: 'set',
+            count: 1
+          },
+          function(/*message*/) {
+            expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.be(
+              undefined
+            );
+            callback();
+          },
+          function(e) {
+            if (!e) {
+              expect(
+                listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length
+              ).to.be(1);
+              //then make the change
+              publisherclient.set(
+                '/e2e_test1/testsubscribe/data/event',
+                {
+                  property1: 'property1',
+                  property2: 'property2',
+                  property3: 'property3'
+                },
+                null,
+                function(/*e, result*/) {
+                  //do nothing
                 }
               );
             } else callback(e);
@@ -121,56 +160,7 @@ describe(
             event_type: 'set',
             count: 1
           },
-          function(message) {
-            expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.be(
-              undefined
-            );
-            callback();
-          },
-          function(e) {
-            //////////////////console.log('ON HAS HAPPENED: ' + e);
-
-            if (!e) {
-              expect(
-                listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length
-              ).to.be(1);
-              //////////////////console.log('on subscribed, about to publish');
-
-              //then make the change
-              publisherclient.set(
-                '/e2e_test1/testsubscribe/data/event',
-                {
-                  property1: 'property1',
-                  property2: 'property2',
-                  property3: 'property3'
-                },
-                null,
-                function(e, result) {
-                  ////////////////////////////console.log('put happened - listening for result');
-                }
-              );
-            } else callback(e);
-          }
-        );
-      } catch (e) {
-        callback(e);
-      }
-    });
-
-    //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
-
-    it('the listener should pick up a single published event', function(callback) {
-      this.timeout(default_timeout);
-
-      try {
-        //first listen for the change
-        listenerclient.on(
-          '/e2e_test1/testsubscribe/data/event',
-          {
-            event_type: 'set',
-            count: 1
-          },
-          function(message) {
+          function(/*message*/) {
             expect(listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.be(
               undefined
             );
@@ -181,9 +171,6 @@ describe(
               expect(
                 listenerclient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length
               ).to.be(1);
-
-              ////////////////////////////console.log('on subscribed, about to publish');
-
               //then make the change
               publisherclient.set(
                 '/e2e_test1/testsubscribe/data/event',
@@ -193,8 +180,8 @@ describe(
                   property3: 'property3'
                 },
                 null,
-                function(e, result) {
-                  ////////////////////////////console.log('put happened - listening for result');
+                function(/*e, result*/) {
+                  //do nothing
                 }
               );
             } else callback(e);
@@ -218,10 +205,7 @@ describe(
             property3: 'property3'
           },
           null,
-          function(e, result) {
-            //////////////////console.log('did delete set');
-            //path, event_type, count, handler, done
-            //We listen for the DELETE event
+          function(/*e, result*/) {
             listenerclient.on(
               '/e2e_test1/testsubscribe/data/delete_me',
               {
@@ -229,46 +213,29 @@ describe(
                 count: 1
               },
               function(eventData) {
-                //we are looking at the event internals on the listener to ensure our event management is working - because we are only listening for 1
-                //instance of this event - the event listener should have been removed
-                ////console.log('listenerclient.events');
-                ////console.log(listenerclient.events);
                 expect(
                   listenerclient.state.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me']
                 ).to.be(undefined);
-
-                ////console.log(eventData);
-
-                //we needed to have removed a single item
                 expect(eventData.removed).to.be(1);
-
-                ////////////////////////////console.log(message);
-
                 callback();
               },
               function(e) {
-                ////////////console.log('ON HAS HAPPENED: ' + e);
-
                 if (!e) {
-                  ////console.log('listenerclient.events, pre');
-                  ////console.log(listenerclient.events);
                   expect(
                     listenerclient.state.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me']
                       .length
                   ).to.be(1);
-
-                  //////////////////console.log('subscribed, about to delete');
-
-                  //We perform the actual delete
-                  publisherclient.remove('/e2e_test1/testsubscribe/data/delete_me', null, function(
+                  publisherclient.remove(
+                    '/e2e_test1/testsubscribe/data/delete_me',
+                    null,
+                    function() /*
                     e,
                     result
-                  ) {
-                    //////////////////console.log('REMOVE HAPPENED!!!');
-                    //////////////////console.log(e);
-                    //////////////////console.log(result);
-                    ////////////////////////////console.log('put happened - listening for result');
-                  });
+                    */
+                    {
+                      //do nothing
+                    }
+                  );
                 } else callback(e);
               }
             );
@@ -288,9 +255,7 @@ describe(
           event_type: 'set',
           count: 0
         },
-        function(message) {
-          //we detach all listeners from the path here
-          ////console.log('ABOUT OFF PATH');
+        function(/*message*/) {
           listenerclient.offPath('/e2e_test1/testsubscribe/data/on_off_test', function(e) {
             if (e) return callback(new Error(e));
 
@@ -300,10 +265,7 @@ describe(
                 event_type: 'set',
                 count: 0
               },
-              function(message) {
-                ////console.log('ON RAN');
-                ////console.log(message);
-
+              function(/*message*/) {
                 listenerclient.off(currentListenerId, function(e) {
                   if (e) return callback(new Error(e));
                   else return callback();
@@ -322,11 +284,8 @@ describe(
                     property3: 'property3'
                   },
                   {},
-                  function(e, setresult) {
+                  function(e /*, setresult*/) {
                     if (e) return callback(new Error(e));
-
-                    ////console.log('DID ON SET');
-                    ////console.log(setresult);
                   }
                 );
               }
@@ -346,7 +305,7 @@ describe(
               property3: 'property3'
             },
             {},
-            function(e, setresult) {
+            function(e /*, setresult*/) {
               if (e) return callback(new Error(e));
             }
           );
@@ -478,10 +437,10 @@ describe(
                   event_type: 'set',
                   initialEmit: true
                 },
-                function(message, meta) {
+                function(message /*, meta*/) {
                   caughtEmitted++;
 
-                  if (caughtEmitted == 2) {
+                  if (caughtEmitted === 2) {
                     expect(message.test).to.be('data1');
                     callback();
                   }
@@ -497,20 +456,18 @@ describe(
     });
 
     it('should subscribe to the catch all notification', function(callback) {
-      var caught = {};
-
       this.timeout(10000);
       var caughtCount = 0;
 
       listenerclient.onAll(
         function(eventData, meta) {
           if (
-            meta.action == '/REMOVE@/e2e_test1/testsubscribe/data/catch_all' ||
-            meta.action == '/SET@/e2e_test1/testsubscribe/data/catch_all'
+            meta.action === '/REMOVE@/e2e_test1/testsubscribe/data/catch_all' ||
+            meta.action === '/SET@/e2e_test1/testsubscribe/data/catch_all'
           )
             caughtCount++;
 
-          if (caughtCount == 2) callback();
+          if (caughtCount === 2) callback();
         },
         function(e) {
           if (e) return callback(e);
@@ -523,11 +480,18 @@ describe(
               property3: 'property3'
             },
             null,
-            function(e, put_result) {
-              publisherclient.remove('/e2e_test1/testsubscribe/data/catch_all', null, function(
+            function(/*e, put_result*/) {
+              publisherclient.remove(
+                '/e2e_test1/testsubscribe/data/catch_all',
+                null,
+                function() /*
                 e,
                 del_result
-              ) {});
+                */
+                {
+                  //do nothing
+                }
+              );
             }
           );
         }
@@ -540,7 +504,7 @@ describe(
       var onHappened = false;
 
       listenerclient.onAll(
-        function(message) {
+        function(/*message*/) {
           onHappened = true;
           callback(new Error('this wasnt meant to happen'));
         },
@@ -553,7 +517,7 @@ describe(
               event_type: 'set',
               count: 0
             },
-            function(message) {
+            function(/*message*/) {
               onHappened = true;
               callback(new Error('this wasnt meant to happen'));
             },
@@ -571,7 +535,7 @@ describe(
                     property3: 'property3'
                   },
                   null,
-                  function(e, put_result) {
+                  function(e /*, put_result*/) {
                     if (e) return callback(e);
 
                     setTimeout(function() {
