@@ -13,7 +13,6 @@ describe(
     var utilsService = new UtilsService();
 
     before('', function() {});
-
     after('', function() {});
 
     function mockPublisherService(config, recipients, callback, processMessageOut) {
@@ -26,21 +25,21 @@ describe(
 
       var publisherService = new PublisherService({
         logger: {
-          createLogger: function(key) {
+          createLogger: function(/*key*/) {
             return {
-              warn: function(message) {
+              warn: function(/*message*/) {
                 //console.log(message);
               },
-              info: function(message) {
+              info: function(/*message*/) {
                 //console.log(message);
               },
-              success: function(message) {
+              success: function(/*message*/) {
                 //console.log(message);
               },
-              error: function(message) {
+              error: function(/*message*/) {
                 //console.log(message);
               },
-              $$TRACE: function(message) {
+              $$TRACE: function(/*message*/) {
                 //console.log(message);
               }
             };
@@ -64,6 +63,7 @@ describe(
       };
 
       publisherService.initialize(config, function(e) {
+        if (e) return callback(e);
         return callback(publisherService);
       });
     }

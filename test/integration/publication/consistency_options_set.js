@@ -1,8 +1,6 @@
 var Happn = require('../../..'),
   service = Happn.service,
   expect = require('expect.js'),
-  async = require('async'),
-  shortid = require('shortid'),
   Promise = require('bluebird');
 
 describe(
@@ -42,11 +40,6 @@ describe(
         }
       };
 
-      var ran1 = false,
-        ran2 = false;
-
-      var subscription1, subscription2;
-
       service
         .create(config)
         .then(function(instance) {
@@ -64,26 +57,22 @@ describe(
             meta: {
               publish: true
             },
-            onPublished: function(data) {
-              ran1 = true;
+            onPublished: function() {
+              //do nothing
             }
           });
         })
-        .then(function(subscription) {
-          subscription1 = subscription;
-
+        .then(function(/*subscription*/) {
           return clientInstance2.on('/test/path/*', {
             meta: {
               publish: true
             },
-            onPublished: function(data) {
-              ran2 = true;
+            onPublished: function() {
+              //do nothing
             }
           });
         })
-        .then(function(subscription) {
-          subscription2 = subscription;
-
+        .then(function(/*subscription*/) {
           return new Promise(function(resolve, reject) {
             clientInstance1.set(
               '/test/path/1',
@@ -93,7 +82,7 @@ describe(
               {
                 consistency: CONSISTENCY.DEFERRED,
                 onPublished: function(e, results) {
-                  expect(Object.keys(clientInstance2.state.ackHandlers).length == 0).to.be(true);
+                  expect(Object.keys(clientInstance2.state.ackHandlers).length === 0).to.be(true);
 
                   if (e) return reject(e);
                   resolve(results);
@@ -108,9 +97,6 @@ describe(
         .then(function(results) {
           expect(results.queued).to.be(2);
           expect(results.successful).to.be(2);
-
-          //TODO: test unsubscribe
-
           done();
         })
         .catch(done);
@@ -126,11 +112,6 @@ describe(
           }
         }
       };
-
-      var ran1 = false,
-        ran2 = false;
-
-      var subscription1, subscription2;
 
       service
         .create(config)
@@ -149,26 +130,22 @@ describe(
             meta: {
               publish: true
             },
-            onPublished: function(data) {
-              ran1 = true;
+            onPublished: function() {
+              //do nothing
             }
           });
         })
-        .then(function(subscription) {
-          subscription1 = subscription;
-
+        .then(function(/*subscription*/) {
           return clientInstance2.on('/test/path/transactional/*', {
             meta: {
               publish: true
             },
-            onPublished: function(data) {
-              ran2 = true;
+            onPublished: function() {
+              //do nothing
             }
           });
         })
-        .then(function(subscription) {
-          subscription2 = subscription;
-
+        .then(function(/*subscription*/) {
           return new Promise(function(resolve, reject) {
             clientInstance1.set(
               '/test/path/transactional/1',
@@ -189,9 +166,6 @@ describe(
         .then(function(results) {
           expect(results._meta.publishResults.queued).to.be(2);
           expect(results._meta.publishResults.successful).to.be(2);
-
-          //TODO: test unsubscribe
-
           done();
         })
         .catch(done);
@@ -209,15 +183,7 @@ describe(
           }
         }
       };
-
-      var ran1 = false,
-        ran2 = false;
       var setHappened = false;
-
-      var subscription1, subscription2;
-
-      var oldPerformPublication;
-
       service
         .create(config)
 
@@ -227,7 +193,9 @@ describe(
           serviceInstance.services.publisher.publication = {
             create: function() {
               return {
-                publish: function(callback) {},
+                publish: function(/*callback*/) {
+                  //do nothing
+                },
                 options: {
                   consistency: CONSISTENCY.DEFERRED
                 }
@@ -248,25 +216,18 @@ describe(
             meta: {
               publish: true
             },
-            onPublished: function(data) {
-              ran1 = true;
-            }
+            onPublished: function(/*data*/) {}
           });
         })
-        .then(function(subscription) {
-          subscription1 = subscription;
-
+        .then(function(/*subscription*/) {
           return clientInstance2.on('/test/path/*', {
             meta: {
               publish: true
             },
-            onPublished: function(data) {
-              ran2 = true;
-            }
+            onPublished: function(/*data*/) {}
           });
         })
-        .then(function(subscription) {
-          subscription2 = subscription;
+        .then(function(/*subscription*/) {
           setHappened = false;
 
           clientInstance1.set(
@@ -279,13 +240,10 @@ describe(
 
               onPublishedTimeout: 5000,
 
-              onPublished: function(e, results) {
+              onPublished: function(e /*, results*/) {
                 if (!e) return done(new Error('should have failed'));
-
                 expect(e.toString()).to.be('Error: publish timed out');
-
                 expect(setHappened).to.be(true);
-
                 done();
               }
             },
@@ -300,9 +258,7 @@ describe(
 
     it('does a set with a publish, acknowledged consistency, picks up publication log in the onPublished event handler', function(done) {
       this.timeout(10000);
-
       var clientConfig = {};
-
       var config = {
         services: {
           subscription: {
@@ -310,11 +266,6 @@ describe(
           }
         }
       };
-
-      var ran1 = false,
-        ran2 = false;
-
-      var subscription1, subscription2;
 
       service
         .create(config)
@@ -336,28 +287,24 @@ describe(
             meta: {
               publish: true
             },
-            onPublished: function(data) {
-              ran1 = true;
+            onPublished: function(/*data*/) {
+              //do nothing
             }
           });
         })
 
-        .then(function(subscription) {
-          subscription1 = subscription;
-
+        .then(function(/*subscription*/) {
           return clientInstance2.on('/test/path/acknowledged/*', {
             meta: {
               publish: true
             },
-            onPublished: function(data) {
-              ran2 = true;
+            onPublished: function(/*data*/) {
+              //do nothing
             }
           });
         })
 
-        .then(function(subscription) {
-          subscription2 = subscription;
-
+        .then(function(/*subscription*/) {
           return new Promise(function(resolve, reject) {
             clientInstance1.set(
               '/test/path/acknowledged/1',
@@ -384,9 +331,6 @@ describe(
           expect(results.queued).to.be(2);
           expect(results.successful).to.be(2);
           expect(results.acknowledged).to.be(2);
-
-          //TODO: test unsubscribe
-
           done();
         })
         .catch(done);
@@ -412,11 +356,6 @@ describe(
         }
       };
 
-      var ran1 = false,
-        ran2 = false;
-
-      var subscription1, subscription2;
-
       service
         .create(config)
 
@@ -441,26 +380,22 @@ describe(
             meta: {
               publish: true
             },
-            onPublished: function(data) {
-              ran1 = true;
+            onPublished: function(/*data*/) {
+              //do nothing
             }
           });
         })
-        .then(function(subscription) {
-          subscription1 = subscription;
-
+        .then(function(/*subscription*/) {
           return clientInstance2.on('/test/path/acknowledged_timed_out/*', {
             meta: {
               publish: true
             },
-            onPublished: function(data) {
-              ran2 = true;
+            onPublished: function(/*data*/) {
+              //do nothing
             }
           });
         })
-        .then(function(subscription) {
-          subscription2 = subscription;
-
+        .then(function(/*subscription*/) {
           clientInstance1.set(
             '/test/path/acknowledged_timed_out/1',
             {
@@ -468,14 +403,10 @@ describe(
             },
             {
               consistency: CONSISTENCY.ACKNOWLEDGED,
-
               onPublishedTimeout: 5000,
-
-              onPublished: function(e, results) {
+              onPublished: function(e /*, results*/) {
                 if (!e) return done(new Error('should have failed'));
-
                 expect(e.toString()).to.be('Error: unacknowledged publication');
-
                 done();
               }
             },

@@ -3,7 +3,6 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service1 = happn.service;
     var service2 = happn.service;
@@ -16,7 +15,7 @@ describe(
     var instances = [];
 
     var stopInstances = function(callback) {
-      if (instances.length == 0) return callback();
+      if (instances.length === 0) return callback();
 
       async.eachSeries(
         instances,

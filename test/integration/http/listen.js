@@ -14,7 +14,7 @@ describe(
 
       if (!port) port = 55000;
 
-      if (path[0] != '/') path = '/' + path;
+      if (path[0] !== '/') path = '/' + path;
 
       var options = {
         url: 'http://127.0.0.1:' + port.toString() + path
@@ -91,7 +91,7 @@ describe(
           {
             test: 'data'
           },
-          function(e, response) {
+          function(e) {
             if (e) return callback(e);
 
             intraProcClientInstance.get('/test/', function(e, response) {
@@ -137,7 +137,6 @@ describe(
         setTimeout(function() {
           happnInstance.listen(function(e) {
             expect(e).to.be(null);
-
             doRequest('version', null, null, function(body) {
               expect(body.version).to.not.be(null);
               callback();
