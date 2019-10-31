@@ -9,8 +9,6 @@ describe(
     var Promise = require('bluebird');
     var async = require('async');
 
-    var service1Name;
-
     this.timeout(60000);
 
     var testPort = 55001;
@@ -85,7 +83,6 @@ describe(
         .create(config)
         .then(function(server) {
           server1 = server;
-          service1Name = server.name;
         })
         .then(linkUser);
     }
@@ -115,7 +112,7 @@ describe(
     after('stops the service if it exists', function(done) {
       stopService()
         .then(done)
-        .catch(function(e) {
+        .catch(function() {
           done();
         });
     });

@@ -18,7 +18,7 @@ describe(
       var serviceInstance;
       var stopped = false;
 
-      var checkAllEventsFired = function(cb) {
+      var checkAllEventsFired = function() {
         for (var eventName in eventsFired) if (!eventsFired[eventName]) return;
 
         if (!stopped) {

@@ -7,7 +7,6 @@ describe(
     var serviceInstance;
     var expect = require('expect.js');
     var constants = happn.constants;
-    var Promise = require('bluebird');
 
     var getService = function(config, callback) {
       happn.service.create(config, callback);
@@ -131,18 +130,13 @@ describe(
             serviceInstance.services.subscription
           );
           //action, path, sessionId, data
-          serviceInstance.services.subscription.addListener = function(
-            action,
-            path,
-            sessionId,
-            parameters
-          ) {
+          serviceInstance.services.subscription.addListener = function() {
             throw new Error('test subscribe error');
           }.bind(serviceInstance.services.subscription);
 
           client.on(
             '/test/on',
-            function(data) {
+            function() {
               //do nothing
             },
             function(e) {
@@ -186,7 +180,7 @@ describe(
 
           client.on(
             '/test/publication',
-            function(data) {
+            function() {
               //do nothing
             },
             function(e) {

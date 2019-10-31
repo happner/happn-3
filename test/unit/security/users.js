@@ -6,8 +6,6 @@ describe(
     this.timeout(5000);
 
     var expect = require('expect.js');
-    var happn = require('../../../lib/index');
-    var service = happn.service;
     var async = require('async');
     var Promise = require('bluebird');
 
@@ -48,7 +46,7 @@ describe(
 
         if (typeof serviceInstance.initialize !== 'function' || config === false) return callback();
 
-        serviceInstance.initialize(config, function(e) {
+        serviceInstance.initialize(config, function() {
           //console.log(`service ${serviceName} initialized...`);
           callback();
         });
@@ -164,7 +162,7 @@ describe(
             function(e, results) {
               if (e) return done(e);
 
-              expect(results.length == 10).to.be(true);
+              expect(results.length === 10).to.be(true);
 
               done();
             }
@@ -209,7 +207,7 @@ describe(
             function(e, results) {
               if (e) return done(e);
 
-              expect(results.length == 10).to.be(true);
+              expect(results.length === 10).to.be(true);
 
               done();
             }
@@ -231,7 +229,7 @@ describe(
             function(e, results) {
               if (e) return done(e);
 
-              expect(results.length == 11).to.be(true); //11 to compensate for the admin user
+              expect(results.length === 11).to.be(true); //11 to compensate for the admin user
 
               done();
             }
@@ -250,7 +248,7 @@ describe(
           happn.services.security.users.listUsers('*', function(e, users) {
             if (e) return done(e);
 
-            expect(users.length == 11).to.be(true); //11 to compensate for the admin user
+            expect(users.length === 11).to.be(true); //11 to compensate for the admin user
 
             done();
           });
@@ -268,7 +266,7 @@ describe(
           happn.services.security.users.listUsers('*', null, function(e, users) {
             if (e) return done(e);
 
-            expect(users.length == 11).to.be(true); //11 to compensate for the admin user
+            expect(users.length === 11).to.be(true); //11 to compensate for the admin user
 
             done();
           });
@@ -286,7 +284,7 @@ describe(
           happn.services.security.users.listUsers('*', undefined, function(e, users) {
             if (e) return done(e);
 
-            expect(users.length == 11).to.be(true); //11 to compensate for the admin user
+            expect(users.length === 11).to.be(true); //11 to compensate for the admin user
 
             done();
           });
@@ -307,7 +305,7 @@ describe(
             function(e, users) {
               if (e) return done(e);
 
-              expect(users.length == 10).to.be(true); //11 to compensate for the admin user
+              expect(users.length === 10).to.be(true); //11 to compensate for the admin user
 
               done();
             }
@@ -466,7 +464,7 @@ describe(
           if (e) return done(e);
           happn.services.security.users
             .listUserNamesByGroup(null)
-            .then(function(userNames) {
+            .then(function() {
               done(new Error('unexpected execution'));
             })
             .catch(function(e) {
@@ -484,7 +482,7 @@ describe(
           if (e) return done(e);
           happn.services.security.users.listUsersByGroup('test_1', function(e, users) {
             if (e) return done(e);
-            expect(users.length == 10).to.be(true); //11 to compensate for the admin user
+            expect(users.length === 10).to.be(true); //11 to compensate for the admin user
             done();
           });
         });
@@ -501,7 +499,7 @@ describe(
             { criteria: { 'custom_data.extra': 1 } },
             function(e, users) {
               if (e) return done(e);
-              expect(users.length == 1).to.be(true); //11 to compensate for the admin user
+              expect(users.length === 1).to.be(true); //11 to compensate for the admin user
               done();
             }
           );
@@ -519,7 +517,7 @@ describe(
             { criteria: { 'custom_data.extra': 1000 } },
             function(e, users) {
               if (e) return done(e);
-              expect(users.length == 0).to.be(true); //11 to compensate for the admin user
+              expect(users.length === 0).to.be(true); //11 to compensate for the admin user
               done();
             }
           );
@@ -534,7 +532,7 @@ describe(
           if (e) return done(e);
           happn.services.security.users.listUsersByGroup('lizard-group', function(e, users) {
             if (e) return done(e);
-            expect(users.length == 0).to.be(true); //11 to compensate for the admin user
+            expect(users.length === 0).to.be(true); //11 to compensate for the admin user
             done();
           });
         });
@@ -546,7 +544,7 @@ describe(
         if (e) return done(e);
         createUsersAndGroups(happn, function(e) {
           if (e) return done(e);
-          happn.services.security.users.listUsersByGroup(null, function(e, users) {
+          happn.services.security.users.listUsersByGroup(null, function(e) {
             expect(e.toString()).to.be('Error: validation error: groupName must be specified');
             done();
           });

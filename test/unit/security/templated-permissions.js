@@ -47,7 +47,7 @@ describe(
                     permissions: {}
                   };
 
-                  if (name == 'test_group_1')
+                  if (name === 'test_group_1')
                     returnGroup = {
                       name: 'test_group_1',
                       permissions: {
@@ -57,7 +57,7 @@ describe(
                       }
                     };
 
-                  if (name == 'test_group_2')
+                  if (name === 'test_group_2')
                     returnGroup = {
                       name: 'test_group_2',
                       permissions: {
@@ -66,7 +66,7 @@ describe(
                       }
                     };
 
-                  if (name == 'test_group_3')
+                  if (name === 'test_group_3')
                     returnGroup = {
                       name: 'test_group_3',
                       custom_data: {

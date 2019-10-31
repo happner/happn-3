@@ -265,12 +265,12 @@ describe(
 
           happnMock.services[serviceName] = testServices[serviceName];
 
-          if (serviceName == 'error')
+          if (serviceName === 'error')
             happnMock.services[serviceName].handleFatal = function(message, e) {
               throw e;
             };
 
-          if (serviceName == 'session') {
+          if (serviceName === 'session') {
             happnMock.services[serviceName].config = {};
             return happnMock.services[serviceName].initializeCaches(eachServiceCB);
           }
@@ -382,7 +382,6 @@ describe(
         var testKeyPair = crypto.createKeyPair();
 
         var nonce = crypto.createHashFromString(uuid.v4().toString());
-        var digest = crypto.sign(nonce, testKeyPair.privateKey);
 
         var verifyResult = happnMock.services.crypto.verify(
           nonce,
@@ -514,11 +513,6 @@ describe(
       var happn = require('../../../lib/index');
       var happn_client = happn.client;
 
-      var Crypto = require('happn-util-crypto');
-      var crypto = new Crypto();
-
-      var nonce;
-
       var clientInstance = happn_client.__instance({
         username: '_ADMIN',
         password: 'happnTestPWD'
@@ -576,7 +570,7 @@ describe(
 
         if (!options) options = {};
 
-        if (action == 'request-nonce') {
+        if (action === 'request-nonce') {
           nonce = crypto.generateNonce();
 
           var request = {
@@ -1364,7 +1358,7 @@ describe(
 
             expect(ok).to.be(true);
 
-            checkpoint.__checkUsageLimit(testSession, testSession.policy[1], function(e, ok) {
+            checkpoint.__checkUsageLimit(testSession, testSession.policy[1], function(e) {
               if (e) return done(e);
 
               checkpoint.__checkUsageLimit(testSession, testSession.policy[1], function(e, ok) {
@@ -1380,47 +1374,6 @@ describe(
         });
       });
     });
-
-    var mockRequest = function(token, url, payload, method) {
-      if (!token) throw new Error('you must specify a token');
-      if (!url) throw new Error('you must specify an url');
-      if (method.toLowerCase() == 'post' && !payload) throw new Error('you must specify an url');
-
-      if (!method) method = 'GET';
-
-      var MockRequest = require('./helpsrs/mock_request');
-
-      var request = new MockRequest({
-        method: method.toUppserCase(),
-        url: url,
-        headers: {
-          Accept: 'application/json'
-        }
-      });
-
-      request.write(payload);
-
-      request.end();
-
-      return request;
-    };
-
-    var mockLoginRequest = function(credentials, callback) {
-      var MockRequest = require('./helpsrs/mock_request');
-
-      var request = new MockRequest({
-        method: 'POST',
-        url: '/auth/login',
-        headers: {
-          Accept: 'application/json'
-        }
-      });
-
-      request.write(credentials);
-      request.end();
-
-      return request;
-    };
 
     it('tests the security services generateToken and decodeToken methods', function(done) {
       mockServices(function(e, happnMock) {
@@ -1582,7 +1535,6 @@ describe(
         var addedTestGroup;
         var addedTestuser;
 
-        var testClient;
         var serviceInstance = instance;
 
         serviceInstance.services.security.users.upsertGroup(
@@ -1730,7 +1682,7 @@ describe(
                       happn.client
                         .create(creds)
 
-                        .then(function(clientInstance) {
+                        .then(function() {
                           done(new Error('this was not meant to happn'));
                         })
 
@@ -1929,7 +1881,7 @@ describe(
                 data: {}
               }
             })
-            .then(function(message) {
+            .then(function() {
               done(new Error('unexpected success'));
             })
             .catch(function(e) {
@@ -1942,7 +1894,6 @@ describe(
 
     it('tests resetSessionPermissions method - link-group', function(done) {
       this.timeout(5000);
-      let ended = false;
 
       getService(
         {
@@ -1952,10 +1903,9 @@ describe(
           var client = {
             sessionId: '1',
             once: function(evt, handler) {
-              if (evt == 'end') this.__handler = handler;
+              if (evt === 'end') this.__handler = handler;
             }.bind(client),
             end: function() {
-              ended = true;
               this.__handler();
             }.bind(client)
           };
@@ -2010,7 +1960,6 @@ describe(
 
     it('tests resetSessionPermissions method - unlink-group', function(done) {
       this.timeout(5000);
-      let ended = false;
 
       getService(
         {
@@ -2022,10 +1971,9 @@ describe(
           var client = {
             sessionId: '1',
             once: function(evt, handler) {
-              if (evt == 'end') this.__handler = handler;
+              if (evt === 'end') this.__handler = handler;
             }.bind(client),
             end: function() {
-              ended = true;
               this.__handler();
             }.bind(client)
           };
@@ -2088,7 +2036,7 @@ describe(
           var client = {
             sessionId: '1',
             once: function(evt, handler) {
-              if (evt == 'end') this.__handler = handler;
+              if (evt === 'end') this.__handler = handler;
             }.bind(client),
             end: function() {
               ended = true;
@@ -2137,7 +2085,6 @@ describe(
 
     it('tests resetSessionPermissions method - delete-group', function(done) {
       this.timeout(5000);
-      let ended = false;
 
       getService(
         {
@@ -2147,10 +2094,9 @@ describe(
           var client = {
             sessionId: '1',
             once: function(evt, handler) {
-              if (evt == 'end') this.__handler = handler;
+              if (evt === 'end') this.__handler = handler;
             }.bind(client),
             end: function() {
-              ended = true;
               this.__handler();
             }.bind(client)
           };
@@ -2204,7 +2150,6 @@ describe(
 
     it('tests resetSessionPermissions method - upsert-group', function(done) {
       this.timeout(5000);
-      let ended = false;
 
       getService(
         {
@@ -2214,10 +2159,9 @@ describe(
           var client = {
             sessionId: '1',
             once: function(evt, handler) {
-              if (evt == 'end') this.__handler = handler;
+              if (evt === 'end') this.__handler = handler;
             }.bind(client),
             end: function() {
-              ended = true;
               this.__handler();
             }.bind(client)
           };
@@ -2277,7 +2221,6 @@ describe(
 
     it('tests resetSessionPermissions method - permission-removed', function(done) {
       this.timeout(5000);
-      let ended = false;
 
       getService(
         {
@@ -2287,10 +2230,9 @@ describe(
           var client = {
             sessionId: '1',
             once: function(evt, handler) {
-              if (evt == 'end') this.__handler = handler;
+              if (evt === 'end') this.__handler = handler;
             }.bind(client),
             end: function() {
-              ended = true;
               this.__handler();
             }.bind(client)
           };
@@ -2350,7 +2292,6 @@ describe(
 
     it('tests resetSessionPermissions method - permission-upserted', function(done) {
       this.timeout(5000);
-      let ended = false;
 
       getService(
         {
@@ -2360,10 +2301,9 @@ describe(
           var client = {
             sessionId: '1',
             once: function(evt, handler) {
-              if (evt == 'end') this.__handler = handler;
+              if (evt === 'end') this.__handler = handler;
             }.bind(client),
             end: function() {
-              ended = true;
               this.__handler();
             }.bind(client)
           };
@@ -2423,7 +2363,6 @@ describe(
 
     it('tests resetSessionPermissions method - upsert-user', function(done) {
       this.timeout(5000);
-      let ended = false;
 
       getService(
         {
@@ -2433,10 +2372,9 @@ describe(
           var client = {
             sessionId: '1',
             once: function(evt, handler) {
-              if (evt == 'end') this.__handler = handler;
+              if (evt === 'end') this.__handler = handler;
             }.bind(client),
             end: function() {
-              ended = true;
               this.__handler();
             }.bind(client)
           };
@@ -2584,7 +2522,7 @@ describe(
           });
         };
 
-        var callback = function(err, authorized, reason, onBehalfOfSession) {
+        var callback = function(err, authorized) {
           expect(authorized).to.be(true);
           done();
         };
@@ -2656,7 +2594,7 @@ describe(
           });
         };
 
-        var callback = function(err, authorized, reason, onBehalfOfSession) {
+        var callback = function(err, authorized) {
           expect(authorized).to.be(false);
           done();
         };
@@ -2728,7 +2666,7 @@ describe(
           });
         };
 
-        var callback = function(err, authorized, reason, onBehalfOfSession) {
+        var callback = function(err, authorized) {
           expect(authorized).to.be(false);
           done();
         };
@@ -2790,7 +2728,7 @@ describe(
           getOnBehalfOfCallback(null, null);
         };
 
-        var callback = function(err, authorized, reason, onBehalfOfSession) {
+        var callback = function(err, authorized, reason) {
           expect(authorized).to.be(false);
           expect(reason).to.be('on behalf of user does not exist');
           done();
@@ -2863,7 +2801,7 @@ describe(
           });
         };
 
-        var callback = function(err, authorized, reason, onBehalfOfSession) {
+        var callback = function(err, authorized, reason) {
           expect(authorized).to.be(false);
           expect(reason).to.be('session attempting to act on behalf of is not authorized');
           done();

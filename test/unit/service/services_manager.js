@@ -1,4 +1,3 @@
-var path = require('path');
 var expect = require('expect.js');
 
 describe(

@@ -3,7 +3,6 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    var path = require('path');
     var expect = require('expect.js');
 
     function mockProtocol(callback) {
@@ -58,7 +57,7 @@ describe(
           delete _meta._id;
 
           //we need these passed in case we are encrypting the resulting payload
-          if (['login', 'describe'].indexOf(message.action) == -1)
+          if (['login', 'describe'].indexOf(message.action) === -1)
             _meta.sessionId = message.sessionId;
 
           _meta.action = message.action;
@@ -122,7 +121,7 @@ describe(
             asymmetricDecrypt: function(pubKey, privKey, encrypted) {
               return encrypted;
             },
-            symmetricDecryptObject: function(encrypted, secret) {
+            symmetricDecryptObject: function(encrypted) {
               return encrypted;
             }
           },
@@ -158,7 +157,7 @@ describe(
         delete _meta._id;
 
         //we need these passed in case we are encrypting the resulting payload
-        if (['login', 'describe'].indexOf(message.action) == -1)
+        if (['login', 'describe'].indexOf(message.action) === -1)
           _meta.sessionId = message.sessionId;
 
         _meta.action = message.action;

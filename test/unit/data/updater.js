@@ -12,13 +12,13 @@ describe(
       var dataService = {};
 
       dataService.get = function(path, callback) {
-        if (path == '/_SYSTEM/_SECURITY/_USER/_ADMIN') {
+        if (path === '/_SYSTEM/_SECURITY/_USER/_ADMIN') {
           if (!newDB) return callback(null, { data: { username: '_ADMIN' } });
 
           return callback(null, null);
         }
 
-        if (path == '/_SYSTEM/_DATABASE/_VERSION') {
+        if (path === '/_SYSTEM/_DATABASE/_VERSION') {
           if (dbVersion == null) return callback(null, null);
 
           return callback(null, { data: { value: dbVersion } });
@@ -28,7 +28,7 @@ describe(
       };
 
       dataService.upsert = function(path, dbVersion, callback) {
-        if (path == '/_SYSTEM/_DATABASE/_VERSION') {
+        if (path === '/_SYSTEM/_DATABASE/_VERSION') {
           return callback(null, { data: { value: dbVersion } });
         }
 

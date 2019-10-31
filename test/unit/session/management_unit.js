@@ -6,8 +6,6 @@ describe(
     this.timeout(60000);
 
     var expect = require('expect.js');
-    var happn = require('../../../lib/index');
-    var service = happn.service;
     var async = require('async');
     var Promise = require('bluebird');
 
@@ -101,8 +99,8 @@ describe(
         once: function(evt, handler) {
           this.onceHandler = handler;
         },
-        on: function(evt, handler) {},
-        end: function(data, options) {
+        on: function() {},
+        end: function() {
           this.onceHandler();
         }
       };
@@ -339,8 +337,6 @@ describe(
     });
 
     it('tests pubsub services session logging', function(done) {
-      var mockSocket = {};
-
       mockServices(function(e, happn) {
         if (e) return done(e);
 
@@ -383,8 +379,6 @@ describe(
     });
 
     it('tests pubsub services session logging switched on', function(done) {
-      var mockSocket = {};
-
       mockServices(false, function(e, happn) {
         var client = mockClient();
 
@@ -397,7 +391,7 @@ describe(
         happn.services.session.attachSession(session.id, session);
 
         setTimeout(function() {
-          happn.services.security.listActiveSessions(function(e, list) {
+          happn.services.security.listActiveSessions(function(e) {
             expect(e.toString()).to.be('Error: session management not activated');
 
             happn.services.security.activateSessionManagement(true, function(e) {
@@ -421,8 +415,6 @@ describe(
     });
 
     it('tests session revocation times out', function(done) {
-      var mockSocket = {};
-
       mockServices(true, function(e, happn) {
         var client = mockClient();
 
@@ -456,8 +448,6 @@ describe(
     });
 
     it('tests session revocation times out after restart', function(done) {
-      var mockSocket = {};
-
       mockServices(true, function(e, happn) {
         var client = mockClient();
 

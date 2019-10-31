@@ -63,7 +63,7 @@ describe(
               function(/*data*/) {
                 ran1 = true;
               },
-              function(e/*, eventId*/) {
+              function(e /*, eventId*/) {
                 if (e) return reject(e);
                 resolve();
               }
@@ -82,7 +82,7 @@ describe(
               function(/*data*/) {
                 ran2 = true;
               },
-              function(e/*, eventId*/) {
+              function(e /*, eventId*/) {
                 if (e) return reject(e);
                 resolve();
               }

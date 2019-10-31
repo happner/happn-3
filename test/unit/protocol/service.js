@@ -3,8 +3,6 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    var path = require('path');
-    var shortid = require('shortid');
     var expect = require('expect.js');
     var Protocol = require('../../../lib/services/protocol/service');
 
@@ -37,7 +35,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_1'] = {
           success: function() {
             done();
@@ -55,7 +53,7 @@ describe(
               protocol: 'happn_1.3.0'
             }
           },
-          function(e) {}
+          function() {}
         );
       });
     });
@@ -94,7 +92,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_4'] = {
           transformIn: function(message) {
             message.__suppress = true;
@@ -152,7 +150,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_4'] = {
           transformIn: function(message) {
             return message;
@@ -166,7 +164,7 @@ describe(
             }
           },
           protocolMock.config.protocols['happn_4'],
-          function(e, message) {}
+          function() {}
         );
       });
     });
@@ -210,7 +208,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_4'] = {
           transformIn: function(message) {
             return message;
@@ -227,7 +225,7 @@ describe(
             }
           },
           protocolMock.config.protocols['happn_4'],
-          function(e, message) {
+          function(e) {
             expect(e.toString()).to.be('Error: a data set error happened');
             done();
           }
@@ -277,7 +275,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_4'] = {
           transformIn: function(message) {
             return message;
@@ -294,7 +292,7 @@ describe(
             }
           },
           protocolMock.config.protocols['happn_4'],
-          function(e, message) {
+          function(e) {
             expect(e.toString()).to.be('Error: a data remove error happened');
             done();
           }
@@ -348,7 +346,7 @@ describe(
           }
         }
       };
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_4'] = {
           transformIn: function(message) {
             return message;
@@ -365,7 +363,7 @@ describe(
             }
           },
           protocolMock.config.protocols['happn_4'],
-          function(e, message) {
+          function(e) {
             expect(e.toString()).to.be('Error: a publish error happened');
             done();
           }
@@ -412,7 +410,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_4'] = {
           transformIn: function(message) {
             return message;
@@ -429,7 +427,7 @@ describe(
             }
           },
           protocolMock.config.protocols['happn_4'],
-          function(e, message) {
+          function(e) {
             expect(e.toString()).to.be('Error: a data get error happened');
             done();
           }
@@ -484,7 +482,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_4'] = {
           transformIn: function(message) {
             return message;
@@ -501,7 +499,7 @@ describe(
             }
           },
           protocolMock.config.protocols['happn_4'],
-          function(e, message) {
+          function(e) {
             expect(e.toString()).to.be('Error: a subscribe broke');
             done();
           }
@@ -538,7 +536,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_2'] = {
           success: function() {
             done();
@@ -556,7 +554,7 @@ describe(
               protocol: 'happn_2'
             }
           },
-          function(e) {}
+          function() {}
         );
       });
     });
@@ -590,7 +588,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.processMessageIn = function processMessageIn(message, callback) {
           var _this = this;
 
@@ -650,7 +648,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.processMessageIn({
           session: {
             protocol: 'bad'
@@ -688,7 +686,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_1'] = {
           success: function() {
             done();
@@ -706,7 +704,7 @@ describe(
               protocol: 'happn_1.3.0'
             }
           },
-          function(e) {}
+          function() {}
         );
       });
     });
@@ -740,7 +738,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config.protocols['happn_1'] = {
           transformOut: function(message) {
             return message;
@@ -761,7 +759,7 @@ describe(
               protocol: 'happn_1.3.0'
             }
           },
-          function(e) {}
+          function() {}
         );
       });
     });
@@ -800,7 +798,7 @@ describe(
         callback(null, message);
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.processMessageInLayers({
           session: {
             protocol: 'bad'
@@ -838,7 +836,7 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.processSystem(
           {
             session: {
@@ -873,14 +871,14 @@ describe(
             on: function() {}
           },
           error: {
-            SystemError: function(message) {
+            SystemError: function() {
               done(new Error('was not meant to happn'));
             }
           }
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.processSystem(
           {
             session: {
@@ -919,7 +917,7 @@ describe(
         services: {
           session: {
             on: function() {},
-            getClient: function(sessionId) {}
+            getClient: function() {}
           },
           error: {
             handleSystem: function(error) {
@@ -930,14 +928,14 @@ describe(
         }
       };
 
-      protocolMock.initialize({}, function(e) {
+      protocolMock.initialize({}, function() {
         protocolMock.config = {
           protocols: {
             happn_4: {
               transformSystem: function(message) {
                 return message;
               },
-              emit: function(evt, session) {
+              emit: function() {
                 throw new Error('test emit error');
               }
             }

@@ -60,7 +60,7 @@ describe('longrunning/004_cluster_ready', function() {
 
     var childPorts = Object.keys(_this.children);
 
-    if (childPorts.length == 0) return doCallback();
+    if (childPorts.length === 0) return doCallback();
 
     async.eachSeries(
       childPorts,
@@ -82,7 +82,7 @@ describe('longrunning/004_cluster_ready', function() {
 
     var childPorts = Object.keys(_this.children);
 
-    if (childPorts.length == 0 || !_this.children[port]) return callback();
+    if (childPorts.length === 0 || !_this.children[port]) return callback();
 
     async.eachSeries(
       childPorts,
@@ -109,7 +109,7 @@ describe('longrunning/004_cluster_ready', function() {
 
     var serverPorts = Object.keys(_this.servers);
 
-    if (serverPorts.length == 0) return callback();
+    if (serverPorts.length === 0) return callback();
 
     async.eachSeries(
       serverPorts,

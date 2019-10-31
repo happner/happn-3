@@ -3,11 +3,8 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    var expect = require('expect.js');
-    var async = require('async');
     var fs = require('fs');
     var happn = require('../../../lib/index');
-    var test_secret = 'test_secret';
     var default_timeout = 10000;
     var tmpFile = __dirname + '/tmp/testdata_' + require('shortid').generate() + '.db';
     var currentService = null;
@@ -18,7 +15,7 @@ describe(
     var stopService = function(callback) {
       if (currentService) {
         currentService.stop(function(e) {
-          if (e && e.toString() != 'Error: Not running') return callback(e);
+          if (e && e.toString() !== 'Error: Not running') return callback(e);
           callback();
         });
       } else callback();
@@ -74,8 +71,8 @@ describe(
     after('should delete the temp data file', function(callback) {
       this.timeout(20000);
 
-      stopService(function(e) {
-        fs.unlink(tmpFile, function(e) {
+      stopService(function() {
+        fs.unlink(tmpFile, function() {
           callback();
         });
       });

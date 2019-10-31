@@ -6,7 +6,6 @@ describe(
     this.timeout(5000);
 
     var expect = require('expect.js');
-    var happn = require('../../../lib/index');
     var async = require('async');
     var Logger = require('happn-logger');
     var EventEmitter = require('events').EventEmitter;
@@ -51,7 +50,7 @@ describe(
                     permissions: {}
                   };
 
-                  if (name == 'TEST_GROUP')
+                  if (name === 'TEST_GROUP')
                     returnGroup = {
                       name: 'TEST_GROUP',
                       permissions: {
@@ -64,7 +63,7 @@ describe(
                       }
                     };
 
-                  if (name == 'TEST_GROUP_1')
+                  if (name === 'TEST_GROUP_1')
                     returnGroup = {
                       name: 'TEST_GROUP_1',
                       permissions: {
@@ -74,7 +73,7 @@ describe(
                       }
                     };
 
-                  if (name == 'TEST_GROUP_2')
+                  if (name === 'TEST_GROUP_2')
                     returnGroup = {
                       name: 'TEST_GROUP_2',
                       permissions: {
@@ -87,7 +86,7 @@ describe(
                       }
                     };
 
-                  if (name == 'TEST_GROUP_3')
+                  if (name === 'TEST_GROUP_3')
                     returnGroup = {
                       name: 'TEST_GROUP_3',
                       permissions: {
@@ -481,8 +480,6 @@ describe(
     xit('it tests _authorizeSession function, early sync return on async callback', function(done) {
       this.timeout(60000);
 
-      var startedTimestamp = Date.now();
-
       var checks = [];
 
       for (var i = 0; i < 1000000; i++) {
@@ -495,7 +492,6 @@ describe(
         });
       }
 
-      var failureCount = 0;
       var okCount = 0;
 
       initializeCheckpoint(function(e, checkpoint) {
@@ -504,7 +500,7 @@ describe(
         }
 
         checkpoint.__cache_checkpoint_authorization = {
-          getSync: function(permissionCacheKey) {
+          getSync: function() {
             return false;
           }
         };
@@ -514,7 +510,7 @@ describe(
           function(check, checkCB) {
             checkpoint._authorizeSession(check.session, check.path, check.action, function(e) {
               if (e) {
-                failureCount++;
+                // do nothing
               } else {
                 okCount++;
               }
@@ -522,7 +518,6 @@ describe(
             });
           },
           function() {
-            var duration = Date.now() - startedTimestamp;
             expect(okCount).to.be(1000000);
             done();
           }
@@ -561,7 +556,7 @@ describe(
         };
 
         checkpoint.__cache_checkpoint_authorization = {
-          getSync: function(permissionCacheKey) {
+          getSync: function() {
             return false;
           }
         };
@@ -595,7 +590,7 @@ describe(
                       testData.sessionWithType,
                       testData.path,
                       testData.action,
-                      function(e, authorised, reason) {
+                      function(e, authorised) {
                         expect(e).to.be(null);
                         expect(authorised).to.be(true);
                         done();

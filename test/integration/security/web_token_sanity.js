@@ -6,12 +6,9 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
-    var async = require('async');
 
     var happnInstance = null;
     var test_id = Date.now() + '_' + require('shortid').generate();
-
-    var http = require('http');
 
     var adminClient;
     var testClient;
@@ -118,7 +115,7 @@ describe(
 
             happnInstance = happnInst;
 
-            happnInstance.connect.use('/secure/route/test', function(req, res, next) {
+            happnInstance.connect.use('/secure/route/test', function(req, res) {
               res.setHeader('Content-Type', 'application/json');
               res.end(
                 JSON.stringify({
@@ -127,7 +124,7 @@ describe(
               );
             });
 
-            happnInstance.connect.use('/secure/route', function(req, res, next) {
+            happnInstance.connect.use('/secure/route', function(req, res) {
               res.setHeader('Content-Type', 'application/json');
               res.end(
                 JSON.stringify({
@@ -136,7 +133,7 @@ describe(
               );
             });
 
-            happnInstance.connect.use('/secure/route/qs', function(req, res, next) {
+            happnInstance.connect.use('/secure/route/qs', function(req, res) {
               res.setHeader('Content-Type', 'application/json');
               res.end(
                 JSON.stringify({
@@ -145,7 +142,7 @@ describe(
               );
             });
 
-            happnInstance.connect.use('/test/excluded/wildcard/blah', function(req, res, next) {
+            happnInstance.connect.use('/test/excluded/wildcard/blah', function(req, res) {
               res.setHeader('Content-Type', 'application/json');
               res.end(
                 JSON.stringify({
@@ -154,7 +151,7 @@ describe(
               );
             });
 
-            happnInstance.connect.use('/test/excluded/specific', function(req, res, next) {
+            happnInstance.connect.use('/test/excluded/specific', function(req, res) {
               res.setHeader('Content-Type', 'application/json');
               res.end(
                 JSON.stringify({
@@ -163,7 +160,7 @@ describe(
               );
             });
 
-            happnInstance.connect.use('/secure/test/removed/group', function(req, res, next) {
+            happnInstance.connect.use('/secure/test/removed/group', function(req, res) {
               res.setHeader('Content-Type', 'application/json');
               res.end(
                 JSON.stringify({
@@ -172,7 +169,7 @@ describe(
               );
             });
 
-            happnInstance.connect.use('/secure/test/removed/user', function(req, res, next) {
+            happnInstance.connect.use('/secure/test/removed/user', function(req, res) {
               res.setHeader('Content-Type', 'application/json');
               res.end(
                 JSON.stringify({
@@ -181,7 +178,7 @@ describe(
               );
             });
 
-            happnInstance.connect.use('/secure/route/post', function(req, res, next) {
+            happnInstance.connect.use('/secure/route/post', function(req, res) {
               res.setHeader('Content-Type', 'application/json');
 
               res.end(
@@ -404,7 +401,7 @@ describe(
             }
           };
 
-          happnInstance.services.security.users.upsertGroup(testGroup, {}, function(e, group) {
+          happnInstance.services.security.users.upsertGroup(testGroup, {}, function(e) {
             if (e) return callback(e);
 
             doPost('/secure/route/post', testClient.session.token, true, function(response) {
@@ -481,7 +478,7 @@ describe(
               encodedPublicKey,
             null,
             true,
-            function(response, body) {
+            function(response) {
               expect(response.statusCode).to.equal(200);
               callback();
             },

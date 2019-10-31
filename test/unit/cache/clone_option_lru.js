@@ -12,8 +12,6 @@ describe(
 
     var testId = require('shortid').generate();
 
-    var async = require('async');
-
     var lru_config = {
       defaultCacheOpts: {
         type: 'LRU',
@@ -49,7 +47,7 @@ describe(
       serviceInstance
         .set(key, data)
 
-        .then(function(result) {
+        .then(function() {
           serviceInstance.__defaultCache
             .get(key)
             .then(function(result) {
@@ -70,7 +68,7 @@ describe(
       serviceInstance
         .set(key, data, { clone: false })
 
-        .then(function(result) {
+        .then(function() {
           serviceInstance.__defaultCache
             .get(key)
             .then(function(result) {
@@ -97,7 +95,7 @@ describe(
       cache
         .set(key, data)
 
-        .then(function(result) {
+        .then(function() {
           cache
             .get(key)
             .then(function(result) {
@@ -122,7 +120,7 @@ describe(
       cache
         .set(key, data, { clone: false })
 
-        .then(function(result) {
+        .then(function() {
           cache
             .get(key)
             .then(function(result) {

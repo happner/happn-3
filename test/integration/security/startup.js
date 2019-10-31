@@ -4,8 +4,6 @@ describe(
     .testName(__filename, 3),
   function() {
     var expect = require('expect.js');
-    var happn = require('../../../lib/index');
-    var service = happn.service;
     var async = require('async');
     var Logger = require('happn-logger');
 
@@ -56,13 +54,13 @@ describe(
 
           happnMock.services[serviceName] = testServices[serviceName];
 
-          if (serviceName == 'error')
+          if (serviceName === 'error')
             happnMock.services[serviceName].handleFatal = function(message, e) {
               console.log('FATAL FAILURE:::', message);
               throw e;
             };
 
-          if (serviceName == 'session') {
+          if (serviceName === 'session') {
             happnMock.services[serviceName].config = {};
             return happnMock.services[serviceName].initializeCaches(eachServiceCB);
           }
@@ -77,7 +75,7 @@ describe(
     before('should initialize the service', initializeMockServices);
 
     it('should have a default keypair in memory', function(callback) {
-      expect(testServices.security._keyPair != undefined).to.be(true);
+      expect(testServices.security._keyPair !== undefined).to.be(true);
       callback();
     });
 
