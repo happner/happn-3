@@ -317,6 +317,12 @@ describe(
     it("tests the 'offEvent' function created by __initializeEvents removes an event handler", function(done) {
       var happnClient = mockHappnClient();
       happnClient.__initializeEvents();
+      happnClient.onEvent('MyEvent', function() {
+        //do nothing
+      });
+      happnClient.onEvent('MyEvent', function() {
+          //do nothing
+      });
       happnClient.offEvent('MyEvent|0');
 
       expect(happnClient.state.eventHandlers['MyEvent'][0]).to.be(null);
