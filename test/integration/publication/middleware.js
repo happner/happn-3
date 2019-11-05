@@ -43,8 +43,6 @@ describe(
       var ran1 = false,
         ran2 = false;
 
-      var eventId1, eventId2;
-
       service
         .create(config)
         .then(function(instance) {
@@ -62,14 +60,11 @@ describe(
                   publish: true
                 }
               },
-              function(data) {
+              function(/*data*/) {
                 ran1 = true;
               },
-              function(e, eventId) {
+              function(e /*, eventId*/) {
                 if (e) return reject(e);
-
-                eventId1 = eventId;
-
                 resolve();
               }
             );
@@ -84,14 +79,11 @@ describe(
                   publish: false
                 }
               },
-              function(data) {
+              function(/*data*/) {
                 ran2 = true;
               },
-              function(e, eventId) {
+              function(e /*, eventId*/) {
                 if (e) return reject(e);
-
-                eventId2 = eventId;
-
                 resolve();
               }
             );
@@ -119,8 +111,6 @@ describe(
         })
         .then(done)
         .catch(done);
-
-      //create 1 client, 2 subscriptions, filter must remove one
     });
   }
 );

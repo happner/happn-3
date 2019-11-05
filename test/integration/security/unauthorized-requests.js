@@ -185,7 +185,7 @@ describe(
 
             happnInstance = happnInst;
 
-            happnInstance.connect.use('/secure/route/test', function(req, res, next) {
+            happnInstance.connect.use('/secure/route/test', function(req, res) {
               res.setHeader('Content-Type', 'application/json');
               res.end(
                 JSON.stringify({

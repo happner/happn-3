@@ -169,7 +169,7 @@ describe(
                 addedTestuser
               );
             })
-            .then(function(result) {
+            .then(function() {
               return serviceInstance.services.session.localClient({
                 username: testUser.username,
                 password: 'TEST PWD'
@@ -226,7 +226,7 @@ describe(
             expect(data.test).to.be('data');
             done();
           },
-          function(e) {
+          function() {
             testClient.set(
               '/custom/custom_field2_value',
               {
@@ -263,7 +263,7 @@ describe(
 
         testClient.on(
           '/not_allowed/test/*',
-          function(data) {
+          function() {
             done(new Error('unexpected access granted'));
           },
           function(e) {
@@ -281,7 +281,7 @@ describe(
       it('checks we are not able to access via a template, due to an illegal promotion exploit (* in a {{property}} of the session context)', function(done) {
         testClient.on(
           '/forbidden/*',
-          function(data) {
+          function() {
             done(new Error('unexpected access granted'));
           },
           function(e) {
@@ -301,7 +301,7 @@ describe(
 
       it('changes a custom property on the user - which should update the session, checks we are no longer able to access the path the permission relates to, but are able to access based on the new property', function(done) {
         testUser.custom_data.custom_field2 = 'custom_field2_changed';
-        serviceInstance.services.security.users.upsertUser(testUser, function(e, upserted) {
+        serviceInstance.services.security.users.upsertUser(testUser, function(e) {
           if (e) return done(e);
           testClient.on(
             '/custom/custom_field2_changed',
@@ -318,7 +318,7 @@ describe(
                 }
               );
             },
-            function(e) {
+            function() {
               testClient.set(
                 '/custom/custom_field2_changed',
                 {
@@ -342,7 +342,7 @@ describe(
           function(e) {
             if (e) return done(e);
             delete testUser.custom_data.custom_field1;
-            serviceInstance.services.security.users.upsertUser(testUser, function(e, upserted) {
+            serviceInstance.services.security.users.upsertUser(testUser, function(e) {
               if (e) return done(e);
               testClient.set(
                 '/custom/custom_field1_value',
@@ -364,11 +364,11 @@ describe(
         var receivedCount = 0;
         testClient.on(
           '/custom/custom_field3_value',
-          function(data) {
+          function() {
             receivedCount++;
-            if (receivedCount == 2) return;
+            if (receivedCount === 2) return;
             testUser.custom_data.custom_field3 = 'custom_field3_changed';
-            serviceInstance.services.security.users.upsertUser(testUser, function(e, upserted) {
+            serviceInstance.services.security.users.upsertUser(testUser, function(e) {
               if (e) return done(e);
               adminClient.set(
                 '/custom/custom_field3_value',
@@ -405,9 +405,9 @@ describe(
         var receivedCount = 0;
         testClient.on(
           '/custom/custom_field4_value',
-          function(data) {
+          function() {
             receivedCount++;
-            if (receivedCount == 2) return;
+            if (receivedCount === 2) return;
             serviceInstance.services.security.groups
               .removePermission(testGroup.name, '/custom/{{user.custom_data.custom_field4}}', 'on')
               .then(function() {
@@ -442,7 +442,7 @@ describe(
       });
 
       it('compacts the db file', function(done) {
-        serviceInstance.services.data.compact(function(e, result) {
+        serviceInstance.services.data.compact(function(e) {
           if (e) return done(e);
           done();
         });
@@ -450,10 +450,10 @@ describe(
 
       it('removes a templated permission from the group, checks we are no longer able to access the path the permission relates to', function(done) {
         this.timeout(10000);
-        var receivedCount = 0;
+
         testClient.on(
           '/custom/custom_field5_value',
-          function(data) {
+          function() {
             serviceInstance.services.security.groups
               .removePermission(testGroup.name, '/custom/{{user.custom_data.custom_field5}}', 'set')
               .then(function() {

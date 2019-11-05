@@ -5,13 +5,10 @@ describe(
   function() {
     this.timeout(30000);
 
-    var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
 
     var happnInstance1 = null;
-
-    var http = require('http');
 
     var serviceConfig1 = {
       port: 10000

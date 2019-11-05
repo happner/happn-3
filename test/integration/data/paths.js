@@ -7,7 +7,6 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var async = require('async');
-    var test_secret = 'test_secret';
     var mode = 'embedded';
     var default_timeout = 10000;
     var happnInstance = null;
@@ -68,7 +67,7 @@ describe(
             event_type: 'set',
             count: 1
           },
-          function(message) {
+          function() {
             expect(
               listenerclient.state.events[
                 '/SET@/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/event/*'
@@ -95,8 +94,8 @@ describe(
                 property3: 'property3'
               },
               null,
-              function(e, result) {
-                //console.log('put happened - listening for result:::');
+              function() {
+                //do nothing
               }
             );
           }
@@ -122,7 +121,7 @@ describe(
           {
             noPublish: true
           },
-          function(e, result) {
+          function(e) {
             if (!e) {
               publisherclient.get(
                 'a2_eventemitter_embedded_paths/' +
@@ -132,12 +131,10 @@ describe(
                 null,
                 function(e, results) {
                   if (e) return callback(e);
+                  expect(results.property1 === 'property1').to.be(true);
 
-                  // expect(results.payload.length == 1).to.be(true);
-                  expect(results.property1 == 'property1').to.be(true);
-
-                  if (mode != 'embedded')
-                    expect(results.payload[0].created == results.payload[0].modified).to.be(true);
+                  if (mode !== 'embedded')
+                    expect(results.payload[0].created === results.payload[0].modified).to.be(true);
 
                   callback(e);
                 }
@@ -166,17 +163,14 @@ describe(
           {
             noPublish: true
           },
-          function(e, result) {
+          function(e) {
             if (!e) {
               publisherclient.get('*/' + test_id + '/testsubscribe/wildcards/*', null, function(
                 e,
                 results
               ) {
                 if (e) return callback(e);
-
                 expect(results.length > 0).to.be(true);
-                //expect(results[0].property1 == 'property1').to.be(true);
-
                 callback(e);
               });
             } else callback(e);
@@ -232,7 +226,7 @@ describe(
                path: '/a2_eventemitter_embedded_paths/1443606046555_VkyH6cE1l/set_multiple/E17kSpqE1l' } }
                */
 
-                expect(result._meta.path.indexOf(testBasePath) == 0).to.be(true);
+                expect(result._meta.path.indexOf(testBasePath) === 0).to.be(true);
 
                 return true;
               });
@@ -263,7 +257,7 @@ describe(
             property3: 'property3'
           },
           null,
-          function(e, result) {
+          function(e) {
             if (e) return callback(e);
 
             //////////////console.log('set results');
@@ -280,7 +274,7 @@ describe(
               {
                 merge: true
               },
-              function(e, result) {
+              function(e) {
                 if (e) return callback(e);
 
                 //////////////console.log('merge set results');
@@ -457,7 +451,7 @@ describe(
           test_path_end,
         complex_obj,
         null,
-        function(e, put_result) {
+        function(e) {
           expect(e == null).to.be(true);
           publisherclient.set(
             '/a2_eventemitter_embedded_paths/' +
@@ -467,10 +461,8 @@ describe(
               '/1',
             complex_obj,
             null,
-            function(e, put_result) {
+            function(e) {
               expect(e == null).to.be(true);
-
-              ////////////console.log('searching');
               publisherclient.get(
                 '/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/complex*',
                 {
@@ -478,10 +470,8 @@ describe(
                   options: options1
                 },
                 function(e, search_result) {
-                  ////////////console.log([e, search_result]);
-
                   expect(e == null).to.be(true);
-                  expect(search_result.length == 1).to.be(true);
+                  expect(search_result.length === 1).to.be(true);
 
                   publisherclient.get(
                     '/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/complex*',
@@ -491,7 +481,7 @@ describe(
                     },
                     function(e, search_result) {
                       expect(e == null).to.be(true);
-                      expect(search_result.length == 2).to.be(true);
+                      expect(search_result.length === 2).to.be(true);
 
                       callback(e);
                     }
@@ -519,7 +509,7 @@ describe(
           {
             noPublish: true
           },
-          function(e, result) {
+          function() {
             //We perform the actual delete
             publisherclient.remove(
               '/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/delete_me',
@@ -529,10 +519,6 @@ describe(
               function(e, result) {
                 expect(e).to.be(null);
                 expect(result._meta.status).to.be('ok');
-
-                ////////////////////console.log('DELETE RESULT');
-                ////////////////////console.log(result);
-
                 callback();
               }
             );
@@ -575,7 +561,7 @@ describe(
               },
               function(e, updateResult) {
                 expect(e).to.be(null);
-                expect(updateResult._meta.id == insertResult._meta.id).to.be(true);
+                expect(updateResult._meta.id === insertResult._meta.id).to.be(true);
                 callback();
               }
             );
@@ -599,12 +585,8 @@ describe(
         {
           noPublish: true
         },
-        function(e, result) {
-          ////////////////////console.log('did set');
-          ////////////////////console.log([e, result]);
-
+        function(e) {
           if (e) return callback(e);
-
           publisherclient.set(
             '/a2_eventemitter_embedded_paths/' + test_id + '/test/tag',
             null,
@@ -614,13 +596,7 @@ describe(
               noPublish: true
             },
             function(e, result) {
-              //console.log(e);
-
               if (e) return callback(e);
-
-              ////////////////////console.log('merge tag results');
-              ////////////////////console.log(e);
-              ////////////////////console.log(result);
 
               expect(result.data.property1).to.be('property1');
               expect(result.data.property2).to.be('property2');
@@ -639,7 +615,7 @@ describe(
                   results.map(function(tagged) {
                     if (found) return;
 
-                    if (tagged._meta.tag == randomTag) {
+                    if (tagged._meta.tag === randomTag) {
                       expect(tagged.data.property1).to.be('property1');
                       expect(tagged.data.property2).to.be('property2');
                       expect(tagged.data.property3).to.be('property3');
@@ -670,7 +646,7 @@ describe(
             event_type: 'set',
             count: 1
           },
-          function(message) {
+          function() {
             expect(
               listenerclient.state.events[
                 '/SET@/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/event'
@@ -698,8 +674,8 @@ describe(
                   property3: 'property3'
                 },
                 null,
-                function(e, result) {
-                  ////////////////////////////console.log('put happened - listening for result');
+                function() {
+                  //do nothing
                 }
               );
             } else callback(e);
@@ -726,7 +702,7 @@ describe(
             property3: 'property3'
           },
           null,
-          function(e, result) {
+          function(e) {
             if (!e) {
               publisherclient.get(
                 'a2_eventemitter_embedded_paths/' +
@@ -735,12 +711,10 @@ describe(
                   test_path_end,
                 null,
                 function(e, results) {
-                  ////////////////////////console.log('new data results');
-                  ////////////////////////console.log(results);
-                  expect(results.property1 == 'property1').to.be(true);
+                  expect(results.property1 === 'property1').to.be(true);
 
-                  if (mode != 'embedded')
-                    expect(results.payload[0].created == results.payload[0].modified).to.be(true);
+                  if (mode !== 'embedded')
+                    expect(results.payload[0].created === results.payload[0].modified).to.be(true);
 
                   callback(e);
                 }
@@ -781,7 +755,7 @@ describe(
               null,
               function(e, updateResult) {
                 expect(e == null).to.be(true);
-                expect(updateResult._meta._id == insertResult._meta._id).to.be(true);
+                expect(updateResult._meta._id === insertResult._meta._id).to.be(true);
                 callback();
               }
             );
@@ -806,7 +780,7 @@ describe(
             property1: 'sib_post_property1',
             property2: 'sib_post_property2'
           },
-          function(e, results) {
+          function(e) {
             expect(e == null).to.be(true);
 
             publisherclient.setSibling(
@@ -815,7 +789,7 @@ describe(
                 property1: 'sib_post_property1',
                 property2: 'sib_post_property2'
               },
-              function(e, results) {
+              function(e) {
                 expect(e == null).to.be(true);
 
                 //the child method returns a child in the collection with a specified id
@@ -824,7 +798,7 @@ describe(
                   null,
                   function(e, getresults) {
                     expect(e == null).to.be(true);
-                    expect(getresults.length == 2).to.be(true);
+                    expect(getresults.length === 2).to.be(true);
                     callback(e);
                   }
                 );
@@ -837,8 +811,6 @@ describe(
       }
     });
 
-    //  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
-
     it('the listener should pick up a single published event', function(callback) {
       this.timeout(default_timeout);
 
@@ -850,7 +822,7 @@ describe(
             event_type: 'set',
             count: 1
           },
-          function(message) {
+          function() {
             expect(
               listenerclient.state.events[
                 '/SET@/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/event'
@@ -865,9 +837,6 @@ describe(
                   '/SET@/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/event'
                 ].length
               ).to.be(1);
-
-              ////////////////////////////console.log('on subscribed, about to publish');
-
               //then make the change
               publisherclient.set(
                 '/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/event',
@@ -877,8 +846,8 @@ describe(
                   property3: 'property3'
                 },
                 null,
-                function(e, result) {
-                  ////////////////////////////console.log('put happened - listening for result');
+                function() {
+                  //do nothing
                 }
               );
             } else callback(e);
@@ -900,7 +869,7 @@ describe(
           property3: 'property3'
         },
         null,
-        function(e, insertResult) {
+        function(e) {
           expect(e == null).to.be(true);
           publisherclient.set(
             'a2_eventemitter_embedded_paths/' + test_id + '/testwildcard/' + test_path_end + '/1',
@@ -910,7 +879,7 @@ describe(
               property3: 'property3'
             },
             null,
-            function(e, insertResult) {
+            function(e) {
               expect(e == null).to.be(true);
 
               publisherclient.get(
@@ -923,7 +892,7 @@ describe(
                 function(e, results) {
                   if (e) return callback();
 
-                  expect(results.length == 2).to.be(true);
+                  expect(results.length === 2).to.be(true);
                   callback(e);
                 }
               );
@@ -944,7 +913,7 @@ describe(
           property3: 'property3'
         },
         null,
-        function(e, insertResult) {
+        function(e) {
           expect(e == null).to.be(true);
           publisherclient.set(
             'a2_eventemitter_embedded_paths/' + test_id + '/testwildcard/' + test_path_end + '/1',
@@ -954,7 +923,7 @@ describe(
               property3: 'property3'
             },
             null,
-            function(e, insertResult) {
+            function(e) {
               expect(e == null).to.be(true);
 
               publisherclient.getPaths(
@@ -964,7 +933,7 @@ describe(
                   test_path_end +
                   '*',
                 function(e, results) {
-                  expect(results.length == 2).to.be(true);
+                  expect(results.length === 2).to.be(true);
                   callback(e);
                 }
               );
@@ -986,10 +955,7 @@ describe(
           property3: 'property3'
         },
         null,
-        function(e, result) {
-          //////////////////console.log('did delete set');
-          //path, event_type, count, handler, done
-          //We listen for the DELETE event
+        function() {
           listenerclient.on(
             '/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/delete_me',
             {
@@ -997,13 +963,6 @@ describe(
               count: 1
             },
             function(eventData) {
-              ////console.log('on count 1 delete ');
-              //////////////////console.log(message);
-
-              //we are looking at the event internals on the listener to ensure our event management is working - because we are only listening for 1
-              //instance of this event - the event listener should have been removed
-              ////console.log('listenerclient.events');
-              ////console.log(listenerclient.events);
               expect(
                 listenerclient.state.events[
                   '/REMOVE@/a2_eventemitter_embedded_paths/' +
@@ -1011,25 +970,11 @@ describe(
                     '/testsubscribe/data/delete_me'
                 ]
               ).to.be(undefined);
-
-              ////console.log(eventData);
-
-              //we needed to have removed a single item
               expect(eventData.payload.removed).to.be(1);
-
-              ////////////////////////////console.log(message);
-
               callback();
             },
             function(e) {
-              //console.log(e);
-
-              ////////////console.log('ON HAS HAPPENED: ' + e);
-
               if (!e) return callback(e);
-
-              ////console.log('listenerclient.events, pre');
-              ////console.log(listenerclient.events);
               expect(
                 listenerclient.state.events[
                   '/REMOVE@/a2_eventemitter_embedded_paths/' +
@@ -1037,18 +982,12 @@ describe(
                     '/testsubscribe/data/delete_me'
                 ].length
               ).to.be(1);
-
-              //////////////////console.log('subscribed, about to delete');
-
               //We perform the actual delete
               publisherclient.remove(
                 '/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/delete_me',
                 null,
-                function(e, result) {
-                  //////////////////console.log('REMOVE HAPPENED!!!');
-                  //////////////////console.log(e);
-                  //////////////////console.log(result);
-                  ////////////////////////////console.log('put happened - listening for result');
+                function() {
+                  //do nothing
                 }
               );
             }
@@ -1066,9 +1005,8 @@ describe(
           event_type: 'set',
           count: 0
         },
-        function(message) {
+        function() {
           //we detach all listeners from the path here
-          ////console.log('ABOUT OFF PATH');
           listenerclient.offPath(
             '/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/on_off_test',
             function(e) {
@@ -1080,10 +1018,7 @@ describe(
                   event_type: 'set',
                   count: 0
                 },
-                function(message) {
-                  ////console.log('ON RAN');
-                  ////console.log(message);
-
+                function() {
                   listenerclient.off(currentListenerId, function(e) {
                     if (e) return callback(new Error(e));
                     else return callback();
@@ -1104,11 +1039,8 @@ describe(
                       property3: 'property3'
                     },
                     {},
-                    function(e, setresult) {
+                    function(e) {
                       if (e) return callback(new Error(e));
-
-                      ////console.log('DID ON SET');
-                      ////console.log(setresult);
                     }
                   );
                 }
@@ -1129,7 +1061,7 @@ describe(
               property3: 'property3'
             },
             {},
-            function(e, setresult) {
+            function(e) {
               if (e) return callback(new Error(e));
             }
           );
@@ -1138,24 +1070,22 @@ describe(
     });
 
     it('should subscribe to the catch all notification', function(callback) {
-      var caught = {};
-
       this.timeout(10000);
       var caughtCount = 0;
 
       listenerclient.onAll(
         function(eventData, meta) {
           if (
-            meta.action ==
+            meta.action ===
               '/REMOVE@/a2_eventemitter_embedded_paths/' +
                 test_id +
                 '/testsubscribe/data/catch_all' ||
-            meta.action ==
+            meta.action ===
               '/SET@/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/catch_all'
           )
             caughtCount++;
 
-          if (caughtCount == 2) callback();
+          if (caughtCount === 2) callback();
         },
         function(e) {
           if (e) return callback(e);
@@ -1168,11 +1098,13 @@ describe(
               property3: 'property3'
             },
             null,
-            function(e, put_result) {
+            function() {
               publisherclient.remove(
                 '/a2_eventemitter_embedded_paths/' + test_id + '/testsubscribe/data/catch_all',
                 null,
-                function(e, del_result) {}
+                function() {
+                  //do nothing
+                }
               );
             }
           );
@@ -1186,7 +1118,7 @@ describe(
       var onHappened = false;
 
       listenerclient.onAll(
-        function(message) {
+        function() {
           onHappened = true;
           callback(new Error('this wasnt meant to happen'));
         },
@@ -1199,7 +1131,7 @@ describe(
               event_type: 'set',
               count: 0
             },
-            function(message) {
+            function() {
               onHappened = true;
               callback(new Error('this wasnt meant to happen'));
             },
@@ -1217,7 +1149,7 @@ describe(
                     property3: 'property3'
                   },
                   null,
-                  function(e, put_result) {
+                  function(e) {
                     if (e) return callback(e);
 
                     setTimeout(function() {

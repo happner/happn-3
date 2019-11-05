@@ -105,8 +105,6 @@ describe(filename, function() {
 
   context('subscriptions', function() {
     it('subscriptions are resumed without duplication after network outage', function(done) {
-      var now;
-
       var client;
       var countReceived = 0;
 
@@ -143,7 +141,6 @@ describe(filename, function() {
         })
 
         .then(function() {
-          now = Date.now();
           socketProxy.pause();
           console.log(
             'waiting for ping-pong to detect network outage (perhaps ping-pong rate can be increased)'
@@ -168,7 +165,7 @@ describe(filename, function() {
         })
 
         .then(function() {
-          var promise = new Promise(function(resolve, reject) {
+          var promise = new Promise(function(resolve) {
             console.log('reconnected');
             client.onEvent('reconnect-successful', resolve);
           });

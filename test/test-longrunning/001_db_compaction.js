@@ -10,8 +10,6 @@ describe('longrunning/001_db_compaction', function() {
 
   this.timeout(30000);
 
-  var initialFileSize = 0;
-
   var testFiles = [];
   var testServices = [];
 
@@ -123,7 +121,6 @@ describe('longrunning/001_db_compaction', function() {
 
   var serviceInstance1;
   var serviceInstance2;
-  var serviceInstance3;
 
   var RandomActivityGenerator = require('happn-random-activity-generator');
 
@@ -225,7 +222,7 @@ describe('longrunning/001_db_compaction', function() {
     randomActivity1 = new RandomActivityGenerator(client1);
     randomActivity1.generateActivityStart('test', function() {
       setTimeout(function() {
-        randomActivity1.generateActivityEnd('test', function(aggregatedLog) {
+        randomActivity1.generateActivityEnd('test', function() {
           testFiles.push(test_file1);
 
           fileSizeAfterActivity1 = getFileSize(test_file1);
@@ -255,9 +252,8 @@ describe('longrunning/001_db_compaction', function() {
   });
 
   it('starts a db configured to compact, does a replay of random activity1, then verifies the data is smaller than the initial size of the uncompacted file', function(callback) {
-    getService(serviceConfig3, function(e, serviceInstance) {
+    getService(serviceConfig3, function(e) {
       if (e) return callback(e);
-      serviceInstance3 = serviceInstance;
 
       getClient(clientConfig3, function(e, client) {
         if (e) return callback(e);
@@ -302,7 +298,7 @@ describe('longrunning/001_db_compaction', function() {
 
         randomActivity4.generateActivityStart('test', function() {
           setTimeout(function() {
-            randomActivity4.generateActivityEnd('test', function(aggregatedLog) {
+            randomActivity4.generateActivityEnd('test', function() {
               var fileSizeAfterActivity4 = getFileSize(test_file4);
               var fileSizeAfterActivity4a = getFileSize(test_file4a);
 
@@ -331,7 +327,6 @@ describe('longrunning/001_db_compaction', function() {
   });
 
   it('starts compaction for every n seconds, then do random inserts and deletes, then verify the data', function(callback) {
-    var fileSizeInitial = getFileSize(test_file2);
     randomActivity2 = new RandomActivityGenerator(client2, {
       interval: 3000,
       verbose: true
@@ -352,11 +347,11 @@ describe('longrunning/001_db_compaction', function() {
         },
         function() {
           compactionCount++;
-          if (compactionCount == 2) {
+          if (compactionCount === 2) {
             //we have compacted 2 times
             if (!verified) {
               verified = true;
-              randomActivity2.generateActivityEnd('test', function(aggregatedLog) {
+              randomActivity2.generateActivityEnd('test', function() {
                 //checks to see all the data that should be there exists and all the data that shouldnt be there doesnt
                 randomActivity2.verify(callback);
               });

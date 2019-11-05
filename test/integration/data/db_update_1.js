@@ -6,7 +6,6 @@ describe(
     var path = require('path');
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
-    var async = require('async');
     var fs = require('fs-extra');
     var Promise = require('bluebird');
 
@@ -121,7 +120,7 @@ describe(
             return new Promise(function(resolve, reject) {
               clientInstance.on(
                 '/mesh/schema/*',
-                function(data) {
+                function() {
                   //do nothing
                 },
                 function(e) {
@@ -178,7 +177,7 @@ describe(
             return new Promise(function(resolve, reject) {
               clientInstance.on(
                 '/mesh/schema/*',
-                function(data) {
+                function() {
                   //do nothing
                 },
                 function(e) {
@@ -215,7 +214,7 @@ describe(
       };
 
       happn.service.create(config, function(e) {
-        expect(e.toString().indexOf('Error: current database version') == 0).to.be(true);
+        expect(e.toString().indexOf('Error: current database version') === 0).to.be(true);
         fs.unlinkSync(config.services.data.config.filename);
         done();
       });
@@ -233,7 +232,7 @@ describe(
       };
 
       happn.service.create(config, function(e) {
-        expect(e.toString().indexOf('Error: current database version') == 0).to.be(true);
+        expect(e.toString().indexOf('Error: current database version') === 0).to.be(true);
         fs.unlinkSync(config.services.data.config.filename);
         done();
       });
@@ -251,8 +250,8 @@ describe(
         }
       };
 
-      happn.service.create(config, function(e, serviceInstance) {
-        expect(e.toString().indexOf('Error: current database version') == 0).to.be(true);
+      happn.service.create(config, function(e) {
+        expect(e.toString().indexOf('Error: current database version') === 0).to.be(true);
         fs.unlinkSync(config.services.data.config.filename);
         done();
       });

@@ -40,7 +40,7 @@ describe('02_security_hsts_cookie', function() {
   });
 
   it('checks our cookie is set to secure on socket login', function(done) {
-    if (document.cookie != '') return done(new Error('cookie should be blank as it is secure'));
+    if (document.cookie !== '') return done(new Error('cookie should be blank as it is secure'));
     done();
   });
 
@@ -102,10 +102,11 @@ describe('02_security_hsts_cookie', function() {
     oReq.setRequestHeader('Content-Type', 'application/json');
 
     // progress on transfers from the server to the client (downloads)
+    // eslint-disable-next-line no-unused-vars
     function updateProgress(evt) {
       //console.log("updateProgress...", evt);
     }
-
+    // eslint-disable-next-line no-unused-vars
     function transferComplete(evt) {
       expect(
         oReq
@@ -114,11 +115,11 @@ describe('02_security_hsts_cookie', function() {
       ).to.equal(true);
       done();
     }
-
+    // eslint-disable-next-line no-unused-vars
     function transferFailed(evt) {
       //console.log("An error occurred while transferring the file.", evt);
     }
-
+    // eslint-disable-next-line no-unused-vars
     function transferCanceled(evt) {
       //console.log("The transfer has been canceled by the user.", evt);
     }

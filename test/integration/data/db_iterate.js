@@ -5,15 +5,9 @@ describe(
   function() {
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
-    var happn_client = happn.client;
-    var async = require('async');
-
     var test_id = Date.now() + '_' + require('shortid').generate();
-
     var fs = require('fs');
-
     this.timeout(20000);
-
     var test_file1 = __dirname + '/tmp/' + test_id + '1.test';
     var test_file2 = __dirname + '/tmp/' + test_id + '2.test';
     var test_file2a = __dirname + '/tmp/' + test_id + '2a.test';
@@ -57,39 +51,14 @@ describe(
       }
     };
 
-    var clientConfig1 = {
-      config: {
-        secure: true,
-        port: 4444,
-        username: '_ADMIN',
-        password: 'happn'
-      }
-    };
-
-    var clientConfig2 = {
-      config: {
-        secure: true,
-        port: 4447,
-        username: '_ADMIN',
-        password: 'happn'
-      }
-    };
-
     var serviceInstance1;
     var serviceInstance2;
-
-    var client1;
-    var client2;
 
     var getService = function(config, callback) {
       happn.service.create(config, function(e, service) {
         if (e) return callback(e);
         callback(null, service);
       });
-    };
-
-    var getClient = function(config, callback) {
-      happn_client.create(config, callback);
     };
 
     before('it creates 2 test dss', function(callback) {
@@ -105,23 +74,10 @@ describe(
       });
     });
 
-    before('it creates 2 test clients', function(callback) {
-      this.timeout(4000);
-      getClient(clientConfig1, function(e, client) {
-        if (e) return callback(e);
-        client1 = client;
-        getClient(clientConfig2, function(e, client) {
-          if (e) return callback(e);
-          client2 = client;
-          callback();
-        });
-      });
-    });
-
     after('it shuts down the test dss, and unlinks their file', function(callback) {
-      serviceInstance1.stop(function(e) {
+      serviceInstance1.stop(function() {
         fs.unlinkSync(test_file1);
-        serviceInstance2.stop(function(e) {
+        serviceInstance2.stop(function() {
           fs.unlinkSync(test_file2);
           fs.unlinkSync(test_file2a);
           callback();
@@ -148,7 +104,7 @@ describe(
           keyCount++;
           next();
         },
-        function(e) {
+        function() {
           expect(keyCount).to.be(2);
           callback();
         }
@@ -166,7 +122,7 @@ describe(
           keyCount++;
           next();
         },
-        function(e) {
+        function() {
           expect(keyCount).to.be(1);
           callback();
         }
@@ -184,7 +140,7 @@ describe(
           keyCount++;
           next();
         },
-        function(e) {
+        function() {
           expect(keyCount).to.be(1);
           callback();
         }

@@ -6,11 +6,7 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
-    var happn_client = happn.client;
     var async = require('async');
-
-    var testport = 8000;
-    var test_secret = 'test_secret';
     var default_timeout = 10000;
     var happnInstance = null;
 
@@ -47,10 +43,6 @@ describe(
       }
     });
 
-    /*
-   We are initializing 2 clients to test saving data against the database, one client will push data into the
-   database whilst another listens for changes.
-   */
     before('should initialize the clients', function(callback) {
       this.timeout(default_timeout);
 
@@ -82,11 +74,6 @@ describe(
       '/test/meta/test_path_created_modified_update' + require('shortid').generate();
     var test_path_created_modified_update_notmerge =
       '/test/meta/test_path_created_modified_update_notmerge' + require('shortid').generate();
-    var test_path_not_enumerable =
-      '/test/meta/test_path_not_enumerable' + require('shortid').generate();
-    var test_path_not_enumerable_get =
-      '/test/meta/test_path_not_enumerable_get' + require('shortid').generate();
-    //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
     it('tests the set meta data', function(callback) {
       this.timeout(default_timeout);
@@ -214,7 +201,7 @@ describe(
               {
                 merge: true
               },
-              function(e, result) {
+              function(e /*, result*/) {
                 if (e) return callback(e);
 
                 publisherclient.get(test_path_created_modified, function(e, result) {
@@ -255,7 +242,7 @@ describe(
                 property4: 'property4'
               },
               {},
-              function(e, result) {
+              function(e /*, result*/) {
                 if (e) return callback(e);
 
                 publisherclient.get(test_path_created_modified_notmerge, function(e, result) {
@@ -440,7 +427,7 @@ describe(
                 property4: 'property4',
                 ind: 10
               },
-              function(e, eleventhItem) {
+              function(/*e, eleventhItem*/) {
                 var searchCriteria = {
                   '_meta.created': {
                     $gte: windowStart,
@@ -456,7 +443,7 @@ describe(
                   function(e, items) {
                     if (e) return callback(e);
 
-                    expect(items.length == 10).to.be(true);
+                    expect(items.length === 10).to.be(true);
 
                     var searchCriteria = {
                       '_meta.created': {
@@ -472,7 +459,7 @@ describe(
                       function(e, items) {
                         if (e) return callback(e);
 
-                        expect(items.length == 1).to.be(true);
+                        expect(items.length === 1).to.be(true);
                         expect(items[0].ind).to.be(10);
 
                         setTimeout(function() {
@@ -486,7 +473,7 @@ describe(
                             {
                               merge: true
                             },
-                            function(e, modifiedItem) {
+                            function(e /*, modifiedItem*/) {
                               if (e) return callback(e);
 
                               var searchCriteria = {
@@ -503,7 +490,7 @@ describe(
                                 function(e, items) {
                                   if (e) return callback(e);
 
-                                  expect(items.length == 1).to.be(true);
+                                  expect(items.length === 1).to.be(true);
                                   expect(items[0].ind).to.be(0);
 
                                   callback();

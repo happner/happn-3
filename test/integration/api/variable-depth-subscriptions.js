@@ -7,11 +7,14 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
     var happnInstance = null;
     var bluebird = require('bluebird');
 
     this.timeout(5000);
+
+    var publisherclient;
+    var listenerclient;
+    var defaultVariableDepth = 5;
 
     before('should initialize the service', function(callback) {
       try {
@@ -47,10 +50,6 @@ describe(
       );
     });
 
-    var publisherclient;
-    var listenerclient;
-    var defaultVariableDepth = 5;
-
     /*
    We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
@@ -58,10 +57,11 @@ describe(
     beforeEach('should initialize the clients', async () => {
       if (publisherclient) await publisherclient.disconnect();
       if (listenerclient) await listenerclient.disconnect();
-
+      // eslint-disable-next-line require-atomic-updates
       publisherclient = await happn_client.create({
         config: { username: '_ADMIN', password: 'happn' }
       });
+      // eslint-disable-next-line require-atomic-updates
       listenerclient = await happn_client.create({
         config: {
           username: '_ADMIN',
@@ -69,6 +69,7 @@ describe(
           defaultVariableDepth: defaultVariableDepth
         }
       });
+      // eslint-disable-next-line require-atomic-updates
       listenerclient.onAsync = bluebird.promisify(listenerclient.on, { multiArgs: true });
     });
 
@@ -144,13 +145,17 @@ describe(
       listenerclient.on(
         '/test/path/**',
         { depth: 4 },
-        function(data) {},
-        function(e, handle1) {
+        function() {
+          //do nothing
+        },
+        function() {
           listenerclient.on(
             '/test/path/1/**',
             { depth: 5 },
-            function(data) {},
-            function(e, handle2) {
+            function() {
+              //do nothing
+            },
+            function() {
               expect(Object.keys(listenerclient.state.listenerRefs).length).to.eql(2);
 
               listenerclient.disconnect(function(e) {
@@ -165,7 +170,6 @@ describe(
     });
 
     it('does a variable depth on which eclipses another .on, do off and ensure the correct handlers are called', function(done) {
-      var variableDepthHandle;
       var results = [];
 
       listenerclient.on(
@@ -182,7 +186,7 @@ describe(
             function(data, meta) {
               results.push({ data: data, channel: meta.channel, path: meta.path });
             },
-            function(e, handle2) {
+            function(e) {
               if (e) return done(e);
               publisherclient.set('/test/path/1/1', { set: 1 }, function(e) {
                 if (e) return done(e);
@@ -254,7 +258,7 @@ describe(
             handleEvent
           );
         })
-        .then(function(reference, items) {
+        .then(function(reference) {
           reference3 = reference[0];
           expect(eventData.length).to.be(1);
           expect(Object.keys(listenerclient.state.events).length).to.be(2);
@@ -438,10 +442,10 @@ describe(
                   event_type: 'set',
                   initialEmit: true
                 },
-                function(message, meta) {
+                function(message) {
                   caughtEmitted++;
 
-                  if (caughtEmitted == 2) {
+                  if (caughtEmitted === 2) {
                     expect(message.test).to.be('data1');
                     callback();
                   }
@@ -508,8 +512,6 @@ describe(
     it('should subscribe and get initial values emitted immediately, to the correct depth', async () => {
       this.timeout(10000);
 
-      var caughtEmitted = [];
-
       await listenerclient.set('/initialCallbackCorrectDepth/testsubscribe/1', {
         test: 'data1'
       });
@@ -542,7 +544,9 @@ describe(
             initialCallback: true,
             depth: 2
           },
-          function(message) {},
+          function() {
+            //do nothing
+          },
           function(e, reference, response) {
             if (e) return reject(e);
             resolve(
@@ -571,17 +575,12 @@ describe(
         eventData.push(data);
       };
 
-      var reference1;
-      var reference2;
-      var reference3;
-
       listenerclient
         .set('/initialEmitTest/path', { test: 1 })
         .then(function() {
           return listenerclient.onAsync('/initialEmitTest/path', {}, handleEvent);
         })
-        .then(function(reference) {
-          reference1 = reference;
+        .then(function() {
           expect(Object.keys(listenerclient.state.events).length).to.be(1);
           expect(
             listenerclient.state.refCount[
@@ -591,8 +590,7 @@ describe(
           expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(1);
           return listenerclient.onAsync('/initialEmitTest/**', { initialEmit: true }, handleEvent);
         })
-        .then(function(reference) {
-          reference2 = reference;
+        .then(function() {
           expect(eventData.length).to.be(1);
           expect(Object.keys(listenerclient.state.events).length).to.be(2);
           expect(listenerclient.state.events['/ALL@/initialEmitTest/**'].length).to.be(1);
@@ -613,8 +611,7 @@ describe(
             handleEvent
           );
         })
-        .then(function(reference, items) {
-          reference3 = reference[0];
+        .then(function() {
           expect(eventData.length).to.be(1);
           expect(Object.keys(listenerclient.state.events).length).to.be(2);
           expect(listenerclient.state.events['/ALL@/initialEmitTest/**'].length).to.be(2);

@@ -38,7 +38,7 @@ describe(
           utils: {
             fileExists:
               fileExists ||
-              function(filePath) {
+              function() {
                 return true;
               }
           }
@@ -92,7 +92,7 @@ describe(
 
       //config, app, log, callback
       var transport = transportMock(null, null, function(path) {
-        return path == 'key-file-path';
+        return path === 'key-file-path';
       });
 
       var log = logMock();
@@ -111,7 +111,7 @@ describe(
 
       //config, app, log, callback
       var transport = transportMock(null, null, function(path) {
-        return path == 'cert-file-path';
+        return path === 'cert-file-path';
       });
 
       var log = logMock();
@@ -133,7 +133,7 @@ describe(
 
       //config, app, log, callback
       var transport = transportMock(null, null, function(path) {
-        return path == 'cert-file-path' || path == 'key-file-path';
+        return path === 'cert-file-path' || path === 'key-file-path';
       });
 
       transport.fs = fsMock();
@@ -154,7 +154,7 @@ describe(
       this.timeout(5000);
 
       //config, app, log, callback
-      var transport = transportMock(null, null, function(path) {
+      var transport = transportMock(null, null, function() {
         return false;
       });
 

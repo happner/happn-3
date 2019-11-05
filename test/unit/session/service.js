@@ -4,8 +4,6 @@ describe(
     .testName(__filename, 3),
   function() {
     const expect = require('expect.js');
-    const async = require('async');
-    const uuid = require('uuid');
     const Logger = require('happn-logger');
     const SessionService = require('../../../lib/services/session/service');
 

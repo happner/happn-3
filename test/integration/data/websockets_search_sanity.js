@@ -52,7 +52,7 @@ describe(
           name: 'crimson tide',
           genre: 'war'
         },
-        function(e, result) {
+        function(e) {
           if (e) return done(e);
 
           var options = {
@@ -89,7 +89,7 @@ describe(
           name: 'crimson tide',
           genre: 'ww2'
         },
-        function(e, result) {
+        function(e) {
           if (e) return done(e);
 
           var options = {
@@ -129,7 +129,7 @@ describe(
           name: 'Loadtest_123',
           anotherProp: 'anotherPropValue'
         },
-        function(e, result) {
+        function(e) {
           if (e) return done(e);
 
           var options = {
@@ -169,7 +169,7 @@ describe(
           name: 'Loadtest_123',
           anotherProp: 'anotherPropValue'
         },
-        function(e, result) {
+        function(e) {
           if (e) return done(e);
 
           var options = {
@@ -209,7 +209,7 @@ describe(
           name: 'Loadtest_123',
           anotherProp: 'anotherPropValue'
         },
-        function(e, result) {
+        function(e) {
           if (e) return done(e);
 
           var options = {
@@ -230,7 +230,7 @@ describe(
               criteria: criteria,
               options: options
             },
-            function(e, result) {
+            function(e) {
               expect(e.toString()).to.be(
                 'SystemError: $regex parameter value must be an Array or a string'
               );
@@ -302,7 +302,7 @@ describe(
                   expect(resultItem._meta.created).to.not.be(undefined);
 
                   if (
-                    resultItem._meta.path != latestResult._meta.path &&
+                    resultItem._meta.path !== latestResult._meta.path &&
                     resultItem._meta.created > latestResult._meta.created
                   )
                     return done(new Error('the latest result is not the latest result...'));
@@ -368,7 +368,7 @@ describe(
                 if (e) return done(e);
 
                 for (var resultItemIndex in result) {
-                  if (resultItemIndex == '_meta') continue;
+                  if (resultItemIndex === '_meta') continue;
 
                   var resultItem = result[resultItemIndex];
 
@@ -376,7 +376,7 @@ describe(
                   expect(resultItem._meta.created).to.not.be(undefined);
 
                   if (
-                    resultItem._meta.path != latestResult._meta.path &&
+                    resultItem._meta.path !== latestResult._meta.path &&
                     resultItem._meta.created > latestResult._meta.created
                   )
                     return done(new Error('the latest result is not the latest result...'));

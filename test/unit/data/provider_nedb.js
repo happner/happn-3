@@ -71,7 +71,7 @@ describe(testName, function() {
           delete setData.data.testObject;
 
           console.log('upsert attempt ' + time);
-          provider.upsert('/path/test', setData, {}, false, function(e, result, created, upserted) {
+          provider.upsert('/path/test', setData, {}, false, function(e) {
             if (e) return timeCB(e);
             setData.data.testObject = decoupled;
             provider.findOne(
@@ -121,7 +121,7 @@ describe(testName, function() {
           delete setData.data.testObject;
 
           console.log('upsert attempt ' + time);
-          provider.upsert('/path/test', setData, {}, false, function(e, result, created, upserted) {
+          provider.upsert('/path/test', setData, {}, false, function(e) {
             if (e) return timeCB(e);
             setData.data.testObject = decoupled;
             provider.findOne(

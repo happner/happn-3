@@ -6,14 +6,12 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
-    var async = require('async');
 
     var happnInstance = null;
     var encryptedPayloadInstance = null;
 
-    var http = require('http');
+    var admClient, admClient1;
 
-    var admClient;
 
     var Crypto = require('happn-util-crypto');
     var crypto = new Crypto();
@@ -21,9 +19,10 @@ describe(
     var clientKeyPair = crypto.createKeyPair();
     var clientKeyPair1 = crypto.createKeyPair();
     var serverKeyPair = crypto.createKeyPair();
+    this.timeout(20000);
 
     before('should initialize the service', function(callback) {
-      this.timeout(20000);
+
 
       try {
         service.create(
@@ -72,11 +71,14 @@ describe(
       }
     });
 
-    after(function(done) {
-      admClient
-        .disconnect()
-        .then(happnInstance.stop().then(encryptedPayloadInstance.stop().then(done)))
-        .catch(done);
+    after(async () => {
+      if(happnInstance) await happnInstance.stop();
+      if(encryptedPayloadInstance) await encryptedPayloadInstance.stop();
+    });
+
+    afterEach(async () => {
+      if (admClient) await admClient.disconnect();
+      if (admClient1) await admClient1.disconnect();
     });
 
     it('tests the keypairs', function(callback) {
@@ -93,12 +95,8 @@ describe(
         encrypted
       );
 
-      // var encrypted = crypto.asymmetricEncrypt(serverKeyPair.privateKey,  clientKeyPair.publicKey, message);
-      // var decrypted = crypto.asymmetricDecrypt(clientKeyPair.privateKey, serverKeyPair.publicKey, encrypted);
-
-      if (message == encrypted) throw new Error('encrypted data matches secret message');
-
-      if (message != decrypted) throw new Error('decrypted data does not match secret message');
+      if (message === encrypted) throw new Error('encrypted data matches secret message');
+      if (message !== decrypted.toString()) throw new Error('decrypted data does not match secret message');
 
       callback();
     });
@@ -117,9 +115,9 @@ describe(
         encrypted
       );
 
-      if (message == encrypted) throw new Error('encrypted data matches secret message');
+      if (message === encrypted) throw new Error('encrypted data matches secret message');
 
-      if (message != decrypted) throw new Error('decrypted data does not match secret message');
+      if (message !== decrypted.toString()) throw new Error('decrypted data does not match secret message');
 
       callback();
     });
@@ -172,11 +170,11 @@ describe(
             {},
             function(e, response) {
               expect(e).to.equal(null);
-              expect(response.encrypted == 'test').to.equal(true);
+              expect(response.encrypted === 'test').to.equal(true);
 
               admClient.get('/an/encrypted/payload/target', function(e, response) {
                 expect(e).to.equal(null);
-                expect(response.encrypted == 'test').to.equal(true);
+                expect(response.encrypted === 'test').to.equal(true);
 
                 callback();
               });
@@ -207,10 +205,10 @@ describe(
             {
               count: 1
             },
-            function(data) {
+            function() {
               callback();
             },
-            function(e, response) {
+            function(e) {
               expect(e).to.equal(null);
 
               admClient.set(
@@ -218,7 +216,7 @@ describe(
                 {
                   test: 'on'
                 },
-                function(e, response) {
+                function(e) {
                   if (e) return callback(e);
                 }
               );
@@ -258,14 +256,14 @@ describe(
             })
 
             .then(function(clientInstance) {
-              const admClient1 = clientInstance;
+              admClient1 = clientInstance;
 
               admClient1.on(
                 '/an/encrypted/payload/target/event',
-                function(data) {
+                function() {
                   onHappened = true;
                 },
-                function(e, response) {
+                function(e) {
                   expect(e).to.equal(null);
 
                   admClient.set(
@@ -273,7 +271,7 @@ describe(
                     {
                       test: 'on'
                     },
-                    function(e, response) {
+                    function() {
                       setTimeout(function() {
                         if (onHappened) return callback();
                         callback(new Error("on didn't happen"));
@@ -305,7 +303,7 @@ describe(
           secure: true
         })
 
-        .then(function(clientInstance) {
+        .then(function() {
           callback(new Error('this wasnt meant to happen'));
         })
 

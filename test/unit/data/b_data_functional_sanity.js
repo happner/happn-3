@@ -194,7 +194,7 @@ describe(
           test: 'data'
         },
         {},
-        function(e, response) {
+        function(e) {
           if (e) return callback(e);
 
           serviceInstance.remove('/remove/' + testId, {}, function(e, response) {
@@ -216,7 +216,7 @@ describe(
           test: 'data'
         },
         {},
-        function(e, response) {
+        function(e) {
           if (e) return callback(e);
 
           serviceInstance.upsert(
@@ -225,7 +225,7 @@ describe(
               test: 'data'
             },
             {},
-            function(e, response) {
+            function(e) {
               if (e) return callback(e);
 
               serviceInstance.remove('/remove/multiple/*', {}, function(e, response) {
@@ -249,7 +249,7 @@ describe(
           test: 'data'
         },
         {},
-        function(e, response) {
+        function(e) {
           if (e) return callback(e);
 
           serviceInstance.upsert(
@@ -258,7 +258,7 @@ describe(
               test: 'data'
             },
             {},
-            function(e, response) {
+            function(e) {
               if (e) return callback(e);
 
               serviceInstance.get('/get/multiple/*/' + testId, {}, function(e, response) {
@@ -335,7 +335,7 @@ describe(
           test_path_end,
         complex_obj,
         null,
-        function(e, put_result) {
+        function(e) {
           expect(e == null).to.be(true);
           serviceInstance.upsert(
             '/1_eventemitter_embedded_sanity/' +
@@ -345,7 +345,7 @@ describe(
               '/1',
             complex_obj,
             null,
-            function(e, put_result) {
+            function(e) {
               expect(e == null).to.be(true);
 
               ////////////console.log('searching');
@@ -357,7 +357,7 @@ describe(
                 },
                 function(e, search_result) {
                   expect(e == null).to.be(true);
-                  expect(search_result.length == 1).to.be(true);
+                  expect(search_result.length === 1).to.be(true);
 
                   serviceInstance.get(
                     '/1_eventemitter_embedded_sanity/' + testId + '/testsubscribe/data/complex*',
@@ -367,7 +367,7 @@ describe(
                     },
                     function(e, search_result) {
                       expect(e == null).to.be(true);
-                      expect(search_result.length == 2).to.be(true);
+                      expect(search_result.length === 2).to.be(true);
                       callback(e);
                     }
                   );
@@ -405,7 +405,7 @@ describe(
             search_result
           ) {
             expect(e == null).to.be(true);
-            expect(search_result.length == 1).to.be(true);
+            expect(search_result.length === 1).to.be(true);
             done();
           });
         });
@@ -474,7 +474,7 @@ describe(
             {
               noPublish: true
             },
-            function(e, upserted) {
+            function(e) {
               if (e) return callback(e);
 
               callback();
@@ -510,7 +510,7 @@ describe(
 
                 var item_from_array = randomItems[itemIndex];
 
-                if (item_from_mongo.data.item_sort_id != item_from_array.item_sort_id)
+                if (item_from_mongo.data.item_sort_id !== item_from_array.item_sort_id)
                   return done(new Error('ascending sort failed'));
               }
 
@@ -538,7 +538,7 @@ describe(
                     var item_from_mongo = items[itemIndex];
                     var item_from_array = randomItems[itemIndex];
 
-                    if (item_from_mongo.data.item_sort_id != item_from_array.item_sort_id)
+                    if (item_from_mongo.data.item_sort_id !== item_from_array.item_sort_id)
                       return done(new Error('descending sort failed'));
                   }
 

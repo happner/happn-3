@@ -3,24 +3,14 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    //how I found where our possible memory leak on process.on
-    //process.on('warning', e => console.warn(e.stack));
-
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
-
-    var test_secret = 'test_secret';
     var happnInstance = null;
-    var test_id;
-
     this.timeout(20000);
 
     before('should initialize the service', function(callback) {
-      test_id = Date.now() + '_' + require('shortid').generate();
-
       try {
         service.create(function(e, happnInst) {
           if (e) return callback(e);
@@ -62,7 +52,7 @@ describe(
               port: 4545
             }
           },
-          function(e, instance) {
+          function(e) {
             expect(e.code).to.be('ECONNREFUSED');
             callback();
           }

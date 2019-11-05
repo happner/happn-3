@@ -7,7 +7,6 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
 
-    var test_secret = 'test_secret';
     var serviceInstance = null;
     var test_id;
     var shortid = require('shortid');
@@ -180,14 +179,14 @@ describe(
           event_type: 'set',
           count: 1
         },
-        function(message) {
+        function() {
           client.on(
             '/security_directory_changed/' + test_id + '/testsubscribe/data/all/*',
             {
               event_type: 'set',
               count: 1
             },
-            function(message) {
+            function() {
               client.off(listenerId1, function(e) {
                 if (e) return callback(e);
 
@@ -230,7 +229,7 @@ describe(
                 property3: 'property3'
               },
               null,
-              function(e, result) {
+              function(e) {
                 if (e) return callback(e);
               }
             );
@@ -336,7 +335,7 @@ describe(
       var groupUnlinkedChangedData;
 
       serviceInstance.services.security.on('security-data-changed', function(changed) {
-        if (changed.whatHappnd == 'unlink-group') groupUnlinkedChangedData = changed.changedData;
+        if (changed.whatHappnd === 'unlink-group') groupUnlinkedChangedData = changed.changedData;
       });
 
       createTestClient(function(e, client) {
@@ -459,7 +458,7 @@ describe(
 
         client.on(
           '/security_directory_changed/' + test_id + '/on/1',
-          function(message) {
+          function() {
             count++;
           },
           function(e) {
@@ -510,7 +509,7 @@ describe(
 
         client.on(
           '/security_directory_changed/' + test_id + '/on/2',
-          function(message) {
+          function() {
             count++;
           },
           function(e) {
@@ -560,7 +559,7 @@ describe(
 
         client.on(
           '/security_directory_changed/' + test_id + '/on/1',
-          function(message) {
+          function() {
             count++;
           },
           function(e) {
@@ -611,7 +610,7 @@ describe(
 
         client.on(
           '/security_directory_changed/' + test_id + '/on/1',
-          function(message) {
+          function() {
             count++;
           },
           function(e) {
@@ -666,7 +665,7 @@ describe(
 
         client.on(
           '/security_directory_changed/' + test_id + '/on/1',
-          function(message) {
+          function() {
             count++;
           },
           function(e) {
@@ -721,7 +720,7 @@ describe(
 
         client.on(
           '/security_directory_changed/' + test_id + '/on/1',
-          function(message) {
+          function() {
             count++;
           },
           function(e) {
@@ -772,7 +771,7 @@ describe(
 
         client.on(
           '/security_directory_changed/' + test_id + '/on/2',
-          function(message) {
+          function() {
             count++;
           },
           function(e) {
@@ -785,8 +784,8 @@ describe(
 
           expect(count).to.be(3);
 
-          client.onSystemMessage(function(key, message) {
-            if (key == 'security-data-changed') securityServiceEventCount++;
+          client.onSystemMessage(function(key) {
+            if (key === 'security-data-changed') securityServiceEventCount++;
           });
 
           expect(Object.keys(client.state.events).length).to.be(1);
@@ -801,7 +800,7 @@ describe(
             setTimeout(function() {
               client.on(
                 '/security_directory_changed/' + test_id + '/on/2',
-                function(message) {},
+                function() {},
                 function(e) {
                   expect(e).to.not.be(null);
                   expect(e.toString()).to.be('AccessDenied: unauthorized');

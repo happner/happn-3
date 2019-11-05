@@ -6,8 +6,6 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
-    var happn_client = happn.client;
-    var async = require('async');
     var happnInstance = null;
     var Promise = require('bluebird');
 
@@ -58,19 +56,6 @@ describe(
       }, 3000);
     });
 
-    function restartServer() {
-      return new Promise(function(resolve, reject) {
-        happnInstance.stop(function(e) {
-          if (e) return reject(e);
-          service.create(function(e, happnInst) {
-            if (e) return reject(e);
-            happnInstance = happnInst;
-            resolve();
-          });
-        });
-      });
-    }
-
     it('does a normal subscription, initialEmit and initialCallback - checks the listener state, then unsubscribes and checks the listener state', function(done) {
       var eventData = [];
 
@@ -112,7 +97,7 @@ describe(
           expect(Object.keys(client.state.listenerRefs).length).to.be(2);
           return client.onAsync('/test/path', { initialCallback: true }, handleEvent);
         })
-        .then(function(reference, items) {
+        .then(function(reference) {
           reference3 = reference[0];
           expect(eventData.length).to.be(1);
           expect(Object.keys(client.state.events).length).to.be(1);
@@ -214,20 +199,15 @@ describe(
         eventData.push(data);
       };
 
-      var reference1;
-      var reference2;
-
       client
         .set('/test/path', { test: 1 })
         .then(function() {
           return client.onAsync('/test/path', { count: 1 }, handleEvent);
         })
-        .then(function(reference) {
-          reference1 = reference;
+        .then(function() {
           return client.onAsync('/test/path', {}, handleEvent);
         })
-        .then(function(reference) {
-          reference2 = reference;
+        .then(function() {
           expect(Object.keys(client.state.events).length).to.be(1);
           expect(
             client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0}']
@@ -241,12 +221,12 @@ describe(
           expect(Object.keys(client.state.listenerRefs).length).to.be(2);
           return client.set('/test/path', { test: 2 });
         })
-        .then(function(result) {
+        .then(function() {
           return new Promise(function(resolve) {
             setTimeout(resolve, 2000);
           });
         })
-        .then(function(result) {
+        .then(function() {
           expect(Object.keys(client.state.events).length).to.be(1);
           expect(
             client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0}']
@@ -269,17 +249,12 @@ describe(
         eventData.push(data);
       };
 
-      var reference1;
-      var reference2;
-      var reference3;
-
       client
         .set('/test/path', { test: 1 })
         .then(function() {
           return client.onAsync('/test/path', {}, handleEvent);
         })
-        .then(function(reference) {
-          reference1 = reference;
+        .then(function() {
           expect(Object.keys(client.state.events).length).to.be(1);
           expect(
             client.state.refCount['{"path":"/ALL@/test/path","event_type":"all","count":0}']
@@ -287,8 +262,7 @@ describe(
           expect(Object.keys(client.state.listenerRefs).length).to.be(1);
           return client.onAsync('/test/path', { initialEmit: true }, handleEvent);
         })
-        .then(function(reference) {
-          reference2 = reference;
+        .then(function() {
           expect(eventData.length).to.be(1);
           expect(Object.keys(client.state.events).length).to.be(1);
           expect(client.state.events['/ALL@/test/path'].length).to.be(2);
@@ -303,8 +277,7 @@ describe(
           expect(Object.keys(client.state.listenerRefs).length).to.be(2);
           return client.onAsync('/test/path', { initialCallback: true }, handleEvent);
         })
-        .then(function(reference, items) {
-          reference3 = reference[0];
+        .then(function() {
           expect(eventData.length).to.be(1);
           expect(Object.keys(client.state.events).length).to.be(1);
           expect(client.state.events['/ALL@/test/path'].length).to.be(3);

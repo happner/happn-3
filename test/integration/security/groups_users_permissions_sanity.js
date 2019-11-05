@@ -64,12 +64,12 @@ describe(
 
             happnMock.services[serviceName] = testServices[serviceName];
 
-            if (serviceName == 'error')
+            if (serviceName === 'error')
               happnMock.services[serviceName].handleFatal = function(message, e) {
                 throw e;
               };
 
-            if (serviceName == 'session') {
+            if (serviceName === 'session') {
               happnMock.services[serviceName].config = {};
               return happnMock.services[serviceName].initializeCaches(eachServiceCB);
             }
@@ -183,9 +183,13 @@ describe(
         testServices.security.users.upsertGroup(testGroup, function(e, result) {
           if (e) return callback(e);
 
-          expect(result.name == testGroup.name).to.be(true);
-          expect(result.custom_data.customString == testGroup.custom_data.customString).to.be(true);
-          expect(result.custom_data.customNumber == testGroup.custom_data.customNumber).to.be(true);
+          expect(result.name === testGroup.name).to.be(true);
+          expect(result.custom_data.customString === testGroup.custom_data.customString).to.be(
+            true
+          );
+          expect(result.custom_data.customNumber === testGroup.custom_data.customNumber).to.be(
+            true
+          );
 
           addedGroup = result;
           callback();
@@ -201,11 +205,11 @@ describe(
           function(e, result) {
             if (e) return callback(e);
 
-            expect(result.name == subGroup.name).to.be(true);
-            expect(result.custom_data.customString == subGroup.custom_data.customString).to.be(
+            expect(result.name === subGroup.name).to.be(true);
+            expect(result.custom_data.customString === subGroup.custom_data.customString).to.be(
               true
             );
-            expect(result.custom_data.customNumber == subGroup.custom_data.customNumber).to.be(
+            expect(result.custom_data.customNumber === subGroup.custom_data.customNumber).to.be(
               true
             );
             callback();
@@ -224,10 +228,10 @@ describe(
 
             expect(result.name === anotherSubGroup.name).to.be(true);
             expect(
-              result.custom_data.customString == anotherSubGroup.custom_data.customString
+              result.custom_data.customString === anotherSubGroup.custom_data.customString
             ).to.be(true);
             expect(
-              result.custom_data.customNumber == anotherSubGroup.custom_data.customNumber
+              result.custom_data.customNumber === anotherSubGroup.custom_data.customNumber
             ).to.be(true);
             callback();
           }
@@ -243,7 +247,7 @@ describe(
           function(e) {
             if (
               e &&
-              e.toString() ==
+              e.toString() ===
                 'Error: validation failure: group by the name ' + testGroup.name + ' already exists'
             )
               return callback();
@@ -501,7 +505,7 @@ describe(
                 e,
                 result
               ) {
-                expect(result.data.password != 'TEST PWD').to.be(true);
+                expect(result.data.password !== 'TEST PWD').to.be(true);
 
                 delete result.data.password;
 
@@ -542,7 +546,7 @@ describe(
                 {
                   overwrite: false
                 },
-                function(e, result) {
+                function(e) {
                   expect(e.toString()).to.equal(
                     'Error: validation failure: user by the name ' +
                       user.username +
@@ -802,10 +806,7 @@ describe(
           testServices.security.users.upsertUser(testUser, function(e, user) {
             if (e) return callback(e);
 
-            testServices.data.get('/_SYSTEM/_SECURITY/_USER/' + user.username, {}, function(
-              e,
-              result
-            ) {
+            testServices.data.get('/_SYSTEM/_SECURITY/_USER/' + user.username, {}, function(e) {
               if (e) return callback(e);
 
               testServices.security.users.deleteUser(user, function(e, result) {
@@ -980,7 +981,7 @@ describe(
         });
 
         it('unlinks a group from a user', function(callback) {
-          testServices.security.users.unlinkGroup(linkGroup, linkUser, function(e) {
+          testServices.security.users.unlinkGroup(linkGroup, linkUser, function() {
             testServices.data.get(
               '/_SYSTEM/_SECURITY/_USER/' + linkUser.username + '/_USER_GROUP/' + linkGroup.name,
               {},

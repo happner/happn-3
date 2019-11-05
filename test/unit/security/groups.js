@@ -6,8 +6,6 @@ describe(
     this.timeout(5000);
 
     var expect = require('expect.js');
-    var happn = require('../../../lib/index');
-    var service = happn.service;
     var async = require('async');
     var Promise = require('bluebird');
 
@@ -113,7 +111,7 @@ describe(
           }
         };
 
-        happn.services.security.groups.upsertGroup(testGroup, function(e, result) {
+        happn.services.security.groups.upsertGroup(testGroup, function(e) {
           expect(e.toString()).to.be(
             'Error: group permissions invalid: missing allowed actions or prohibit rules: /test/path/2'
           );

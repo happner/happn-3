@@ -4,18 +4,13 @@ describe(
     .testName(__filename, 3),
   function() {
     var happn = require('../../../lib/index');
-
     var service = happn.service;
     var happn_client = happn.client;
     var async = require('async');
     var happnInstance = null;
-    var test_id;
-
     this.timeout(5000);
 
     before('should initialize the service', function(callback) {
-      test_id = Date.now() + '_' + require('shortid').generate();
-
       try {
         service.create(function(e, happnInst) {
           if (e) return callback(e);

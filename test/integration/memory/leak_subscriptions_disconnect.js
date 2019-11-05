@@ -7,9 +7,6 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
-
-    var test_secret = 'test_secret';
     var happnInstance = null;
     var test_id;
 
@@ -84,27 +81,23 @@ describe(
     };
 
     var doOperations = function(options, callback) {
-      var listenerId1;
-      var listenerId2;
-
       //first listen for the change
       listenerclient.on(
         '/memory-leak-protocol-service/' + test_id + '/testsubscribe/data/event/*',
         {
           event_type: 'set'
         },
-        function(message) {
+        function(/*message*/) {
           listenerclient.on(
             '/memory-leak-protocol-service/' + test_id + '/testsubscribe/data/event/*',
             {
               event_type: 'remove'
             },
-            function(message) {
+            function(/*message*/) {
               callback();
             },
-            function(e, listenerId) {
+            function(e /*, listenerId*/) {
               if (!e) {
-                listenerId2 = listenerId;
                 //then make the change
                 publisherclient.remove(
                   '/memory-leak-protocol-service/' + test_id + '/testsubscribe/data/event/1',
@@ -122,9 +115,8 @@ describe(
             }
           );
         },
-        function(e, listenerId) {
+        function(e /*, listenerId*/) {
           if (!e) {
-            listenerId1 = listenerId;
             //then make the change
             publisherclient.set(
               '/memory-leak-protocol-service/' + test_id + '/testsubscribe/data/event/1',
@@ -134,7 +126,7 @@ describe(
                 property3: 'property3'
               },
               null,
-              function(e, result) {
+              function(e /*, result*/) {
                 if (e) return callback(e);
               }
             );
@@ -144,61 +136,52 @@ describe(
     };
 
     var doOperationsWithAll = function(options, callback) {
-      var listenerId1;
-      var listenerId2;
-
       //first listen for the change
       listenerclient.on(
         '/memory-leak-protocol-service/' + test_id + '/testsubscribe/data/event/*',
         {
           event_type: 'set'
         },
-        function(message) {
+        function(/*message*/) {
           listenerclient.on(
             '/memory-leak-protocol-service/' + test_id + '/testsubscribe/data/event/*',
             {
               event_type: 'all'
             },
-            function(message) {
+            function(/*message*/) {
               callback();
             },
-            function(e, listenerId) {
-              if (!e) {
-                listenerId2 = listenerId;
-                //then make the change
-                publisherclient.remove(
-                  '/memory-leak-protocol-service/' + test_id + '/testsubscribe/data/event/1',
-                  {
-                    property1: 'property1',
-                    property2: 'property2',
-                    property3: 'property3'
-                  },
-                  null,
-                  function(e) {
-                    if (e) return callback(e);
-                  }
-                );
-              } else callback(e);
+            function(e /*, listenerId*/) {
+              if (e) return callback(e);
+              publisherclient.remove(
+                '/memory-leak-protocol-service/' + test_id + '/testsubscribe/data/event/1',
+                {
+                  property1: 'property1',
+                  property2: 'property2',
+                  property3: 'property3'
+                },
+                null,
+                function(e) {
+                  if (e) return callback(e);
+                }
+              );
             }
           );
         },
-        function(e, listenerId) {
-          if (!e) {
-            listenerId1 = listenerId;
-            //then make the change
-            publisherclient.set(
-              '/memory-leak-protocol-service/' + test_id + '/testsubscribe/data/event/1',
-              {
-                property1: 'property1',
-                property2: 'property2',
-                property3: 'property3'
-              },
-              null,
-              function(e, result) {
-                if (e) return callback(e);
-              }
-            );
-          } else callback(e);
+        function(e /*, listenerId*/) {
+          if (e) return callback(e);
+          publisherclient.set(
+            '/memory-leak-protocol-service/' + test_id + '/testsubscribe/data/event/1',
+            {
+              property1: 'property1',
+              property2: 'property2',
+              property3: 'property3'
+            },
+            null,
+            function(e /*, result*/) {
+              if (e) return callback(e);
+            }
+          );
         }
       );
     };
@@ -221,9 +204,8 @@ describe(
 
             setTimeout(function() {
               expect(
-                happnInstance.services.subscription.subscriptions.searchAll().length == 0
+                happnInstance.services.subscription.subscriptions.searchAll().length === 0
               ).to.be(true);
-
               done();
             }, 2000);
           });
@@ -249,7 +231,7 @@ describe(
 
             setTimeout(function() {
               expect(
-                happnInstance.services.subscription.subscriptions.searchAll().length == 0
+                happnInstance.services.subscription.subscriptions.searchAll().length === 0
               ).to.be(true);
               done();
             }, 2000);

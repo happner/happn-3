@@ -1,11 +1,8 @@
 var gulp = require('gulp');
 var Server = require('karma').Server;
 var happn = require('../../lib/index');
-var service = happn.service;
 var fs = require('fs');
 var path = require('path');
-var happnInstance;
-var happnInstance1;
 var ServerHelper = require('./__fixtures/serverHelper');
 var serverHelper = new ServerHelper();
 
@@ -20,7 +17,7 @@ gulp.task('default', async () => {
 
   fs.writeFileSync(__dirname + path.sep + 'browser_client.js', client_code, 'utf8');
 
-  happnInstance = await serverHelper.createServer({
+  await serverHelper.createServer({
     secure: true,
     encryptPayloads: true,
     services: {
@@ -35,7 +32,7 @@ gulp.task('default', async () => {
     }
   });
 
-  happnInstance1 = await serverHelper.createServer({
+  await serverHelper.createServer({
     secure: true,
     port: 55001,
     services: {
@@ -47,7 +44,7 @@ gulp.task('default', async () => {
     }
   });
 
-  const happnInstance2 = await serverHelper.createServer({
+  await serverHelper.createServer({
     secure: true,
     port: 55002,
     services: {

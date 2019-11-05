@@ -7,9 +7,7 @@ describe(
   function() {
     this.timeout(5000);
 
-    var fs = require('fs');
     var expect = require('expect.js');
-    var path = require('path');
     var HappnClient = require('../../../lib/client');
     var Constants = require('../../../lib/constants');
 
@@ -30,8 +28,8 @@ describe(
 
       happnClient.socket = socket || {
         removeAllListeners: function() {},
-        write: function(message) {},
-        on: function(eventName) {}
+        write: function() {},
+        on: function() {}
       };
 
       happnClient.options = clientOptions || {
@@ -237,9 +235,8 @@ describe(
 
     xit('tests the __connectSocket function.', function(done) {
       var happnClient = mockHappnClient();
-      var opts = happnClient.__prepareInstanceOptions({}, {});
 
-      happnClient.__connectSocket(function(err, data) {
+      happnClient.__connectSocket(function() {
         //TODO::: This test passes, but causes the client and test framework to hang
         done();
       });
@@ -320,11 +317,11 @@ describe(
     it("tests the 'offEvent' function created by __initializeEvents removes an event handler", function(done) {
       var happnClient = mockHappnClient();
       happnClient.__initializeEvents();
-      var a = happnClient.onEvent('MyEvent', function(x) {
-        console.log(x);
+      happnClient.onEvent('MyEvent', function() {
+        //do nothing
       });
-      var b = happnClient.onEvent('MyEvent', function(x) {
-        console.log(typeof x);
+      happnClient.onEvent('MyEvent', function() {
+          //do nothing
       });
       happnClient.offEvent('MyEvent|0');
 
@@ -335,20 +332,20 @@ describe(
 
     it('tests the getScript function returns an error when not called from a browser', function(done) {
       var happnClient = mockHappnClient();
-      happnClient.getScript('http://www.google.com', function(err, data) {
+      happnClient.getScript('http://www.google.com', function(err) {
         expect(err.toString()).to.eql('Error: only for browser');
         done();
       });
     });
 
-    xit('tests the getScript function when called from a browser', function(done) {
+    xit('tests the getScript function when called from a browser', function() {
       //TODO::: Not sure how to test this!
     });
 
     it('tests the getResources function returns a callback.', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.getResources(function(err, data) {
+      happnClient.getResources(function() {
         done();
       });
     });
@@ -356,7 +353,7 @@ describe(
     xit('tests the stop function.', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.stop(function(err, data) {
+      happnClient.stop(function() {
         //TODO::: Can't test: Socket issues
         done();
       });
@@ -436,7 +433,7 @@ describe(
     it('tests the __ensureCryptoLibrary function returns a callback.', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__ensureCryptoLibrary(function(err, data) {
+      happnClient.__ensureCryptoLibrary(function() {
         done();
       });
     });
@@ -476,7 +473,7 @@ describe(
           }
         });
       };
-      happnClient.__doLogin({}, function(e, data) {
+      happnClient.__doLogin({}, function() {
         expect(happnClient.session).to.eql({
           session: 'This is a session'
         });
@@ -492,7 +489,7 @@ describe(
           payload: 'this is an error'
         });
       };
-      happnClient.__doLogin({}, function(e, data) {
+      happnClient.__doLogin({}, function(e) {
         expect(e.toString()).to.eql('Error: this is an error');
         done();
       });
@@ -503,7 +500,7 @@ describe(
       happnClient.__performSystemRequest = function(action, data, options, callback) {
         callback(new Error('system request failed'), null);
       };
-      happnClient.__doLogin({}, function(e, data) {
+      happnClient.__doLogin({}, function(e) {
         expect(e.toString()).to.eql('Error: system request failed');
         done();
       });
@@ -573,7 +570,7 @@ describe(
         callback(options);
       };
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback(message);
       };
 
@@ -581,7 +578,7 @@ describe(
         username: 'Janco'
       });
 
-      happnClient.socket.write = function(message) {};
+      happnClient.socket.write = function() {};
 
       var package = require('../../../package.json');
 
@@ -644,7 +641,7 @@ describe(
 
     it('tests the handle_reconnect_scheduled function emits a reconnect scheduled event.', function(done) {
       var happnClient = mockHappnClient();
-      happnClient.emit = function(event_type, data) {
+      happnClient.emit = function(event_type) {
         expect(event_type).to.eql('reconnect-scheduled');
         expect(happnClient.__reconnectSuccessful).to.be(false);
         expect(this.status).to.eql(Constants.CLIENT_STATE.RECONNECTING);
@@ -678,8 +675,7 @@ describe(
       done();
     });
 
-    xit('tests the __performDataRequest function.', function(done) {
-      var happnClient = mockHappnClient();
+    xit('tests the __performDataRequest function.', function() {
       //NB::: DONE in test/unit/client/client.js
     });
 
@@ -745,7 +741,7 @@ describe(
     it('tests the __performSystemRequest function will return a callback if one is passed to it.', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.socket.write = function(message) {};
+      happnClient.socket.write = function() {};
 
       happnClient.__performSystemRequest(
         'login',
@@ -756,7 +752,7 @@ describe(
         {
           timeout: 50
         },
-        function(error, data) {
+        function(error) {
           expect(error.toString()).to.eql('Error: api request timed out');
           done();
         }
@@ -772,11 +768,11 @@ describe(
     it('tests that the get function will call __getDataRequest and returns a callback ', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
-      happnClient.get('/test/path', function(e, response) {
+      happnClient.get('/test/path', function(e) {
         if (e) return done(e);
         done();
       });
@@ -785,11 +781,11 @@ describe(
     it('tests that the getPaths function will call __getDataRequest and returns a callback ', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
-      happnClient.getPaths('/test/path', function(e, response) {
+      happnClient.getPaths('/test/path', function(e) {
         if (e) return done(e);
         done();
       });
@@ -798,11 +794,11 @@ describe(
     it('tests that the increment function will call __getDataRequest and returns a callback ', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
-      happnClient.increment('/test/path', 1, 1, function(e, response) {
+      happnClient.increment('/test/path', 1, 1, function(e) {
         if (e) return done(e);
         done();
       });
@@ -811,11 +807,11 @@ describe(
     it('tests that the increment function will call __getdatarequest and returns a callback when increment property is not specified (i.e. replaced by callback function) ', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
-      happnClient.increment('/test/path', 1, function(e, response) {
+      happnClient.increment('/test/path', 1, function(e) {
         if (e) return done(e);
         done();
       });
@@ -824,11 +820,11 @@ describe(
     it('tests that the increment function will call __getdatarequest and returns a callback when increment and gauge properties are not specified (i.e. replaced by callback function) ', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
-      happnClient.increment('/test/path', function(e, response) {
+      happnClient.increment('/test/path', function(e) {
         if (e) return done(e);
         done();
       });
@@ -837,11 +833,11 @@ describe(
     it('tests that the increment function will return an error callback if the increment is NAN ', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
-      happnClient.increment('/test/path', 1, 'string', function(e, response) {
+      happnClient.increment('/test/path', 1, 'string', function(e) {
         expect(e.toString()).to.eql('Error: increment must be a number');
         done();
       });
@@ -850,7 +846,7 @@ describe(
     it('tests that the set function calls __getdatarequest and returns a callback', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
@@ -859,7 +855,7 @@ describe(
         {
           test: 'data'
         },
-        function(e, response) {
+        function(e) {
           if (e) return done(e);
           done();
         }
@@ -869,7 +865,7 @@ describe(
     it('tests that the set function will return an error callback if a wildcard "*" is used in path', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
@@ -878,7 +874,7 @@ describe(
         {
           test: 'data'
         },
-        function(e, response) {
+        function(e) {
           expect(e.toString()).to.eql(
             "Error: Bad path, if the action is 'set' the path cannot contain the * wildcard character"
           );
@@ -890,7 +886,7 @@ describe(
     it('tests that the set function will return an error callback if an illegal character is used in path', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
@@ -899,7 +895,7 @@ describe(
         {
           test: 'data'
         },
-        function(e, response) {
+        function(e) {
           expect(e.toString()).to.eql(
             'Error: Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ) _ -, ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*'
           );
@@ -911,7 +907,7 @@ describe(
     it('tests that the setSibling function will call the set function and so return a callback', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
@@ -920,7 +916,7 @@ describe(
         {
           test: 'data'
         },
-        function(e, response) {
+        function() {
           done();
         }
       );
@@ -929,11 +925,11 @@ describe(
     it('tests that the remove function will call the  __getDataRequest function and so return a callback', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
-      happnClient.remove('/test/path', null, function(e, response) {
+      happnClient.remove('/test/path', null, function() {
         done();
       });
     });
@@ -941,11 +937,11 @@ describe(
     it('tests that the remove function will call the  __getDataRequest function and return a callback when parameters are ommitted', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
-      happnClient.remove('/test/path', function(e, response) {
+      happnClient.remove('/test/path', function() {
         done();
       });
     });
@@ -953,7 +949,7 @@ describe(
     it('tests the __reattachListeners function returns a callback', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__reattachListeners(function(e, response) {
+      happnClient.__reattachListeners(function() {
         done();
       });
     });
@@ -980,7 +976,7 @@ describe(
         expect(typeof cb).to.eql('function');
         done();
       };
-      happnClient.onEvent('reconnect', function(data) {});
+      happnClient.onEvent('reconnect', function() {});
       var options = {
         Name: 'Options'
       };
@@ -1014,7 +1010,7 @@ describe(
 
     it('tests that the __attachpublishedAck function will callback with an error if timed out  ', function(done) {
       const options = {
-        onPublished: function(e, results) {
+        onPublished: function(e) {
           expect(e.toString()).to.eql('Error: publish timed out');
           done();
         },
@@ -1332,7 +1328,7 @@ describe(
 
     it('tests the __acknowledge function', function(done) {
       var happnClient = mockHappnClient();
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
       var message = {
@@ -1349,7 +1345,7 @@ describe(
 
     it('tests that the __acknowledge function will return an error in the message and not acknowledge if an error occurs in the __getDataRequest', function(done) {
       var happnClient = mockHappnClient();
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback(new Error('Bad'));
       };
       var message = {
@@ -1373,7 +1369,7 @@ describe(
       var delegate = {
         count: 1,
         runcount: 2,
-        handler: function(data, meta) {
+        handler: function() {
           done(new Error('unexpected'));
         }
       };
@@ -1460,7 +1456,7 @@ describe(
       var n = 0;
       var testDone = function() {
         n++;
-        if (n == 2) done();
+        if (n === 2) done();
       };
       happnClient.state.events = {
         'MyEvent|1': [
@@ -1533,10 +1529,10 @@ describe(
     it('tests the _remoteOn function calls request callback', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
-      happnClient._remoteOn('test/path', null, function(e, r) {
+      happnClient._remoteOn('test/path', null, function() {
         done();
       });
     });
@@ -1555,7 +1551,7 @@ describe(
         status: 'OK'
       };
 
-      happnClient.socket.write = function(message) {
+      happnClient.socket.write = function() {
         happnClient.handle_response(null, response);
       };
 
@@ -1569,7 +1565,7 @@ describe(
           });
           done();
         },
-        function(e, r) {
+        function() {
           happnClient.handle_data('/CALL@MyEvent', response);
         }
       );
@@ -1615,7 +1611,7 @@ describe(
         }
       };
 
-      happnClient.socket.write = function(message) {
+      happnClient.socket.write = function() {
         happnClient.handle_response(null, response);
       };
 
@@ -1625,7 +1621,7 @@ describe(
           expect(meta).to.eql('This is meta');
           done();
         },
-        function(e, r) {
+        function() {
           happnClient.handle_data('/ALL@*', {
             data: 'This is data',
             _meta: 'This is meta'
@@ -1636,7 +1632,7 @@ describe(
 
     it('tests the _remoteOff function', function(done) {
       var happnClient = mockHappnClient();
-      happnClient.socket.write = function(message) {};
+      happnClient.socket.write = function() {};
 
       var channel = '/THIS@that';
       var message1 = {
@@ -1666,7 +1662,7 @@ describe(
         });
       };
 
-      happnClient._remoteOff('/THIS@that', function(err, data) {
+      happnClient._remoteOff('/THIS@that', function() {
         done();
       });
     });
@@ -1770,7 +1766,7 @@ describe(
           }
         ]
       };
-      happnClient.offPath('SOMEWHERE', function(error, data) {
+      happnClient.offPath('SOMEWHERE', function() {
         expect(happnClient.state.events).to.eql({
           event2: [
             {
@@ -1835,14 +1831,14 @@ describe(
 
     it('tests the off function returns a callback', function(done) {
       var happnClient = mockHappnClient();
-      happnClient.off(1, function(err, data) {
+      happnClient.off(1, function() {
         done();
       });
     });
 
     it('tests the off function returns an error if the handle is null', function(done) {
       var happnClient = mockHappnClient();
-      happnClient.off(null, function(err, data) {
+      happnClient.off(null, function(err) {
         expect(err.toString()).to.eql('Error: handle cannot be null');
         done();
       });
@@ -1850,7 +1846,7 @@ describe(
 
     it('tests the off function returns an error if the handle is NAN', function(done) {
       var happnClient = mockHappnClient();
-      happnClient.off('string', function(err, data) {
+      happnClient.off('string', function(err) {
         expect(err.toString()).to.eql('Error: handle must be a number');
         done();
       });
@@ -1880,13 +1876,13 @@ describe(
       // TODO::: ADDED A CALLBACK AT THE END OF THE FUNCTION IN client.js PASSES BUT HANGS
       // Socket issues again?
       var happnClient = mockHappnClient();
-      happnClient.__performSystemRequest = function(action, data, options, callback) {
+      happnClient.__performSystemRequest = function(action) {
         expect(action).to.eql('disconnect');
         // TODO: needs work to pass before done() is called
       };
 
       happnClient.socket = null;
-      happnClient.disconnect({}, function(e, data) {
+      happnClient.disconnect({}, function() {
         done();
       });
     });

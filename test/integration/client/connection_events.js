@@ -1,4 +1,3 @@
-var path = require('path');
 var Promise = require('bluebird');
 var expect = require('expect.js');
 var Happn = require('../../../');
@@ -170,7 +169,7 @@ describe(
         })
 
         .then(function() {
-          var subscription1 = client.onEvent('reconnect-scheduled', function() {
+          client.onEvent('reconnect-scheduled', function() {
             events[1] = true;
           });
           var subscription2 = client.onEvent('reconnect-scheduled', function() {
@@ -179,10 +178,9 @@ describe(
           var subscription3 = client.onEvent('reconnect-scheduled', function() {
             events[3] = true;
           });
-          var subscription4 = client.onEvent('reconnect-scheduled', function() {
+          client.onEvent('reconnect-scheduled', function() {
             events[4] = true;
           });
-
           client.offEvent(subscription2);
           client.offEvent(subscription3);
           expectedEvents = {

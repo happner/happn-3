@@ -2,7 +2,6 @@ var Happn = require('../../lib/index');
 var expect = require('expect.js');
 var Promise = require('bluebird');
 
-var service1Name;
 //checks info is stored next to login
 describe(require('path').basename(__filename), function() {
   this.timeout(60000);
@@ -78,7 +77,6 @@ describe(require('path').basename(__filename), function() {
 
       .then(function(server) {
         server1 = server;
-        service1Name = server.name;
 
         if (!allowLogin) {
           if (returnError) {
@@ -87,7 +85,7 @@ describe(require('path').basename(__filename), function() {
               callback(new Error('TEST ERROR'));
             };
           } else {
-            server1.services.security.login = function(credentials, sessionId, request, callback) {
+            server1.services.security.login = function() {
               this.emit('loginAttempt');
             };
           }
@@ -390,8 +388,6 @@ describe(require('path').basename(__filename), function() {
   it('kills a client that is started with "create" and fails to login', function(done) {
     this.timeout(60000);
 
-    var started = Date.now();
-
     var reconnectionAttempts = 0;
 
     Happn.client
@@ -423,7 +419,7 @@ describe(require('path').basename(__filename), function() {
             setTimeout(function() {
               server1.services.session.removeAllListeners('connectionAttempt');
 
-              expect(reconnectionAttempts == 0).to.be(true);
+              expect(reconnectionAttempts === 0).to.be(true);
 
               done();
             }, 10000);

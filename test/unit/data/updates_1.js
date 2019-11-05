@@ -5,26 +5,25 @@ describe(
   function() {
     this.timeout(5000);
 
-    var expect = require('expect.js');
     var path = require('path');
 
     function mockDataService(newDB, dbVersion) {
       var dataService = {};
 
       dataService.get = function(path, callback) {
-        if (path == '/_SYSTEM/_SECURITY/_USER/_ADMIN') {
+        if (path === '/_SYSTEM/_SECURITY/_USER/_ADMIN') {
           if (!newDB) return callback(null, { data: { username: '_ADMIN' } });
 
           return callback(null, null);
         }
 
-        if (path == '/_SYSTEM/_DATABASE/_VERSION') {
+        if (path === '/_SYSTEM/_DATABASE/_VERSION') {
           if (dbVersion == null) return callback(null, null);
 
           return callback(null, { data: { value: dbVersion } });
         }
 
-        if (path == '/_SYSTEM/_SECURITY/_GROUP/*') {
+        if (path === '/_SYSTEM/_SECURITY/_GROUP/*') {
           return callback(null, [
             {
               _id: '/_SYSTEM/_SECURITY/_GROUP/_ADMIN',
@@ -92,15 +91,15 @@ describe(
       };
 
       dataService.upsert = function(path, data, callback) {
-        if (path == '/_SYSTEM/_DATABASE/_VERSION') {
+        if (path === '/_SYSTEM/_DATABASE/_VERSION') {
           return callback(null, { data: { value: data } });
         }
 
-        if (path.indexOf('/_SYSTEM/DATABASE/BACKUPS/1/GROUP/') == 0) {
+        if (path.indexOf('/_SYSTEM/DATABASE/BACKUPS/1/GROUP/') === 0) {
           return callback(null);
         }
 
-        if (path.indexOf('/_SYSTEM/_SECURITY/_PERMISSIONS') == 0) {
+        if (path.indexOf('/_SYSTEM/_SECURITY/_PERMISSIONS') === 0) {
           return callback(null);
         }
 
@@ -134,7 +133,7 @@ describe(
 
         updater.updateDB(
           analysis,
-          function(log) {
+          function() {
             done();
           },
           done
@@ -147,7 +146,7 @@ describe(
 
       var updater = new Updater(mockDataService(false, null), mockSystemService('1'), {});
 
-      updater.updateModules['1.js'].update = function(records) {
+      updater.updateModules['1.js'].update = function() {
         return new Promise(function(resolve, reject) {
           reject(new Error('test error'));
         });
@@ -161,7 +160,7 @@ describe(
           function() {
             done(new Error('this was not meant to be...'));
           },
-          function(e, log, rollBackSuccessful) {
+          function() {
             done();
           }
         );

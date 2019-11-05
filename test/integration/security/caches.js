@@ -267,8 +267,8 @@ describe(testHelper.testName(__filename, 3), function() {
           .then(function() {
             client.on(
               'test/permission/on/' + randomInt,
-              function(ondata) {
-                client.get('test/permission/get/' + randomInt, function(e, getdata) {
+              function() {
+                client.get('test/permission/get/' + randomInt, function(e) {
                   if (e) return timeCB(e);
 
                   client.set('test/permission/all/' + randomInt, { all: randomInt }, function(e) {

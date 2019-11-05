@@ -3,7 +3,6 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service1 = happn.service;
     var service2 = happn.service;

@@ -4,8 +4,6 @@ describe(
     .testName(__filename, 3),
   function() {
     var expect = require('expect.js'),
-      async = require('async'),
-      shortid = require('shortid'),
       Promise = require('bluebird');
 
     function mockSubscriptionService(config, testItems, callback) {
@@ -17,7 +15,7 @@ describe(
 
       var subscriptionService = new SubscriptionService({
         logger: {
-          createLogger: function(key) {
+          createLogger: function() {
             return {
               warn: function(message) {
                 console.log(message);
@@ -159,7 +157,7 @@ describe(
             expect(getRecipientsResult.length).to.be(1);
             return instance.processUnsubscribe(unsubscribePrepared);
           })
-          .then(function(unsubscribeResult) {
+          .then(function() {
             return Promise.resolve(
               instance.getRecipients({
                 request: {
@@ -253,7 +251,7 @@ describe(
             unsubscribeMessagePrepared.request.options.referenceId = referenceId;
             return instance.processUnsubscribe(unsubscribeMessagePrepared);
           })
-          .then(function(unsubresult) {
+          .then(function() {
             return Promise.resolve(
               instance.getRecipients({
                 request: {
@@ -459,18 +457,6 @@ describe(
           }
         };
 
-        var unsubscribeMessage = {
-          request: {
-            path: '/SET@/test/path/*',
-            options: {
-              other: 'data'
-            }
-          },
-          session: {
-            id: '1'
-          }
-        };
-
         var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
         instance.processSubscribe = Promise.promisify(instance.processSubscribe);
@@ -546,10 +532,10 @@ describe(
           return new Promise(function(resolve, reject) {
             happnClient.on(
               '/something/*/*',
-              function(data) {
+              function() {
                 if (!setFinished) done(new Error('should not have happened:::'));
               },
-              function(e) {
+              function() {
                 happnClient.set(
                   '/nothing/like/this',
                   {
@@ -572,10 +558,10 @@ describe(
           return new Promise(function(resolve, reject) {
             happnClient.on(
               '/*/that',
-              function(data) {
+              function() {
                 resolve();
               },
-              function(e) {
+              function() {
                 happnClient.set(
                   '/something/that',
                   {
@@ -593,10 +579,10 @@ describe(
           return new Promise(function(resolve, reject) {
             happnClient.on(
               '/*/*/that',
-              function(data) {
+              function() {
                 resolve();
               },
-              function(e) {
+              function() {
                 happnClient.set(
                   '/something/like/that',
                   {

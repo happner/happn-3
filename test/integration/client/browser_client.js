@@ -69,7 +69,7 @@ describe(
       };
 
       var res = {
-        setHeader: function(key, val) {},
+        setHeader: function() {},
         end: function(content) {
           expect(
             content.length >
@@ -108,7 +108,7 @@ describe(
       };
 
       var res = {
-        setHeader: function(key, val) {},
+        setHeader: function() {},
         end: function(content) {
           expect(
             content.length >
@@ -201,7 +201,7 @@ describe(
       };
 
       var res = {
-        setHeader: function(key, val) {},
+        setHeader: function() {},
         end: function(content) {
           expect(clientCode.length > content.length).to.be(true);
           done();

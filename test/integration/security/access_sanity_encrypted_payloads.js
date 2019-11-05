@@ -88,7 +88,7 @@ describe(
               }
             }
           },
-          function(e, clientInstance) {
+          function(e) {
             expect(e.toString()).to.be('AccessDenied: Invalid credentials');
             done();
           }
@@ -264,14 +264,14 @@ describe(
         testClient.on(
           '/TEST/a7_eventemitter_security_access/' + test_id + '/on',
           {},
-          function(message) {},
+          function() {},
           function(e) {
             if (e) return done(e);
 
             testClient.on(
               '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/on',
               {},
-              function(message) {},
+              function() {},
               function(e) {
                 if (!e)
                   return done(
@@ -305,7 +305,7 @@ describe(
               test: 'test'
             },
             {},
-            function(e, result) {
+            function(e) {
               if (!e)
                 return done(
                   new Error('you just set data that you shouldnt have permissions to set')
@@ -324,7 +324,7 @@ describe(
             'test-set': 'test-set-val'
           },
           {},
-          function(e, setResult) {
+          function(e) {
             if (e) return done(e);
 
             testClient.get(
@@ -339,7 +339,7 @@ describe(
                 testClient.get(
                   '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/get',
                   {},
-                  function(e, result) {
+                  function(e) {
                     if (!e)
                       return done(
                         new Error('you managed to get data which you do not have permissions for')
@@ -370,7 +370,7 @@ describe(
               test: 'test'
             },
             {},
-            function(e, result) {
+            function(e) {
               if (!e)
                 return done(
                   new Error('you just set data that you shouldnt have permissions to set')
@@ -389,7 +389,7 @@ describe(
             'test-set': 'test-set-val'
           },
           {},
-          function(e, setResult) {
+          function(e) {
             if (e) return done(e);
             testClient.get(
               '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on',
@@ -403,7 +403,7 @@ describe(
                 testClient.on(
                   '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on',
                   {},
-                  function(message) {},
+                  function() {},
                   function(e) {
                     if (e) return done(e);
 
@@ -413,7 +413,7 @@ describe(
                         test: 'test'
                       },
                       {},
-                      function(e, result) {
+                      function(e) {
                         if (!e)
                           return done(
                             new Error('you just set data that you shouldnt have permissions to set')
@@ -437,7 +437,7 @@ describe(
             'test-set': 'test-set-val'
           },
           {},
-          function(e, setResult) {
+          function(e) {
             if (e) return done(e);
             testClient.get(
               '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on',
@@ -451,7 +451,7 @@ describe(
                 testClient.on(
                   '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on',
                   {},
-                  function(message) {},
+                  function() {},
                   function(e) {
                     if (!e) return done(new Error('this should not have been allowed...'));
                     expect(e.toString()).to.be('AccessDenied: unauthorized');
@@ -471,19 +471,19 @@ describe(
             'test-set': 'test-set-val'
           },
           {},
-          function(e, setResult) {
+          function(e) {
             if (e) return done(e);
             testClient.get(
               '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get',
               {},
-              function(e, result) {
+              function(e) {
                 if (!e) return done(new Error('this should not have been allowed...'));
                 expect(e.toString()).to.be('AccessDenied: unauthorized');
 
                 testClient.on(
                   '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get',
                   {},
-                  function(message) {},
+                  function() {},
                   done
                 );
               }
@@ -499,12 +499,12 @@ describe(
             'test-set': 'test-set-val'
           },
           {},
-          function(e, setResult) {
+          function(e) {
             if (e) return done(e);
             testClient.get(
               '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get',
               {},
-              function(e, result) {
+              function(e) {
                 if (!e) return done(new Error('this should not have been allowed...'));
                 expect(e.toString()).to.be('AccessDenied: unauthorized');
                 done();
@@ -521,12 +521,12 @@ describe(
             'test-set': 'test-set-val'
           },
           {},
-          function(e, setResult) {
+          function(e) {
             if (e) return done(e);
             testClient.on(
               '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on',
               {},
-              function(message) {},
+              function() {},
               function(e) {
                 if (!e) return done(new Error('this should not have been allowed...'));
                 expect(e.toString()).to.be('AccessDenied: unauthorized');
@@ -549,7 +549,7 @@ describe(
         testClient.on(
           '/TEST/a7_eventemitter_security_access/' + test_id + '/on_all/' + test_id,
           {},
-          function(message) {},
+          function() {},
           done
         );
       });
@@ -569,7 +569,7 @@ describe(
         testClient.get(
           '/TEST/a7_eventemitter_security_access/whatevs' + test_id + '/get_all/' + test_id,
           {},
-          function(e, getResult) {
+          function(e) {
             if (!e) return done(new Error('this should not have been allowed...'));
             expect(e.toString()).to.be('AccessDenied: unauthorized');
             done();
@@ -592,7 +592,7 @@ describe(
                 test: 'data'
               },
               {},
-              function(e, result) {
+              function(e) {
                 if (!e) return done(new Error('this should not have been allowed...'));
                 expect(e.toString()).to.be('AccessDenied: unauthorized');
                 done();
@@ -629,7 +629,7 @@ describe(
           {
             test: 'data'
           },
-          function(e, result) {
+          function(e) {
             if (e) return done(e);
 
             //groupName, path, action
@@ -645,7 +645,7 @@ describe(
                   {
                     test: 'data'
                   },
-                  function(e, result) {
+                  function(e) {
                     expect(e.toString()).to.be('AccessDenied: unauthorized');
                     done();
                   }
@@ -684,7 +684,7 @@ describe(
           {
             test: 'data'
           },
-          function(e, result) {
+          function(e) {
             if (e) return done(e);
 
             delete addedTestGroup.permissions[prohibitPath].actions;
@@ -699,7 +699,7 @@ describe(
                   {
                     test: 'data'
                   },
-                  function(e, result) {
+                  function(e) {
                     expect(e.toString()).to.be('AccessDenied: unauthorized');
                     done();
                   }
@@ -711,8 +711,8 @@ describe(
       });
 
       it('deletes the test user, tests we are notified about the session closure, then have no access', function(done) {
-        testClient.onSystemMessage(function(eventType, data) {
-          if (eventType == 'server-side-disconnect') {
+        testClient.onSystemMessage(function(eventType) {
+          if (eventType === 'server-side-disconnect') {
             testClient.set(
               '/TEST/a7_eventemitter_security_access/' + test_id + '/set',
               {

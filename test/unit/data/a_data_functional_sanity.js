@@ -72,7 +72,7 @@ describe(
           return callback(new Error('test error'));
         };
 
-        serviceInstance.upsert('/set/' + testId, { test: 'data' }, {}, function(e, response) {
+        serviceInstance.upsert('/set/' + testId, { test: 'data' }, {}, function(e) {
           expect(e).to.not.be(null);
 
           expect(e.toString()).to.be('Error: test error');
@@ -136,7 +136,7 @@ describe(
 
     it('catches exception in provider', function(callback) {
       let oldProviderCount = serviceInstance.defaultProvider.count;
-      serviceInstance.defaultProvider.count = function(path, options, cb) {
+      serviceInstance.defaultProvider.count = function() {
         throw new Error('Provider exception');
       }.bind(serviceInstance.defaultProvider);
       serviceInstance.count('/count/**', {}, function(err) {
@@ -279,7 +279,7 @@ describe(
           test: 'data'
         },
         {},
-        function(e, response) {
+        function(e) {
           if (e) return callback(e);
 
           serviceInstance.remove('/remove/' + testId, {}, function(e, response) {
@@ -301,7 +301,7 @@ describe(
           test: 'data'
         },
         {},
-        function(e, response) {
+        function(e) {
           if (e) return callback(e);
 
           serviceInstance.upsert(
@@ -310,7 +310,7 @@ describe(
               test: 'data'
             },
             {},
-            function(e, response) {
+            function(e) {
               if (e) return callback(e);
 
               serviceInstance.remove('/remove/multiple/*', {}, function(e, response) {
@@ -334,7 +334,7 @@ describe(
           test: 'data'
         },
         {},
-        function(e, response) {
+        function(e) {
           if (e) return callback(e);
 
           serviceInstance.upsert(
@@ -343,7 +343,7 @@ describe(
               test: 'data'
             },
             {},
-            function(e, response) {
+            function(e) {
               if (e) return callback(e);
 
               serviceInstance.get('/get/multiple/*/' + testId, {}, function(e, response) {
@@ -420,7 +420,7 @@ describe(
           test_path_end,
         complex_obj,
         null,
-        function(e, put_result) {
+        function(e) {
           expect(e == null).to.be(true);
           serviceInstance.upsert(
             '/1_eventemitter_embedded_sanity/' +
@@ -430,7 +430,7 @@ describe(
               '/1',
             complex_obj,
             null,
-            function(e, put_result) {
+            function(e) {
               expect(e == null).to.be(true);
 
               ////////////console.log('searching');
@@ -442,7 +442,7 @@ describe(
                 },
                 function(e, search_result) {
                   expect(e == null).to.be(true);
-                  expect(search_result.length == 1).to.be(true);
+                  expect(search_result.length === 1).to.be(true);
 
                   serviceInstance.get(
                     '/1_eventemitter_embedded_sanity/' + testId + '/testsubscribe/data/complex*',
@@ -452,7 +452,7 @@ describe(
                     },
                     function(e, search_result) {
                       expect(e == null).to.be(true);
-                      expect(search_result.length == 2).to.be(true);
+                      expect(search_result.length === 2).to.be(true);
                       callback(e);
                     }
                   );
@@ -495,7 +495,7 @@ describe(
           ) {
             expect(e == null).to.be(true);
 
-            expect(search_result.length == 1).to.be(true);
+            expect(search_result.length === 1).to.be(true);
 
             done();
           });
@@ -565,7 +565,7 @@ describe(
             {
               noPublish: true
             },
-            function(e, upserted) {
+            function(e) {
               if (e) return callback(e);
 
               callback();
@@ -601,7 +601,7 @@ describe(
 
                 var item_from_array = randomItems[itemIndex];
 
-                if (item_from_mongo.data.item_sort_id != item_from_array.item_sort_id)
+                if (item_from_mongo.data.item_sort_id !== item_from_array.item_sort_id)
                   return done(new Error('ascending sort failed'));
               }
 
@@ -629,7 +629,7 @@ describe(
                     var item_from_mongo = items[itemIndex];
                     var item_from_array = randomItems[itemIndex];
 
-                    if (item_from_mongo.data.item_sort_id != item_from_array.item_sort_id)
+                    if (item_from_mongo.data.item_sort_id !== item_from_array.item_sort_id)
                       return done(new Error('descending sort failed'));
                   }
 
@@ -697,8 +697,6 @@ describe(
       var test_string = require('shortid').generate();
       var test_base_url = '/increment/bad/provider/' + testId + '/' + test_string;
 
-      var provider = serviceInstance.db(test_base_url);
-
       serviceInstance.upsert(test_base_url, null, { increment: 1, noPublish: true }, function(e) {
         expect(e.toString()).to.be('Error: invalid increment counter field name, must be a string');
 
@@ -709,8 +707,6 @@ describe(
     it('fails to increment a value, undefined fieldname', function(done) {
       var test_string = require('shortid').generate();
       var test_base_url = '/increment/bad/provider/' + testId + '/' + test_string;
-
-      var provider = serviceInstance.db(test_base_url);
 
       serviceInstance.upsert(test_base_url, undefined, { increment: 1, noPublish: true }, function(
         e
@@ -724,8 +720,6 @@ describe(
     it('fails to increment a value, object fieldname', function(done) {
       var test_string = require('shortid').generate();
       var test_base_url = '/increment/bad/provider/' + testId + '/' + test_string;
-
-      var provider = serviceInstance.db(test_base_url);
 
       serviceInstance.upsert(
         test_base_url,
@@ -744,8 +738,6 @@ describe(
     it('fails to increment a value, bad increment argument in options', function(done) {
       var test_string = require('shortid').generate();
       var test_base_url = '/increment/bad/provider/' + testId + '/' + test_string;
-
-      var provider = serviceInstance.db(test_base_url);
 
       serviceInstance.upsert(
         test_base_url,

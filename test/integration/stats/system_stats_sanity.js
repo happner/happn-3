@@ -1,4 +1,3 @@
-var path = require('path');
 var expect = require('expect.js');
 var Promise = require('bluebird');
 var happn = require('../../../lib/index');
@@ -95,8 +94,6 @@ describe(
     });
 
     it('runs stats after the server has started', function(done) {
-      var stats = happnServer.services.stats.fetch();
-
       //console.log(JSON.stringify(stats, null, 2));
 
       done();

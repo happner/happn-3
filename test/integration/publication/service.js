@@ -1,7 +1,4 @@
-var Happn = require('../../..'),
-  expect = require('expect.js'),
-  async = require('async'),
-  shortid = require('shortid'),
+let expect = require('expect.js'),
   CONSISTENCY = require('../../../').constants.CONSISTENCY;
 
 describe(
@@ -13,7 +10,6 @@ describe(
     var utilsService = new UtilsService();
 
     before('', function() {});
-
     after('', function() {});
 
     function mockPublisherService(config, recipients, callback, processMessageOut) {
@@ -26,21 +22,21 @@ describe(
 
       var publisherService = new PublisherService({
         logger: {
-          createLogger: function(key) {
+          createLogger: function(/*key*/) {
             return {
-              warn: function(message) {
+              warn: function(/*message*/) {
                 //console.log(message);
               },
-              info: function(message) {
+              info: function(/*message*/) {
                 //console.log(message);
               },
-              success: function(message) {
+              success: function(/*message*/) {
                 //console.log(message);
               },
-              error: function(message) {
+              error: function(/*message*/) {
                 //console.log(message);
               },
-              $$TRACE: function(message) {
+              $$TRACE: function(/*message*/) {
                 //console.log(message);
               }
             };
@@ -64,6 +60,7 @@ describe(
       };
 
       publisherService.initialize(config, function(e) {
+        if (e) return callback(e);
         return callback(publisherService);
       });
     }
@@ -253,29 +250,11 @@ describe(
           }
         };
 
-        var expectedMessage = {
-          data: {
-            data: {
-              was: 'set'
-            }
-          },
-          _meta: {
-            path: '/set/some/data',
-            action: '/SET@/set/some/data',
-            type: 'data',
-            created: 'created',
-            modified: 'modified'
-          },
-          protocol: 'happn-1.0.0'
-        };
-
         var publication = new Publication(message, {}, publisherService.happn);
 
         expect(publication.recipients.length).to.eql(0);
 
-        var myArray = [];
-
-        publication.publish(function(e, results) {
+        publication.publish(function(e) {
           if (e) return done(e);
           done();
         });
@@ -339,27 +318,11 @@ describe(
             }
           };
 
-          var expectedMessage = {
-            data: {
-              data: {
-                was: 'set'
-              }
-            },
-            _meta: {
-              path: '/set/some/data',
-              action: '/SET@/set/some/data',
-              type: 'data'
-            },
-            protocol: 'happn-1.0.0'
-          };
-
           var publication = new Publication(message, {}, publisherService.happn);
 
           expect(publication.recipients.length).to.eql(2);
 
-          var myArray = [];
-
-          publication.publish(function(e, results) {
+          publication.publish(function(e) {
             if (e) return done(e);
             done();
           });
@@ -428,9 +391,7 @@ describe(
 
           expect(publication.recipients.length).to.eql(2);
 
-          var myArray = [];
-
-          publication.publish(function(e, results) {
+          publication.publish(function(e) {
             if (e) return done(e);
             expect(publication.unacknowledged_recipients.length).to.eql(0);
             done();
@@ -517,11 +478,7 @@ describe(
 
           expect(publication.recipients.length).to.eql(3);
 
-          var myArray = [];
-
-          var processed = 0;
-
-          publication.publish(function(e, results) {
+          publication.publish(function(e) {
             if (e) return done(e);
             expect(out).to.be(3);
             done();
@@ -607,10 +564,7 @@ describe(
 
           expect(publication.recipients.length).to.eql(3);
 
-          var myArray = [];
-          var processed = 0;
-
-          publication.publish(function(e, results) {
+          publication.publish(function(e) {
             if (e) return done(e);
             expect(out).to.be(3);
             done();
@@ -629,8 +583,6 @@ describe(
       this.timeout(5000);
 
       var config = {};
-
-      var queueItems = [];
 
       mockPublisherService(
         config,
@@ -716,7 +668,7 @@ describe(
             }
           };
 
-          mockPublisher.processPublish(message, function(e, message) {
+          mockPublisher.processPublish(message, function(e) {
             expect(gotResults).to.be(false);
             expect(published).to.be(false);
             setTimeout(() => {
@@ -730,8 +682,6 @@ describe(
 
     it('tests the publisher service, transactional consistency', function(done) {
       var config = {};
-
-      var queueItems = [];
 
       mockPublisherService(
         config,
@@ -812,7 +762,7 @@ describe(
             }
           };
 
-          mockPublisher.processPublish(message, function(e, message) {
+          mockPublisher.processPublish(message, function(e) {
             expect(published).to.be(true);
             done(e);
           });

@@ -7,8 +7,6 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-
-    var test_secret = 'test_secret';
     var default_timeout = 10000;
     var happnInstance = null;
 
@@ -225,7 +223,7 @@ describe(
               stopService(function() {
                 setTimeout(function() {
                   primusClient.disconnect();
-                  if (reconnectCount != 10)
+                  if (reconnectCount !== 10)
                     return callback(new Error('expected reconnecvt count not 10'));
                   callback();
                 }, 13000);

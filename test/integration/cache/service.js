@@ -4,16 +4,11 @@ describe(
     .testName(__filename, 3),
   function() {
     this.timeout(20000);
-
     var expect = require('expect.js');
-
     var service = require('../../../lib/services/cache/service');
     var serviceInstance = new service();
-
     var testId = require('shortid').generate();
-
     var config = {};
-
     var async = require('async');
 
     before('should initialize the service', function(callback) {
@@ -308,7 +303,7 @@ describe(
               {
                 ttl: 500
               },
-              function(e, result) {
+              function(e) {
                 if (e) return done(e);
 
                 setTimeout(function() {
@@ -467,7 +462,7 @@ describe(
                 {
                   dkey: key
                 },
-                function(e, result) {
+                function(e) {
                   if (e) return done(e);
 
                   serviceInstance.get(key, function(e, data) {
@@ -640,7 +635,7 @@ describe(
           var key = 'sync_key_' + time;
           var opts = {};
 
-          if (time == 4) opts.ttl = 2000;
+          if (time !== 4) opts.ttl = 2000;
 
           specific.set(
             key,
@@ -682,7 +677,7 @@ describe(
           var key = 'sync_key_' + time;
           var opts = {};
 
-          if (time == 4) opts.ttl = 2000;
+          if (time !== 4) opts.ttl = 2000;
 
           specific.set(
             key,

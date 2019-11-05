@@ -1,6 +1,4 @@
-var expect = require('expect.js'),
-  async = require('async'),
-  shortid = require('shortid');
+var expect = require('expect.js');
 
 describe(
   require('../../__fixtures/utils/test_helper')

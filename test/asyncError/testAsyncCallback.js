@@ -5,9 +5,6 @@ describe(
   function() {
     this.timeout(20000);
     var async = require('async');
-    var fs = require('fs');
-    var expect = require('expect.js');
-    var path = require('path');
     var HappnClient = require('../../lib/client');
     var Constants = require('../../lib/constants');
 
@@ -28,8 +25,8 @@ describe(
 
       happnClient.socket = socket || {
         removeAllListeners: function() {},
-        write: function(message) {},
-        on: function(eventName) {}
+        write: function() {},
+        on: function() {}
       };
 
       happnClient.options = clientOptions || {
@@ -63,16 +60,16 @@ describe(
                   test: 'data'
                 },
                 null,
-                function(e, response) {
+                function(e) {
                   count++;
-                  if (count % 1000 == 0) console.log(count / 1000);
+                  if (count % 1000 === 0) console.log(count / 1000);
                   itemCB(e);
                 }
               ),
             Math.random * 1000
           );
         },
-        (e, result) => {
+        e => {
           console.log(e);
           done();
         }

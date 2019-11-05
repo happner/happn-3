@@ -4,15 +4,10 @@ describe(
     .testName(__filename, 3),
   function() {
     this.timeout(30000);
-
     var happn = require('../../lib/index');
     var service = happn.service;
-
     var path = require('path');
-
     var happnInstance = null;
-
-    var http = require('http');
 
     var serviceConfig = {
       port: 10000,
@@ -67,7 +62,7 @@ describe(
           password: 'password'
         })
 
-        .then(function(clientInstance) {
+        .then(function() {
           done();
         })
 
