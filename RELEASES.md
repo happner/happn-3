@@ -668,3 +668,9 @@
 10.4.2 2019-10-23
 -----------------
   - lint prettier tests
+
+10.5.0 2019-10-23
+-----------------
+  - feature: client session events
+  - fix: activity cache timeout issues
+  - chore: lint fixes
