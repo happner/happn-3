@@ -48,3 +48,4 @@ examine
 coverage
 .nyc_output
 .jshintrc
+report.*

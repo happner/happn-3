@@ -6,7 +6,6 @@ describe(
     this.timeout(5000);
 
     var expect = require('expect.js');
-    var path = require('path');
     var HappnClient = require('../../../lib/client');
     var Constants = require('../../../lib/constants');
 
@@ -20,7 +19,7 @@ describe(
       };
 
       happnClient.onEvent('error', function(error) {
-        expect(happnClient.state != Constants.CLIENT_STATE.ERROR).to.be(true);
+        expect(happnClient.state !== Constants.CLIENT_STATE.ERROR).to.be(true);
         expect(error.message).to.be('test error');
         done();
       });

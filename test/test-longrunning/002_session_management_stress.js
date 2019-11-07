@@ -83,7 +83,7 @@ describe('longrunning/002_session_management_sanity', function() {
 
     var session_results = [];
 
-    getService(true, 500000, function(e) {
+    getService(true, 500000, function() {
       async.timesSeries(
         times,
         function(timeIndex, timeCB) {
@@ -157,7 +157,7 @@ describe('longrunning/002_session_management_sanity', function() {
     getService(
       true,
       500000,
-      function(e) {
+      function() {
         async.times(
           times,
           function(timeIndex, timeCB) {

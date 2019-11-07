@@ -4,8 +4,6 @@ describe(
     .testName(__filename, 3),
   function() {
     var expect = require('expect.js');
-    var happn = require('../../../lib/index');
-    var service = happn.service;
     var async = require('async');
     var Logger = require('happn-logger');
 
@@ -57,12 +55,6 @@ describe(
     var generatedPrivateKeyAlice;
     var generatedPublicKeyAlice;
 
-    var dataToEncrypt = 'this is a secret';
-    var encryptedData;
-
-    var badPrivateKey;
-    var malformedPublicKey;
-
     it('should generate a keypair', function(callback) {
       var keyPair = testServices.crypto.createKeyPair();
 
@@ -92,25 +84,26 @@ describe(
         generatedPrivateKeyAlice,
         message
       );
+
       var decrypted = testServices.crypto.asymmetricDecrypt(
         generatedPublicKeyAlice,
         generatedPrivateKeyBob,
         encrypted
       );
 
-      if (message == encrypted) throw new Error('encrypted data matches secret message');
-
-      if (message != decrypted) throw new Error('decrypted data does not match secret message');
+      if (message === encrypted) throw new Error('encrypted data matches secret message');
+      if (message !== decrypted.toString())
+        throw new Error('decrypted data does not match secret message');
 
       callback();
     });
 
     it('should encrypt and decrypt data using symmetric hashing in the security layer', function(callback) {
       var message = 'this is a secret';
-      var hashed = testServices.crypto.generateHash(message, function(e, hash) {
+      testServices.crypto.generateHash(message, function(e, hash) {
         if (e) return callback(e);
 
-        var verified = testServices.crypto.verifyHash(message, hash, function(e, verified) {
+        testServices.crypto.verifyHash(message, hash, function(e, verified) {
           if (e) return callback(e);
           expect(verified).to.be(true);
           callback();

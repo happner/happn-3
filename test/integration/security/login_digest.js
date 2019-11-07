@@ -1,7 +1,5 @@
 var Happn = require('../../../');
-var expect = require('expect.js');
 
-var service1Name;
 //checks info is stored next to login
 describe(
   require('../../__fixtures/utils/test_helper')
@@ -19,7 +17,6 @@ describe(
         })
         .then(function(server) {
           server1 = server;
-          service1Name = server.name;
           done();
         })
         .catch(done);

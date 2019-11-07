@@ -8,9 +8,7 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
-    var async = require('async');
     var happnInstance = null;
-    var http = require('http');
 
     var initService = async function(config) {
       return new Promise((resolve, reject) => {
@@ -54,16 +52,6 @@ describe(
       });
     };
 
-    var tryDisconnect = function(clientInstance, callback) {
-      if (!clientInstance) return callback();
-
-      try {
-        clientInstance.disconnect(callback);
-      } catch (e) {
-        callback();
-      }
-    };
-
     it('we ensure the services is configured with the standard iterations', async () => {
       var service = await initService({
         secure: true,
@@ -86,8 +74,8 @@ describe(
         }
       };
 
-      var addedUser = await addUser(testUser);
-      var fetchedUser = await service.services.security.users.getUser(testUser.username);
+      await addUser(testUser);
+      await service.services.security.users.getUser(testUser.username);
       var fetchedUserPassword = service.services.security.users.__cache_passwords.getSync(
         testUser.username
       );
@@ -126,8 +114,8 @@ describe(
         }
       };
 
-      var addedUser = await addUser(testUser);
-      var fetchedUser = await service.services.security.users.getUser(testUser.username);
+      await addUser(testUser);
+      await service.services.security.users.getUser(testUser.username);
       var fetchedUserPassword = service.services.security.users.__cache_passwords.getSync(
         testUser.username
       );

@@ -6,10 +6,7 @@ describe(
     this.timeout(5000);
 
     const expect = require('expect.js');
-    const path = require('path');
     const DataService = require('../../../lib/services/data/service');
-
-    function mockDataService() {}
 
     it('tests the parseFields method', function() {
       let dataService = new DataService();

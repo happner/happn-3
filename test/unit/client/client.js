@@ -6,7 +6,6 @@ describe(
     this.timeout(5000);
 
     var expect = require('expect.js');
-    var path = require('path');
     var HappnClient = require('../../../lib/client');
     var Constants = require('../../../lib/constants');
 
@@ -38,8 +37,8 @@ describe(
       happnClient.socket = socket || {
         end: socketEnd || function() {},
         removeAllListeners: removeAllListeners || function() {},
-        write: function(message) {},
-        on: function(eventName) {}
+        write: function() {},
+        on: function() {}
       };
 
       happnClient.options = clientOptions || {
@@ -52,7 +51,7 @@ describe(
     it('tests the __performDataRequest function set null options', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
@@ -63,7 +62,7 @@ describe(
           test: 'data'
         },
         null,
-        function(e, response) {
+        function(e) {
           if (e) return done(e);
           done();
         }
@@ -73,7 +72,7 @@ describe(
     it('tests the __performDataRequest function set null options no callback', function(done) {
       var happnClient = mockHappnClient();
 
-      happnClient.__requestCallback = function(message, callback, options, eventId, path, action) {
+      happnClient.__requestCallback = function(message, callback) {
         callback();
       };
 
@@ -94,7 +93,7 @@ describe(
           test: 'data'
         },
         null,
-        function(e, response) {
+        function(e) {
           expect(e.toString()).to.be('Error: client not active');
           expect(e.detail).to.be('action: set, path: /test/path');
           done();
@@ -112,7 +111,7 @@ describe(
           test: 'data'
         },
         null,
-        function(e, response) {
+        function(e) {
           expect(e.toString()).to.be('Error: client in an error state');
           expect(e.detail).to.be('action: set, path: /test/path');
           done();
@@ -130,7 +129,7 @@ describe(
           test: 'data'
         },
         null,
-        function(e, response) {
+        function(e) {
           expect(e.toString()).to.be('Error: client is disconnected');
           expect(e.detail).to.be('action: set, path: /test/path');
           done();
@@ -148,7 +147,7 @@ describe(
           test: 'data'
         },
         null,
-        function(e, response) {
+        function(e) {
           expect(e.toString()).to.be('Error: client not initialized yet');
           expect(e.detail).to.be('action: set, path: /test/path');
           done();
@@ -360,10 +359,8 @@ describe(
 
     it('tests the __reattachListeners function fails', function(done) {
       var happnClient = mockHappnClient();
-      var remoteOnCalled = 0;
 
       happnClient._remoteOn = function(eventPath, parameters, callback) {
-        remoteOnCalled++;
         callback(new Error('failed'));
       };
 
@@ -402,15 +399,15 @@ describe(
 
       happnClient._remoteOn = function(eventPath, parameters, callback) {
         remoteOnCalled++;
-        if (remoteOnCalled == 1)
+        if (remoteOnCalled === 1)
           return callback({
             id: remoteOnCalled
           });
 
         var failureError = new Error('failed');
 
-        if (remoteOnCalled == 2) failureError.code = 401;
-        if (remoteOnCalled == 3) failureError.code = 403;
+        if (remoteOnCalled === 2) failureError.code = 401;
+        if (remoteOnCalled === 3) failureError.code = 403;
 
         callback(failureError);
       };
@@ -464,7 +461,7 @@ describe(
       );
 
       happnClient.log = {
-        warn: function(message) {}
+        warn: function() {}
       };
 
       happnClient.__endSocket();
@@ -490,7 +487,7 @@ describe(
       );
 
       happnClient.log = {
-        warn: function(message) {}
+        warn: function() {}
       };
 
       happnClient.__connectionCleanup();

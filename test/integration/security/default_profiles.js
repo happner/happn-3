@@ -8,14 +8,8 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
-    var async = require('async');
 
     var happnInstance1 = null;
-
-    var http = require('http');
-
-    var Crypto = require('happn-util-crypto');
-    var crypto = new Crypto();
 
     var serviceConfig1 = {
       port: 10000,

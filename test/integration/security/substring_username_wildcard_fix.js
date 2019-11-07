@@ -5,11 +5,7 @@ describe(
   function() {
     var happn = require('../../../lib/index');
     var serviceInstance;
-    var adminClient;
-    var expect = require('expect.js');
-    var test_id = Date.now() + '_' + require('shortid').generate();
     var async = require('async');
-    var testClient;
     var Promisify = require('bluebird').promisify;
 
     var getService = function(config, callback) {
@@ -69,7 +65,7 @@ describe(
             },
             function(e, user) {
               if (e) return timeCB(e);
-              if (user.username != username)
+              if (user.username !== username)
                 return timeCB(
                   new Error('usernames do not match:' + user.username + ' ' + username)
                 );
@@ -118,7 +114,7 @@ describe(
             (e, results) => {
               if (e) return callback(e);
 
-              if (results.length == 0) return callback(null, null);
+              if (results.length === 0) return callback(null, null);
 
               var user = null;
               var password = null;
@@ -133,7 +129,7 @@ describe(
                 }
 
                 //we have found a group, add the group, by its name to the groups object
-                if (results[userItemIndex]._meta.path.indexOf(userPath + '/') == 0) {
+                if (results[userItemIndex]._meta.path.indexOf(userPath + '/') === 0) {
                   var groupName = results[userItemIndex]._meta.path.replace(
                     userPath + '/_USER_GROUP/',
                     ''
@@ -171,7 +167,7 @@ describe(
             },
             function(e, user) {
               if (e) return timeCB(e);
-              if (user.username != username) badMatchFound = true;
+              if (user.username !== username) badMatchFound = true;
               timeCB();
             }
           );

@@ -3,13 +3,10 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    var expect = require('expect.js');
     var happn = require('../../lib/index');
     var service = happn.service;
     var async = require('async');
     var happnInstance = null;
-    var test_id;
-    var shortid = require('shortid');
     var random = require('../__fixtures/utils/random');
     var CONSTANTS = require('../../lib/constants');
 
@@ -87,7 +84,7 @@ describe(
           setResults.counters[data.counter] = true;
           eventsCount++;
 
-          if (eventsCount % 10000 == 0) {
+          if (eventsCount % 10000 === 0) {
             // console.log(JSON.stringify(setResults, null, 2));
             // console.log(JSON.stringify(subscriptions, null, 2));
             console.log(
@@ -106,7 +103,7 @@ describe(
             //console.log('subscribed:::', subscription);
             client.on(subscription, handleOn.bind({ path: subscription }), subscriptionCB);
           },
-          function(e) {
+          function() {
             console.log(
               'did ' +
                 SUBSCRIPTION_COUNT +
@@ -185,7 +182,7 @@ describe(
           setResults[meta.path].push(data);
           setResults.counters[data.counter] = true;
           eventsCount++;
-          if (eventsCount == SEARCH_COUNT) {
+          if (eventsCount === SEARCH_COUNT) {
             // console.log(JSON.stringify(setResults, null, 2));
             // console.log(JSON.stringify(subscriptions, null, 2));
             console.log(
@@ -203,7 +200,7 @@ describe(
           function(subscription, subscriptionCB) {
             client.on(subscription, handleOn.bind({ path: subscription }), subscriptionCB);
           },
-          function(e) {
+          function() {
             console.log(
               'did ' +
                 SUBSCRIPTION_COUNT +
@@ -277,7 +274,7 @@ describe(
           setResults[meta.path].push(data);
           setResults.counters[data.counter] = true;
           eventsCount++;
-          if (eventsCount == SEARCH_COUNT) {
+          if (eventsCount === SEARCH_COUNT) {
             // console.log(JSON.stringify(setResults, null, 2));
             // console.log(JSON.stringify(subscriptions, null, 2));
             console.log(
@@ -296,7 +293,7 @@ describe(
           function(subscription, subscriptionCB) {
             client.on(subscription, handleOn.bind({ path: subscription }), subscriptionCB);
           },
-          function(e) {
+          function() {
             console.log(
               'did ' +
                 SUBSCRIPTION_COUNT +
@@ -369,7 +366,7 @@ describe(
           setResults[meta.path].push(data);
           setResults.counters[data.counter] = true;
           eventsCount++;
-          if (eventsCount % 1000 == 0) {
+          if (eventsCount % 1000 === 0) {
             // console.log(JSON.stringify(setResults, null, 2));
             // console.log(JSON.stringify(subscriptions, null, 2));
             console.log(
@@ -392,7 +389,7 @@ describe(
               subscriptionCB
             );
           },
-          function(e) {
+          function() {
             console.log(
               'did ' +
                 SUBSCRIPTION_COUNT +
@@ -466,7 +463,7 @@ describe(
           setResults[meta.path].push(data);
           setResults.counters[data.counter] = true;
           eventsCount++;
-          if (eventsCount == SEARCH_COUNT) {
+          if (eventsCount === SEARCH_COUNT) {
             // console.log(JSON.stringify(setResults, null, 2));
             // console.log(JSON.stringify(subscriptions, null, 2));
             console.log(
@@ -484,7 +481,7 @@ describe(
           function(subscription, subscriptionCB) {
             client.on(subscription, handleOn.bind({ path: subscription }), subscriptionCB);
           },
-          function(e) {
+          function() {
             console.log(
               'did ' +
                 SUBSCRIPTION_COUNT +

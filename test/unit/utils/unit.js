@@ -1,4 +1,3 @@
-var path = require('path');
 var expect = require('expect.js');
 var Utils = require('../../../lib/services/utils/service');
 var utils = new Utils();
@@ -91,7 +90,7 @@ describe(
           return keepGoing;
         },
         function(attempt, next) {
-          if (attempt == 5) keepGoing = false;
+          if (attempt === 5) keepGoing = false;
           next();
         },
         function(e) {
@@ -104,7 +103,7 @@ describe(
               return keepGoing;
             },
             function(attempt, next) {
-              if (attempt == 5) return next(new Error('TEST ERROR'));
+              if (attempt === 5) return next(new Error('TEST ERROR'));
               next();
             },
             function(e) {
@@ -122,7 +121,7 @@ describe(
       sharedUtils.async(
         [1, 2, 3],
         function(number, index, next) {
-          expect(number == index + 1).to.be(true);
+          expect(number === index + 1).to.be(true);
           next();
         },
         function(e) {
@@ -131,8 +130,8 @@ describe(
           sharedUtils.async(
             [1, 2, 3],
             function(number, index, next) {
-              expect(number == index + 1).to.be(true);
-              if (number == 2) return next(new Error('TEST ERROR'));
+              expect(number === index + 1).to.be(true);
+              if (number === 2) return next(new Error('TEST ERROR'));
               next();
             },
             function(e) {
@@ -141,7 +140,7 @@ describe(
                 [1, 2, 3],
                 1,
                 function(number, index, next) {
-                  expect(number == index + 1).to.be(true);
+                  expect(number === index + 1).to.be(true);
                   next();
                 },
                 function(e) {

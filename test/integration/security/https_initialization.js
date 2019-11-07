@@ -10,7 +10,6 @@ describe(
     var testClient;
 
     var expect = require('expect.js');
-    var async = require('async');
 
     var config = require('../../__fixtures/test/integration/security/https_initialization_config.js');
     var fs = require('fs');

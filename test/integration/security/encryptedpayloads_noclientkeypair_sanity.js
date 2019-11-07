@@ -7,9 +7,7 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
 
-    var test_secret = 'test_secret';
     var mode = 'embedded';
     var default_timeout = 4000;
     var happnInstance = null;
@@ -63,12 +61,6 @@ describe(
     var socketClient;
     var eventEmitterClient;
 
-    var Crypto = require('happn-util-crypto');
-    var crypto = new Crypto();
-
-    var socketClientKeyPair = crypto.createKeyPair();
-    var eventEmitterClientKeyPair = crypto.createKeyPair();
-
     /*
    We are initializing 2 clients to test saving data against the database, one client will push data into the
    database whilst another listens for changes.
@@ -115,7 +107,7 @@ describe(
             event_type: 'set',
             count: 1
           },
-          function(message) {
+          function() {
             expect(
               eventEmitterClient.state.events['/SET@/e2e_test1/testsubscribe/data/event']
             ).to.be(undefined);
@@ -135,7 +127,7 @@ describe(
                   property3: 'property3'
                 },
                 null,
-                function(e, result) {
+                function() {
                   ////////////////////////////console.log('put happened - listening for result');
                 }
               );
@@ -155,7 +147,7 @@ describe(
           event_type: 'set',
           count: 1
         },
-        function(message) {
+        function() {
           expect(socketClient.state.events['/SET@/e2e_test1/testsubscribe/data/event']).to.be(
             undefined
           );
@@ -174,7 +166,7 @@ describe(
                 property3: 'property3'
               },
               null,
-              function(e, result) {}
+              function() {}
             );
           } else callback(e);
         }
@@ -197,7 +189,7 @@ describe(
           {
             noPublish: true
           },
-          function(e, result) {
+          function(e) {
             ////////////console.log('set happened');
             ////////////console.log([e, result]);
 
@@ -209,9 +201,9 @@ describe(
                 ////////////console.log('new data results');
                 ////////////console.log([e, results]);
 
-                expect(results.property1 == 'property1').to.be(true);
+                expect(results.property1 === 'property1').to.be(true);
 
-                if (mode != 'embedded') expect(results.created == results.modified).to.be(true);
+                if (mode !== 'embedded') expect(results.created === results.modified).to.be(true);
 
                 callback(e);
               });
@@ -237,7 +229,7 @@ describe(
             property3: 'property3'
           },
           null,
-          function(e, result) {
+          function(e) {
             if (e) return callback(e);
 
             //////////////console.log('set results');
@@ -251,7 +243,7 @@ describe(
               {
                 merge: true
               },
-              function(e, result) {
+              function(e) {
                 if (e) return callback(e);
 
                 //////////////console.log('merge set results');
@@ -342,13 +334,13 @@ describe(
         '/e2e_test1/testsubscribe/data/complex/' + test_path_end,
         complex_obj,
         null,
-        function(e, put_result) {
+        function(e) {
           expect(e == null).to.be(true);
           socketClient.set(
             '/e2e_test1/testsubscribe/data/complex/' + test_path_end + '/1',
             complex_obj,
             null,
-            function(e, put_result) {
+            function(e) {
               expect(e == null).to.be(true);
 
               ////////////console.log('searching');
@@ -362,7 +354,7 @@ describe(
                   ////////////console.log([e, search_result]);
 
                   expect(e == null).to.be(true);
-                  expect(search_result.length == 1).to.be(true);
+                  expect(search_result.length === 1).to.be(true);
 
                   socketClient.get(
                     '/e2e_test1/testsubscribe/data/complex*',
@@ -372,7 +364,7 @@ describe(
                     },
                     function(e, search_result) {
                       expect(e == null).to.be(true);
-                      expect(search_result.length == 2).to.be(true);
+                      expect(search_result.length === 2).to.be(true);
 
                       callback(e);
                     }
@@ -400,7 +392,7 @@ describe(
           {
             noPublish: true
           },
-          function(e, result) {
+          function() {
             //We perform the actual delete
             socketClient.remove(
               '/e2e_test1/testsubscribe/data/delete_me',
@@ -456,7 +448,7 @@ describe(
               },
               function(e, updateResult) {
                 expect(e).to.be(null);
-                expect(updateResult._id == insertResult._id).to.be(true);
+                expect(updateResult._id === insertResult._id).to.be(true);
                 callback();
               }
             );
@@ -483,7 +475,7 @@ describe(
             property3: 'property3'
           },
           null,
-          function(e, result) {
+          function(e) {
             if (!e) {
               socketClient.get('e2e_test1/testsubscribe/data/' + test_path_end, null, function(
                 e,
@@ -492,7 +484,7 @@ describe(
                 ////////////////////////console.log('new data results');
                 ////////////////////////console.log(results);
 
-                expect(results.property1 == 'property1').to.be(true);
+                expect(results.property1 === 'property1').to.be(true);
 
                 // if (mode != 'embedded')
                 //  expect(results.payload[0].created == results.payload[0].modified).to.be(true);
@@ -535,7 +527,7 @@ describe(
               null,
               function(e, updateResult) {
                 expect(e == null).to.be(true);
-                expect(updateResult._id == insertResult._id).to.be(true);
+                expect(updateResult._id === insertResult._id).to.be(true);
                 callback();
               }
             );
@@ -560,7 +552,7 @@ describe(
             property1: 'sib_post_property1',
             property2: 'sib_post_property2'
           },
-          function(e, results) {
+          function(e) {
             expect(e == null).to.be(true);
 
             socketClient.setSibling(
@@ -569,7 +561,7 @@ describe(
                 property1: 'sib_post_property1',
                 property2: 'sib_post_property2'
               },
-              function(e, results) {
+              function(e) {
                 expect(e == null).to.be(true);
 
                 //the child method returns a child in the collection with a specified id
@@ -578,7 +570,7 @@ describe(
                   getresults
                 ) {
                   expect(e == null).to.be(true);
-                  expect(getresults.length == 2).to.be(true);
+                  expect(getresults.length === 2).to.be(true);
                   callback(e);
                 });
               }
@@ -603,7 +595,7 @@ describe(
             event_type: 'set',
             count: 1
           },
-          function(message) {
+          function() {
             expect(
               eventEmitterClient.state.events['/SET@/e2e_test1/testsubscribe/data/event']
             ).to.be(undefined);
@@ -626,7 +618,7 @@ describe(
                   property3: 'property3'
                 },
                 null,
-                function(e, result) {
+                function() {
                   ////////////////////////////console.log('put happened - listening for result');
                 }
               );
@@ -649,7 +641,7 @@ describe(
           property3: 'property3'
         },
         null,
-        function(e, insertResult) {
+        function(e) {
           expect(e == null).to.be(true);
           socketClient.set(
             'e2e_test1/testwildcard/' + test_path_end + '/1',
@@ -659,20 +651,20 @@ describe(
               property3: 'property3'
             },
             null,
-            function(e, insertResult) {
+            function(e) {
               expect(e == null).to.be(true);
 
               socketClient.get('e2e_test1/testwildcard/' + test_path_end + '*', null, function(
                 e,
                 results
               ) {
-                expect(results.length == 2).to.be(true);
+                expect(results.length === 2).to.be(true);
 
                 socketClient.getPaths('e2e_test1/testwildcard/' + test_path_end + '*', function(
                   e,
                   results
                 ) {
-                  expect(results.length == 2).to.be(true);
+                  expect(results.length === 2).to.be(true);
                   callback(e);
                 });
               });
@@ -695,7 +687,7 @@ describe(
             property3: 'property3'
           },
           null,
-          function(e, result) {
+          function() {
             //////////////////console.log('did delete set');
             //path, event_type, count, handler, done
             //We listen for the DELETE event
@@ -741,10 +733,7 @@ describe(
                   //////////////////console.log('subscribed, about to delete');
 
                   //We perform the actual delete
-                  socketClient.remove('/e2e_test1/testsubscribe/data/delete_me', null, function(
-                    e,
-                    result
-                  ) {
+                  socketClient.remove('/e2e_test1/testsubscribe/data/delete_me', null, function() {
                     //////////////////console.log('REMOVE HAPPENED!!!');
                     //////////////////console.log(e);
                     //////////////////console.log(result);
@@ -769,7 +758,7 @@ describe(
           event_type: 'set',
           count: 0
         },
-        function(message) {
+        function() {
           //we detach all listeners from the path here
           ////console.log('ABOUT OFF PATH');
           eventEmitterClient.offPath('/e2e_test1/testsubscribe/data/on_off_test', function(e) {
@@ -781,7 +770,7 @@ describe(
                 event_type: 'set',
                 count: 0
               },
-              function(message) {
+              function() {
                 ////console.log('ON RAN');
                 ////console.log(message);
 
@@ -803,7 +792,7 @@ describe(
                     property3: 'property3'
                   },
                   {},
-                  function(e, setresult) {
+                  function(e) {
                     if (e) return callback(new Error(e));
 
                     ////console.log('DID ON SET');
@@ -827,7 +816,7 @@ describe(
               property3: 'property3'
             },
             {},
-            function(e, setresult) {
+            function(e) {
               if (e) return callback(new Error(e));
             }
           );
@@ -837,19 +826,17 @@ describe(
 
     var caughtCount = 0;
     it('should subscribe to the catch all notification', function(callback) {
-      var caught = {};
-
       this.timeout(10000);
 
       eventEmitterClient.onAll(
         function(eventData, meta) {
           if (
-            meta.action == '/REMOVE@/e2e_test1/testsubscribe/data/catch_all' ||
-            meta.action == '/SET@/e2e_test1/testsubscribe/data/catch_all'
+            meta.action === '/REMOVE@/e2e_test1/testsubscribe/data/catch_all' ||
+            meta.action === '/SET@/e2e_test1/testsubscribe/data/catch_all'
           )
             caughtCount++;
 
-          if (caughtCount == 2) callback();
+          if (caughtCount === 2) callback();
         },
         function(e) {
           if (e) return callback(e);
@@ -862,13 +849,10 @@ describe(
               property3: 'property3'
             },
             null,
-            function(e, put_result) {
+            function() {
               //console.log('put_result', put_result);
 
-              socketClient.remove('/e2e_test1/testsubscribe/data/catch_all', null, function(
-                e,
-                del_result
-              ) {
+              socketClient.remove('/e2e_test1/testsubscribe/data/catch_all', null, function() {
                 //console.log('del_result', del_result);
               });
             }
@@ -883,7 +867,7 @@ describe(
       var onHappened = false;
 
       eventEmitterClient.onAll(
-        function(message) {
+        function() {
           onHappened = true;
           callback(new Error('this wasnt meant to happen'));
         },
@@ -896,7 +880,7 @@ describe(
               event_type: 'set',
               count: 0
             },
-            function(message) {
+            function() {
               onHappened = true;
               callback(new Error('this wasnt meant to happen'));
             },
@@ -914,7 +898,7 @@ describe(
                     property3: 'property3'
                   },
                   null,
-                  function(e, put_result) {
+                  function(e) {
                     if (e) return callback(e);
 
                     setTimeout(function() {

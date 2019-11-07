@@ -1,6 +1,3 @@
-var path = require('path');
-var filename = path.basename(__filename);
-
 var Promise = require('bluebird');
 var expect = require('expect.js');
 var Happn = require('../../../');

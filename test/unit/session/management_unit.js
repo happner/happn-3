@@ -1,18 +1,14 @@
+const testHelper = require('../../__fixtures/utils/test_helper').create();
+
 describe(
-  require('../../__fixtures/utils/test_helper')
-    .create()
-    .testName(__filename, 3),
+  testHelper.testName(__filename, 3),
   function() {
     this.timeout(60000);
 
     var expect = require('expect.js');
-    var happn = require('../../../lib/index');
-    var service = happn.service;
     var async = require('async');
     var Promise = require('bluebird');
-
     var Logger = require('happn-logger');
-
     var Services = {};
 
     Services.SecurityService = require('../../../lib/services/security/service');
@@ -42,11 +38,8 @@ describe(
         });
 
         serviceInstance.happn = happn;
-
         serviceInstance.config = config;
-
         happn.services[serviceName.toLowerCase()] = serviceInstance;
-
         if (typeof serviceInstance.initialize !== 'function' || config === false) return callback();
 
         serviceInstance.initialize(config, callback);
@@ -96,13 +89,22 @@ describe(
         .catch(callback);
     };
 
+    let asyncMockServices = (sessionManagementActive) => {
+      return new Promise((resolve, reject) => {
+        mockServices(sessionManagementActive, (e, services) => {
+          if (e) return reject(e);
+          resolve(services);
+        });
+      });
+    };
+
     var mockClient = function() {
       return {
         once: function(evt, handler) {
           this.onceHandler = handler;
         },
-        on: function(evt, handler) {},
-        end: function(data, options) {
+        on: function() {},
+        end: function() {
           this.onceHandler();
         }
       };
@@ -338,53 +340,35 @@ describe(
       });
     });
 
-    it('tests pubsub services session logging', function(done) {
-      var mockSocket = {};
+    it('tests pubsub services session logging', async() => {
 
-      mockServices(function(e, happn) {
-        if (e) return done(e);
+      const happn = await asyncMockServices(true);
+      const client = mockClient();
+      happn.services.session.onConnect(client);
 
-        var client = mockClient();
+      var session = mockSession(1, client.sessionId, 'TEST_USER', null, happn.services.security);
+      happn.services.session.attachSession(session.id, session);
 
-        happn.services.session.onConnect(client);
+      await testHelper.delay(2000);
 
-        //type, id, username, ttl, securityService
+      const activeSessions1 = await happn.services.security.listActiveSessions();
 
-        var session = mockSession(1, client.sessionId, 'TEST_USER', null, happn.services.security);
+      expect(activeSessions1.length).to.be(1);
+      expect(activeSessions1[0].user.username).to.be('TEST_USER');
+      expect(activeSessions1[0].id).to.be(client.sessionId);
 
-        happn.services.session.attachSession(session.id, session);
+      happn.services.session.disconnectSession(
+        client.sessionId,
+        function() {},
+        'server disconnect'
+      );
 
-        setTimeout(function() {
-          happn.services.security.listActiveSessions(function(e, list) {
-            if (e) return done(e);
-
-            expect(list.length).to.be(1);
-
-            expect(list[0].user.username).to.be('TEST_USER');
-            expect(list[0].id).to.be(client.sessionId);
-
-            happn.services.session.disconnectSession(
-              client.sessionId,
-              function() {},
-              'server disconnect'
-            );
-
-            setTimeout(function() {
-              happn.services.security.listActiveSessions(function(e, list) {
-                if (e) return done(e);
-                expect(list.length).to.be(0);
-
-                done();
-              });
-            }, 1000);
-          });
-        }, 1000);
-      });
+      await testHelper.delay(2000);
+      const activeSessions2 = await happn.services.security.listActiveSessions();
+      expect(activeSessions2.length).to.be(0);
     });
 
     it('tests pubsub services session logging switched on', function(done) {
-      var mockSocket = {};
-
       mockServices(false, function(e, happn) {
         var client = mockClient();
 
@@ -397,7 +381,7 @@ describe(
         happn.services.session.attachSession(session.id, session);
 
         setTimeout(function() {
-          happn.services.security.listActiveSessions(function(e, list) {
+          happn.services.security.listActiveSessions(function(e) {
             expect(e.toString()).to.be('Error: session management not activated');
 
             happn.services.security.activateSessionManagement(true, function(e) {
@@ -421,8 +405,6 @@ describe(
     });
 
     it('tests session revocation times out', function(done) {
-      var mockSocket = {};
-
       mockServices(true, function(e, happn) {
         var client = mockClient();
 
@@ -456,8 +438,6 @@ describe(
     });
 
     it('tests session revocation times out after restart', function(done) {
-      var mockSocket = {};
-
       mockServices(true, function(e, happn) {
         var client = mockClient();
 

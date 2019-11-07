@@ -4,8 +4,6 @@ describe(
     .testName(__filename, 3),
   function() {
     const expect = require('expect.js');
-    const async = require('async');
-    const uuid = require('uuid');
     const Logger = require('happn-logger');
     const SessionService = require('../../../lib/services/session/service');
 
@@ -105,9 +103,5 @@ describe(
       sessionService.__configureSession(message, client);
       expect(client.happnProtocol).to.be('happn_4');
     });
-
-    // it('should test the [method] method', function () {
-    //   const sessionService = new SessionService({logger:Logger});
-    // });
   }
 );

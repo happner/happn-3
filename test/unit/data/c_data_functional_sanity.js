@@ -110,7 +110,7 @@ describe(
         },
         {},
         false,
-        function(e, response) {
+        function(e) {
           if (e) return callback(e);
 
           serviceInstance.remove('/remove/' + testId, function(e, response) {
@@ -133,7 +133,7 @@ describe(
         },
         {},
         false,
-        function(e, response) {
+        function(e) {
           if (e) return callback(e);
 
           serviceInstance.upsert(
@@ -143,7 +143,7 @@ describe(
             },
             {},
             false,
-            function(e, response) {
+            function(e) {
               if (e) return callback(e);
 
               serviceInstance.remove('/remove/multiple/*', function(e, response) {
@@ -171,7 +171,7 @@ describe(
         },
         {},
         false,
-        function(e, response) {
+        function(e) {
           if (e) return callback(e);
 
           serviceInstance.upsert(
@@ -183,7 +183,7 @@ describe(
             },
             {},
             false,
-            function(e, response) {
+            function(e) {
               if (e) return callback(e);
 
               serviceInstance.find('/get/multiple/*/' + testId, {}, function(e, response) {
@@ -264,7 +264,7 @@ describe(
         },
         {},
         false,
-        function(e, put_result) {
+        function(e) {
           expect(e == null).to.be(true);
 
           serviceInstance.upsert(
@@ -278,7 +278,7 @@ describe(
             },
             {},
             false,
-            function(e, put_result) {
+            function(e) {
               expect(e == null).to.be(true);
 
               serviceInstance.upsert(
@@ -292,7 +292,7 @@ describe(
                 },
                 {},
                 false,
-                function(e, put_result) {
+                function(e) {
                   expect(e == null).to.be(true);
 
                   serviceInstance.find(
@@ -303,7 +303,7 @@ describe(
                     },
                     function(e, search_result) {
                       expect(e == null).to.be(true);
-                      expect(search_result.length == 1).to.be(true);
+                      expect(search_result.length === 1).to.be(true);
 
                       serviceInstance.find(
                         '/1_eventemitter_embedded_sanity/' +
@@ -315,7 +315,7 @@ describe(
                         },
                         function(e, search_result) {
                           expect(e == null).to.be(true);
-                          expect(search_result.length == 2).to.be(true);
+                          expect(search_result.length === 2).to.be(true);
                           callback(e);
                         }
                       );
@@ -362,7 +362,7 @@ describe(
           ) {
             expect(e == null).to.be(true);
 
-            expect(search_result.length == 1).to.be(true);
+            expect(search_result.length === 1).to.be(true);
 
             done();
           });
@@ -440,7 +440,7 @@ describe(
 
                 var item_from_array = randomItems[itemIndex];
 
-                if (item_from_mongo.data.item_sort_id != item_from_array.item_sort_id)
+                if (item_from_mongo.data.item_sort_id !== item_from_array.item_sort_id)
                   return done(new Error('ascending sort failed'));
               }
 
@@ -468,7 +468,7 @@ describe(
                     var item_from_mongo = items[itemIndex];
                     var item_from_array = randomItems[itemIndex];
 
-                    if (item_from_mongo.data.item_sort_id != item_from_array.item_sort_id)
+                    if (item_from_mongo.data.item_sort_id !== item_from_array.item_sort_id)
                       return done(new Error('descending sort failed'));
                   }
 

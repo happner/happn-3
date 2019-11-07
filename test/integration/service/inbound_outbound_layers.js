@@ -7,7 +7,6 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var happn_client = happn.client;
-    var async = require('async');
 
     this.timeout(10000);
 
@@ -136,7 +135,7 @@ describe(
 
               clientInstance.on(
                 '/did/on',
-                function(data) {
+                function() {
                   expect(layerLog1.length > 0).to.be(true);
                   expect(layerLog2.length > 0).to.be(true);
 
@@ -232,7 +231,7 @@ describe(
 
               clientInstance.on(
                 '/did/both',
-                function(data) {
+                function() {
                   expect(layerLog1.length > 0).to.be(true);
                   expect(layerLog2.length > 0).to.be(true);
                   expect(layerLog3.length > 0).to.be(true);

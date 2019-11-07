@@ -85,7 +85,6 @@ describe(
 
     it('tests that session reconnects because heartbeats have not found their way to the server', function(done) {
       var reconnects = 0;
-      var pongs = 0;
 
       clientInstance.onEvent('reconnect-scheduled', function() {
         reconnects++;
@@ -94,7 +93,7 @@ describe(
       var oldWrite = clientInstance.socket._write.bind(clientInstance.socket);
 
       var newWrite = function(data) {
-        if (data.indexOf && data.indexOf('primus::pong') == 0) return;
+        if (data.indexOf && data.indexOf('primus::pong') === 0) return;
         oldWrite(data);
       };
 
@@ -102,7 +101,6 @@ describe(
 
       clientInstance.socket.on('outgoing::pong', function() {
         console.log('pong received...still testing please be patient.');
-        pongs++;
       });
 
       setTimeout(function() {

@@ -1,4 +1,3 @@
-var path = require('path');
 var expect = require('expect.js');
 
 describe(
@@ -380,7 +379,7 @@ describe(
             asymmetricDecrypt: function(pubKey, privKey, encrypted) {
               return encrypted;
             },
-            symmetricDecryptObject: function(encrypted, secret) {
+            symmetricDecryptObject: function(encrypted) {
               return encrypted;
             }
           },

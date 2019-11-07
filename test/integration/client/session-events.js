@@ -4,8 +4,8 @@ const delay = require('await-delay');
 
 describe(
   require('../../__fixtures/utils/test_helper')
-  .create()
-  .testName(__filename, 3),
+    .create()
+    .testName(__filename, 3),
   function() {
     this.timeout(10000);
     var server;
@@ -24,7 +24,8 @@ describe(
     var stopServer = function() {
       return new Promise((resolve, reject) => {
         if (!server) return resolve();
-        server.stop({
+        server.stop(
+          {
             reconnect: false
           },
           function(e) {
@@ -42,21 +43,25 @@ describe(
         services: {
           security: {
             config: {
-              profiles: [{
-                name: 'short-session',
-                session: {
-                  $and: [{
-                    user: {
-                      username: {
-                        $eq: '_ADMIN'
+              profiles: [
+                {
+                  name: 'short-session',
+                  session: {
+                    $and: [
+                      {
+                        user: {
+                          username: {
+                            $eq: '_ADMIN'
+                          }
+                        }
                       }
-                    }
-                  }]
-                },
-                policy: {
-                  ttl: '3 seconds'
+                    ]
+                  },
+                  policy: {
+                    ttl: '3 seconds'
+                  }
                 }
-              }]
+              ]
             }
           }
         }
@@ -68,14 +73,16 @@ describe(
       await startServer(serverConfig);
       let client = await Happn.client.create(clientConfig);
       var reason = false;
-      expect(server.services.session
-        .__sessionExpiryWatchers[client.session.id] != null).to.be(true);
+      expect(server.services.session.__sessionExpiryWatchers[client.session.id] != null).to.be(
+        true
+      );
       client.onEvent('session-ended', function(evt) {
         reason = evt.reason;
       });
       await delay(4000);
-      expect(server.services.session
-        .__sessionExpiryWatchers[client.session.id] == null).to.be(true);
+      expect(server.services.session.__sessionExpiryWatchers[client.session.id] == null).to.be(
+        true
+      );
       await client.disconnect();
       await stopServer();
       expect(reason).to.be('token-expired');
@@ -87,21 +94,25 @@ describe(
         services: {
           security: {
             config: {
-              profiles: [{
-                name: 'short-session',
-                session: {
-                  $and: [{
-                    user: {
-                      username: {
-                        $eq: '_ADMIN'
+              profiles: [
+                {
+                  name: 'short-session',
+                  session: {
+                    $and: [
+                      {
+                        user: {
+                          username: {
+                            $eq: '_ADMIN'
+                          }
+                        }
                       }
-                    }
-                  }]
-                },
-                policy: {
-                  ttl: '3 seconds'
+                    ]
+                  },
+                  policy: {
+                    ttl: '3 seconds'
+                  }
                 }
-              }]
+              ]
             }
           }
         }
@@ -118,12 +129,14 @@ describe(
         reason = evt.reason;
       });
       await delay(500);
-      expect(server.services.session
-        .__sessionExpiryWatchers[client.session.id] != null).to.be(true);
+      expect(server.services.session.__sessionExpiryWatchers[client.session.id] != null).to.be(
+        true
+      );
       server.services.session.endSession(client.session.id, 'test-reason');
       await delay(500);
-      expect(server.services.session
-        .__sessionExpiryWatchers[client.session.id] == null).to.be(true);
+      expect(server.services.session.__sessionExpiryWatchers[client.session.id] == null).to.be(
+        true
+      );
 
       await client.disconnect();
       await stopServer();
@@ -136,21 +149,25 @@ describe(
         services: {
           security: {
             config: {
-              profiles: [{
-                name: 'short-session',
-                session: {
-                  $and: [{
-                    user: {
-                      username: {
-                        $eq: '_ADMIN'
+              profiles: [
+                {
+                  name: 'short-session',
+                  session: {
+                    $and: [
+                      {
+                        user: {
+                          username: {
+                            $eq: '_ADMIN'
+                          }
+                        }
                       }
-                    }
-                  }]
-                },
-                policy: {
-                  ttl: '3 seconds'
+                    ]
+                  },
+                  policy: {
+                    ttl: '3 seconds'
+                  }
                 }
-              }]
+              ]
             }
           }
         }
@@ -162,12 +179,14 @@ describe(
       await startServer(serverConfig);
       let client = await Happn.client.create(clientConfig);
       await delay(500);
-      expect(server.services.session
-        .__sessionExpiryWatchers[client.session.id] != null).to.be(true);
+      expect(server.services.session.__sessionExpiryWatchers[client.session.id] != null).to.be(
+        true
+      );
       await client.disconnect();
       await delay(500);
-      expect(server.services.session
-        .__sessionExpiryWatchers[client.session.id] == null).to.be(true);
+      expect(server.services.session.__sessionExpiryWatchers[client.session.id] == null).to.be(
+        true
+      );
 
       await stopServer();
     });
@@ -178,22 +197,26 @@ describe(
         services: {
           security: {
             config: {
-              profiles: [{
-                name: 'short-activity-ttl',
-                session: {
-                  $and: [{
-                    user: {
-                      username: {
-                        $eq: '_ADMIN'
+              profiles: [
+                {
+                  name: 'short-activity-ttl',
+                  session: {
+                    $and: [
+                      {
+                        user: {
+                          username: {
+                            $eq: '_ADMIN'
+                          }
+                        }
                       }
-                    }
-                  }]
-                },
-                policy: {
-                  ttl: '10 seconds',
-                  inactivity_threshold: '3 seconds'
+                    ]
+                  },
+                  policy: {
+                    ttl: '10 seconds',
+                    inactivity_threshold: '3 seconds'
+                  }
                 }
-              }]
+              ]
             }
           }
         }

@@ -1,5 +1,3 @@
-var path = require('path');
-var filename = path.basename(__filename);
 var happn = require('../../../lib/index');
 var service = happn.service;
 

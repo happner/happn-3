@@ -6,9 +6,7 @@ describe(
     var happn = require('../../../lib/index');
     var happn_client = happn.client;
 
-    var adminClient;
     var expect = require('expect.js');
-    var test_id = Date.now() + '_' + require('shortid').generate();
 
     var testClient;
     var serviceInstance;
@@ -112,7 +110,7 @@ describe(
             port: 55001
           }
         },
-        function(e, instance) {
+        function(e) {
           expect(e.toString()).to.be(
             'AccessDenied: use of _ADMIN credentials over the network is disabled'
           );
@@ -130,7 +128,7 @@ describe(
             port: 55002
           }
         },
-        function(e, instance) {
+        function(e) {
           expect(e.toString()).to.be(
             'AccessDenied: use of _ADMIN credentials over the network is disabled'
           );

@@ -94,7 +94,6 @@ describe(
 
     it('tests that session reconnects because heartbeats have not found their way to the server', function(done) {
       var reconnects = 0;
-      var pings = 0;
 
       clientInstance.onEvent('reconnect-scheduled', function() {
         reconnects++;
@@ -103,7 +102,7 @@ describe(
       var oldWrite = clientInstance.pubsub._write.bind(clientInstance.pubsub);
 
       var newWrite = function(data) {
-        if (data.indexOf && data.indexOf('primus::ping') == 0) return;
+        if (data.indexOf && data.indexOf('primus::ping') === 0) return;
         oldWrite(data);
       };
 
@@ -111,7 +110,6 @@ describe(
 
       clientInstance.pubsub.on('outgoing::ping', function() {
         console.log('ping sent...still testing please be patient.');
-        pings++;
       });
 
       setTimeout(function() {

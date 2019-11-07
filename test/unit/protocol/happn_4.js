@@ -308,7 +308,7 @@ describe(
             asymmetricDecrypt: function(pubKey, privKey, encrypted) {
               return encrypted;
             },
-            symmetricDecryptObjectiv: function(encrypted, secret) {
+            symmetricDecryptObjectiv: function(encrypted) {
               return encrypted;
             }
           },
