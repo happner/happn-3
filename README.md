@@ -864,7 +864,7 @@ SECURITY SERVER
 
 ```javascript
 
-var happn = require('happn')
+var happn = require('happn-3');
 var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
@@ -891,7 +891,7 @@ SECURITY CLIENT
 
 //logging in with the _ADMIN user
 
-var happn = require('happn');
+var happn = require('happn-3');
 happn.client.create({username:'_ADMIN', password:'testPWD', secure:true},function(e, instance) {
 
 
@@ -906,7 +906,7 @@ SECURITY USERS AND GROUPS
 
 ```javascript
 
-var happn = require('happn')
+var happn = require('happn-3')
 var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
@@ -938,7 +938,7 @@ function (e, myHappn3Instance) {
 
 ```javascript
 
-var happn = require('happn')
+var happn = require('happn-3')
 var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
@@ -984,7 +984,7 @@ function (e, myHappn3Instance) {
 
 ```javascript
 
-var happn = require('happn')
+var happn = require('happn-3')
 var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
@@ -1010,7 +1010,7 @@ function (e, myHappn3Instance) {
 *demonstrates getUser, getGroup and linkGroup*
 ```javascript
 
-var happn = require('happn')
+var happn = require('happn-3')
 var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
@@ -1040,7 +1040,7 @@ function (e, myHappn3Instance) {
 *user can be listed by group name (exact match) or by a username (partial match with wildcard - with optional additional criteria)*
 ```javascript
 
-var happn = require('happn')
+var happn = require('happn-3')
 var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
@@ -1094,7 +1094,7 @@ function (e, myHappn3Instance) {
 
 ```javascript
 
-var happn = require('happn')
+var happn = require('happn-3')
 var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
@@ -1117,7 +1117,7 @@ happn.service.create({secure:true, adminUser:{password:'testPWD'}},
 
 ```javascript
 
-var happn = require('happn')
+var happn = require('happn-3')
 var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
@@ -1140,7 +1140,7 @@ function (e, myHappn3Instance) {
 
 ```javascript
 
-var happn = require('happn')
+var happn = require('happn-3')
 var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
@@ -1456,7 +1456,7 @@ WEB PATH LEVEL SECURITY
 
 ```javascript
 
-var happn = require('happn')
+var happn = require('happn-3')
 var happnInstance; //this will be your server instance
 
 happn.service.create({secure:true, adminUser:{password:'testPWD'}},
@@ -1511,7 +1511,7 @@ function (e, instance) {
 
 //logging in with the _ADMIN user, who has permission to all web routes
 
-var happn = require('happn');
+var happn = require('happn-3');
 happn.client.create({username:'_ADMIN', password:'testPWD'},function(e, instance) {
 
 	//the token can be derived from instance.session.token now
@@ -1544,7 +1544,7 @@ USING A BEARER TOKEN AUTHORIZATION HEADER
 
 ```javascript
 
-var happn = require('happn');
+var happn = require('happn-3');
 happn.client.create({username:'_ADMIN', password:'testPWD'},function(e, instance) {
 
   var request = require('request');
@@ -1681,7 +1681,7 @@ HTTPS CLIENT
 
 ```javascript
 
-var happn = require('happn');
+var happn = require('happn-3');
 
 happn.client.create({protocol:'https', allowSelfSignedCerts:true},function(e, instance) {
 ...
