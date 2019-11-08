@@ -92,7 +92,7 @@ function (e, happn) {
 ```
 In your console, go to your application folder and run*node main*your server should start up and be listening on your port of choice.
 
-Connecting to Happn
+THE HAPPN CLIENT
 -------------------------
 
 Using node:
@@ -139,7 +139,7 @@ HappnClient.create([options], function(e, instance) {
 </script>
 ```
 Intra-process / local client:
----------------------
+-----------------------------
 *although we have direct access to the services (security included) - this method still requires a username and password if the happn instance is secure*
 ```javascript
 
@@ -825,6 +825,33 @@ MERGING
 ```javascript
 
 my_client_instance.set('e2e_test1/testsubscribe/data/', {property1:'property1',property2:'property2',property3:'property3'}, {merge:true}, function(e, result){
+
+});
+
+```
+
+SESSION AND CONNECTION EVENTS:
+------------------------------
+
+*these events are emitted if the client connection state or session state changes*
+
+```javascript
+
+// session-ended event is emitted if the session is disconnected from the server side
+my_client_instance.onEvent('session-ended', (evt) => {
+  //evt.reason could be:
+  //inactivity-threshold - the client has been inactive for a period exceeding what the session is profiled for (see profiles)
+  //session-revoked - the client session has been revoked on the server side
+  //security directory update: user deleted - the user that the session is associated with has been deleted on the server
+});
+
+// reconnect-scheduled event is emitted if the connection with the server has been interrupted
+my_client_instance.onEvent('reconnect-scheduled', (evt) => {
+
+});
+
+// reconnect-successful event is emitted if the connection with the server has been restored
+my_client_instance.onEvent('reconnect-successful', (evt) => {
 
 });
 
@@ -1774,10 +1801,9 @@ CONSISTENCY (Quality of service)
 ```javascript
 
 var CONSISTENCY = {
-  0:QUEUED,
-  1:DEFERRED,
-  2:TRANSACTIONAL,
-  3:ACKNOWLEDGED
+  DEFERRED: 1, //queues the publication, then calls back
+  TRANSACTIONAL: 2, //waits until all recipients have been written to, then calls back
+  ACKNOWLEDGED: 3 //waits until all recipients have acknowledged they have received the message
 }
 
 clientInstance1.set('/test/path/acknowledged/1', {test: 'data'}, {
