@@ -629,8 +629,16 @@ describe(
                     var item_from_mongo = items[itemIndex];
                     var item_from_array = randomItems[itemIndex];
 
-                    if (item_from_mongo.data.item_sort_id !== item_from_array.item_sort_id)
+                    if (item_from_mongo.data.item_sort_id !== item_from_array.item_sort_id) {
+                      // eslint-disable-next-line
+                      console.log(
+                        `error on sort and limit: checked ${itemIndex}
+                        compare: ${item_from_mongo.data.item_sort_id} (db)
+                        to ${item_from_array.item_sort_id} (mock)`
+                      );
+
                       return done(new Error('descending sort failed'));
+                    }
                   }
 
                   done();

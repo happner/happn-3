@@ -497,7 +497,10 @@ describe(
             _meta: 'test-meta-1'
           }
         ])
-      ).to.eql([{ test: 'data', _meta: 'test-meta' }, { test: 'data-1', _meta: 'test-meta-1' }]);
+      ).to.eql([
+        { test: 'data', _meta: 'test-meta' },
+        { test: 'data-1', _meta: 'test-meta-1' }
+      ]);
     });
 
     it('tests the __encryptMessage function', function(done) {

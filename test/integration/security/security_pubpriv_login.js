@@ -12,7 +12,6 @@ describe(
 
     var admClient, admClient1;
 
-
     var Crypto = require('happn-util-crypto');
     var crypto = new Crypto();
 
@@ -22,8 +21,6 @@ describe(
     this.timeout(20000);
 
     before('should initialize the service', function(callback) {
-
-
       try {
         service.create(
           {
@@ -72,8 +69,8 @@ describe(
     });
 
     after(async () => {
-      if(happnInstance) await happnInstance.stop();
-      if(encryptedPayloadInstance) await encryptedPayloadInstance.stop();
+      if (happnInstance) await happnInstance.stop();
+      if (encryptedPayloadInstance) await encryptedPayloadInstance.stop();
     });
 
     afterEach(async () => {
@@ -96,7 +93,8 @@ describe(
       );
 
       if (message === encrypted) throw new Error('encrypted data matches secret message');
-      if (message !== decrypted.toString()) throw new Error('decrypted data does not match secret message');
+      if (message !== decrypted.toString())
+        throw new Error('decrypted data does not match secret message');
 
       callback();
     });
@@ -117,7 +115,8 @@ describe(
 
       if (message === encrypted) throw new Error('encrypted data matches secret message');
 
-      if (message !== decrypted.toString()) throw new Error('decrypted data does not match secret message');
+      if (message !== decrypted.toString())
+        throw new Error('decrypted data does not match secret message');
 
       callback();
     });
