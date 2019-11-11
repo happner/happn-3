@@ -432,8 +432,6 @@ describe(
             null,
             function(e) {
               expect(e == null).to.be(true);
-
-              ////////////console.log('searching');
               serviceInstance.get(
                 '/1_eventemitter_embedded_sanity/' + testId + '/testsubscribe/data/complex*',
                 {
@@ -630,6 +628,9 @@ describe(
                     var item_from_array = randomItems[itemIndex];
 
                     if (item_from_mongo.data.item_sort_id !== item_from_array.item_sort_id) {
+                      // this is an intermittent failure, adding some logging
+                      // so we are able to diagnose from travis.
+                      // thus the following console.log is intentional
                       // eslint-disable-next-line
                       console.log(
                         `error on sort and limit: checked ${itemIndex}
