@@ -669,7 +669,7 @@
 -----------------
   - lint prettier tests
 
-10.5.0 2019-10-23
+11.0.0 2019-11-11
 -----------------
   - feature: client session events
   - fix: activity cache timeout issues
