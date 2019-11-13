@@ -671,4 +671,5 @@
 
 10.4.3 2019-11-11
 -----------------
-  - cache fixes
+  - cache fixes - clearTimeout on persisted cache
+  - test: user deletion and recreation token reuse (test/integration/security/access_sanity)
