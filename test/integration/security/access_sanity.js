@@ -1,7 +1,7 @@
 describe(
   require('../../__fixtures/utils/test_helper')
-  .create()
-  .testName(__filename, 3),
+    .create()
+    .testName(__filename, 3),
   function() {
     const request = require('request');
     const happn = require('../../../lib/index');
@@ -31,7 +31,8 @@ describe(
     }
 
     before('it starts completely defaulted service', function(done) {
-      getService({
+      getService(
+        {
           secure: true
         },
         function(e, service) {
@@ -199,19 +200,16 @@ describe(
       let addedTestuser;
       var addedTestuser1;
 
-      function recreateAddedTestUser(){
+      function recreateAddedTestUser() {
+        //eslint-disable-next-line
         return new Promise(async (resolve, reject) => {
-          try{
-            addedTestuser1 = await serviceInstance.services.security.users.upsertUser(
-              testUser1, {
-                overwrite: false
-              }
-            );
-            await serviceInstance.services.security.users.linkGroup(
-              addedTestGroup,
-              addedTestuser1);
+          try {
+            addedTestuser1 = await serviceInstance.services.security.users.upsertUser(testUser1, {
+              overwrite: false
+            });
+            await serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser1);
             resolve();
-          }catch(e){
+          } catch (e) {
             reject(e);
           }
         });
@@ -220,42 +218,30 @@ describe(
       before(
         'creates a group and a user, adds the group to the user, logs in with test user',
         async () => {
-          addedTestGroup = await serviceInstance.services.security.users.upsertGroup(
-            testGroup, {
-              overwrite: false
-            }
-          );
-          addedTestuser = await serviceInstance.services.security.users.upsertUser(
-            testUser, {
-              overwrite: false
-            }
-          );
+          addedTestGroup = await serviceInstance.services.security.users.upsertGroup(testGroup, {
+            overwrite: false
+          });
+          addedTestuser = await serviceInstance.services.security.users.upsertUser(testUser, {
+            overwrite: false
+          });
 
-          addedTestuser1 = await serviceInstance.services.security.users.upsertUser(
-            testUser1, {
-              overwrite: false
-            }
-          );
+          addedTestuser1 = await serviceInstance.services.security.users.upsertUser(testUser1, {
+            overwrite: false
+          });
 
-          await serviceInstance.services.security.users.linkGroup(
-            addedTestGroup,
-            addedTestuser);
+          await serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser);
 
-          await serviceInstance.services.security.users.linkGroup(
-            addedTestGroup,
-            addedTestuser1);
+          await serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser1);
 
-          testClient = await serviceInstance.services.session
-            .localClient({
-              username: testUser.username,
-              password: 'TEST PWD'
-            });
+          testClient = await serviceInstance.services.session.localClient({
+            username: testUser.username,
+            password: 'TEST PWD'
+          });
 
-          testClient1 = await serviceInstance.services.session
-            .localClient({
-              username: testUser1.username,
-              password: 'TEST PWD'
-            });
+          testClient1 = await serviceInstance.services.session.localClient({
+            username: testUser1.username,
+            password: 'TEST PWD'
+          });
         }
       );
 
@@ -284,13 +270,15 @@ describe(
 
       it('checks allowed on, and prevented from on', function(done) {
         testClient.on(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/on', {},
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/on',
+          {},
           function() {},
           function(e) {
             if (e) return done(e);
 
             testClient.on(
-              '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/on', {},
+              '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/on',
+              {},
               function() {},
               function(e) {
                 if (!e)
@@ -310,7 +298,8 @@ describe(
 
       it('delegated authority: checks allowed on, and prevented from on', function(done) {
         adminClient.on(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/on', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/on',
+          {
             onBehalfOf: testClient.session.user.username
           },
           function() {},
@@ -318,7 +307,8 @@ describe(
             if (e) return done(e);
 
             adminClient.on(
-              '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/on', {
+              '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/on',
+              {
                 onBehalfOf: testClient.session.user.username
               },
               function() {},
@@ -350,9 +340,11 @@ describe(
           );
 
           testClient.set(
-            '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/set', {
+            '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/set',
+            {
               test: 'test'
-            }, {},
+            },
+            {},
             function(e) {
               if (!e)
                 return done(
@@ -367,7 +359,9 @@ describe(
 
       it('delegated authority: checks allowed set, and prevented from set', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/set', {}, {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/set',
+          {},
+          {
             onBehalfOf: testClient.session.user.username
           },
           function(e, result) {
@@ -378,9 +372,11 @@ describe(
             );
 
             adminClient.set(
-              '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/set', {
+              '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/set',
+              {
                 test: 'test'
-              }, {
+              },
+              {
                 onBehalfOf: testClient.session.user.username
               },
               function(e) {
@@ -398,7 +394,8 @@ describe(
 
       it('delegated authority: checks prevented from getPaths', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/getPaths/1', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/getPaths/1',
+          {
             property1: 'property1',
             property2: 'property2',
             property3: 'property3'
@@ -407,11 +404,13 @@ describe(
           function(e) {
             expect(e == null).to.be(true);
             adminClient.set(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/getPaths/2', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/getPaths/2',
+              {
                 property1: 'property1',
                 property2: 'property2',
                 property3: 'property3'
-              }, {
+              },
+              {
                 onBehalfOf: testClient.session.user.username
               },
               function(e) {
@@ -431,7 +430,8 @@ describe(
         adminClient.increment(
           '/TEST/a7_eventemitter_security_access/' + test_id + '/increment',
           'counter',
-          1, {
+          1,
+          {
             onBehalfOf: testClient.session.user.username
           },
           function(e) {
@@ -445,9 +445,11 @@ describe(
 
       it('delegated authority: checks prevented from setSibling', function(done) {
         adminClient.setSibling(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/setSibling', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/setSibling',
+          {
             property1: 'property1'
-          }, {
+          },
+          {
             onBehalfOf: testClient.session.user.username
           },
           function(e) {
@@ -461,14 +463,17 @@ describe(
 
       it('checks allowed get, and prevented from get', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/get',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
 
             testClient.get(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/get', {},
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/get',
+              {},
               function(e, result) {
                 if (e) return done(e);
                 expect(result._meta.path).to.be(
@@ -476,7 +481,8 @@ describe(
                 );
 
                 testClient.get(
-                  '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/get', {},
+                  '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/get',
+                  {},
                   function(e) {
                     if (!e)
                       return done(
@@ -494,14 +500,17 @@ describe(
 
       it('delegated authority: checks allowed get, and prevented from get', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/get',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
 
             adminClient.get(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/get',
+              {
                 onBehalfOf: testClient.session.user.username
               },
               function(e, result) {
@@ -511,7 +520,8 @@ describe(
                 );
 
                 adminClient.get(
-                  '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/get', {
+                  '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/get',
+                  {
                     onBehalfOf: testClient.session.user.username
                   },
                   function(e) {
@@ -531,20 +541,24 @@ describe(
 
       it('checks allowed count, and prevented from count', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/count', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/count',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
 
             testClient.count(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/count', {},
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/count',
+              {},
               function(e, result) {
                 if (e) return done(e);
                 expect(result.value).to.be(1);
 
                 testClient.get(
-                  '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/count', {},
+                  '/TEST/a7_eventemitter_security_access/dodge/' + test_id + '/count',
+                  {},
                   function(e) {
                     if (!e)
                       return done(
@@ -571,9 +585,11 @@ describe(
           );
 
           testClient.set(
-            '/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
+            '/TEST/a7_eventemitter_security_access/' + test_id + '/get',
+            {
               test: 'test'
-            }, {},
+            },
+            {},
             function(e) {
               if (!e)
                 return done(
@@ -588,7 +604,8 @@ describe(
 
       it('delegated authority: checks allowed get but not set', function(done) {
         adminClient.get(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/get',
+          {
             onBehalfOf: testClient.session.user.username
           },
           function(e, result) {
@@ -598,9 +615,11 @@ describe(
             );
 
             adminClient.set(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/get', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/get',
+              {
                 test: 'test'
-              }, {
+              },
+              {
                 onBehalfOf: testClient.session.user.username
               },
               function(e) {
@@ -618,13 +637,16 @@ describe(
 
       it('checks allowed get and on but not set', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
             testClient.get(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {},
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on',
+              {},
               function(e, result) {
                 if (e) return done(e);
                 expect(result._meta.path).to.be(
@@ -632,15 +654,18 @@ describe(
                 );
 
                 testClient.on(
-                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {},
+                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on',
+                  {},
                   function() {},
                   function(e) {
                     if (e) return done(e);
 
                     testClient.set(
-                      '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {
+                      '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on',
+                      {
                         test: 'test'
-                      }, {},
+                      },
+                      {},
                       function(e) {
                         if (!e)
                           return done(
@@ -660,13 +685,16 @@ describe(
 
       it('delegated authority: checks allowed get and on but not set', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
             adminClient.get(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on',
+              {
                 onBehalfOf: testClient.session.user.username
               },
               function(e, result) {
@@ -676,7 +704,8 @@ describe(
                 );
 
                 adminClient.on(
-                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {
+                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on',
+                  {
                     onBehalfOf: testClient.session.user.username
                   },
                   function() {},
@@ -684,9 +713,11 @@ describe(
                     if (e) return done(e);
 
                     adminClient.set(
-                      '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on', {
+                      '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on',
+                      {
                         test: 'test'
-                      }, {
+                      },
+                      {
                         onBehalfOf: testClient.session.user.username
                       },
                       function(e) {
@@ -708,13 +739,16 @@ describe(
 
       it('checks allowed get but not on', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
             testClient.get(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {},
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on',
+              {},
               function(e, result) {
                 if (e) return done(e);
                 expect(result._meta.path).to.be(
@@ -722,7 +756,8 @@ describe(
                 );
 
                 testClient.on(
-                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {},
+                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on',
+                  {},
                   function() {},
                   function(e) {
                     if (!e) return done(new Error('this should not have been allowed...'));
@@ -738,13 +773,16 @@ describe(
 
       it('delegated authority: checks allowed get but not on', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
             adminClient.get(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on',
+              {
                 onBehalfOf: testClient.session.user.username
               },
               function(e, result) {
@@ -754,7 +792,8 @@ describe(
                 );
 
                 adminClient.on(
-                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on', {
+                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on',
+                  {
                     onBehalfOf: testClient.session.user.username
                   },
                   function() {},
@@ -772,19 +811,23 @@ describe(
 
       it('checks allowed on but not get', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
             testClient.get(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {},
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get',
+              {},
               function(e) {
                 if (!e) return done(new Error('this should not have been allowed...'));
                 expect(e.toString()).to.be('AccessDenied: unauthorized');
 
                 testClient.on(
-                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {},
+                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get',
+                  {},
                   function() {},
                   done
                 );
@@ -796,13 +839,16 @@ describe(
 
       it('delegated authority: checks allowed on but not get', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
             adminClient.get(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get',
+              {
                 onBehalfOf: testClient.session.user.username
               },
               function(e) {
@@ -810,7 +856,8 @@ describe(
                 expect(e.toString()).to.be('AccessDenied: unauthorized');
 
                 adminClient.on(
-                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get', {
+                  '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get',
+                  {
                     onBehalfOf: testClient.session.user.username
                   },
                   function() {},
@@ -824,13 +871,16 @@ describe(
 
       it('checks allowed set but not get', function(done) {
         testClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
             testClient.get(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get', {},
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get',
+              {},
               function(e) {
                 if (!e) return done(new Error('this should not have been allowed...'));
                 expect(e.toString()).to.be('AccessDenied: unauthorized');
@@ -843,15 +893,18 @@ describe(
 
       it('delegated authority: checks allowed set but not get', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get',
+          {
             'test-set': 'test-set-val'
-          }, {
+          },
+          {
             onBehalfOf: testClient.session.user.username
           },
           function(e) {
             if (e) return done(e);
             adminClient.get(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get',
+              {
                 onBehalfOf: testClient.session.user.username
               },
               function(e) {
@@ -866,13 +919,16 @@ describe(
 
       it('checks allowed set but not on', function(done) {
         testClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on',
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           function(e) {
             if (e) return done(e);
             testClient.on(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {},
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on',
+              {},
               function() {},
               function(e) {
                 if (!e) return done(new Error('this should not have been allowed...'));
@@ -886,15 +942,18 @@ describe(
 
       it('delegated authority: checks allowed set but not on', function(done) {
         adminClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on',
+          {
             'test-set': 'test-set-val'
-          }, {
+          },
+          {
             onBehalfOf: testClient.session.user.username
           },
           function(e) {
             if (e) return done(e);
             testClient.on(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on',
+              {
                 onBehalfOf: testClient.session.user.username
               },
               function() {},
@@ -910,14 +969,16 @@ describe(
 
       it('checks allowed get all', function(done) {
         testClient.get(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/get_all/' + test_id, {},
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/get_all/' + test_id,
+          {},
           done
         );
       });
 
       it('checks allowed on all', function(done) {
         testClient.on(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/on_all/' + test_id, {},
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/on_all/' + test_id,
+          {},
           function() {},
           done
         );
@@ -925,16 +986,19 @@ describe(
 
       it('checks allowed set all', function(done) {
         testClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/set_all/' + test_id, {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/set_all/' + test_id,
+          {
             'test-set': 'test-set-val'
-          }, {},
+          },
+          {},
           done
         );
       });
 
       it('checks against a permission that doesnt exist', function(done) {
         testClient.get(
-          '/TEST/a7_eventemitter_security_access/whatevs' + test_id + '/get_all/' + test_id, {},
+          '/TEST/a7_eventemitter_security_access/whatevs' + test_id + '/get_all/' + test_id,
+          {},
           function(e) {
             if (!e) return done(new Error('this should not have been allowed...'));
             expect(e.toString()).to.be('AccessDenied: unauthorized');
@@ -953,9 +1017,11 @@ describe(
 
           setTimeout(function() {
             testClient.set(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/set', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/set',
+              {
                 test: 'data'
-              }, {},
+              },
+              {},
               function(e) {
                 if (!e) return done(new Error('this should not have been allowed...'));
                 expect(e.toString()).to.be('AccessDenied: unauthorized');
@@ -976,9 +1042,11 @@ describe(
 
           setTimeout(function() {
             testClient.set(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/set', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/set',
+              {
                 test: 'data'
-              }, {},
+              },
+              {},
               done
             );
           }, 2000);
@@ -987,7 +1055,8 @@ describe(
 
       it('tests the remove permission', function(done) {
         testClient.set(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission', {
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission',
+          {
             test: 'data'
           },
           function(e) {
@@ -1002,7 +1071,8 @@ describe(
               )
               .then(function() {
                 testClient.set(
-                  '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission', {
+                  '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission',
+                  {
                     test: 'data'
                   },
                   function(e) {
@@ -1025,7 +1095,8 @@ describe(
           )
           .then(function() {
             testClient.set(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission',
+              {
                 test: 'data'
               },
               done
@@ -1039,7 +1110,8 @@ describe(
           '/TEST/a7_eventemitter_security_access/' + test_id + '/prohibit-permission';
 
         testClient.set(
-          prohibitPath, {
+          prohibitPath,
+          {
             test: 'data'
           },
           function(e) {
@@ -1053,7 +1125,8 @@ describe(
               .upsertGroup(addedTestGroup)
               .then(function() {
                 testClient.set(
-                  prohibitPath, {
+                  prohibitPath,
+                  {
                     test: 'data'
                   },
                   function(e) {
@@ -1071,17 +1144,21 @@ describe(
         testClient.onSystemMessage(function(eventType) {
           if (eventType === 'server-side-disconnect') {
             testClient.set(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/set', {
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/set',
+              {
                 test: 'data'
-              }, {},
+              },
+              {},
               function(e) {
                 if (!e) return done(new Error('this should not have been allowed...'));
                 expect(e.toString()).to.be('Error: client is disconnected');
 
                 adminClient.set(
-                  '/TEST/a7_eventemitter_security_access/' + test_id + '/set', {
+                  '/TEST/a7_eventemitter_security_access/' + test_id + '/set',
+                  {
                     test: 'data'
-                  }, {
+                  },
+                  {
                     onBehalfOf: testClient.session.user.username
                   },
                   function(e) {
@@ -1101,17 +1178,18 @@ describe(
       xit(`deletes the test1 user, tests we are notified about the session closure,
           then have no access, we retain the token, recreate the test1 user and
           we check we cannot reuse the retained token`, function(done) {
-
         let retainedToken = testClient1.session.token;
         let testPath = '/TEST/a7_eventemitter_security_access/' + test_id + '/web_access';
 
         testClient1.onSystemMessage(function(eventType) {
           if (eventType === 'server-side-disconnect') {
             testClient1.set(
-              testPath, {
+              testPath,
+              {
                 test: 'data'
-              }, {},
-              async (e) => {
+              },
+              {},
+              async e => {
                 if (!e) return done(new Error('this should not have been allowed...'));
                 expect(e.toString()).to.be('Error: client is disconnected');
                 let firstResponse = await doRequest(testPath, retainedToken);
@@ -1126,7 +1204,7 @@ describe(
             );
           }
         });
-        doRequest(testPath, retainedToken).then((controlResponse) => {
+        doRequest(testPath, retainedToken).then(controlResponse => {
           console.log('controlResponse', controlResponse.statusCode);
           expect(controlResponse.statusCode).to.be(404);
           serviceInstance.services.security.users.deleteUser(addedTestuser1, function(e) {

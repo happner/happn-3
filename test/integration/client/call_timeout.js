@@ -87,7 +87,6 @@ describe(
               timeout: 1
             },
             function(e) {
-
               //try again - sometimes things happen so quickly the call actually works
               if (!e) {
                 instance.set(
