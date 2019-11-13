@@ -87,7 +87,27 @@ describe(
               timeout: 1
             },
             function(e) {
-              if (!e) return callback(new Error('unexpected success'));
+
+              //try again - sometimes things happen so quickly the call actually works
+              if (!e) {
+                instance.set(
+                  '/test/path',
+                  {
+                    test: 'data'
+                  },
+                  {
+                    timeout: 1
+                  },
+                  function(e) {
+                    if (!e) return callback(new Error('unexpected success'));
+                    expect(e.toString()).to.be(
+                      'Error: api request timed out path: /test/path action: set'
+                    );
+                    instance.disconnect(callback);
+                  }
+                );
+                return;
+              }
 
               expect(e.toString()).to.be(
                 'Error: api request timed out path: /test/path action: set'

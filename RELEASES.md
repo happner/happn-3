@@ -669,8 +669,12 @@
 -----------------
   - lint prettier tests
 
+10.4.3 2019-11-11
+-----------------
+  - cache fixes - clearTimeout on persisted cache
+  - test: user deletion and recreation token reuse (test/integration/security/access_sanity)
+
 11.0.0 2019-11-11
 -----------------
-  - feature: client session events
-  - fix: activity cache timeout issues
+  - feature: client session end events
   - chore: lint fixes
