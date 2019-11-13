@@ -31,4 +31,5 @@ package-lock.json
 publish_error.txt
 registry.bak
 registry.ini
+report.*
 webSrc

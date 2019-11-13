@@ -321,7 +321,7 @@ describe(
         //do nothing
       });
       happnClient.onEvent('MyEvent', function() {
-          //do nothing
+        //do nothing
       });
       happnClient.offEvent('MyEvent|0');
 
