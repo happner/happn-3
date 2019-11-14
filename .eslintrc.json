@@ -14,6 +14,7 @@
     "prettier"
   ],
   "globals": {
+    "xdescribe": "readonly",
     "XMLHttpRequest": "writable",
     "xit": "readonly",
     "angular": "readonly",

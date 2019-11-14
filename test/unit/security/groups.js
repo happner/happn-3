@@ -115,7 +115,6 @@ describe(
           expect(e.toString()).to.be(
             'Error: group permissions invalid: missing allowed actions or prohibit rules: /test/path/2'
           );
-
           done();
         });
       });

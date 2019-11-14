@@ -1486,7 +1486,6 @@ describe(
       });
     });
 
-    //issue:::
     it('should create a user with a public key, then login using a signature', function(done) {
       this.timeout(20000);
 
@@ -2437,22 +2436,16 @@ describe(
 
     it('should be able to work with configured pbkdf2Iterations', function(done) {
       mockServices(
-        function(e, happnMock) {
+        async (e, happnMock) => {
           if (e) return done(e);
           expect(happnMock.services.security.config.pbkdf2Iterations).to.be(100);
-
-          happnMock.services.security.users.__prepareUser(
-            {
-              password: 'test'
-            },
-            function(e, prepared) {
-              if (e) return done(e);
-              var split = prepared.password.split('$');
-              expect(split[0]).to.be('pbkdf2');
-              expect(split[1]).to.be('100');
-              stopServices(happnMock, done);
-            }
-          );
+          const prepared = await happnMock.services.security.users.__prepareUserForUpsert({
+            password: 'test'
+          });
+          var split = prepared.password.split('$');
+          expect(split[0]).to.be('pbkdf2');
+          expect(split[1]).to.be('100');
+          stopServices(happnMock, done);
         },
         {
           services: {
@@ -2465,21 +2458,16 @@ describe(
     });
 
     it('should be able to work with default pbkdf2Iterations', function(done) {
-      mockServices(function(e, happnMock) {
+      mockServices(async (e, happnMock) => {
         if (e) return done(e);
         expect(happnMock.services.security.config.pbkdf2Iterations).to.be(10000);
-        happnMock.services.security.users.__prepareUser(
-          {
-            password: 'test'
-          },
-          function(e, prepared) {
-            if (e) return done(e);
-            var split = prepared.password.split('$');
-            expect(split[0]).to.be('pbkdf2');
-            expect(split[1]).to.be('10000');
-            stopServices(happnMock, done);
-          }
-        );
+        const prepared = await happnMock.services.security.users.__prepareUserForUpsert({
+          password: 'test'
+        });
+        var split = prepared.password.split('$');
+        expect(split[0]).to.be('pbkdf2');
+        expect(split[1]).to.be('10000');
+        stopServices(happnMock, done);
       });
     });
 

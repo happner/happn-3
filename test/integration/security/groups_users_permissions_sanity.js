@@ -928,26 +928,23 @@ describe(
 
             expect(user.groups).to.be(undefined);
 
+            expect(testServices.security.users.__cache_users.getSync(linkUser.username)).to.eql(
+              user
+            );
             expect(
-              testServices.security.users.__cache_users.getSync(linkUser.username + ':nogroups')
-            ).to.eql(user);
-            expect(
-              testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')
+              testServices.security.users.__cache_passwords.getSync(linkUser.username)
             ).to.not.be(null);
             expect(
-              testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')
+              testServices.security.users.__cache_passwords.getSync(linkUser.username)
             ).to.not.be(undefined);
 
             testServices.security.users.clearCaches().then(function() {
+              expect(testServices.security.users.__cache_users.getSync(linkUser.username)).to.be(
+                null
+              );
               expect(
-                testServices.security.users.__cache_users.getSync(linkUser.username + ':nogroups')
+                testServices.security.users.__cache_passwords.getSync(linkUser.username)
               ).to.be(null);
-              expect(
-                testServices.security.users.__cache_passwords.getSync(
-                  linkUser.username + ':nogroups'
-                )
-              ).to.be(null);
-
               callback();
             });
           });
