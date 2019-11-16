@@ -3,7 +3,6 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    const request = require('request');
     const happn = require('../../../lib/index');
     const expect = require('expect.js');
 
@@ -30,36 +29,6 @@ describe(
           resolve();
         });
       });
-    }
-
-    //eslint-disable-next-line
-    function doRequest(path, token) {
-      return new Promise((resolve, reject) => {
-        let options = {
-          url: 'http://127.0.0.1:55000' + path
-        };
-        options.headers = {
-          Cookie: ['happn_token=' + token]
-        };
-        request(options, function(error, response) {
-          if (error) return reject(error);
-          resolve(response);
-        });
-      });
-    }
-
-    //eslint-disable-next-line
-    async function createTestGroup(service, name, permissions, custom_data) {
-      return await service.services.security.users.upsertGroup(
-        {
-          name,
-          custom_data,
-          permissions
-        },
-        {
-          overwrite: false
-        }
-      );
     }
 
     async function createTestUser(service, username, password, group) {
@@ -122,8 +91,59 @@ describe(
       await stopService(service);
     });
 
-    it('does allow case sensitive user searching', async () => {
-      throw new Error('test not implemented yet');
+    it('does allow case insensitive user searching', async () => {
+      const service = await createService({
+        secure: true,
+        services: {
+          security: {
+            config: {
+              usernamesCaseInsensitive: true
+            }
+          }
+        }
+      });
+      await createTestUser(service, 'TEST1', 'TEST');
+      await createTestUser(service, 'TEST2', 'TEST');
+      await createTestUser(service, 'TEST3', 'TEST');
+      await createTestUser(service, 'test4', 'TEST');
+
+      let users = await service.services.security.users.listUsers('TEST*');
+      expect(users.length).to.be(4);
+
+      let users1 = await service.services.security.users.listUsers('test*');
+      expect(users1.length).to.be(4);
+
+      let users2 = await service.services.security.users.listUsers('tst*');
+      expect(users2.length).to.be(0);
+
+      let users3 = await service.services.security.users.listUsers('T*st');
+      expect(users3.length).to.be(4);
+
+      await stopService(service);
+    });
+
+    it('does not allow case insensitive user searching', async () => {
+      const service = await createService({
+        secure: true
+      });
+      await createTestUser(service, 'TEST1', 'TEST');
+      await createTestUser(service, 'TEST2', 'TEST');
+      await createTestUser(service, 'TEST3', 'TEST');
+      await createTestUser(service, 'test4', 'TEST');
+
+      let users = await service.services.security.users.listUsers('TEST*');
+      expect(users.length).to.be(3);
+
+      let users1 = await service.services.security.users.listUsers('test*');
+      expect(users1.length).to.be(1);
+
+      let users2 = await service.services.security.users.listUsers('tst*');
+      expect(users2.length).to.be(0);
+
+      let users3 = await service.services.security.users.listUsers('T*st');
+      expect(users3.length).to.be(0);
+
+      await stopService(service);
     });
   }
 );

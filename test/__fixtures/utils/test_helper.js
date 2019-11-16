@@ -1,6 +1,7 @@
-var shortid = require('shortid'),
+const shortid = require('shortid'),
 path = require('path'),
-fs = require('fs-extra');
+fs = require('fs-extra'),
+request = require('request');
 
 function TestHelper() {
   this.__testFiles = [];
@@ -64,6 +65,22 @@ TestHelper.prototype.showOpenHandles = function(after, delayMS){
   after('OPEN HANDLES:::', async () => {
     await this.delay(delayMS);
     why();
+  });
+};
+
+//eslint-disable-next-line
+TestHelper.prototype.doRequest = function(path, token) {
+  return new Promise((resolve, reject) => {
+    let options = {
+      url: 'http://127.0.0.1:55000' + path
+    };
+    options.headers = {
+      Cookie: ['happn_token=' + token]
+    };
+    request(options, function(error, response) {
+      if (error) return reject(error);
+      resolve(response);
+    });
   });
 };
 

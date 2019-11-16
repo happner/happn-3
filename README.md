@@ -978,6 +978,8 @@ function (e, myHappn3Instance) {
 });
 ```
 
+#### if we are using mongodb, we are able to specify collation for listing users see the [mongo tests](https://github.com/happner/happn-3/blob/master/test/integration/security/groups_users_permissions_sanity-mongo.js).
+
 #### NB! permissions are separate to the group, so when upserting the group and it already exists with other permissions the current upserts permissions are merged with the existing ones, down to action level
 
 ### add a user
