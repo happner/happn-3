@@ -643,7 +643,6 @@ describe(
       var happnClient = mockHappnClient();
       happnClient.emit = function(event_type) {
         expect(event_type).to.eql('reconnect-scheduled');
-        expect(happnClient.__reconnectSuccessful).to.be(false);
         expect(this.status).to.eql(Constants.CLIENT_STATE.RECONNECTING);
         done();
       };

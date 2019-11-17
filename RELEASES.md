@@ -678,3 +678,10 @@
 -----------------
   - feature: client session end events
   - chore: lint fixes
+
+11.1.0 2019-11-17
+-----------------
+  - feature: happner-2 #158, configure usernames to be case-insensitive
+  - test: happner-2 #179, client testing to ensure retries still happen after ENOTFOUND
+  - dep: happner-2 #186, using version 1.0.0 of happn-util-crypto, latest bitcore
+  - feature: happner-2 #188, happn client saved to .happner by packager

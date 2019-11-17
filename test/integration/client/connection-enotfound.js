@@ -33,7 +33,7 @@ describe(
           {
             config: {
               host,
-              connectTimeout: 2000
+              connectTimeout: 1000
             }
           },
           function(e, client) {

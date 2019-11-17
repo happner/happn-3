@@ -31,7 +31,8 @@
     "test-longrunning": "node test/test-longrunning/serial-run.js",
     "test-perf": "npm run lint && mocha silence.js test/performance/subscriptions.js",
     "test-sanity": "mocha silence.js test/integration/**/*sanity.js",
-    "test-unit": "mocha silence.js test/unit/**"
+    "test-unit": "mocha silence.js test/unit/**",
+    "prepare": "rm -rf node_modules/happn-cluster/node_modules/happn-3 && rm -rf node_modules/happn/node_modules/happn-util-crypto && require-self"
   },
   "dependencies": {
     "async": "^2.6.1",
@@ -49,7 +50,7 @@
     "happn-sillyname": "^0.1.1",
     "happn-stats": "^1.0.8",
     "happn-tcp-port-used": "^1.0.3",
-    "happn-util-crypto": "^0.3.0",
+    "happn-util-crypto": "^1.0.0",
     "happner-hyperid": "^2.0.0",
     "homedir": "^0.6.0",
     "hsts": "^2.1.0",
@@ -98,6 +99,7 @@
     "nyc": "^13.3.0",
     "prettier": "^1.18.2",
     "request": "^2.88.0",
+    "require-self": "^0.2.1",
     "why-is-node-running": "^2.1.0"
   },
   "database": "1",
