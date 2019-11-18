@@ -8,9 +8,10 @@ describe(
     var service = happn.service;
     var happnInstance = null;
 
+    if (process.env.INTRAVENOUS) return;//skip all tests in travis
+
     it('should initialize the service', function(callback) {
       this.timeout(20000);
-
       try {
         service.create(function(e, happnInst) {
           if (e) return callback(e);

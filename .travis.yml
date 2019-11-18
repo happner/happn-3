@@ -7,7 +7,8 @@ node_js:
   - "10"
   - "8"
 env:
-- NODE_TLS_REJECT_UNAUTHORIZED=0
+  - NODE_TLS_REJECT_UNAUTHORIZED=0
+  - INTRAVENOUS=yes
 services: mongodb
 script: "npm run-script test-cover"
 after_success: "npm run report-coverage"

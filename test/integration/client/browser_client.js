@@ -9,6 +9,9 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
+
+    if (process.env.INTRAVENOUS) return;//skip all tests in travis
+
     let clientFolder = homedir() + path.sep + '.happner' + path.sep;
 
     it('builds the happn browser client, returns the filepath', function(done) {
