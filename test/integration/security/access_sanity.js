@@ -30,10 +30,17 @@ describe(
       });
     }
 
-    before('it starts completely defaulted service', function(done) {
+    before('it starts secure service, with lockTokenToUserId switched on', function(done) {
       getService(
         {
-          secure: true
+          secure: true,
+          services: {
+            security: {
+              config: {
+                lockTokenToUserId: true
+              }
+            }
+          }
         },
         function(e, service) {
           if (e) return done(e);
@@ -1175,7 +1182,7 @@ describe(
         });
       });
 
-      xit(`deletes the test1 user, tests we are notified about the session closure,
+      it(`deletes the test1 user, tests we are notified about the session closure,
           then have no access, we retain the token, recreate the test1 user and
           we check we cannot reuse the retained token`, function(done) {
         let retainedToken = testClient1.session.token;
@@ -1193,19 +1200,16 @@ describe(
                 if (!e) return done(new Error('this should not have been allowed...'));
                 expect(e.toString()).to.be('Error: client is disconnected');
                 let firstResponse = await doRequest(testPath, retainedToken);
-                console.log('firstResponse', firstResponse.statusCode);
                 expect(firstResponse.statusCode).to.be(403);
                 await recreateAddedTestUser();
                 let secondResponse = await doRequest(testPath, retainedToken);
-                console.log('secondResponse', secondResponse.statusCode);
-                expect(secondResponse.statusCode).to.be(403);
+                expect(secondResponse.statusCode).to.be(401);
                 done();
               }
             );
           }
         });
         doRequest(testPath, retainedToken).then(controlResponse => {
-          console.log('controlResponse', controlResponse.statusCode);
           expect(controlResponse.statusCode).to.be(404);
           serviceInstance.services.security.users.deleteUser(addedTestuser1, function(e) {
             if (e) return done(e);

@@ -2,7 +2,7 @@ var MongoClient = require('mongodb').MongoClient;
 
 module.exports = function (url, collectionName) {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(url, function (err, client) {
+    MongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
       if (err) return reject(err);
       let db = client.db(collectionName);
       db.collection(collectionName).drop(function (err) {

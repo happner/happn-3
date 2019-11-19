@@ -2440,6 +2440,7 @@ describe(
           if (e) return done(e);
           expect(happnMock.services.security.config.pbkdf2Iterations).to.be(100);
           const prepared = await happnMock.services.security.users.__prepareUserForUpsert({
+            username: 'test-user',
             password: 'test'
           });
           var split = prepared.password.split('$');
@@ -2462,6 +2463,7 @@ describe(
         if (e) return done(e);
         expect(happnMock.services.security.config.pbkdf2Iterations).to.be(10000);
         const prepared = await happnMock.services.security.users.__prepareUserForUpsert({
+          username: 'test-user',
           password: 'test'
         });
         var split = prepared.password.split('$');

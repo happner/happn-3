@@ -8,7 +8,7 @@ describe(
     var service = happn.service;
     var happnInstance = null;
 
-    if (process.env.INTRAVENOUS) return;//skip all tests in travis
+    if (process.env.INTRAVENOUS) return; //skip all tests in travis
 
     it('should initialize the service', function(callback) {
       this.timeout(20000);
