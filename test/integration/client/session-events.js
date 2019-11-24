@@ -245,7 +245,7 @@ describe(
       expect(reason).to.be('inactivity-threshold');
     });
 
-    it('emits session/ended/session-revoked', async () => {
+    it('emits session/ended/token-revoked', async () => {
       let serverConfig = {
         secure: true
       };
@@ -259,12 +259,12 @@ describe(
       client.onEvent('session-ended', function(evt) {
         reason = evt.reason;
       });
-      server.services.security.revokeSession(client.session, 'test', () => {
+      server.services.security.revokeToken(client.session.token, 'test', () => {
         //do nothing
       });
       await delay(1000);
       await stopServer();
-      expect(reason).to.be('session-revoked');
+      expect(reason).to.be('token-revoked');
     });
   }
 );

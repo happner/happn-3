@@ -2936,7 +2936,7 @@ describe(
           }
         };
         happnMock.services.security.decodeToken = token => {
-          return token;
+          return JSON.parse(JSON.stringify(token));
         };
         happnMock.services.system = {
           getDescription: () => {
@@ -2957,15 +2957,15 @@ describe(
         ).to.eql({
           test: 'session'
         });
+        happnMock.services.security.decodeToken = token => {
+          return { token };
+        };
         expect(
           happnMock.services.security.sessionFromRequest(
             {
               cookies: {
-                get: cookieName => {
-                  return {
-                    token: 'TEST-TOKEN',
-                    cookieName
-                  };
+                get: () => {
+                  return 'TEST-TOKEN';
                 }
               }
             },
@@ -2973,7 +2973,6 @@ describe(
           )
         ).to.eql({
           token: 'TEST-TOKEN',
-          cookieName: 'happn_token',
           type: 0,
           happn: {
             name: 'test-description'

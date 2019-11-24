@@ -146,7 +146,7 @@ describe(testHelper.testName(__filename, 3), function () {
     });
   }
 
-  it('tests session revocation on a secure instance', function (callback) {
+  it('tests token revocation on a secure instance', function (callback) {
     this.timeout(20000);
     var RandomActivityGenerator = require("happn-random-activity-generator");
     var randomActivity1 = new RandomActivityGenerator(clientInstance);
@@ -160,16 +160,16 @@ describe(testHelper.testName(__filename, 3), function () {
             serviceInstance.services.security.listSessionActivity(function (e, list) {
               if (e) return callback(e);
               expect(list.length).to.be(1);
-              serviceInstance.services.security.revokeSession(session, 'APP', async (e) => {
+              serviceInstance.services.security.revokeToken(session.token, 'APP', async (e) => {
                 if (e) return callback(e);
-                serviceInstance.services.security.listRevokedSessions(async (e, items) => {
+                serviceInstance.services.security.listRevokedTokens(async (e, items) => {
                   if (e) return callback(e);
                   expect(items.length).to.be(1);
                   const wasOk = await gotClientFromToken(session.token);
                   expect(wasOk).to.be(false);
-                  serviceInstance.services.security.restoreSession(session, async (e) => {
+                  serviceInstance.services.security.restoreToken(session.token, async (e) => {
                     if (e) return callback(e);
-                    serviceInstance.services.security.listRevokedSessions(async (e, items) => {
+                    serviceInstance.services.security.listRevokedTokens(async (e, items) => {
                       if (e) return callback(e);
                       expect(items.length).to.be(0);
                       const wasOk = await gotClientFromToken(session.token);

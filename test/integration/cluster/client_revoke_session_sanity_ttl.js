@@ -46,7 +46,7 @@ describe(
     ];
 
     function checkRevocationInPlace(service, sessionId) {
-      return service.services.security.__cache_revoked_sessions.__cache[sessionId] != null;
+      return service.services.security.__cache_revoked_tokens.__cache[sessionId] != null;
     }
 
     async function clearMongoDb() {
@@ -196,18 +196,18 @@ describe(
       });
       let client2 = await getClient({ token: client1.session.token, port: 56001 });
       await doEventRoundTripClient(client2);
-      await client1.disconnect({ revokeSession: true });
+      await client1.disconnect({ revokeToken: true });
       try {
         await delay(5000);
         await doEventRoundTripClient(client2);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
-        expect(checkRevocationInPlace(clusterServices[0], client1.session.id)).to.be(true);
-        expect(checkRevocationInPlace(clusterServices[1], client1.session.id)).to.be(true);
+        expect(e.message).to.be('token has been revoked');
+        expect(checkRevocationInPlace(clusterServices[0], client1.session.token)).to.be(true);
+        expect(checkRevocationInPlace(clusterServices[1], client1.session.token)).to.be(true);
         await delay(20000);
-        expect(checkRevocationInPlace(clusterServices[0], client1.session.id)).to.be(false);
-        expect(checkRevocationInPlace(clusterServices[1], client1.session.id)).to.be(false);
+        expect(checkRevocationInPlace(clusterServices[0], client1.session.token)).to.be(false);
+        expect(checkRevocationInPlace(clusterServices[1], client1.session.token)).to.be(false);
         await client2.disconnect();
       }
     });

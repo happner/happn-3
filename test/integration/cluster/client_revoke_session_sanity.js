@@ -170,13 +170,13 @@ describe(
       });
       let client2 = await getClient({ token: client1.session.token, port: 56001 });
       await doEventRoundTripClient(client2);
-      await client1.disconnect({ revokeSession: true });
+      await client1.disconnect({ revokeToken: true });
       try {
         await delay(5000);
         await doEventRoundTripClient(client2);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
+        expect(e.message).to.be('token has been revoked');
         client2.disconnect();
       }
     });
@@ -189,13 +189,13 @@ describe(
       });
       let client2 = await getClient({ token: client1.session.token, port: 56001 });
       await doEventRoundTripClient(client1);
-      await client2.disconnect({ revokeSession: true });
+      await client2.disconnect({ revokeToken: true });
       try {
         await delay(2000);
         await doEventRoundTripClient(client1);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
+        expect(e.message).to.be('token has been revoked');
         client1.disconnect();
       }
     });
@@ -209,13 +209,13 @@ describe(
       let client2 = await getClient({ token: client1.session.token, port: 56001 });
       let client3 = await getClient({ token: client2.session.token, port: 56001 });
       await doEventRoundTripClient(client1);
-      await client3.disconnect({ revokeSession: true });
+      await client3.disconnect({ revokeToken: true });
       try {
         await delay(1000);
         await doEventRoundTripClient(client1);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
+        expect(e.message).to.be('token has been revoked');
         client1.disconnect();
         client2.disconnect();
       }
@@ -230,21 +230,21 @@ describe(
       let client2 = await getClient({ token: client1.session.token, port: 56001 });
       let client3 = await getClient({ token: client2.session.token, port: 56001 });
       await doEventRoundTripClient(client3);
-      await client1.disconnect({ revokeSession: true });
+      await client1.disconnect({ revokeToken: true });
       try {
         await delay(1000);
         await doEventRoundTripClient(client3);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
+        expect(e.message).to.be('token has been revoked');
         client2.disconnect();
         client3.disconnect();
       }
     });
 
-    function restoreSession(sessionId) {
+    function restoreToken(token) {
       return new Promise((resolve, reject) => {
-        clusterServices[0].services.security.restoreSession(sessionId, function(e) {
+        clusterServices[0].services.security.restoreToken(token, function(e) {
           if (e) return reject(e);
           resolve();
         });
@@ -257,19 +257,18 @@ describe(
         password: 'TEST PWD',
         port: 56000
       });
-      let client1SessionId = client1.session.id;
       let client2 = await getClient({ token: client1.session.token, port: 56001 });
       let client3 = await getClient({ token: client2.session.token, port: 56001 });
       await doEventRoundTripClient(client3);
-      await client1.disconnect({ revokeSession: true });
+      await client1.disconnect({ revokeToken: true });
       try {
         await delay(1000);
         await doEventRoundTripClient(client3);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
-        await restoreSession(client1SessionId);
-        await delay(1000);
+        expect(e.message).to.be('token has been revoked');
+        await restoreToken(client1.session.token);
+        await delay(2000);
         await doEventRoundTripClient(client3);
         client2.disconnect();
         client3.disconnect();

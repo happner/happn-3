@@ -1863,10 +1863,10 @@ describe(
     it('tests the revokeSession function calls a perform system request with revoke-session', function(done) {
       var happnClient = mockHappnClient();
       happnClient.__performSystemRequest = function(action, data, options, callback) {
-        expect(action).to.equal('revoke-session');
+        expect(action).to.equal('revoke-token');
         callback();
       };
-      happnClient.revokeSession(function() {
+      happnClient.revokeToken(function() {
         done();
       });
     });
