@@ -176,7 +176,7 @@ describe(
         await doEventRoundTripClient(client2);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('token has been revoked');
+        expect(e.message).to.be('client is disconnected');
         client2.disconnect();
       }
     });
@@ -195,7 +195,7 @@ describe(
         await doEventRoundTripClient(client1);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('token has been revoked');
+        expect(e.message).to.be('client is disconnected');
         client1.disconnect();
       }
     });
@@ -215,7 +215,7 @@ describe(
         await doEventRoundTripClient(client1);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('token has been revoked');
+        expect(e.message).to.be('client is disconnected');
         client1.disconnect();
         client2.disconnect();
       }
@@ -229,6 +229,15 @@ describe(
       });
       let client2 = await getClient({ token: client1.session.token, port: 56001 });
       let client3 = await getClient({ token: client2.session.token, port: 56001 });
+      let sessionEndedEvents = [];
+      client2.onEvent('session-ended', evt => {
+        sessionEndedEvents.push(evt);
+      });
+
+      client3.onEvent('session-ended', evt => {
+        sessionEndedEvents.push(evt);
+      });
+
       await doEventRoundTripClient(client3);
       await client1.disconnect({ revokeToken: true });
       try {
@@ -236,7 +245,9 @@ describe(
         await doEventRoundTripClient(client3);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('token has been revoked');
+        await delay(1000);
+        expect(e.message).to.be('client is disconnected');
+        expect(sessionEndedEvents.length).to.be(2);
         client2.disconnect();
         client3.disconnect();
       }
@@ -251,7 +262,7 @@ describe(
       });
     }
 
-    it('ensures revoking a token on 1 client revokes the token on all clients using the token - then restoring the session allows access again, 3 levels deep', async () => {
+    it('ensures revoking a token on 1 client revokes the token on all clients using the token - then restoring the token allows access again, 3 levels deep', async () => {
       let client1 = await getClient({
         username: testUser.username,
         password: 'TEST PWD',
@@ -266,9 +277,10 @@ describe(
         await doEventRoundTripClient(client3);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('token has been revoked');
+        expect(e.message).to.be('client is disconnected');
         await restoreToken(client1.session.token);
         await delay(2000);
+        client3 = await getClient({ token: client2.session.token, port: 56001 });
         await doEventRoundTripClient(client3);
         client2.disconnect();
         client3.disconnect();

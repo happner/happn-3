@@ -15,7 +15,6 @@ describe(
       services: {
         security: {
           config: {
-            lockTokenToLoginType: true,
             sessionTokenSecret: 'h1_test-secret',
             profiles: [
               {

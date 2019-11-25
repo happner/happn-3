@@ -167,7 +167,7 @@ module.exports = function(serviceConfig1, serviceConfig2) {
       );
     });
 
-    it('logs in with the test client, supplying a public key, we perform a bunch of operations - we remember the token and logout with revokeSession true - we then ensure we are able to login with the revoked token, because revokeSession does not do anything anymore', function(done) {
+    it('logs in with the test client, supplying a public key, we perform a bunch of operations - we remember the token and logout with revokeSession true - we then ensure we are unable to login with the revoked token', function(done) {
       getClient(
         {
           config: {
@@ -201,11 +201,8 @@ module.exports = function(serviceConfig1, serviceConfig2) {
                       token: token,
                       port: 10000
                     },
-                    function(e, instance) {
-                      if (e) return done(e);
-                      instance.disconnect({
-                        reconnect: false
-                      });
+                    function(e) {
+                      expect(e.message).to.be('token has been revoked');
                       done();
                     }
                   );

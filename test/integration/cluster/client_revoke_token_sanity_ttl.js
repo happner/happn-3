@@ -202,7 +202,7 @@ describe(
         await doEventRoundTripClient(client2);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('token has been revoked');
+        expect(e.message).to.be('client is disconnected');
         expect(checkRevocationInPlace(clusterServices[0], client1.session.token)).to.be(true);
         expect(checkRevocationInPlace(clusterServices[1], client1.session.token)).to.be(true);
         await delay(20000);
