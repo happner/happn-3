@@ -156,7 +156,7 @@ describe(
         clientsSessionEvents['session-ended-4'] = evt;
       });
 
-      await client1.disconnect({revokeToken:true});
+      await client1.disconnect({ revokeToken: true });
       await delay(1000);
 
       expect(clientsSessionEvents).to.eql({
@@ -221,7 +221,7 @@ describe(
         clientsSessionEvents['session-ended-4'] = evt;
       });
 
-      await client1.disconnect({revokeSession:true});
+      await client1.disconnect({ revokeSession: true });
       await delay(1000);
 
       expect(clientsSessionEvents).to.eql({
@@ -286,7 +286,7 @@ describe(
         clientsSessionEvents['session-ended-4'] = evt;
       });
 
-      await client4.disconnect({revokeToken:true});
+      await client4.disconnect({ revokeToken: true });
       await delay(1000);
 
       expect(clientsSessionEvents).to.eql({
