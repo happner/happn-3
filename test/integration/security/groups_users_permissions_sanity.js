@@ -493,6 +493,7 @@ describe(
               expect(result.password).to.equal(undefined);
 
               delete result._meta;
+              delete result.userid;
 
               expect(result).to.eql({
                 custom_data: {
@@ -508,6 +509,7 @@ describe(
                 expect(result.data.password !== 'TEST PWD').to.be(true);
 
                 delete result.data.password;
+                delete result.data.userid;
 
                 expect(result.data).to.eql({
                   custom_data: {
@@ -522,8 +524,21 @@ describe(
           );
         });
 
-        it('should add another user', function(callback) {
-          testServices.security.users.upsertUser(anotherTestUser, { overwrite: false }, callback);
+        it('should add another user, update userid stays same', function(callback) {
+          testServices.security.users.upsertUser(anotherTestUser, { overwrite: false }, e => {
+            if (e) return callback(e);
+            testServices.security.users.getUser(anotherTestUser.username, (e, fetched) => {
+              if (e) return callback(e);
+              expect(fetched.userid != null).to.be(true);
+              var userid = fetched.userid;
+              fetched.custom_data.test1 = true;
+              testServices.security.users.upsertUser(fetched, { overwrite: true }, e => {
+                if (e) return callback(e);
+                expect(fetched.userid === userid).to.be(true);
+                callback();
+              });
+            });
+          });
         });
 
         it('should not add another user with the same name', function(callback) {
@@ -583,6 +598,7 @@ describe(
                 result
               ) {
                 delete result.data.password;
+                delete result.data.userid;
 
                 expect(result.data).to.eql({
                   custom_data: {},
@@ -928,26 +944,23 @@ describe(
 
             expect(user.groups).to.be(undefined);
 
+            expect(testServices.security.users.__cache_users.getSync(linkUser.username)).to.eql(
+              user
+            );
             expect(
-              testServices.security.users.__cache_users.getSync(linkUser.username + ':nogroups')
-            ).to.eql(user);
-            expect(
-              testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')
+              testServices.security.users.__cache_passwords.getSync(linkUser.username)
             ).to.not.be(null);
             expect(
-              testServices.security.users.__cache_passwords.getSync(linkUser.username + ':nogroups')
+              testServices.security.users.__cache_passwords.getSync(linkUser.username)
             ).to.not.be(undefined);
 
             testServices.security.users.clearCaches().then(function() {
+              expect(testServices.security.users.__cache_users.getSync(linkUser.username)).to.be(
+                null
+              );
               expect(
-                testServices.security.users.__cache_users.getSync(linkUser.username + ':nogroups')
+                testServices.security.users.__cache_passwords.getSync(linkUser.username)
               ).to.be(null);
-              expect(
-                testServices.security.users.__cache_passwords.getSync(
-                  linkUser.username + ':nogroups'
-                )
-              ).to.be(null);
-
               callback();
             });
           });

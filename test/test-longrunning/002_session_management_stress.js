@@ -112,11 +112,7 @@ describe('longrunning/002_session_management_sanity', function() {
                   randomActivity.generateActivityEnd('test', function(aggregatedLog) {
                     sessionData.results = aggregatedLog;
                     sessionData.client = instance;
-
-                    console.log('collected data:::', aggregatedLog);
-
                     session_results.push(sessionData);
-
                     timeCB();
                   });
                 }, 1500);
@@ -186,11 +182,9 @@ describe('longrunning/002_session_management_sanity', function() {
                     randomActivity.generateActivityEnd('test', function(aggregatedLog) {
                       sessionData.results = aggregatedLog;
                       sessionData.client = instance;
-
+                      //eslint-disable-next-line no-console
                       console.log('collected data:::', timeIndex + 1);
-
                       session_results.push(sessionData);
-
                       timeCB();
                     });
                   }, 2500);
@@ -204,18 +198,10 @@ describe('longrunning/002_session_management_sanity', function() {
             setTimeout(function() {
               serviceInstance.services.security.listActiveSessions(function(e, list) {
                 if (e) return callback(e);
-
-                console.log('active sessions:::', list.length);
-
                 expect(list.length).to.be(times + 1); //+1 for connected client
-
                 serviceInstance.services.security.listSessionActivity(function(e, list) {
                   if (e) return callback(e);
-
-                  console.log('sessions activity:::', list.length);
-
                   expect(list.length).to.be(times);
-
                   callback();
                 });
               });

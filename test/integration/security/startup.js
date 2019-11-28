@@ -56,7 +56,8 @@ describe(
 
           if (serviceName === 'error')
             happnMock.services[serviceName].handleFatal = function(message, e) {
-              console.log('FATAL FAILURE:::', message);
+              //eslint-disable-next-line no-console
+              console.log('FATAL FAILURE:', message);
               throw e;
             };
 

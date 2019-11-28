@@ -9,12 +9,14 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
+    if (process.env.INTRAVENOUS) return; //skip all tests in travis
+
+    let clientFolder = homedir() + path.sep + '.happner' + path.sep;
+
     it('builds the happn browser client, returns the filepath', function(done) {
       var clientCode = Happn.packager.browserClient();
 
-      expect(clientCode).to.be(
-        homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js'
-      );
+      expect(clientCode).to.be(clientFolder + 'happn-3-browser-client-' + Happn.version + '.js');
 
       done();
     });
@@ -26,7 +28,7 @@ describe(
 
       expect(
         clientCode.length >
-          (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length
+          (clientFolder + 'happn-3-browser-client-' + Happn.version + '.js').length
       ).to.be(true);
 
       done();
@@ -38,7 +40,7 @@ describe(
       Happn.packager.__cachedBrowserClient = null;
 
       try {
-        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+        fs.unlinkSync(clientFolder + 'happn-3-browser-client-' + Happn.version + '.js');
       } catch (e) {
         // ignore
       }
@@ -73,7 +75,7 @@ describe(
         end: function(content) {
           expect(
             content.length >
-              (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length
+              (clientFolder + 'happn-3-browser-client-' + Happn.version + '.js').length
           ).to.be(true);
           done();
         }
@@ -88,7 +90,7 @@ describe(
       Happn.packager.__cachedBrowserClient = null;
 
       try {
-        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+        fs.unlinkSync(clientFolder + 'happn-3-browser-client-' + Happn.version + '.js');
       } catch (e) {
         // ignore
       }
@@ -112,7 +114,7 @@ describe(
         end: function(content) {
           expect(
             content.length >
-              (homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js').length
+              (clientFolder + 'happn-3-browser-client-' + Happn.version + '.js').length
           ).to.be(true);
           expect(content.indexOf('id TEST_UNIQUE_ID') > -1).to.be(true);
 
@@ -130,7 +132,7 @@ describe(
       Happn.packager.__cachedBrowserClient = null;
 
       try {
-        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+        fs.unlinkSync(clientFolder + 'happn-3-browser-client-' + Happn.version + '.js');
       } catch (e) {
         // ignore
       }
@@ -153,7 +155,7 @@ describe(
       Happn.packager.__cachedBrowserClient = null;
 
       try {
-        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+        fs.unlinkSync(clientFolder + 'happn-3-browser-client-' + Happn.version + '.js');
       } catch (e) {
         // ignore
       }
@@ -171,7 +173,7 @@ describe(
       Happn.packager.__cachedBrowserClient = null;
 
       try {
-        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+        fs.unlinkSync(clientFolder + 'happn-3-browser-client-' + Happn.version + '.js');
       } catch (e) {
         // ignore
       }
@@ -188,7 +190,7 @@ describe(
       Happn.packager.__cachedBrowserClient = null;
 
       try {
-        fs.unlinkSync(homedir() + path.sep + 'happn-3-browser-client-' + Happn.version + '.js');
+        fs.unlinkSync(clientFolder + 'happn-3-browser-client-' + Happn.version + '.js');
       } catch (e) {
         // ignore
       }

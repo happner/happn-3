@@ -91,6 +91,7 @@ describe(require('path').basename(__filename), function() {
           }
         }
         server1.services.session.primus.on('connection', function() {
+          //eslint-disable-next-line no-console
           console.log('Connection attempt');
           server1.services.session.emit('connectionAttempt');
         });
@@ -104,11 +105,11 @@ describe(require('path').basename(__filename), function() {
 
       server1.stop(function(e) {
         if (e) {
+          //eslint-disable-next-line no-console
           console.warn('failed to stop server1: ' + e.toString());
           reject(e);
           return;
         }
-
         resolve();
       });
     });

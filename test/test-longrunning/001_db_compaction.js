@@ -183,7 +183,8 @@ describe('longrunning/001_db_compaction', function() {
       function(e) {
         if (e) {
           afterErrors.push(e);
-          console.log('service failed to stop:::', service);
+          //eslint-disable-next-line no-console
+          console.log('service failed to stop:', service);
         }
 
         //unlink files

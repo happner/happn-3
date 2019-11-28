@@ -38,10 +38,20 @@ describe(
         new: function() {}
       };
 
-      obj.happn.services.data = {};
+      obj.happn.services.data = {
+        //eslint-disable-next-line
+        get:function(path, callback){
+          callback(null, null);
+        },
+        //eslint-disable-next-line
+        upsert:function(path, data, callback){
+          callback(null, data);
+        }
+      };
 
       obj.happn.services.error = {
         handleFatal: function(str, e) {
+          //eslint-disable-next-line no-console
           console.error(str, e);
         }
       };

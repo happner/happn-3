@@ -59,9 +59,12 @@ describe(
       function(done) {
         var subscriptions = [];
 
+        //eslint-disable-next-line no-console
         console.log('building subscriptions...');
 
-        var randomPaths = random.randomPaths({ count: SUBSCRIPTION_COUNT });
+        var randomPaths = random.randomPaths({
+          count: SUBSCRIPTION_COUNT
+        });
 
         randomPaths.forEach(function(path) {
           var possibleSubscriptions = random.getWildcardPermutations(path);
@@ -77,10 +80,13 @@ describe(
         for (var i = 0; i < SEARCH_COUNT; i++)
           searchPaths.push(randomPaths[random.integer(0, randomPaths.length - 1)]);
 
+        //eslint-disable-next-line no-console
         console.log('built subscriptions...');
 
         var startedSubscribing = Date.now();
-        var setResults = { counters: {} };
+        var setResults = {
+          counters: {}
+        };
 
         var eventsCount = 0;
         var startedSearching;
@@ -91,12 +97,17 @@ describe(
           setResults.counters[data.counter] = true;
           eventsCount++;
 
-          // console.log('event path: ' + meta.path);
-          // console.log('match path: ' + this.path);
+          //eslint-disable-next-line no-console
+          console.log('event path: ' + meta.path);
+          //eslint-disable-next-line no-console
+          console.log('match path: ' + this.path);
 
           if (eventsCount === 10000) {
-            // console.log(JSON.stringify(setResults, null, 2));
-            // console.log(JSON.stringify(subscriptions, null, 2));
+            //eslint-disable-next-line no-console
+            console.log(JSON.stringify(setResults, null, 2));
+            //eslint-disable-next-line no-console
+            console.log(JSON.stringify(subscriptions, null, 2));
+            //eslint-disable-next-line no-console
             console.log(
               'handled ' +
                 eventsCount +
@@ -110,10 +121,18 @@ describe(
         async.each(
           subscriptions,
           function(subscription, subscriptionCB) {
-            //console.log('subscribed:::', subscription);
-            client.on(subscription, handleOn.bind({ path: subscription }), subscriptionCB);
+            //eslint-disable-next-line no-console
+            console.log('subscribed:::', subscription);
+            client.on(
+              subscription,
+              handleOn.bind({
+                path: subscription
+              }),
+              subscriptionCB
+            );
           },
           function() {
+            //eslint-disable-next-line no-console
             console.log(
               'did ' +
                 SUBSCRIPTION_COUNT +
@@ -131,12 +150,17 @@ describe(
                   {
                     counter: counter++
                   },
-                  { noStore: NOSTORE, consistency: CONSISTENCY, onPublished: function() {} },
+                  {
+                    noStore: NOSTORE,
+                    consistency: CONSISTENCY,
+                    onPublished: function() {}
+                  },
                   randomPathCB
                 );
               },
               function(e) {
                 if (e) return done(e);
+                //eslint-disable-next-line no-console
                 console.log(
                   'handled ' +
                     SEARCH_COUNT +
@@ -144,6 +168,7 @@ describe(
                     ((Date.now() - startedSearching) / 1000).toString() +
                     ' seconds'
                 );
+                //eslint-disable-next-line no-console
                 console.log('handled ' + eventsCount + 'events in total');
                 done();
               }
@@ -162,9 +187,12 @@ describe(
       function(done) {
         var subscriptions = [];
 
+        //eslint-disable-next-line no-console
         console.log('building subscriptions...');
 
-        var randomPaths = random.randomPaths({ count: SUBSCRIPTION_COUNT });
+        var randomPaths = random.randomPaths({
+          count: SUBSCRIPTION_COUNT
+        });
 
         randomPaths.forEach(function(path) {
           var possibleSubscriptions = random.getWildcardPermutations(path);
@@ -180,10 +208,13 @@ describe(
         for (var i = 0; i < SEARCH_COUNT; i++)
           searchPaths.push(randomPaths[random.integer(0, randomPaths.length - 1)]);
 
+        //eslint-disable-next-line no-console
         console.log('built subscriptions...');
 
         var startedSubscribing = Date.now();
-        var setResults = { counters: {} };
+        var setResults = {
+          counters: {}
+        };
 
         var eventsCount = 0;
         var startedSearching;
@@ -194,8 +225,11 @@ describe(
           setResults.counters[data.counter] = true;
           eventsCount++;
           if (eventsCount === SEARCH_COUNT) {
-            // console.log(JSON.stringify(setResults, null, 2));
-            // console.log(JSON.stringify(subscriptions, null, 2));
+            //eslint-disable-next-line no-console
+            console.log(JSON.stringify(setResults, null, 2));
+            //eslint-disable-next-line no-console
+            console.log(JSON.stringify(subscriptions, null, 2));
+            //eslint-disable-next-line no-console
             console.log(
               'handled ' +
                 SEARCH_COUNT +
@@ -209,9 +243,16 @@ describe(
         async.eachSeries(
           subscriptions,
           function(subscription, subscriptionCB) {
-            client.on(subscription, handleOn.bind({ path: subscription }), subscriptionCB);
+            client.on(
+              subscription,
+              handleOn.bind({
+                path: subscription
+              }),
+              subscriptionCB
+            );
           },
           function() {
+            //eslint-disable-next-line no-console
             console.log(
               'did ' +
                 SUBSCRIPTION_COUNT +
@@ -229,12 +270,16 @@ describe(
                   {
                     counter: counter++
                   },
-                  { noStore: NOSTORE, consistency: CONSISTENCY },
+                  {
+                    noStore: NOSTORE,
+                    consistency: CONSISTENCY
+                  },
                   randomPathCB
                 );
               },
               function(e) {
                 if (e) return done(e);
+                //eslint-disable-next-line no-console
                 console.log(
                   'handled ' +
                     SEARCH_COUNT +
@@ -259,9 +304,12 @@ describe(
       function(done) {
         var subscriptions = [];
 
+        //eslint-disable-next-line no-console
         console.log('building subscriptions...');
 
-        var randomPaths = random.randomPaths({ count: SUBSCRIPTION_COUNT });
+        var randomPaths = random.randomPaths({
+          count: SUBSCRIPTION_COUNT
+        });
 
         randomPaths.forEach(function(path) {
           subscriptions.push(path);
@@ -272,10 +320,13 @@ describe(
         for (var i = 0; i < SEARCH_COUNT; i++)
           searchPaths.push(randomPaths[random.integer(0, randomPaths.length - 1)]);
 
+        //eslint-disable-next-line no-console
         console.log('built subscriptions...');
 
         var startedSubscribing = Date.now();
-        var setResults = { counters: {} };
+        var setResults = {
+          counters: {}
+        };
 
         var eventsCount = 0;
         var startedSearching;
@@ -287,8 +338,11 @@ describe(
           eventsCount++;
 
           if (eventsCount % 1000 === 0) {
-            // console.log(JSON.stringify(setResults, null, 2));
-            // console.log(JSON.stringify(subscriptions, null, 2));
+            //eslint-disable-next-line no-console
+            console.log(JSON.stringify(setResults, null, 2));
+            //eslint-disable-next-line no-console
+            console.log(JSON.stringify(subscriptions, null, 2));
+            //eslint-disable-next-line no-console
             console.log(
               'handled ' +
                 eventsCount +
@@ -302,9 +356,16 @@ describe(
         async.each(
           subscriptions,
           function(subscription, subscriptionCB) {
-            client.on(subscription, handleOn.bind({ path: subscription }), subscriptionCB);
+            client.on(
+              subscription,
+              handleOn.bind({
+                path: subscription
+              }),
+              subscriptionCB
+            );
           },
           function() {
+            //eslint-disable-next-line no-console
             console.log(
               'did ' +
                 SUBSCRIPTION_COUNT +
@@ -322,12 +383,16 @@ describe(
                   {
                     counter: counter++
                   },
-                  { noStore: NOSTORE, consistency: CONSISTENCY },
+                  {
+                    noStore: NOSTORE,
+                    consistency: CONSISTENCY
+                  },
                   randomPathCB
                 );
               },
               function(e) {
                 if (e) return done(e);
+                //eslint-disable-next-line no-console
                 console.log(
                   'handled ' +
                     SEARCH_COUNT +
@@ -352,9 +417,12 @@ describe(
       function(done) {
         var subscriptions = [];
 
+        //eslint-disable-next-line no-console
         console.log('building subscriptions...');
 
-        var randomPaths = random.randomPaths({ count: SUBSCRIPTION_COUNT });
+        var randomPaths = random.randomPaths({
+          count: SUBSCRIPTION_COUNT
+        });
 
         randomPaths.forEach(function(path) {
           subscriptions.push(path);
@@ -365,10 +433,13 @@ describe(
         for (var i = 0; i < SEARCH_COUNT; i++)
           searchPaths.push(randomPaths[random.integer(0, randomPaths.length - 1)]);
 
+        //eslint-disable-next-line no-console
         console.log('built subscriptions...');
 
         var startedSubscribing = Date.now();
-        var setResults = { counters: {} };
+        var setResults = {
+          counters: {}
+        };
 
         var eventsCount = 0;
         var startedSearching;
@@ -379,8 +450,11 @@ describe(
           setResults.counters[data.counter] = true;
           eventsCount++;
           if (eventsCount === SEARCH_COUNT) {
-            // console.log(JSON.stringify(setResults, null, 2));
-            // console.log(JSON.stringify(subscriptions, null, 2));
+            //eslint-disable-next-line no-console
+            console.log(JSON.stringify(setResults, null, 2));
+            //eslint-disable-next-line no-console
+            console.log(JSON.stringify(subscriptions, null, 2));
+            //eslint-disable-next-line no-console
             console.log(
               'handled ' +
                 SEARCH_COUNT +
@@ -395,9 +469,16 @@ describe(
         async.eachSeries(
           subscriptions,
           function(subscription, subscriptionCB) {
-            client.on(subscription, handleOn.bind({ path: subscription }), subscriptionCB);
+            client.on(
+              subscription,
+              handleOn.bind({
+                path: subscription
+              }),
+              subscriptionCB
+            );
           },
           function() {
+            //eslint-disable-next-line no-console
             console.log(
               'did ' +
                 SUBSCRIPTION_COUNT +
@@ -415,12 +496,16 @@ describe(
                   {
                     counter: counter++
                   },
-                  { noStore: NOSTORE, consistency: CONSISTENCY },
+                  {
+                    noStore: NOSTORE,
+                    consistency: CONSISTENCY
+                  },
                   randomPathCB
                 );
               },
               function(e) {
                 if (e) return done(e);
+                //eslint-disable-next-line no-console
                 console.log(
                   'handled ' +
                     SEARCH_COUNT +
@@ -444,9 +529,12 @@ describe(
       function(done) {
         var subscriptions = [];
 
+        //eslint-disable-next-line no-console
         console.log('building subscriptions...');
 
-        var randomPaths = random.randomPaths({ count: SUBSCRIPTION_COUNT });
+        var randomPaths = random.randomPaths({
+          count: SUBSCRIPTION_COUNT
+        });
 
         randomPaths.forEach(function(path) {
           subscriptions.push(path);
@@ -457,10 +545,13 @@ describe(
         for (var i = 0; i < SEARCH_COUNT; i++)
           searchPaths.push(randomPaths[random.integer(0, randomPaths.length - 1)]);
 
+        //eslint-disable-next-line no-console
         console.log('built subscriptions...');
 
         var startedSubscribing = Date.now();
-        var setResults = { counters: {} };
+        var setResults = {
+          counters: {}
+        };
 
         var eventsCount = 0;
         var startedSearching;
@@ -471,8 +562,11 @@ describe(
           setResults.counters[data.counter] = true;
           eventsCount++;
           if (eventsCount === SEARCH_COUNT) {
-            // console.log(JSON.stringify(setResults, null, 2));
-            // console.log(JSON.stringify(subscriptions, null, 2));
+            //eslint-disable-next-line no-console
+            console.log(JSON.stringify(setResults, null, 2));
+            //eslint-disable-next-line no-console
+            console.log(JSON.stringify(subscriptions, null, 2));
+            //eslint-disable-next-line no-console
             console.log(
               'handled ' +
                 SEARCH_COUNT +
@@ -486,9 +580,16 @@ describe(
         async.eachSeries(
           subscriptions,
           function(subscription, subscriptionCB) {
-            client.on(subscription, handleOn.bind({ path: subscription }), subscriptionCB);
+            client.on(
+              subscription,
+              handleOn.bind({
+                path: subscription
+              }),
+              subscriptionCB
+            );
           },
           function() {
+            //eslint-disable-next-line no-console
             console.log(
               'did ' +
                 SUBSCRIPTION_COUNT +
@@ -506,12 +607,15 @@ describe(
                   {
                     counter: counter++
                   },
-                  { noPublish: true },
+                  {
+                    noPublish: true
+                  },
                   randomPathCB
                 );
               },
               function(e) {
                 if (e) return done(e);
+                //eslint-disable-next-line no-console
                 console.log(
                   'handled ' +
                     SEARCH_COUNT +

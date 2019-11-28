@@ -109,14 +109,10 @@ describe(
             callback();
           },
           function(e) {
-            //////////////////console.log('ON HAS HAPPENED: ' + e);
-
             if (!e) {
               expect(
                 eventEmitterClient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length
               ).to.be(1);
-              //////////////////console.log('on subscribed, about to publish');
-
               //then make the change
               socketClient.set(
                 '/e2e_test1/testsubscribe/data/event',
@@ -127,6 +123,7 @@ describe(
                 },
                 null,
                 function() {
+                  //eslint-disable-next-line no-console
                   console.log('put happened - listening for result');
                 }
               );
@@ -156,14 +153,10 @@ describe(
             callback();
           },
           function(e) {
-            //////////////////console.log('ON HAS HAPPENED: ' + e);
-
             if (!e) {
               expect(
                 socketClient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length
               ).to.be(1);
-              //////////////////console.log('on subscribed, about to publish');
-
               //then make the change
               eventEmitterClient.set(
                 '/e2e_test1/testsubscribe/data/event',
@@ -174,7 +167,7 @@ describe(
                 },
                 null,
                 function() {
-                  ////////////////////////////console.log('put happened - listening for result');
+                  //do nothing
                 }
               );
             } else callback(e);
@@ -202,21 +195,13 @@ describe(
             noPublish: true
           },
           function(e) {
-            ////////////console.log('set happened');
-            ////////////console.log([e, result]);
-
             if (!e) {
               socketClient.get('e2e_test1/testsubscribe/data/' + test_path_end, null, function(
                 e,
                 results
               ) {
-                ////////////console.log('new data results');
-                ////////////console.log([e, results]);
-
                 expect(results.property1 === 'property1').to.be(true);
-
                 if (mode !== 'embedded') expect(results.created === results.modified).to.be(true);
-
                 callback(e);
               });
             } else callback(e);
@@ -243,10 +228,6 @@ describe(
           null,
           function(e) {
             if (e) return callback(e);
-
-            //////////////console.log('set results');
-            //////////////console.log(result);
-
             socketClient.set(
               'e2e_test1/testsubscribe/data/merge/' + test_path_end,
               {
@@ -257,22 +238,13 @@ describe(
               },
               function(e) {
                 if (e) return callback(e);
-
-                //////////////console.log('merge set results');
-                //////////////console.log(result);
-
                 socketClient.get(
                   'e2e_test1/testsubscribe/data/merge/' + test_path_end,
                   null,
                   function(e, results) {
                     if (e) return callback(e);
-
-                    //////////////console.log('merge get results');
-                    //////////////console.log(results);
-
                     expect(results.property4).to.be('property4');
                     expect(results.property1).to.be('property1');
-
                     callback();
                   }
                 );
@@ -286,8 +258,6 @@ describe(
     });
 
     it('should search for a complex object', function(callback) {
-      //////////////////////////console.log('DOING COMPLEX SEARCH');
-
       var test_path_end = require('shortid').generate();
 
       var complex_obj = {
@@ -354,8 +324,6 @@ describe(
             null,
             function(e) {
               expect(e == null).to.be(true);
-
-              ////////////console.log('searching');
               socketClient.get(
                 '/e2e_test1/testsubscribe/data/complex*',
                 {
@@ -363,11 +331,8 @@ describe(
                   options: options1
                 },
                 function(e, search_result) {
-                  ////////////console.log([e, search_result]);
-
                   expect(e == null).to.be(true);
                   expect(search_result.length === 1).to.be(true);
-
                   socketClient.get(
                     '/e2e_test1/testsubscribe/data/complex*',
                     {
@@ -377,7 +342,6 @@ describe(
                     function(e, search_result) {
                       expect(e == null).to.be(true);
                       expect(search_result.length === 2).to.be(true);
-
                       callback(e);
                     }
                   );
@@ -414,10 +378,6 @@ describe(
               function(e, result) {
                 expect(e).to.be(null);
                 expect(result._meta.status).to.be('ok');
-
-                ////////////////////console.log('DELETE RESULT');
-                ////////////////////console.log(result);
-
                 callback();
               }
             );
@@ -493,14 +453,7 @@ describe(
                 e,
                 results
               ) {
-                ////////////////////////console.log('new data results');
-                ////////////////////////console.log(results);
-
                 expect(results.property1 === 'property1').to.be(true);
-
-                // if (mode != 'embedded')
-                //  expect(results.payload[0].created == results.payload[0].modified).to.be(true);
-
                 callback(e);
               });
             } else callback(e);
@@ -618,9 +571,6 @@ describe(
               expect(
                 eventEmitterClient.state.events['/SET@/e2e_test1/testsubscribe/data/event'].length
               ).to.be(1);
-
-              ////////////////////////////console.log('on subscribed, about to publish');
-
               //then make the change
               socketClient.set(
                 '/e2e_test1/testsubscribe/data/event',
@@ -631,7 +581,7 @@ describe(
                 },
                 null,
                 function() {
-                  ////////////////////////////console.log('put happened - listening for result');
+                  //do nothing
                 }
               );
             } else callback(e);
@@ -700,7 +650,6 @@ describe(
           },
           null,
           function() {
-            //////////////////console.log('did delete set');
             //path, event_type, count, handler, done
             //We listen for the DELETE event
             eventEmitterClient.on(
@@ -710,46 +659,25 @@ describe(
                 count: 1
               },
               function(eventData) {
-                ////console.log('on count 1 delete ');
-                //////////////////console.log(message);
-
                 //we are looking at the event internals on the listener to ensure our event management is working - because we are only listening for 1
                 //instance of this event - the event listener should have been removed
-                ////console.log('eventEmitterClient.events');
-                ////console.log(eventEmitterClient.events);
                 expect(
                   eventEmitterClient.state.events['/REMOVE@/e2e_test1/testsubscribe/data/delete_me']
                 ).to.be(undefined);
-
-                ////console.log(eventData);
-
                 //we needed to have removed a single item
                 expect(eventData.removed).to.be(1);
-
-                ////////////////////////////console.log(message);
-
                 callback();
               },
               function(e) {
-                ////////////console.log('ON HAS HAPPENED: ' + e);
-
                 if (!e) {
-                  ////console.log('eventEmitterClient.events, pre');
-                  ////console.log(eventEmitterClient.events);
                   expect(
                     eventEmitterClient.state.events[
                       '/REMOVE@/e2e_test1/testsubscribe/data/delete_me'
                     ].length
                   ).to.be(1);
-
-                  //////////////////console.log('subscribed, about to delete');
-
                   //We perform the actual delete
                   socketClient.remove('/e2e_test1/testsubscribe/data/delete_me', null, function() {
-                    //////////////////console.log('REMOVE HAPPENED!!!');
-                    //////////////////console.log(e);
-                    //////////////////console.log(result);
-                    ////////////////////////////console.log('put happened - listening for result');
+                    //do nothing
                   });
                 } else callback(e);
               }
@@ -772,7 +700,6 @@ describe(
         },
         function() {
           //we detach all listeners from the path here
-          ////console.log('ABOUT OFF PATH');
           eventEmitterClient.offPath('/e2e_test1/testsubscribe/data/on_off_test', function(e) {
             if (e) return callback(new Error(e));
 
@@ -783,9 +710,6 @@ describe(
                 count: 0
               },
               function() {
-                ////console.log('ON RAN');
-                ////console.log(message);
-
                 eventEmitterClient.off(currentListenerId, function(e) {
                   if (e) return callback(new Error(e));
                   else return callback();
@@ -806,9 +730,6 @@ describe(
                   {},
                   function(e) {
                     if (e) return callback(new Error(e));
-
-                    ////console.log('DID ON SET');
-                    ////console.log(setresult);
                   }
                 );
               }
@@ -862,10 +783,8 @@ describe(
             },
             null,
             function() {
-              //console.log('put_result', put_result);
-
               socketClient.remove('/e2e_test1/testsubscribe/data/catch_all', null, function() {
-                //console.log('del_result', del_result);
+                //do nothing
               });
             }
           );

@@ -32,15 +32,15 @@ describe(
           timeout: 2000
         },
         function(e) {
+          //eslint-disable-next-line no-console
           if (e) console.warn('failed disconnecting test client');
-
           eventemitterclient.disconnect(
             {
               timeout: 2000
             },
             function(e) {
+              //eslint-disable-next-line no-console
               if (e) console.warn('failed disconnecting test client');
-
               happnInstance.stop(done);
             }
           );

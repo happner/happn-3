@@ -16,15 +16,17 @@ fs.readdirSync(testDir).forEach(function(filename) {
 });
 
 var reportDir = testDir + path.sep + 'reports';
-
-console.log('about to run:::', reportDir);
+//eslint-disable-next-line no-console
+console.log('about to run:', reportDir);
 
 sm.runTasks(files, null, reportDir)
 
   .then(function() {
-    console.log('tests completed, check the latest report file in ' + reportDir);
+    //eslint-disable-next-line no-console
+    console.log('tests completed: check the latest report file in ' + reportDir);
   })
 
   .catch(function(e) {
-    console.log('broke:::', e);
+    //eslint-disable-next-line no-console
+    console.log('broke:', e);
   });

@@ -17,37 +17,14 @@ describe(
     let delay = require('await-delay');
     let clearMongo = require('../../__fixtures/utils/cluster/clear-mongodb');
     let getClusterConfig = require('../../__fixtures/utils/cluster/get-cluster-config');
-    this.timeout(60000);
+    this.timeout(10000);
     let clusterServices = [];
     let mongoUrl = 'mongodb://127.0.0.1:27017';
     let mongoCollection = 'happn-cluster-test';
     let HappnCluster = require('happn-cluster');
     let getAddress = require('../../__fixtures/utils/cluster/get-address');
 
-    let securityProfiles = [
-      {
-        name: 'test-session',
-        session: {
-          $and: [
-            {
-              user: {
-                username: {
-                  $eq: 'TEST_SESSION'
-                }
-              }
-            }
-          ]
-        },
-        policy: {
-          ttl: '10 seconds',
-          inactivity_threshold: '10 seconds'
-        }
-      }
-    ];
-
-    function checkRevocationInPlace(service, sessionId) {
-      return service.services.security.__cache_revoked_sessions.__cache[sessionId] != null;
-    }
+    this.timeout(20000);
 
     async function clearMongoDb() {
       await clearMongo(mongoUrl, mongoCollection);
@@ -83,9 +60,6 @@ describe(
         true,
         true
       );
-
-      clusterConfig1.services.security.config.profiles = securityProfiles;
-      clusterConfig2.services.security.config.profiles = securityProfiles;
 
       let clusterInstance1 = await HappnCluster.create(clusterConfig1);
       let clusterInstance2 = await HappnCluster.create(clusterConfig2);
@@ -188,7 +162,7 @@ describe(
       }
     );
 
-    it('ensures revoking a token on 1 client revokes the token on all clients using the token, we wait for the token revocation ttl to expire and ensure it has been removed from the cache', async () => {
+    it('ensures revoking a token on 1 client revokes the token on all clients using the token', async () => {
       let client1 = await getClient({
         username: testUser.username,
         password: 'TEST PWD',
@@ -196,19 +170,120 @@ describe(
       });
       let client2 = await getClient({ token: client1.session.token, port: 56001 });
       await doEventRoundTripClient(client2);
-      await client1.disconnect({ revokeSession: true });
+      await client1.disconnect({ revokeToken: true });
       try {
         await delay(5000);
         await doEventRoundTripClient(client2);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
-        expect(checkRevocationInPlace(clusterServices[0], client1.session.id)).to.be(true);
-        expect(checkRevocationInPlace(clusterServices[1], client1.session.id)).to.be(true);
-        await delay(20000);
-        expect(checkRevocationInPlace(clusterServices[0], client1.session.id)).to.be(false);
-        expect(checkRevocationInPlace(clusterServices[1], client1.session.id)).to.be(false);
-        await client2.disconnect();
+        expect(e.message).to.be('client is disconnected');
+        client2.disconnect();
+      }
+    });
+
+    it('ensures revoking a session on a child client (login from parent token) revokes the token on the parent as well', async () => {
+      let client1 = await getClient({
+        username: testUser.username,
+        password: 'TEST PWD',
+        port: 56000
+      });
+      let client2 = await getClient({ token: client1.session.token, port: 56001 });
+      await doEventRoundTripClient(client1);
+      await client2.disconnect({ revokeToken: true });
+      try {
+        await delay(2000);
+        await doEventRoundTripClient(client1);
+        throw new Error('was not meant to happen');
+      } catch (e) {
+        expect(e.message).to.be('client is disconnected');
+        client1.disconnect();
+      }
+    });
+
+    it('ensures revoking a session on a child client (login from parent token) revokes the token on the parent as well, 3 levels deep', async () => {
+      let client1 = await getClient({
+        username: testUser.username,
+        password: 'TEST PWD',
+        port: 56000
+      });
+      let client2 = await getClient({ token: client1.session.token, port: 56001 });
+      let client3 = await getClient({ token: client2.session.token, port: 56001 });
+      await doEventRoundTripClient(client1);
+      await client3.disconnect({ revokeToken: true });
+      try {
+        await delay(1000);
+        await doEventRoundTripClient(client1);
+        throw new Error('was not meant to happen');
+      } catch (e) {
+        expect(e.message).to.be('client is disconnected');
+        client1.disconnect();
+        client2.disconnect();
+      }
+    });
+
+    it('ensures revoking a token on 1 client revokes the token on all clients using the token, 3 levels deep', async () => {
+      let client1 = await getClient({
+        username: testUser.username,
+        password: 'TEST PWD',
+        port: 56000
+      });
+      let client2 = await getClient({ token: client1.session.token, port: 56001 });
+      let client3 = await getClient({ token: client2.session.token, port: 56001 });
+      let sessionEndedEvents = [];
+      client2.onEvent('session-ended', evt => {
+        sessionEndedEvents.push(evt);
+      });
+
+      client3.onEvent('session-ended', evt => {
+        sessionEndedEvents.push(evt);
+      });
+
+      await doEventRoundTripClient(client3);
+      await client1.disconnect({ revokeToken: true });
+      try {
+        await delay(1000);
+        await doEventRoundTripClient(client3);
+        throw new Error('was not meant to happen');
+      } catch (e) {
+        await delay(1000);
+        expect(e.message).to.be('client is disconnected');
+        expect(sessionEndedEvents.length).to.be(2);
+        client2.disconnect();
+        client3.disconnect();
+      }
+    });
+
+    function restoreToken(token) {
+      return new Promise((resolve, reject) => {
+        clusterServices[0].services.security.restoreToken(token, function(e) {
+          if (e) return reject(e);
+          resolve();
+        });
+      });
+    }
+
+    it('ensures revoking a token on 1 client revokes the token on all clients using the token - then restoring the token allows access again, 3 levels deep', async () => {
+      let client1 = await getClient({
+        username: testUser.username,
+        password: 'TEST PWD',
+        port: 56000
+      });
+      let client2 = await getClient({ token: client1.session.token, port: 56001 });
+      let client3 = await getClient({ token: client2.session.token, port: 56001 });
+      await doEventRoundTripClient(client3);
+      await client1.disconnect({ revokeToken: true });
+      try {
+        await delay(1000);
+        await doEventRoundTripClient(client3);
+        throw new Error('was not meant to happen');
+      } catch (e) {
+        expect(e.message).to.be('client is disconnected');
+        await restoreToken(client1.session.token);
+        await delay(2000);
+        client3 = await getClient({ token: client2.session.token, port: 56001 });
+        await doEventRoundTripClient(client3);
+        client2.disconnect();
+        client3.disconnect();
       }
     });
   }

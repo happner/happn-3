@@ -226,7 +226,9 @@ describe(
       var opts = happnClient.__prepareConnectionOptions({}, {});
       //TODO Mock socket function?
       happnClient.__initializeConnectivity(opts, function(err, data) {
+        //eslint-disable-next-line no-console
         console.log(data);
+        //eslint-disable-next-line no-console
         console.log(err);
         //TODO::: Can't Timing out
         done();
@@ -295,16 +297,19 @@ describe(
       happnClient.__initializeEvents();
       expect(
         happnClient.onEvent('MyEvent', function(x) {
+          //eslint-disable-next-line no-console
           console.log(x);
         })
       ).to.eql('MyEvent|0');
       expect(
         happnClient.onEvent('MyEvent', function(x) {
+          //eslint-disable-next-line no-console
           console.log(typeof x);
         })
       ).to.eql('MyEvent|1');
       expect(
         happnClient.onEvent('MyNewEvent', function(x) {
+          //eslint-disable-next-line no-console
           console.log(typeof x);
         })
       ).to.eql('MyNewEvent|0');
@@ -520,6 +525,7 @@ describe(
       happnClient.__ensureCryptoLibrary();
 
       const a = happnClient.__signNonce(':::32 Bit buffer???');
+      //eslint-disable-next-line no-console
       console.log(a);
       done();
     });
@@ -643,7 +649,6 @@ describe(
       var happnClient = mockHappnClient();
       happnClient.emit = function(event_type) {
         expect(event_type).to.eql('reconnect-scheduled');
-        expect(happnClient.__reconnectSuccessful).to.be(false);
         expect(this.status).to.eql(Constants.CLIENT_STATE.RECONNECTING);
         done();
       };
@@ -1503,6 +1508,7 @@ describe(
       var happnClient = mockHappnClient();
       expect(
         happnClient.onSystemMessage(function(x) {
+          //eslint-disable-next-line no-console
           console.log(x);
         })
       ).to.eql(0);
@@ -1515,11 +1521,13 @@ describe(
       var happnClient = mockHappnClient();
       expect(
         happnClient.onSystemMessage(function(x) {
+          //eslint-disable-next-line no-console
           console.log(x);
         })
       ).to.eql(0);
       expect(
         happnClient.onSystemMessage(function(x) {
+          //eslint-disable-next-line no-console
           console.log(x);
         })
       ).to.eql(1);
@@ -1590,6 +1598,7 @@ describe(
       var happnClient = mockHappnClient();
       var parameters = {
         onPublished: function(x) {
+          //eslint-disable-next-line no-console
           console.log(x);
         }
       };
@@ -1864,10 +1873,10 @@ describe(
     it('tests the revokeSession function calls a perform system request with revoke-session', function(done) {
       var happnClient = mockHappnClient();
       happnClient.__performSystemRequest = function(action, data, options, callback) {
-        expect(action).to.equal('revoke-session');
+        expect(action).to.equal('revoke-token');
         callback();
       };
-      happnClient.revokeSession(function() {
+      happnClient.revokeToken(function() {
         done();
       });
     });

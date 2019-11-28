@@ -37,12 +37,14 @@ describe(
           timeout: 2000
         },
         function(e) {
+          //eslint-disable-next-line no-console
           if (e) console.warn('failed disconnecting publisher client');
           listenerclient.disconnect(
             {
               timeout: 2000
             },
             function(e) {
+              //eslint-disable-next-line no-console
               if (e) console.warn('failed disconnecting listener client');
               happnInstance.stop(done);
             }
@@ -592,8 +594,6 @@ describe(
             null,
             function(e) {
               if (e) return callback(e);
-
-              ////////////console.log('searching');
               publisherclient.get(
                 '/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/complex*',
                 {
@@ -1468,8 +1468,6 @@ describe(
               },
               limit: 2
             };
-
-            ////////////console.log('searching');
             publisherclient.get(
               '/2_websockets_embedded_sanity/' + test_id + '/testsubscribe/data/complex*',
               {

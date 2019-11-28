@@ -142,6 +142,7 @@ describe(filename, function() {
 
         .then(function() {
           socketProxy.pause();
+          //eslint-disable-next-line no-console
           console.log(
             'waiting for ping-pong to detect network outage (perhaps ping-pong rate can be increased)'
           );
@@ -151,13 +152,11 @@ describe(filename, function() {
           return Promise.all([
             new Promise(function(resolve) {
               client.onEvent('reconnect-scheduled', function() {
-                // console.log('client detected disconnect after %dms', Date.now() - now);
                 resolve();
               });
             }),
             new Promise(function(resolve) {
               server.services.session.on('disconnect', function() {
-                // console.log('server detected disconnect after %dms', Date.now() - now);
                 resolve();
               });
             })
@@ -166,7 +165,6 @@ describe(filename, function() {
 
         .then(function() {
           var promise = new Promise(function(resolve) {
-            console.log('reconnected');
             client.onEvent('reconnect-successful', resolve);
           });
 

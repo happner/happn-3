@@ -43,7 +43,7 @@ describe(
 
     after('should kill the services and client', function(callback) {
       this.timeout(70000); //make it long as the client disconnects with an error after 50 seconds
-
+      //eslint-disable-next-line no-console
       console.log(
         'disconnecting testClient, this will take 50 seconds and should log a timeout error...'
       );

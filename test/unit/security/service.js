@@ -1486,7 +1486,6 @@ describe(
       });
     });
 
-    //issue:::
     it('should create a user with a public key, then login using a signature', function(done) {
       this.timeout(20000);
 
@@ -1571,6 +1570,7 @@ describe(
 
                       .then(function(clientInstance) {
                         clientInstance.disconnect(function(e) {
+                          //eslint-disable-next-line no-console
                           if (e) console.warn('couldnt disconnect client:::', e);
                           serviceInstance.stop(done);
                         });
@@ -2437,22 +2437,17 @@ describe(
 
     it('should be able to work with configured pbkdf2Iterations', function(done) {
       mockServices(
-        function(e, happnMock) {
+        async (e, happnMock) => {
           if (e) return done(e);
           expect(happnMock.services.security.config.pbkdf2Iterations).to.be(100);
-
-          happnMock.services.security.users.__prepareUser(
-            {
-              password: 'test'
-            },
-            function(e, prepared) {
-              if (e) return done(e);
-              var split = prepared.password.split('$');
-              expect(split[0]).to.be('pbkdf2');
-              expect(split[1]).to.be('100');
-              stopServices(happnMock, done);
-            }
-          );
+          const prepared = await happnMock.services.security.users.__prepareUserForUpsert({
+            username: 'test-user',
+            password: 'test'
+          });
+          var split = prepared.password.split('$');
+          expect(split[0]).to.be('pbkdf2');
+          expect(split[1]).to.be('100');
+          stopServices(happnMock, done);
         },
         {
           services: {
@@ -2465,21 +2460,17 @@ describe(
     });
 
     it('should be able to work with default pbkdf2Iterations', function(done) {
-      mockServices(function(e, happnMock) {
+      mockServices(async (e, happnMock) => {
         if (e) return done(e);
         expect(happnMock.services.security.config.pbkdf2Iterations).to.be(10000);
-        happnMock.services.security.users.__prepareUser(
-          {
-            password: 'test'
-          },
-          function(e, prepared) {
-            if (e) return done(e);
-            var split = prepared.password.split('$');
-            expect(split[0]).to.be('pbkdf2');
-            expect(split[1]).to.be('10000');
-            stopServices(happnMock, done);
-          }
-        );
+        const prepared = await happnMock.services.security.users.__prepareUserForUpsert({
+          username: 'test-user',
+          password: 'test'
+        });
+        var split = prepared.password.split('$');
+        expect(split[0]).to.be('pbkdf2');
+        expect(split[1]).to.be('10000');
+        stopServices(happnMock, done);
       });
     });
 
@@ -2946,7 +2937,7 @@ describe(
           }
         };
         happnMock.services.security.decodeToken = token => {
-          return token;
+          return JSON.parse(JSON.stringify(token));
         };
         happnMock.services.system = {
           getDescription: () => {
@@ -2967,15 +2958,15 @@ describe(
         ).to.eql({
           test: 'session'
         });
+        happnMock.services.security.decodeToken = token => {
+          return { token };
+        };
         expect(
           happnMock.services.security.sessionFromRequest(
             {
               cookies: {
-                get: cookieName => {
-                  return {
-                    token: 'TEST-TOKEN',
-                    cookieName
-                  };
+                get: () => {
+                  return 'TEST-TOKEN';
                 }
               }
             },
@@ -2983,7 +2974,6 @@ describe(
           )
         ).to.eql({
           token: 'TEST-TOKEN',
-          cookieName: 'happn_token',
           type: 0,
           happn: {
             name: 'test-description'
@@ -3016,6 +3006,97 @@ describe(
         expect(warningHappened).to.be(true);
         done();
       });
+    });
+
+    it('tests the __initializeSessionTokenSecret method, found secret', async () => {
+      const SecurityService = require('../../../lib/services/security/service');
+      const serviceInst = new SecurityService({
+        logger: Logger
+      });
+      const config = {};
+      serviceInst.dataService = {
+        get: function(path, callback) {
+          return callback(null, {
+            data: {
+              secret: 'TEST-SECRET'
+            }
+          });
+        }
+      };
+      await serviceInst.__initializeSessionTokenSecret(config);
+      expect(config.sessionTokenSecret).to.be('TEST-SECRET');
+    });
+
+    it('tests the __initializeSessionTokenSecret method, unfound secret', async () => {
+      const SecurityService = require('../../../lib/services/security/service');
+      const serviceInst = new SecurityService({
+        logger: Logger
+      });
+      const config = {};
+      let upserted;
+      serviceInst.dataService = {
+        get: function(path, callback) {
+          return callback(null, null);
+        },
+        upsert: function(path, data, callback) {
+          upserted = data.secret;
+          callback();
+        }
+      };
+      await serviceInst.__initializeSessionTokenSecret(config);
+      expect(upserted != null).to.be(true);
+      expect(config.sessionTokenSecret).to.be(upserted);
+    });
+
+    it('tests the __initializeSessionTokenSecret method, error on get', async () => {
+      const SecurityService = require('../../../lib/services/security/service');
+      const serviceInst = new SecurityService({
+        logger: Logger
+      });
+      const config = {};
+      //eslint-disable-next-line
+      let upserted,
+        errorHappened = false;
+      serviceInst.dataService = {
+        get: function(path, callback) {
+          return callback(new Error('test-error'));
+        },
+        upsert: function(path, data, callback) {
+          upserted = data.secret;
+          callback();
+        }
+      };
+      try {
+        await serviceInst.__initializeSessionTokenSecret(config);
+      } catch (e) {
+        expect(e.message).to.be('test-error');
+        errorHappened = true;
+      }
+      expect(errorHappened).to.be(true);
+    });
+
+    it('tests the __initializeSessionTokenSecret method, error on upsert', async () => {
+      const SecurityService = require('../../../lib/services/security/service');
+      const serviceInst = new SecurityService({
+        logger: Logger
+      });
+      const config = {};
+      let errorHappened = false;
+      serviceInst.dataService = {
+        get: function(path, callback) {
+          return callback(null, null);
+        },
+        upsert: function(path, data, callback) {
+          return callback(new Error('test-error'));
+        }
+      };
+      try {
+        await serviceInst.__initializeSessionTokenSecret(config);
+      } catch (e) {
+        expect(e.message).to.be('test-error');
+        errorHappened = true;
+      }
+      expect(errorHappened).to.be(true);
     });
   }
 );

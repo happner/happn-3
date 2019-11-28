@@ -44,6 +44,7 @@ describe(
     beforeEach('should initialize the client', function(done) {
       if (client)
         client.disconnect(function(e) {
+          //eslint-disable-next-line no-console
           if (e) console.warn('disconnect failed: ', e);
         });
       setTimeout(function() {

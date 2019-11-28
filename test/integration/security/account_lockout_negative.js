@@ -92,10 +92,12 @@ describe(
         if (!server1) resolve();
 
         var stopService = function(clientE) {
+          //eslint-disable-next-line no-console
           if (clientE) console.warn('client disconnect failed:::', clientE);
 
           server1.stop(function(e) {
             if (e) {
+              //eslint-disable-next-line no-console
               console.warn('failed to stop server1: ' + e.toString());
               reject(e);
               return;

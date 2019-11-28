@@ -28,6 +28,7 @@ describe(testName, function() {
     if (!withCloning)
       newProvider.utils = {
         clone: function(obj) {
+          //eslint-disable-next-line no-console
           console.log('skipping clone...');
           return obj;
         }
@@ -44,6 +45,7 @@ describe(testName, function() {
       try {
         require('fs').unlinkSync(fileName);
       } catch (e) {
+        //eslint-disable-next-line no-console
         console.log('error unlining file: ' + fileName);
       }
     });
@@ -69,7 +71,7 @@ describe(testName, function() {
 
           var decoupled = JSON.parse(JSON.stringify(setData.data.testObject));
           delete setData.data.testObject;
-
+          //eslint-disable-next-line no-console
           console.log('upsert attempt ' + time);
           provider.upsert('/path/test', setData, {}, false, function(e) {
             if (e) return timeCB(e);
@@ -119,7 +121,7 @@ describe(testName, function() {
 
           var decoupled = JSON.parse(JSON.stringify(setData.data.testObject));
           delete setData.data.testObject;
-
+          //eslint-disable-next-line no-console
           console.log('upsert attempt ' + time);
           provider.upsert('/path/test', setData, {}, false, function(e) {
             if (e) return timeCB(e);
@@ -132,6 +134,7 @@ describe(testName, function() {
               function(e, found) {
                 if (e) return timeCB(e);
                 if (found.data.testObject != null) {
+                  //eslint-disable-next-line no-console
                   console.log('found testObject in cached db!');
                   foundExternalData = true;
                 }

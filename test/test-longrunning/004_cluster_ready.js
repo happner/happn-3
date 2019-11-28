@@ -104,30 +104,19 @@ describe('longrunning/004_cluster_ready', function() {
 
   Cluster.prototype.stop = function(callback) {
     var _this = this;
-
-    //console.log('STOPPING CLUSTER:::');
-
     var serverPorts = Object.keys(_this.servers);
-
     if (serverPorts.length === 0) return callback();
 
     async.eachSeries(
       serverPorts,
       function(serverPort, serverCB) {
-        //console.log('STOPPING SERVER:::', serverPort);
-
         var server = _this.servers[serverPort];
 
         server.stop(function(e) {
           if (e) {
-            //console.log('ERROR STOPPING SERVER:::', serverPort);
             return serverCB(e);
           }
-
-          //console.log('STOPPED SERVER:::', serverPort);
-
           delete _this.servers[serverPort];
-
           return serverCB();
         });
       },
@@ -154,8 +143,6 @@ describe('longrunning/004_cluster_ready', function() {
   ClusterChild.prototype.disconnectAll = function(callback) {
     var _this = this;
 
-    //console.log('DISCONNECT ALL:::' + _this.port);
-
     async.eachSeries(
       Object.keys(_this.connections),
       function(port, eachCB) {
@@ -177,13 +164,13 @@ describe('longrunning/004_cluster_ready', function() {
         aggregatedLogs.push(aggregatedLog);
 
         connection.randomActivity.verify(function(e) {
+          //eslint-disable-next-line no-console
           if (e) console.warn('WARNING:::RANDOM_VERIFY' + e.toString());
 
           connection.client.disconnect(function(e) {
             if (e) return callback(e);
 
             delete _this.connections[port];
-            //console.log('DISCONNECTED:::' + connection.code);
             callback();
           });
         });
@@ -238,8 +225,6 @@ describe('longrunning/004_cluster_ready', function() {
     async.timesSeries(
       INSTANCE_COUNT,
       function(counter, clientCB) {
-        //console.log('doing time:::', counter);
-
         service.create(
           {
             port: currentPort
@@ -271,13 +256,9 @@ describe('longrunning/004_cluster_ready', function() {
     async.timesSeries(
       INSTANCE_COUNT,
       function(counter, clientCB) {
-        //console.log('REMOVING CHILD:::', currentPort);
-
         CLUSTER.removeChild(currentPort, function(e) {
           if (e) return clientCB(e);
-
           currentPort++;
-
           clientCB();
         });
       },
@@ -291,7 +272,7 @@ describe('longrunning/004_cluster_ready', function() {
           if (e) return callback(e);
 
           expect(Object.keys(CLUSTER.servers).length).to.be(0);
-
+          //eslint-disable-next-line no-console
           console.log(
             'RUN COMPLETE:::' +
               INSTANCE_COUNT +
@@ -299,6 +280,7 @@ describe('longrunning/004_cluster_ready', function() {
               CLUSTER_TOTAL_CONNECTIONS +
               ' connections'
           );
+          //eslint-disable-next-line no-console
           console.log('-------AGGREGATED ACTIVITY-------');
 
           var aggregatedTotals = {
@@ -321,6 +303,7 @@ describe('longrunning/004_cluster_ready', function() {
           });
 
           Object.keys(aggregatedTotals).forEach(function(activity) {
+            //eslint-disable-next-line no-console
             console.log(activity, aggregatedTotals[activity]);
           });
 

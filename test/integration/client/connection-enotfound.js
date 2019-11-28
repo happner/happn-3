@@ -33,7 +33,7 @@ describe(
           {
             config: {
               host,
-              connectTimeout: 2000
+              connectTimeout: 1000
             }
           },
           function(e, client) {
@@ -84,12 +84,15 @@ describe(
       });
 
       await stopService(service);
+      //eslint-disable-next-line no-console
       console.log('stopped service, setting up bad dns...');
       await delay(5000);
       service = await createService(); //restart service, bad dns
+      //eslint-disable-next-line no-console
       console.log('started service again...');
       await delay(10000);
       await stopService(service);
+      //eslint-disable-next-line no-console
       console.log('stopped service, fixing dns...');
       dns.lookup = function(domain, options, callback) {
         if (typeof options === 'function') {
@@ -100,6 +103,7 @@ describe(
       };
       expect(reconnectSuccessfulCount > 0).to.be(false);
       service = await createService();
+      //eslint-disable-next-line no-console
       console.log('started service, client should reconnect...');
       await delay(15000);
       await stopService(service);

@@ -216,7 +216,6 @@ describe(testHelper.testName(__filename, 3), function() {
               'TEST_USR_' + randomInt.toString(),
               function(e, user) {
                 if (e) return timeCB(e);
-
                 expect(
                   serviceInstance.services.security.users.__cache_users.getSync(
                     'TEST_USR_' + randomInt.toString()

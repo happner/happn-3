@@ -206,7 +206,6 @@ describe(
 
     it('logs in with the ws user - we then test a call to a web-method, then disconnects with the revokeToken flag set to true, we try and reuse the token and ensure that it fails', function(done) {
       this.timeout(4000);
-
       happn.client
         .create({
           config: {
@@ -215,18 +214,14 @@ describe(
           },
           secure: true
         })
-
         .then(function(clientInstance) {
           testClient = clientInstance;
-
           var sessionToken = testClient.session.token;
-          var sessionId = testClient.session.id;
-
           doRequest('/TEST/WEB/ROUTE', sessionToken, false, function(response) {
             expect(response.statusCode).to.equal(200);
             testClient.disconnect(
               {
-                revokeSession: true
+                revokeToken: true
               },
               function(e) {
                 if (e) return done(e);
@@ -234,11 +229,11 @@ describe(
                   doRequest('/TEST/WEB/ROUTE', sessionToken, false, function(response) {
                     expect(response.statusCode).to.equal(403);
                     doEventRoundTripToken(sessionToken, function(e) {
-                      expect(e.message).to.be(`session with id ${sessionId} has been revoked`);
+                      expect(e.message).to.be(`token has been revoked`);
                       done();
                     });
                   });
-                }, 2000);
+                }, 1000);
               }
             );
           });
@@ -257,18 +252,14 @@ describe(
           },
           secure: true
         })
-
         .then(function(clientInstance) {
           testClient = clientInstance;
-
           var sessionToken = testClient.session.token;
-
           doRequest('/TEST/WEB/ROUTE', sessionToken, false, function(response) {
             expect(response.statusCode).to.equal(200);
-
             testClient.disconnect(
               {
-                revokeSession: false
+                revokeToken: false
               },
               function(e) {
                 if (e) return done(e);
@@ -282,7 +273,6 @@ describe(
             );
           });
         })
-
         .catch(function(e) {
           done(e);
         });
@@ -304,27 +294,26 @@ describe(
           testClient = clientInstance;
 
           var sessionToken = testClient.session.token;
-          var sessionId = testClient.session.id;
 
           doRequest('/TEST/WEB/ROUTE', sessionToken, false, function(response) {
             expect(response.statusCode).to.equal(200);
 
             testClient.disconnect(
               {
-                revokeSession: true
+                revokeToken: true
               },
               function(e) {
                 if (e) return done(e);
 
                 setTimeout(function() {
-                  serviceInstance.services.security.__cache_revoked_sessions.get(
-                    sessionId,
+                  serviceInstance.services.security.__cache_revoked_tokens.get(
+                    sessionToken,
                     function(e, cachedToken) {
                       expect(cachedToken.reason).to.equal('CLIENT');
 
                       setTimeout(function() {
-                        serviceInstance.services.security.__cache_revoked_sessions.get(
-                          sessionId,
+                        serviceInstance.services.security.__cache_revoked_tokens.get(
+                          sessionToken,
                           function(e, cachedToken) {
                             expect(cachedToken).to.be(null);
 
@@ -367,7 +356,7 @@ describe(
           doRequest('/TEST/WEB/ROUTE', sessionToken, false, function(response) {
             expect(response.statusCode).to.equal(200);
 
-            testClient.revokeSession(function(e) {
+            testClient.revokeToken(function(e) {
               if (e) return done(e);
 
               doRequest('/TEST/WEB/ROUTE', sessionToken, false, function(response) {
@@ -390,13 +379,13 @@ describe(
       let client1 = await getClient({ username: testUser.username, password: 'TEST PWD' });
       let client2 = await getClient({ token: client1.session.token });
       await doEventRoundTripClient(client2);
-      await client1.disconnect({ revokeSession: true });
+      await client1.disconnect({ revokeToken: true });
       try {
         await delay(1000);
         await doEventRoundTripClient(client2);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
+        expect(e.message).to.be('client is disconnected');
         client2.disconnect();
       }
     });
@@ -405,13 +394,13 @@ describe(
       let client1 = await getClient({ username: testUser.username, password: 'TEST PWD' });
       let client2 = await getClient({ token: client1.session.token });
       await doEventRoundTripClient(client1);
-      await client2.disconnect({ revokeSession: true });
+      await client2.disconnect({ revokeToken: true });
       try {
         await delay(1000);
         await doEventRoundTripClient(client1);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
+        expect(e.message).to.be('client is disconnected');
         client1.disconnect();
       }
     });
@@ -421,13 +410,13 @@ describe(
       let client2 = await getClient({ token: client1.session.token });
       let client3 = await getClient({ token: client2.session.token });
       await doEventRoundTripClient(client1);
-      await client3.disconnect({ revokeSession: true });
+      await client3.disconnect({ revokeToken: true });
       try {
         await delay(1000);
         await doEventRoundTripClient(client1);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
+        expect(e.message).to.be('client is disconnected');
         client1.disconnect();
         client2.disconnect();
       }
@@ -438,13 +427,13 @@ describe(
       let client2 = await getClient({ token: client1.session.token });
       let client3 = await getClient({ token: client2.session.token });
       await doEventRoundTripClient(client3);
-      await client1.disconnect({ revokeSession: true });
+      await client1.disconnect({ revokeToken: true });
       try {
         await delay(1000);
         await doEventRoundTripClient(client3);
         throw new Error('was not meant to happen');
       } catch (e) {
-        expect(e.message).to.be('unauthorized');
+        expect(e.message).to.be('client is disconnected');
         client2.disconnect();
         client3.disconnect();
       }

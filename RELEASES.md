@@ -673,3 +673,15 @@
 -----------------
   - cache fixes - clearTimeout on persisted cache
   - test: user deletion and recreation token reuse (test/integration/security/access_sanity)
+
+11.0.0 2019-11-17
+-----------------
+  - feature: client session end events
+  - chore: lint fixes
+  - feature: happner-2 #158, configure usernames to be case-insensitive
+  - test: happner-2 #179, client testing to ensure retries still happen after ENOTFOUND
+  - dep: happner-2 #186, using version 1.0.0 of happn-util-crypto, latest bitcore
+  - feature: happner-2 #188, happn client saved to .happner by packager
+  - feature: security config setting: lockTokenToUserId: users now created with userid which is embedded in the token, which is checked against token logins and HTTP requests
+  - fix: packager ensure .happner home directory
+  - feature: sessionTokenSecret is retained between startups

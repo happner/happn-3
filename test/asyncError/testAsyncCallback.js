@@ -62,6 +62,7 @@ describe(
                 null,
                 function(e) {
                   count++;
+                  //eslint-disable-next-line no-console
                   if (count % 1000 === 0) console.log(count / 1000);
                   itemCB(e);
                 }
@@ -70,6 +71,7 @@ describe(
           );
         },
         e => {
+          //eslint-disable-next-line no-console
           console.log(e);
           done();
         }

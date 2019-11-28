@@ -7,11 +7,8 @@ describe(
     .testName(__filename, 3),
   function() {
     var remote;
-
     var webSocketsClient;
-
     var path = require('path');
-
     var spawn = require('child_process').spawn;
 
     var libFolder = path.resolve(
@@ -118,6 +115,7 @@ describe(
           callback();
         }
       } catch (e) {
+        //eslint-disable-next-line no-console
         console.warn('teardown g6 failed:::', e);
       }
     };
