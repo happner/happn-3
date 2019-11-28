@@ -226,7 +226,9 @@ describe(
       var opts = happnClient.__prepareConnectionOptions({}, {});
       //TODO Mock socket function?
       happnClient.__initializeConnectivity(opts, function(err, data) {
+        //eslint-disable-next-line no-console
         console.log(data);
+        //eslint-disable-next-line no-console
         console.log(err);
         //TODO::: Can't Timing out
         done();
@@ -295,16 +297,19 @@ describe(
       happnClient.__initializeEvents();
       expect(
         happnClient.onEvent('MyEvent', function(x) {
+          //eslint-disable-next-line no-console
           console.log(x);
         })
       ).to.eql('MyEvent|0');
       expect(
         happnClient.onEvent('MyEvent', function(x) {
+          //eslint-disable-next-line no-console
           console.log(typeof x);
         })
       ).to.eql('MyEvent|1');
       expect(
         happnClient.onEvent('MyNewEvent', function(x) {
+          //eslint-disable-next-line no-console
           console.log(typeof x);
         })
       ).to.eql('MyNewEvent|0');
@@ -520,6 +525,7 @@ describe(
       happnClient.__ensureCryptoLibrary();
 
       const a = happnClient.__signNonce(':::32 Bit buffer???');
+      //eslint-disable-next-line no-console
       console.log(a);
       done();
     });
@@ -1502,6 +1508,7 @@ describe(
       var happnClient = mockHappnClient();
       expect(
         happnClient.onSystemMessage(function(x) {
+          //eslint-disable-next-line no-console
           console.log(x);
         })
       ).to.eql(0);
@@ -1514,11 +1521,13 @@ describe(
       var happnClient = mockHappnClient();
       expect(
         happnClient.onSystemMessage(function(x) {
+          //eslint-disable-next-line no-console
           console.log(x);
         })
       ).to.eql(0);
       expect(
         happnClient.onSystemMessage(function(x) {
+          //eslint-disable-next-line no-console
           console.log(x);
         })
       ).to.eql(1);
@@ -1589,6 +1598,7 @@ describe(
       var happnClient = mockHappnClient();
       var parameters = {
         onPublished: function(x) {
+          //eslint-disable-next-line no-console
           console.log(x);
         }
       };

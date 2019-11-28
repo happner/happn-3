@@ -51,6 +51,7 @@ describe(
 
       obj.happn.services.error = {
         handleFatal: function(str, e) {
+          //eslint-disable-next-line no-console
           console.error(str, e);
         }
       };

@@ -49,6 +49,7 @@ describe(
           timeout: 2000
         },
         function(e) {
+          //eslint-disable-next-line no-console
           if (e) console.warn('issue disconnecting secureClient');
 
           secureMiddleman.disconnect(
@@ -56,6 +57,7 @@ describe(
               timeout: 2000
             },
             function(e) {
+              //eslint-disable-next-line no-console
               if (e) console.warn('issue disconnecting secureMiddleman');
 
               client.disconnect(
@@ -63,6 +65,7 @@ describe(
                   timeout: 2000
                 },
                 function(e) {
+                  //eslint-disable-next-line no-console
                   if (e) console.warn('issue disconnecting client');
 
                   middleman.disconnect(
@@ -70,12 +73,15 @@ describe(
                       timeout: 2000
                     },
                     function(e) {
+                      //eslint-disable-next-line no-console
                       if (e) console.warn('issue disconnecting middleman');
 
                       happnInstance.stop(function(e) {
+                        //eslint-disable-next-line no-console
                         if (e) console.warn('issue stopping unsecure instance');
 
                         happnInstanceSecure.stop(function(e) {
+                          //eslint-disable-next-line no-console
                           if (e) console.warn('issue stopping secure instance');
                           done();
                         });

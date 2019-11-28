@@ -25,6 +25,7 @@ describe(
     after('stops the services', function(done) {
       if (!server1) done();
       server1.stop({ reconnect: false }, function(e) {
+        //eslint-disable-next-line no-console
         if (e) console.warn('failed to stop server1: ' + e.toString());
         done();
       });

@@ -115,6 +115,7 @@ describe(
           callback();
         }
       } catch (e) {
+        //eslint-disable-next-line no-console
         console.warn('teardown g6 failed:::', e);
       }
     };

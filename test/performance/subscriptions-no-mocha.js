@@ -22,9 +22,12 @@ service.create({}, function(e, happnInst) {
 
     var subscriptions = [];
 
+    //eslint-disable-next-line no-console
     console.log('building subscriptions...');
 
-    var randomPaths = random.randomPaths({ count: SUBSCRIPTION_COUNT });
+    var randomPaths = random.randomPaths({
+      count: SUBSCRIPTION_COUNT
+    });
 
     randomPaths.forEach(function(path) {
       var possibleSubscriptions = random.getWildcardPermutations(path);
@@ -38,10 +41,13 @@ service.create({}, function(e, happnInst) {
     for (var i = 0; i < SEARCH_COUNT; i++)
       searchPaths.push(randomPaths[random.integer(0, randomPaths.length - 1)]);
 
+    //eslint-disable-next-line no-console
     console.log('built subscriptions...');
 
     var startedSubscribing = Date.now();
-    var setResults = { counters: {} };
+    var setResults = {
+      counters: {}
+    };
 
     var eventsCount = 0;
     var startedSearching;
@@ -52,12 +58,17 @@ service.create({}, function(e, happnInst) {
       setResults.counters[data.counter] = true;
       eventsCount++;
 
-      // console.log('event path: ' + meta.path);
-      // console.log('match path: ' + this.path);
+      //eslint-disable-next-line no-console
+      console.log('event path: ' + meta.path);
+      //eslint-disable-next-line no-console
+      console.log('match path: ' + this.path);
 
       if (eventsCount === SEARCH_COUNT) {
-        // console.log(JSON.stringify(setResults, null, 2));
-        // console.log(JSON.stringify(subscriptions, null, 2));
+        //eslint-disable-next-line no-console
+        console.log(JSON.stringify(setResults, null, 2));
+        //eslint-disable-next-line no-console
+        console.log(JSON.stringify(subscriptions, null, 2));
+        //eslint-disable-next-line no-console
         console.log(
           'handled ' +
             SEARCH_COUNT +
@@ -71,10 +82,18 @@ service.create({}, function(e, happnInst) {
     async.each(
       subscriptions,
       function(subscription, subscriptionCB) {
-        //console.log('subscribed:::', subscription);
-        client.on(subscription, handleOn.bind({ path: subscription }), subscriptionCB);
+        //eslint-disable-next-line no-console
+        console.log('subscribed:::', subscription);
+        client.on(
+          subscription,
+          handleOn.bind({
+            path: subscription
+          }),
+          subscriptionCB
+        );
       },
       function() {
+        //eslint-disable-next-line no-console
         console.log(
           'did ' +
             SUBSCRIPTION_COUNT +
@@ -92,11 +111,16 @@ service.create({}, function(e, happnInst) {
               {
                 counter: counter++
               },
-              { noStore: NOSTORE, consistency: CONSISTENCY, onPublished: function() {} },
+              {
+                noStore: NOSTORE,
+                consistency: CONSISTENCY,
+                onPublished: function() {}
+              },
               randomPathCB
             );
           },
           function() {
+            //eslint-disable-next-line no-console
             console.log(
               'handled ' +
                 SEARCH_COUNT +

@@ -18,18 +18,23 @@ describe(
           createLogger: function() {
             return {
               warn: function(message) {
+                //eslint-disable-next-line no-console
                 console.log(message);
               },
               info: function(message) {
+                //eslint-disable-next-line no-console
                 console.log(message);
               },
               success: function(message) {
+                //eslint-disable-next-line no-console
                 console.log(message);
               },
               error: function(message) {
+                //eslint-disable-next-line no-console
                 console.log(message);
               },
               $$TRACE: function(message) {
+                //eslint-disable-next-line no-console
                 console.log(message);
               }
             };

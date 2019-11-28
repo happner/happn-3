@@ -69,6 +69,7 @@ describe(
       });
 
       await stopService(service);
+      //eslint-disable-next-line no-console
       console.log('stopped service, setting up an error in client authenticate...');
 
       client.__oldAuthenticate = client.authenticate.bind(client);
@@ -78,6 +79,7 @@ describe(
       }.bind(client);
 
       service = await createService(); //restart service, bad dns
+      //eslint-disable-next-line no-console
       console.log('started service again...');
       await delay(12000);
       await stopService(service);
@@ -110,6 +112,7 @@ describe(
       });
 
       await stopService(service);
+      //eslint-disable-next-line no-console
       console.log('stopped service, setting up an error in client authenticate...');
 
       client.__oldAuthenticate = client.authenticate.bind(client);
@@ -119,6 +122,7 @@ describe(
       }.bind(client);
 
       service = await createService(); //restart service, bad dns
+      //eslint-disable-next-line no-console
       console.log('started service again...');
       await delay(12000);
       await stopService(service);

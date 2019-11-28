@@ -92,10 +92,12 @@ describe(
         if (!server1) resolve();
 
         var stopService = function(clientE) {
+          //eslint-disable-next-line no-console
           if (clientE) console.warn('client disconnect failed:::', clientE);
 
           server1.stop(function(e) {
             if (e) {
+              //eslint-disable-next-line no-console
               console.warn('failed to stop server1: ' + e.toString());
               reject(e);
               return;
@@ -361,8 +363,6 @@ describe(
               });
           },
           function(itemCB) {
-            //console.log('trying login 2:::');
-
             Happn.client
               .create({
                 config: {
@@ -373,13 +373,10 @@ describe(
               })
               .catch(function(e) {
                 expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-                //console.log('got expected error 2:::');
                 itemCB();
               });
           },
           function(itemCB) {
-            //console.log('trying login 3:::');
-
             Happn.client
               .create({
                 config: {
@@ -390,13 +387,10 @@ describe(
               })
               .catch(function(e) {
                 expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-                //console.log('got expected error 2:::');
                 itemCB();
               });
           },
           function(itemCB) {
-            //console.log('trying login 4:::');
-
             Happn.client
               .create({
                 config: {
@@ -407,13 +401,10 @@ describe(
               })
               .catch(function(e) {
                 expect(e.toString()).to.be('AccessDenied: Account locked out');
-                //console.log('got expected error 4:::');
                 setTimeout(itemCB, 3000); //wait 3 seconds
               });
           },
           function(itemCB) {
-            //console.log('trying login 5:::');
-
             Happn.client
               .create({
                 config: {
@@ -424,13 +415,10 @@ describe(
               })
               .catch(function(e) {
                 expect(e.toString()).to.be('AccessDenied: Account locked out');
-                //console.log('got expected error 5:::');
                 setTimeout(itemCB, 2000); //wait 2 seconds
               });
           },
           function(itemCB) {
-            //console.log('trying login 6:::');
-
             Happn.client
               .create({
                 config: {
@@ -441,7 +429,6 @@ describe(
               })
               .then(function(client) {
                 activeClient = client;
-                //console.log('succeeded login 6:::');
                 itemCB();
               })
               .catch(function(e) {
@@ -505,8 +492,6 @@ describe(
               });
           },
           function(itemCB) {
-            //console.log('trying login 2:::');
-
             Happn.client
               .create({
                 config: {
@@ -522,8 +507,6 @@ describe(
               });
           },
           function(itemCB) {
-            //console.log('trying login 3:::');
-
             Happn.client
               .create({
                 config: {
@@ -538,8 +521,6 @@ describe(
               .catch(itemCB);
           },
           function(itemCB) {
-            //console.log('trying login 4:::');
-
             Happn.client
               .create({
                 config: {
@@ -550,13 +531,10 @@ describe(
               })
               .catch(function(e) {
                 expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-                //console.log('got expected error 4:::');
                 itemCB();
               });
           },
           function(itemCB) {
-            //console.log('trying login 4:::');
-
             Happn.client
               .create({
                 config: {
@@ -567,13 +545,10 @@ describe(
               })
               .catch(function(e) {
                 expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-                //console.log('got expected error 4:::');
                 itemCB();
               });
           },
           function(itemCB) {
-            //console.log('trying login 4:::');
-
             Happn.client
               .create({
                 config: {
@@ -584,13 +559,10 @@ describe(
               })
               .catch(function(e) {
                 expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-                //console.log('got expected error 4:::');
                 itemCB();
               });
           },
           function(itemCB) {
-            //console.log('trying login 5:::');
-
             Happn.client
               .create({
                 config: {
@@ -601,7 +573,6 @@ describe(
               })
               .catch(function(e) {
                 expect(e.toString()).to.be('AccessDenied: Account locked out');
-                //console.log('got expected error 5:::');
                 itemCB();
               });
           },
@@ -635,7 +606,6 @@ describe(
               }
             })
               .then(function() {
-                //console.log('created service:::');
                 expect(server1.services.security.config.accountLockout.enabled).to.be(true);
                 expect(server1.services.security.config.accountLockout.attempts).to.be(4);
                 expect(server1.services.security.config.accountLockout.retryInterval).to.be(

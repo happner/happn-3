@@ -44,6 +44,7 @@ describe('03_heartbeats', function() {
     });
 
     clientInstance.socket.on('outgoing::pong', function() {
+      //eslint-disable-next-line no-console
       console.log('pong received...still testing please be patient.');
       pongs++;
     });
@@ -73,6 +74,7 @@ describe('03_heartbeats', function() {
     clientInstance.socket._write = newWrite;
 
     clientInstance.socket.on('outgoing::pong', function() {
+      //eslint-disable-next-line no-console
       console.log('pong received...still testing please be patient.');
     });
 

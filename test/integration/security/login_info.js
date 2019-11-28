@@ -51,10 +51,12 @@ describe(
     after('stops the services', function(done) {
       if (!server1) done();
       server1.stop(function(e) {
+        //eslint-disable-next-line no-console
         if (e) console.warn('failed to stop server1: ' + e.toString());
 
         if (!server2) done();
         server2.stop(function(e) {
+          //eslint-disable-next-line no-console
           if (e) console.warn('failed to stop server2: ' + e.toString());
           done();
         });

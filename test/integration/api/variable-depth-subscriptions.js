@@ -36,12 +36,14 @@ describe(
           timeout: 2000
         },
         function(e) {
+          //eslint-disable-next-line no-console
           if (e) console.warn('failed disconnecting publisher client');
           listenerclient.disconnect(
             {
               timeout: 2000
             },
             function(e) {
+              //eslint-disable-next-line no-console
               if (e) console.warn('failed disconnecting listener client');
               happnInstance.stop(done);
             }

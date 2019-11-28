@@ -80,6 +80,7 @@ describe(
       });
 
       clientInstance.pubsub.on('outgoing::ping', function() {
+        //eslint-disable-next-line no-console
         console.log('ping sent...still testing please be patient.');
         pings++;
       });
@@ -109,6 +110,7 @@ describe(
       clientInstance.pubsub._write = newWrite;
 
       clientInstance.pubsub.on('outgoing::ping', function() {
+        //eslint-disable-next-line no-console
         console.log('ping sent...still testing please be patient.');
       });
 

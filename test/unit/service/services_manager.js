@@ -79,12 +79,15 @@ describe(
 
         log: {
           $$TRACE: function(message) {
+            //eslint-disable-next-line no-console
             console.log(message);
           },
           error: function(message) {
+            //eslint-disable-next-line no-console
             console.log(message);
           },
           info: function(message) {
+            //eslint-disable-next-line no-console
             console.log(message);
           }
         }

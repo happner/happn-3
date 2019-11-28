@@ -1570,6 +1570,7 @@ describe(
 
                       .then(function(clientInstance) {
                         clientInstance.disconnect(function(e) {
+                          //eslint-disable-next-line no-console
                           if (e) console.warn('couldnt disconnect client:::', e);
                           serviceInstance.stop(done);
                         });

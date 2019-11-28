@@ -34,6 +34,7 @@ describe(
           timeout: 2000
         },
         function(e) {
+          //eslint-disable-next-line no-console
           if (e) console.warn('failed disconnecting test client');
 
           listenerclient.disconnect(
@@ -41,6 +42,7 @@ describe(
               timeout: 2000
             },
             function(e) {
+              //eslint-disable-next-line no-console
               if (e) console.warn('failed disconnecting test client');
 
               happnInstance.stop(done);
@@ -261,10 +263,8 @@ describe(
         '1_eventemitter_embedded_sanity/' + test_id + '/unfound/wild/*' + test_path_end + '/*',
         null,
         function(e, results) {
-          ////////////console.log('new data results');
           expect(e).to.be(null);
           expect(results.length).to.be(0);
-
           callback(e);
         }
       );
@@ -736,7 +736,6 @@ describe(
               limit: 2
             };
 
-            ////////////console.log('searching');
             publisherclient.get(
               '/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*',
               {
@@ -1560,7 +1559,6 @@ describe(
               limit: 2
             };
 
-            ////////////console.log('searching');
             publisherclient.get(
               '/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/complex*',
               {

@@ -53,7 +53,6 @@ describe(
           secure: true
         })
         .then(function(client) {
-          console.log('???', client);
           var timeout = this.setTimeout(() => {
             callback(new Error('timed out'));
           }, 3000);
