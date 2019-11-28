@@ -3006,5 +3006,96 @@ describe(
         done();
       });
     });
+
+    it('tests the __initializeSessionTokenSecret method, found secret', async () => {
+      const SecurityService = require('../../../lib/services/security/service');
+      const serviceInst = new SecurityService({
+        logger: Logger
+      });
+      const config = {};
+      serviceInst.dataService = {
+        get: function(path, callback) {
+          return callback(null, {
+            data: {
+              secret: 'TEST-SECRET'
+            }
+          });
+        }
+      };
+      await serviceInst.__initializeSessionTokenSecret(config);
+      expect(config.sessionTokenSecret).to.be('TEST-SECRET');
+    });
+
+    it('tests the __initializeSessionTokenSecret method, unfound secret', async () => {
+      const SecurityService = require('../../../lib/services/security/service');
+      const serviceInst = new SecurityService({
+        logger: Logger
+      });
+      const config = {};
+      let upserted;
+      serviceInst.dataService = {
+        get: function(path, callback) {
+          return callback(null, null);
+        },
+        upsert: function(path, data, callback) {
+          upserted = data.secret;
+          callback();
+        }
+      };
+      await serviceInst.__initializeSessionTokenSecret(config);
+      expect(upserted != null).to.be(true);
+      expect(config.sessionTokenSecret).to.be(upserted);
+    });
+
+    it('tests the __initializeSessionTokenSecret method, error on get', async () => {
+      const SecurityService = require('../../../lib/services/security/service');
+      const serviceInst = new SecurityService({
+        logger: Logger
+      });
+      const config = {};
+      //eslint-disable-next-line
+      let upserted,
+        errorHappened = false;
+      serviceInst.dataService = {
+        get: function(path, callback) {
+          return callback(new Error('test-error'));
+        },
+        upsert: function(path, data, callback) {
+          upserted = data.secret;
+          callback();
+        }
+      };
+      try {
+        await serviceInst.__initializeSessionTokenSecret(config);
+      } catch (e) {
+        expect(e.message).to.be('test-error');
+        errorHappened = true;
+      }
+      expect(errorHappened).to.be(true);
+    });
+
+    it('tests the __initializeSessionTokenSecret method, error on upsert', async () => {
+      const SecurityService = require('../../../lib/services/security/service');
+      const serviceInst = new SecurityService({
+        logger: Logger
+      });
+      const config = {};
+      let errorHappened = false;
+      serviceInst.dataService = {
+        get: function(path, callback) {
+          return callback(null, null);
+        },
+        upsert: function(path, data, callback) {
+          return callback(new Error('test-error'));
+        }
+      };
+      try {
+        await serviceInst.__initializeSessionTokenSecret(config);
+      } catch (e) {
+        expect(e.message).to.be('test-error');
+        errorHappened = true;
+      }
+      expect(errorHappened).to.be(true);
+    });
   }
 );

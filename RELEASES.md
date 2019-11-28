@@ -684,3 +684,4 @@
   - feature: happner-2 #188, happn client saved to .happner by packager
   - feature: security config setting: lockTokenToUserId: users now created with userid which is embedded in the token, which is checked against token logins and HTTP requests
   - fix: packager ensure .happner home directory
+  - feature: sessionTokenSecret is retained between startups
