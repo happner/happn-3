@@ -686,6 +686,6 @@
   - fix: packager ensure .happner home directory
   - feature: sessionTokenSecret is retained between startups
 
-  11.0.0 2019-11-29
+  11.0.1 2019-11-29
   -----------------
-    - fix: __cleanseRequestForLogs fails when message.request is undefined
+    - fix: __cleanseRequestForLogs fails when message.request is undefined, happner-2 #226
