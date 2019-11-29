@@ -685,3 +685,7 @@
   - feature: security config setting: lockTokenToUserId: users now created with userid which is embedded in the token, which is checked against token logins and HTTP requests
   - fix: packager ensure .happner home directory
   - feature: sessionTokenSecret is retained between startups
+
+  11.0.0 2019-11-29
+  -----------------
+    - fix: __cleanseRequestForLogs fails when message.request is undefined
