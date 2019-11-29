@@ -968,7 +968,7 @@ describe(
       }))).to.eql({
         username: 'test'
       });
-      //undefined request and existing session
+      //existing request and existing session
       expect(JSON.parse(protocolMock.__cleanseRequestForLogs({
         path: 'test-path',
         action: 'test-action',
