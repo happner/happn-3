@@ -686,6 +686,10 @@
   - fix: packager ensure .happner home directory
   - feature: sessionTokenSecret is retained between startups
 
-  11.0.1 2019-11-29
-  -----------------
-    - fix: __cleanseRequestForLogs fails when message.request is undefined, happner-2 #226
+11.0.1 2019-11-29
+-----------------
+  - fix: __cleanseRequestForLogs fails when message.request is undefined, happner-2 #226
+
+11.1.0 2019-12-05
+-----------------
+  - feature: allow for volatile permissions via the persistPermissions security config setting, happn-3 #245
