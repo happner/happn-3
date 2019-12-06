@@ -1,7 +1,7 @@
 describe(
   require('../../__fixtures/utils/test_helper')
-  .create()
-  .testName(__filename, 3),
+    .create()
+    .testName(__filename, 3),
   function() {
     var expect = require('expect.js');
     var Protocol = require('../../../lib/services/protocol/service');
@@ -47,7 +47,8 @@ describe(
           callback(null, message);
         };
 
-        protocolMock.processMessageIn({
+        protocolMock.processMessageIn(
+          {
             session: {
               protocol: 'happn_1.3.0'
             }
@@ -99,7 +100,8 @@ describe(
           }
         };
 
-        protocolMock.processInboundStack({
+        protocolMock.processInboundStack(
+          {
             session: {
               protocol: 'happn_4'
             }
@@ -155,7 +157,8 @@ describe(
           }
         };
 
-        protocolMock.processInboundStack({
+        protocolMock.processInboundStack(
+          {
             session: {
               protocol: 'happn_4'
             }
@@ -212,7 +215,8 @@ describe(
           }
         };
 
-        protocolMock.processInboundStack({
+        protocolMock.processInboundStack(
+          {
             session: {
               protocol: 'happn_4'
             },
@@ -278,7 +282,8 @@ describe(
           }
         };
 
-        protocolMock.processInboundStack({
+        protocolMock.processInboundStack(
+          {
             session: {
               protocol: 'happn_4'
             },
@@ -348,7 +353,8 @@ describe(
           }
         };
 
-        protocolMock.processInboundStack({
+        protocolMock.processInboundStack(
+          {
             session: {
               protocol: 'happn_4'
             },
@@ -411,7 +417,8 @@ describe(
           }
         };
 
-        protocolMock.processInboundStack({
+        protocolMock.processInboundStack(
+          {
             session: {
               protocol: 'happn_4'
             },
@@ -482,7 +489,8 @@ describe(
           }
         };
 
-        protocolMock.processInboundStack({
+        protocolMock.processInboundStack(
+          {
             session: {
               protocol: 'happn_4'
             },
@@ -540,7 +548,8 @@ describe(
           callback(null, message);
         };
 
-        protocolMock.processMessageIn({
+        protocolMock.processMessageIn(
+          {
             session: {
               protocol: 'happn_2'
             }
@@ -689,7 +698,8 @@ describe(
           callback(null, message);
         };
 
-        protocolMock.processMessageInLayers({
+        protocolMock.processMessageInLayers(
+          {
             session: {
               protocol: 'happn_1.3.0'
             }
@@ -743,7 +753,8 @@ describe(
           callback(null, message);
         };
 
-        protocolMock.processMessageOutLayers({
+        protocolMock.processMessageOutLayers(
+          {
             session: {
               protocol: 'happn_1.3.0'
             }
@@ -826,7 +837,8 @@ describe(
       };
 
       protocolMock.initialize({}, function() {
-        protocolMock.processSystem({
+        protocolMock.processSystem(
+          {
             session: {
               protocol: 'bad'
             }
@@ -867,7 +879,8 @@ describe(
       };
 
       protocolMock.initialize({}, function() {
-        protocolMock.processSystem({
+        protocolMock.processSystem(
+          {
             session: {
               protocol: 'happn_4'
             }
@@ -929,7 +942,8 @@ describe(
           }
         };
 
-        protocolMock.processSystemOut({
+        protocolMock.processSystemOut(
+          {
             session: {
               protocol: 'happn_4'
             }
@@ -961,23 +975,34 @@ describe(
       expect(JSON.parse(protocolMock.__cleanseRequestForLogs(undefined, undefined))).to.eql({});
 
       //undefined request and existing session
-      expect(JSON.parse(protocolMock.__cleanseRequestForLogs(undefined, {
-        user: {
-          username: 'test'
-        }
-      }))).to.eql({
+      expect(
+        JSON.parse(
+          protocolMock.__cleanseRequestForLogs(undefined, {
+            user: {
+              username: 'test'
+            }
+          })
+        )
+      ).to.eql({
         username: 'test'
       });
       //existing request and existing session
-      expect(JSON.parse(protocolMock.__cleanseRequestForLogs({
-        path: 'test-path',
-        action: 'test-action',
-        sessionId: 'test-session-id'
-      }, {
-        user: {
-          username: 'test'
-        }
-      }))).to.eql({
+      expect(
+        JSON.parse(
+          protocolMock.__cleanseRequestForLogs(
+            {
+              path: 'test-path',
+              action: 'test-action',
+              sessionId: 'test-session-id'
+            },
+            {
+              user: {
+                username: 'test'
+              }
+            }
+          )
+        )
+      ).to.eql({
         username: 'test',
         path: 'test-path',
         action: 'test-action',

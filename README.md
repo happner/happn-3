@@ -1168,6 +1168,33 @@ function (e, myHappn3Instance) {
 
 ```
 
+VOLATILE PERMISSIONS
+--------------------
+
+*by default, permissions are persisted via the default data provider, this is typically to a file (when using nedb) - or to a mongo database. In situations where you do not want to persist permissions between restarts, you can by adjusting the persistPermissions security config setting to false:*
+
+```javascript
+const Happn = require('happn-3');
+let myService = await Happn.service.create({
+  name: 'TEST-NAME',
+  secure: true,
+  services: {
+    security: {
+      config: {
+        persistPermissions:false
+      }
+    },
+    data: {
+      config: {
+        filename: filename
+      }
+    }
+  }
+});
+```
+
+*NB: *
+
 SECURITY PROFILES
 -----------------
 
