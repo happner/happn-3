@@ -693,3 +693,7 @@
 11.1.0 2019-12-05
 -----------------
   - feature: allow for volatile permissions via the persistPermissions security config setting, happn-3 #245
+
+11.1.1 2020-01-13
+-----------------
+  - fix: client Socket is constructed with the pingTimeout option set to a default of 45e3, this is configurable
