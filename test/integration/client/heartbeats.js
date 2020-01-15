@@ -1,7 +1,6 @@
 const Happn = require('../../..'),
   expect = require('expect.js'),
   delay = require('await-delay'),
-  HappnService = Happn.service,
   HappnClient = Happn.client,
   ChildProcess = require('child_process'),
   path = require('path');
@@ -25,17 +24,17 @@ describe(
       client.onEvent('reconnect-scheduled', () => {
         pickedUpReconnectScheduled = true;
       });
-      proxy.kill();
+      service.kill();
       await delay(2e3);
       //eslint-disable-next-line
       console.log('killed proxy wait 15 seconds..');
       await delay(15e3);
       expect(pickedUpReconnectScheduled).to.be(true);
       await client.disconnect();
-      await service.stop();
+      await proxy.kill();
     });
 
-    it('test the client detects the end of the connection to the server, negative test', async () => {
+    it('check there is no heartbeat interval on the client when pingTimeout is configured to false', async () => {
       const service = await startHappnService();
       const client = await connectClient({
         port: 55000,
@@ -44,18 +43,16 @@ describe(
         }
       });
       await testClient(client);
-      expect(client.socket.timers.timers['heartbeat'] != null).to.be(false);
+      expect(client.socket.timers.timers['heartbeat'] == null).to.be(true);
       await client.disconnect();
-      await service.stop();
+      await service.kill();
     });
 
-    function startHappnService() {
-      return new Promise((resolve, reject) => {
-        HappnService.create({}, function(e, happnInst) {
-          if (e) return reject(e);
-          return resolve(happnInst);
-        });
-      });
+    async function startHappnService() {
+      let servicePath = path.resolve(__dirname, '../../__fixtures/utils/happn-server.js');
+      let serviceProc = ChildProcess.fork(servicePath);
+      await delay(2e3);
+      return serviceProc;
     }
 
     async function startProxyService() {
