@@ -674,3 +674,7 @@
   - feature: client session events
   - fix: activity cache timeout issues
   - chore: lint fixes
+
+10.5.1 2020-01-15
+-----------------
+  - fix: client Socket is constructed with the pingTimeout option set to a default of 45e3, this is configurable

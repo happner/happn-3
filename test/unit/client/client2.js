@@ -67,7 +67,7 @@ describe(
       done();
     });
 
-    it('tests the __prepareSocketOptions function', function(done) {
+    it('tests the __prepareSocketOptions function, defaults', function(done) {
       var happnClient = mockHappnClient();
       var opts = {};
       happnClient.__prepareSocketOptions(opts);
@@ -78,7 +78,38 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online,timeout'
+          strategy: 'disconnect,online,timeout',
+          pingTimeout: 45e3
+        }
+      };
+      expect(opts).to.eql(expectedOpts);
+      done();
+    });
+
+    it('tests the __prepareSocketOptions function', function(done) {
+      var happnClient = mockHappnClient();
+      var opts = {
+        connectTimeout: 40e3,
+        socket: {
+          reconnect: {
+            retries: 10,
+            max: 120e3
+          },
+          strategy: 'disconnect',
+          pingTimeout: 30e3
+        }
+      };
+      happnClient.__prepareSocketOptions(opts);
+      var expectedOpts = {
+        connectTimeout: 40e3,
+        socket: {
+          reconnect: {
+            retries: 10,
+            max: 120e3
+          },
+          timeout: 40e3,
+          strategy: 'disconnect',
+          pingTimeout: 30e3
         }
       };
       expect(opts).to.eql(expectedOpts);
@@ -135,7 +166,8 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online,timeout'
+          strategy: 'disconnect,online,timeout',
+          pingTimeout: 45e3
         },
         info: {
           _browser: false
@@ -174,7 +206,8 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online,timeout'
+          strategy: 'disconnect,online,timeout',
+          pingTimeout: 45e3
         },
         info: {
           _browser: false

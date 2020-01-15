@@ -104,11 +104,14 @@ var my_client_instance; //this will be your client instance
 /**
 example options are :
 {
-  config: {
-    host: "127.0.0.1", //(default)
-    port: 55000, //(default)
-    username: 'username', //only necessary if server is secure
-    password: 'password' //only necessary if server is secure
+  host: "127.0.0.1", //(default)
+  port: 55000, //(default)
+  username: 'username', //only necessary if server is secure
+  password: 'password', //only necessary if server is secure
+  socket: {
+    pingTimeout: 45e3 // 45 seconds by default, if set to false the client
+                      // will not detect connection failures and emit the
+                      // 'reconnect scheduled event'
   }
 }
 **/
