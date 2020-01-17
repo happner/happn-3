@@ -149,6 +149,26 @@ describe(
       );
     }
 
+    it('tests upserting an undefined user', function(done) {
+      mockServices(function(e, happn) {
+        if (e) return done(e);
+        happn.services.security.users.upsertUser(undefined, function(e) {
+          expect(e.message).to.be('group is null or not an object');
+          done();
+        });
+      });
+    });
+
+    it('tests deleting an undefined user', function(done) {
+      mockServices(function(e, happn) {
+        if (e) return done(e);
+        happn.services.security.users.deleteUser(undefined, function(e) {
+          expect(e.message).to.be('group is null or not an object');
+          done();
+        });
+      });
+    });
+
     it('searches for users  a custom filter to ensure we dont have to trim out groups, this will allow us to optimise the listUsers method', function(done) {
       mockServices(function(e, happn) {
         if (e) return done(e);
