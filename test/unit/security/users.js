@@ -153,7 +153,7 @@ describe(
       mockServices(function(e, happn) {
         if (e) return done(e);
         happn.services.security.users.upsertUser(undefined, function(e) {
-          expect(e.message).to.be('group is null or not an object');
+          expect(e.message).to.be('user is null or not an object');
           done();
         });
       });
@@ -163,7 +163,7 @@ describe(
       mockServices(function(e, happn) {
         if (e) return done(e);
         happn.services.security.users.deleteUser(undefined, function(e) {
-          expect(e.message).to.be('group is null or not an object');
+          expect(e.message).to.be('user is null or not an object');
           done();
         });
       });
