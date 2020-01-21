@@ -697,3 +697,7 @@
 11.1.1 2020-01-13
 -----------------
   - fix: client Socket is constructed with the pingTimeout option set to a default of 45e3, this is configurable
+
+11.1.2 2020-01-21
+-----------------
+  - fix #254: include port number in listen error log msg
