@@ -1,14 +1,22 @@
 const shortid = require('shortid'),
-path = require('path'),
-fs = require('fs-extra'),
-request = require('request');
+      path = require('path'),
+      fs = require('fs-extra'),
+      request = require('request'),
+      why = require('why-is-node-running'),
+      delay = require('await-delay');
 
 function TestHelper() {
   this.__testFiles = [];
+  this.expect = require('expect.js');
 }
 
 TestHelper.create = function(){
   return new TestHelper();
+};
+
+TestHelper.prototype.printOpenHandles = async function(delayMs){
+  if (delayMs) await delay(delayMs);
+  await why();
 };
 
 TestHelper.prototype.testName = function(testFilename, depth){

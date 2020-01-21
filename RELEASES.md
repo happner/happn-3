@@ -701,3 +701,5 @@
 11.1.2 2020-01-17
 -----------------
   - fix: upsertUser and upsertGroup and deleteUser and deleteGroup check for undefined or not object user or group
+  - fix #254: include port number in listen error log msg
+  - fix: blocked port startup holds on to resources, now releases handles correctly
