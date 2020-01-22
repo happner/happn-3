@@ -120,6 +120,26 @@ describe(
       });
     });
 
+    it('tests upserting an undefined group', function(done) {
+      mockServices(function(e, happn) {
+        if (e) return done(e);
+        happn.services.security.groups.upsertGroup(undefined, function(e) {
+          expect(e.message).to.be('group is null or not an object');
+          done();
+        });
+      });
+    });
+
+    it('tests deleting an undefined group', function(done) {
+      mockServices(function(e, happn) {
+        if (e) return done(e);
+        happn.services.security.groups.deleteGroup(undefined, function(e) {
+          expect(e.message).to.be('group is null or not an object');
+          done();
+        });
+      });
+    });
+
     it('adds a group with valid permissions', function(done) {
       mockServices(function(e, happn) {
         if (e) return done(e);
