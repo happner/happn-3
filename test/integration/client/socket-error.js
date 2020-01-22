@@ -6,7 +6,6 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-
     this.timeout(4000);
 
     it('fails to login to non existing server', function(done) {
