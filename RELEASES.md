@@ -702,3 +702,7 @@
 -----------------
   - fix: upsertUser and upsertGroup and deleteUser and deleteGroup check for undefined or not object user or group
   - fix #254: include port number in listen error log msg
+
+11.1.3 2020-01-26
+-----------------
+  - fix: client login failure (ECONNREFUSED) memory leak
