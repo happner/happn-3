@@ -1,5 +1,4 @@
 const shortid = require('shortid'),
-      path = require('path'),
       fs = require('fs-extra'),
       request = require('request'),
       why = require('why-is-node-running'),
@@ -8,6 +7,9 @@ const shortid = require('shortid'),
 function TestHelper() {
   this.__testFiles = [];
   this.expect = require('expect.js');
+  this.semver = require('semver');
+  this.npm = require('npm-programmatic');
+  this.path = require('path');
 }
 
 TestHelper.create = function(){
@@ -21,7 +23,7 @@ TestHelper.prototype.printOpenHandles = async function(delayMs){
 
 TestHelper.prototype.testName = function(testFilename, depth){
   if (!depth) depth = 2;
-  var fileParts = testFilename.split(path.sep).reverse();
+  var fileParts = testFilename.split(this.path.sep).reverse();
   var poParts = [];
   for (var i = 0; i < depth; i++)
     poParts.push(fileParts.shift());
@@ -30,12 +32,12 @@ TestHelper.prototype.testName = function(testFilename, depth){
 
 TestHelper.prototype.newTestFile = function (options) {
   if (!options) options = {};
-  if (!options.dir) options.dir = 'test' + path.sep + 'tmp';
+  if (!options.dir) options.dir = 'test' + this.path.sep + 'tmp';
   if (!options.ext) options.ext = 'nedb';
   if (!options.name) options.name = shortid.generate();
-  var folderName = path.resolve(options.dir);
+  var folderName = this.path.resolve(options.dir);
   fs.ensureDirSync(folderName);
-  var fileName = folderName + path.sep + options.name + '.' + options.ext;
+  var fileName = folderName + this.path.sep + options.name + '.' + options.ext;
   fs.writeFileSync(fileName, '');
   this.__testFiles.push(fileName);
   return fileName;
