@@ -259,7 +259,7 @@ describe(
     it('does a whole bunch of edits to the same group in parallel, we then check all the correct permissions exist in the group', function(done) {
       var permissionCount = 1000;
 
-      this.timeout(permissionCount * 10);
+      this.timeout(permissionCount * 15);
 
       mockServices(function(e, happn) {
         if (e) return done(e);
