@@ -302,10 +302,10 @@ describe(
       };
       await startServer(serverConfig);
       let client = await Happn.client.create(clientConfig);
-      let tokenClient = await Happn.client.create({token:client.session.token});
+      let tokenClient = await Happn.client.create({ token: client.session.token });
 
       Date.__oldNow = Date.now;
-      Date.now = function(){
+      Date.now = function() {
         return Date.__oldNow() + 20000;
       };
 
@@ -315,7 +315,7 @@ describe(
       });
 
       var error = false;
-      tokenClient.set('/test/path', {}, function(e){
+      tokenClient.set('/test/path', {}, function(e) {
         error = e.message;
       });
 

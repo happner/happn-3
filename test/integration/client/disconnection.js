@@ -133,14 +133,14 @@ describe(
           let testClient = clients[0];
           var disconnectCounter = 0;
 
-          let disconnectCallback = function(){
+          let disconnectCallback = function() {
             disconnectCounter++;
             throw new Error('test error');
           };
 
-          try{
+          try {
             testClient.disconnect(disconnectCallback);
-          } catch (e){
+          } catch (e) {
             expect(disconnectCounter).to.be(1);
             callback();
           }
