@@ -111,12 +111,39 @@ describe(
         },
         function(e) {
           if (e) return callback(e);
-
+          expect(Object.keys(Service2.services.session.__sessions).length).to.eql(10);
           Service2.services.session.disconnectAllClients(function(e) {
             if (e) return callback(e);
-            expect(Service2.services.session.__sessions).to.eql({});
+            expect(Object.keys(Service2.services.session.__sessions).length).to.eql(0);
             callback();
           });
+        }
+      );
+    });
+
+    it('if an error is thrown on disconnection callback, we dont do a callback twice', function(callback) {
+      getClients(
+        Service1,
+        1,
+        {
+          port: 55002
+        },
+        function(e, clients) {
+          if (e) return callback(e);
+          let testClient = clients[0];
+          var disconnectCounter = 0;
+
+          let disconnectCallback = function(){
+            disconnectCounter++;
+            throw new Error('test error');
+          };
+
+          try{
+            testClient.disconnect(disconnectCallback);
+          } catch (e){
+            expect(disconnectCounter).to.be(1);
+            callback();
+          }
         }
       );
     });

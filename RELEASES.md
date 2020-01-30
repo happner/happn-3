@@ -706,3 +706,8 @@
 11.1.3 2020-01-26
 -----------------
   - fix: client login failure (ECONNREFUSED) memory leak
+
+11.1.4 2020-01-30
+-----------------
+  - fix: session-end on expired token after system time change
+  - fix: double error is not emitted on connection failure when failure occurs in callback

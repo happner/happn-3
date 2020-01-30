@@ -266,5 +266,67 @@ describe(
       await stopServer();
       expect(reason).to.be('token-revoked');
     });
+
+    it('emits session/ended/token-expired when token times out on subsequent requests after token login', async () => {
+      let serverConfig = {
+        secure: true,
+        services: {
+          security: {
+            config: {
+              profiles: [
+                {
+                  name: 'short-session',
+                  session: {
+                    $and: [
+                      {
+                        user: {
+                          username: {
+                            $eq: '_ADMIN'
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  policy: {
+                    ttl: '10 seconds'
+                  }
+                }
+              ]
+            }
+          }
+        }
+      };
+      let clientConfig = {
+        username: '_ADMIN',
+        password: 'happn'
+      };
+      await startServer(serverConfig);
+      let client = await Happn.client.create(clientConfig);
+      let tokenClient = await Happn.client.create({token:client.session.token});
+
+      Date.__oldNow = Date.now;
+      Date.now = function(){
+        return Date.__oldNow() + 20000;
+      };
+
+      var reason = false;
+      tokenClient.onEvent('session-ended', function(evt) {
+        reason = evt.reason;
+      });
+
+      var error = false;
+      tokenClient.set('/test/path', {}, function(e){
+        error = e.message;
+      });
+
+      await delay(2000);
+
+      Date.now = Date.__oldNow;
+
+      expect(error).to.be('expired session token');
+      expect(reason).to.be('token-expired');
+
+      await stopServer();
+    });
   }
 );
