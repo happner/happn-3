@@ -75,7 +75,6 @@
     "await-delay": "^1.0.0",
     "byline": "5.0.0",
     "chai": "^4.2.0",
-    "commander": "^4.1.0",
     "coveralls": "^3.0.6",
     "debug": "4.1.1",
     "eslint": "^6.5.1",
@@ -88,7 +87,6 @@
     "happn-random-activity-generator": "0.2.1",
     "happn-service-mongo-2": "^3.0.0",
     "happner-serial-mocha": "^1.5.2",
-    "http-proxy": "^1.18.0",
     "jsprim": "^2.0.0",
     "karma": "^4.0.0",
     "karma-chai": "^0.1.0",
@@ -101,7 +99,6 @@
     "nyc": "^13.3.0",
     "prettier": "^1.18.2",
     "request": "^2.88.0",
-    "require-self": "^0.2.1",
     "semver": "^7.1.1",
     "why-is-node-running": "^2.1.0"
   },
