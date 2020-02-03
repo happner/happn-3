@@ -8,6 +8,7 @@ describe(
     var happn_client = happn.client;
     var async = require('async');
     var expect = require('expect.js');
+    var delay = require('await-delay');
 
     var Service1;
     var Service2;
@@ -111,12 +112,47 @@ describe(
         },
         function(e) {
           if (e) return callback(e);
-
+          expect(Object.keys(Service2.services.session.__sessions).length).to.eql(10);
           Service2.services.session.disconnectAllClients(function(e) {
             if (e) return callback(e);
-            expect(Service2.services.session.__sessions).to.eql({});
+            expect(Object.keys(Service2.services.session.__sessions).length).to.eql(0);
             callback();
           });
+        }
+      );
+    });
+
+    it('if an error is thrown on disconnection callback, we dont do a callback twice', function (callback) {
+      this.timeout(4000);
+      getClients(
+        Service1,
+        1,
+        {
+          port: 55002
+        },
+        async (e, clients) => {
+          if (e) return callback(e);
+          let testClient = clients[0];
+          var disconnectCounter = 0;
+
+          let disconnectCallback = function() {
+            disconnectCounter++;
+            throw new Error('test error');
+          };
+
+          var originalException = process.listeners('uncaughtException').pop();
+          process.removeListener('uncaughtException', originalException);
+          process.once("uncaughtException", function () {
+
+          });
+
+          testClient.disconnect(disconnectCallback);
+          await delay(2000);
+
+          expect(disconnectCounter).to.be(1);
+          process.listeners('uncaughtException').push(originalException);
+
+          callback();
         }
       );
     });
