@@ -1,6 +1,6 @@
 {
   "name": "happn-3",
-  "version": "10.4.3",
+  "version": "10.4.4",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "keywords": [
     "mongo",
@@ -95,9 +95,11 @@
     "karma-mocha-reporter": "^2.2.5",
     "mocha": "^6.2.0",
     "mongodb": "^3.3.1",
+    "npm-programmatic": "0.0.12",
     "nyc": "^13.3.0",
     "prettier": "^1.18.2",
     "request": "^2.88.0",
+    "semver": "^7.1.1",
     "why-is-node-running": "^2.1.0"
   },
   "database": "1",

@@ -673,3 +673,7 @@
 -----------------
   - cache fixes - clearTimeout on persisted cache
   - test: user deletion and recreation token reuse (test/integration/security/access_sanity)
+
+10.4.4 2020-01-30
+-----------------
+ - fix: client login failure leak , cherry-picked from version 11
