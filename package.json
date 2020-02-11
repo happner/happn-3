@@ -1,6 +1,6 @@
 {
   "name": "happn-3",
-  "version": "10.4.4",
+  "version": "10.5.0-prerelease-1",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "keywords": [
     "mongo",
