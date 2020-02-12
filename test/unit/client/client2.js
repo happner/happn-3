@@ -78,7 +78,7 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online,timeout'
+          strategy: 'disconnect,online'
         }
       };
       expect(opts).to.eql(expectedOpts);
@@ -135,7 +135,7 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online,timeout'
+          strategy: 'disconnect,online'
         },
         info: {
           _browser: false
@@ -174,7 +174,7 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online,timeout'
+          strategy: 'disconnect,online'
         },
         info: {
           _browser: false
