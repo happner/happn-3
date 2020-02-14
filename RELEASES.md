@@ -677,3 +677,17 @@
 10.4.4 2020-01-30
 -----------------
  - fix: client login failure leak , cherry-picked from version 11
+
+10.5.0 2019-10-23
+-----------------
+  - feature: client session events
+  - fix: activity cache timeout issues
+  - chore: lint fixes
+
+10.5.1 2020-01-15
+-----------------
+  - fix: client Socket is constructed with the pingTimeout option set to a default of 45e3, this is configurable
+
+10.6.0 2010-02-14
+-----------------
+  - feature: zombie socket removal

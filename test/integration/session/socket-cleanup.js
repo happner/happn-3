@@ -1,6 +1,5 @@
 const testHelper = require('../../__fixtures/utils/test_helper').create();
-describe(testHelper.testName(__filename, 3), function () {
-
+describe(testHelper.testName(__filename, 3), function() {
   const expect = require('expect.js');
   const happn = require('../../../lib/index');
   const service = happn.service;
@@ -49,9 +48,9 @@ describe(testHelper.testName(__filename, 3), function () {
   });
 
   it('tests switching the cleanup on, on an unsecured server, happn shouldnt start up', async () => {
-    try{
+    try {
       await getService(2000, 5000, true, false);
-    }catch(e){
+    } catch (e) {
       expect(e.message).to.be('unable to cleanup sockets in an unsecure setup');
     }
   });
@@ -70,18 +69,18 @@ describe(testHelper.testName(__filename, 3), function () {
 
   const zombies = [];
 
-  function zombieSocket(){
+  function zombieSocket() {
     var Socket = Primus.createSocket({
       manual: true
     });
     const socket = new Socket('http://localhost:55000', {
-      strategy:'disconnect,online'
+      strategy: 'disconnect,online'
     });
     socket.once('close', destroyZombie(socket));
     zombies.push(socket);
   }
 
-  function destroyZombie(zombie){
+  function destroyZombie(zombie) {
     return () => {
       setTimeout(() => {
         zombie.destroy();
@@ -89,46 +88,44 @@ describe(testHelper.testName(__filename, 3), function () {
     };
   }
 
-  function disconnectZombies(){
-    for (var i = 0;i < zombies.length;i++){
-      try{
+  function disconnectZombies() {
+    for (var i = 0; i < zombies.length; i++) {
+      try {
         zombies.pop().end();
-      }catch(e){
+      } catch (e) {
         //do nothing
       }
     }
   }
 
-  function disconnectClient () {
+  function disconnectClient() {
     return new Promise((resolve, reject) => {
       if (clientInstance)
-        clientInstance.disconnect((e) => {
+        clientInstance.disconnect(e => {
           if (e) return reject(e);
           resolve();
           clientInstance = null;
         });
-      else
-        resolve();
+      else resolve();
     });
   }
 
-  function stopService () {
+  function stopService() {
     return new Promise((resolve, reject) => {
       if (serviceInstance)
-        serviceInstance.stop((e) => {
+        serviceInstance.stop(e => {
           if (e) return reject(e);
           resolve();
           serviceInstance = null;
         });
-      else
-        resolve();
+      else resolve();
     });
   }
 
-  function getService (cleanupInterval, cleanupThreshold, cleanupVerbose, secureInstance) {
+  function getService(cleanupInterval, cleanupThreshold, cleanupVerbose, secureInstance) {
     return new Promise((resolve, reject) => {
       const serviceConfig = {
-        secure:secureInstance == undefined?true:secureInstance,
+        secure: secureInstance === undefined ? true : secureInstance,
         services: {
           session: {
             config: {}
@@ -140,15 +137,15 @@ describe(testHelper.testName(__filename, 3), function () {
         serviceConfig.services.session.config.unconfiguredSessionCleanup = {
           interval: cleanupInterval, //check every N milliseconds
           threshold: cleanupThreshold || 10e3, //sessions are cleaned up if they remain unconfigured for 10 seconds
-          verbose:cleanupVerbose //cleanups are logged
+          verbose: cleanupVerbose //cleanups are logged
         };
       }
 
-      service.create(serviceConfig,
-        function (e, happnInst) {
-          if (e) return reject(e);
-          serviceInstance = happnInst;
-          happn_client.create({
+      service.create(serviceConfig, function(e, happnInst) {
+        if (e) return reject(e);
+        serviceInstance = happnInst;
+        happn_client.create(
+          {
             config: {
               username: '_ADMIN',
               password: 'happn'
@@ -156,12 +153,14 @@ describe(testHelper.testName(__filename, 3), function () {
             info: {
               from: 'startup'
             }
-          }, function (e, instance) {
+          },
+          function(e, instance) {
             if (e) return reject(e);
             clientInstance = instance;
             resolve();
-          });
-        });
+          }
+        );
+      });
     });
   }
 });

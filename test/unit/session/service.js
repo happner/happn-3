@@ -103,9 +103,5 @@ describe(
       sessionService.__configureSession(message, client);
       expect(client.happnProtocol).to.be('happn_4');
     });
-
-    // it('should test the [method] method', function () {
-    //   const sessionService = new SessionService({logger:Logger});
-    // });
   }
 );

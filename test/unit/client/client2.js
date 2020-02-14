@@ -67,7 +67,7 @@ describe(
       done();
     });
 
-    it('tests the __prepareSocketOptions function', function(done) {
+    it('tests the __prepareSocketOptions function, defaults', function(done) {
       var happnClient = mockHappnClient();
       var opts = {};
       happnClient.__prepareSocketOptions(opts);
@@ -78,7 +78,8 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online'
+          strategy: 'disconnect,online',
+          pingTimeout: 45e3
         }
       };
       expect(opts).to.eql(expectedOpts);
@@ -135,7 +136,8 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online'
+          strategy: 'disconnect,online',
+          pingTimeout: 45e3
         },
         info: {
           _browser: false
@@ -174,7 +176,8 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online'
+          strategy: 'disconnect,online',
+          pingTimeout: 45e3
         },
         info: {
           _browser: false
@@ -1871,24 +1874,5 @@ describe(
         done();
       });
     });
-
-    xit('tests the disconnect function', function(done) {
-      // TODO::: ADDED A CALLBACK AT THE END OF THE FUNCTION IN client.js PASSES BUT HANGS
-      // Socket issues again?
-      var happnClient = mockHappnClient();
-      happnClient.__performSystemRequest = function(action) {
-        expect(action).to.eql('disconnect');
-        // TODO: needs work to pass before done() is called
-      };
-
-      happnClient.socket = null;
-      happnClient.disconnect({}, function() {
-        done();
-      });
-    });
-
-    // after('shows why node is still running', function(){
-    //   log();
-    // });
   }
 );
