@@ -714,4 +714,5 @@
 
 11.2.0 2010-02-15
 -----------------
-  - feature: zombie socket removal
+  - feature: unconfigured session removal
+  - fix: client reconnect strategy only for reconnections, not for initial connection timeouts

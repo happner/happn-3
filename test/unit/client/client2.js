@@ -78,7 +78,7 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online,timeout',
+          strategy: 'disconnect,online',
           pingTimeout: 45e3
         }
       };
@@ -166,7 +166,7 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online,timeout',
+          strategy: 'disconnect,online',
           pingTimeout: 45e3
         },
         info: {
@@ -206,7 +206,7 @@ describe(
             max: 180000
           },
           timeout: 30000,
-          strategy: 'disconnect,online,timeout',
+          strategy: 'disconnect,online',
           pingTimeout: 45e3
         },
         info: {
