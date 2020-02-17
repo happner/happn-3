@@ -1647,6 +1647,36 @@ serviceInstanceLocked.services.session.localClient({
 
 ```
 
+UNCONFIGURED SESSION CLEANUP
+-----------------------------------------
+
+*because we do not use client certificates to manage connections to a happn instance as part of the framework, sockets can be created that are not necessarily logged in, although they would be unable to do anything data-wise, these sockets could clog up allowed upgrade requests in a rate limited setup. The server, if secure, can be setup to disconnect sockets that have not logged in and have no user data attached to them within a specific period*
+
+```javascript
+const serviceConfig = {
+  secure: secureInstance === undefined ? true : secureInstance,
+  services: {
+    session: {
+      config: {
+        unconfiguredSessionCleanup: {
+          interval: 5e3, //check every N milliseconds for unconfigured sockets, default is every 5 seconds
+          threshold: 30e3, //sessions are cleaned up if they remain unconfigured for this period since they were created, default is 30 seconds
+          verbose: false //cleanup activitiies logged, default is false
+        }
+      }
+    }
+  }
+};
+
+var happn = require('../lib/index')
+var service = happn.service;
+service.create(serviceConfig, function(e, happnInst) {
+  //server created with unconfigured socket cleanup running
+});
+```
+
+NB: unconfigured socket removal can only be set up for secure servers
+
 HTTPS SERVER
 -----------------------------
 

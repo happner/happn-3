@@ -116,7 +116,10 @@ describe(testHelper.testName(__filename, 3), function() {
         let intervalCheck = !!serviceInstance.services.session.__unconfiguredSessionCleanupInterval;
         serviceInstance.stop(e => {
           if (e) return reject(e);
-          if (intervalCheck && !!serviceInstance.services.session.__unconfiguredSessionCleanupInterval)
+          if (
+            intervalCheck &&
+            !!serviceInstance.services.session.__unconfiguredSessionCleanupInterval
+          )
             return reject(new Error('cleanup interval not stopped'));
           resolve();
           serviceInstance = null;
