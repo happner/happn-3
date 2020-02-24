@@ -6,7 +6,6 @@ node_js:
   - "13"
   - "12"
   - "10"
-  - "8"
 env:
   - NODE_TLS_REJECT_UNAUTHORIZED=0 INTRAVENOUS=yes
 services: mongodb
