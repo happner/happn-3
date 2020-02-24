@@ -711,3 +711,8 @@
 -----------------
   - fix: session-end on expired token after system time change
   - fix: double error is not emitted on connection failure when failure occurs in callback
+
+11.2.0 2010-02-15
+-----------------
+  - feature: unconfigured session removal
+  - fix: client reconnect strategy only for reconnections, not for initial connection timeouts

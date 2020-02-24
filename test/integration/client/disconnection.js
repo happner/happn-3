@@ -122,7 +122,7 @@ describe(
       );
     });
 
-    it('if an error is thrown on disconnection callback, we dont do a callback twice', function (callback) {
+    it('if an error is thrown on disconnection callback, we dont do a callback twice', function(callback) {
       this.timeout(4000);
       getClients(
         Service1,
@@ -142,9 +142,7 @@ describe(
 
           var originalException = process.listeners('uncaughtException').pop();
           process.removeListener('uncaughtException', originalException);
-          process.once("uncaughtException", function () {
-
-          });
+          process.once('uncaughtException', function() {});
 
           testClient.disconnect(disconnectCallback);
           await delay(2000);
