@@ -677,3 +677,7 @@
 10.4.4 2020-01-30
 -----------------
  - fix: client login failure leak , cherry-picked from version 11
+
+10.5.2 2020-02-25
+-----------------
+ - re-release 10.4.4
