@@ -716,3 +716,7 @@
 -----------------
   - feature: unconfigured session removal
   - fix: client reconnect strategy only for reconnections, not for initial connection timeouts
+
+11.2.0 2010-02-26
+-----------------
+  - optimisation: setImmediate on incoming data from socket in session service
