@@ -1168,7 +1168,7 @@ describe(
           expect(e).to.be.an('object');
           expect(happn_client.lastClient).to.be.an('object');
           expect(happn_client.lastClient).to.have.property('options');
-          expect(happn_client.lastClient).to.not.have.property('socket');
+          expect(happn_client.lastClient.socket).to.be(null);
           done();
         }
       );
