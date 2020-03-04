@@ -29,7 +29,8 @@ describe(
       happnClient.socket = socket || {
         removeAllListeners: function() {},
         write: function() {},
-        on: function() {}
+        on: function() {},
+        destroy: function() {}
       };
 
       happnClient.options = clientOptions || {
@@ -1900,7 +1901,9 @@ describe(
         done();
       };
       happnClient.log.warn = function() {};
-      happnClient.__connectionCleanup();
+      happnClient.__connectionCleanup(e => {
+        if (e) return done(e);
+      });
     });
 
     it('tests the revokeSession function calls a perform system request with revoke-session', function(done) {

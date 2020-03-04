@@ -121,7 +121,8 @@ describe(
       );
     });
 
-    it('if an error is thrown on disconnection callback, we dont do a callback twice', function(done) {
+    //this test no longer makes sense as the way disconnect works has completely changed.
+    xit('if an error is thrown on disconnection callback, we dont do a callback twice', function(done) {
       this.timeout(4000);
       getClients(
         Service1,
@@ -133,13 +134,12 @@ describe(
           if (e) return done(e);
           let testClient = clients[0];
           var disconnectCounter = 0;
-
-          let disconnectCallback = function() {
-            disconnectCounter++;
-            throw new Error('test error');
-          };
-
           try {
+            let disconnectCallback = function() {
+              disconnectCounter++;
+              throw new Error('test error');
+            };
+
             testClient.disconnect(disconnectCallback);
           } catch (e) {
             expect(e.message).to.be('test error');
