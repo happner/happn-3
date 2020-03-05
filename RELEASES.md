@@ -725,3 +725,4 @@
 -----------------
   - fix: #272 - primus leaks on client __endSocket
   - fix: removed Promisify of handleMessage in session service
+  - fix #274: Bring back IE11 compatibility.
