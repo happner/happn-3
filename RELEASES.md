@@ -721,7 +721,11 @@
 -----------------
   - optimisation: setImmediate on incoming data from socket in session service
 
-11.2.2 2020-03-02
+11.2.2 2020-03-05
+-----------------
+  - fix #274: Bring back IE11 compatibility.
+
+11.2.3 2020-03-05
 -----------------
   - fix: #272 - primus leaks on client __endSocket
   - fix: removed Promisify of handleMessage in session service
