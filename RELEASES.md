@@ -677,3 +677,14 @@
 10.4.4 2020-01-30
 -----------------
  - fix: client login failure leak , cherry-picked from version 11
+
+Deprecated versions
+-----------------
+The following versions have been deprecated:
+* 10.4.6
+* 10.4.7
+* 10.5.1
+ 
+10.6.0 2020-03-05
+-----------------
+ - fix #274: Bring back IE11 compatibility.
