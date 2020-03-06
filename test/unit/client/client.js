@@ -434,7 +434,7 @@ describe(testHelper.testName(__filename, 3), function() {
     });
   });
 
-  it('tests the __destroySocket function', async () => {
+  it('tests the __endAndDestroySocket function', async () => {
     var happnClient = mockHappnClient(
       null,
       null,
@@ -452,7 +452,7 @@ describe(testHelper.testName(__filename, 3), function() {
 
     const destroySocketPromise = socket => {
       return new Promise((resolve, reject) => {
-        happnClient.__destroySocket(socket, e => {
+        happnClient.__endAndDestroySocket(socket, e => {
           if (e) return reject(e);
           resolve();
         });
