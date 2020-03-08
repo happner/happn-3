@@ -671,4 +671,12 @@
 
 10.4.3 2019-11-11
 -----------------
-  - cache fixes
+  - cache fixes - clearTimeout on persisted cache
+  - test: user deletion and recreation token reuse (test/integration/security/access_sanity)
+
+10.4.4 - skipped (on different branch)
+--------------------------------------
+
+10.4.5 2020-03-08
+-----------------
+  - concurrency of 5 set in eachLimit of checkpoint __loadPermissionSet
