@@ -196,6 +196,7 @@ describe(
       });
 
       await client.set('/test/write', { hello: 'world' });
+      await client.disconnect();
     });
   }
 );
