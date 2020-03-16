@@ -180,7 +180,7 @@ describe('name', function() {
     expect(previousSessionTokenSecret.length).to.be(11);
   });
 
-  it('after restarting the mesh the _ADMIN can still log in', async () => {
+  it('after restarting the mesh the _ADMIN can still write to the datastore', async () => {
     await initService(tmpFile, 'admin_login', 'test_secret', false);
 
     //restart service
