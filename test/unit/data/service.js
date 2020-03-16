@@ -7,6 +7,7 @@ describe(
 
     const expect = require('expect.js');
     const DataService = require('../../../lib/services/data/service');
+    const UtilsService = require('../../../lib/services/utils/service');
 
     it('tests the _insertDataProvider method', function(done) {
       let dataService = new DataService();
@@ -181,6 +182,80 @@ describe(
             ]
           }
         ]
+      });
+    });
+
+    it('tests the addDataStoreFilter and removeDataStoreFilter methods', function(done) {
+      const dataService = new DataService();
+      const utilsService = new UtilsService();
+      dataService.happn = {
+        services: {
+          error: {},
+          utils: utilsService
+        }
+      };
+      dataService.initialize({}, () => {
+        const mockDataStore1 = { test: 1 };
+        const mockDataStore2 = { test: 2 };
+        const mockDataStore3 = { test: 3 };
+
+        dataService.datastores = {
+          test1: {
+            name: 'test1',
+            patterns: ['/test/1/*'],
+            provider: mockDataStore1
+          },
+          test2: {
+            name: 'test2',
+            patterns: ['/test/1/2/*'],
+            provider: mockDataStore2
+          },
+          test3: {
+            name: 'test3',
+            patterns: ['/test/1/2/3/*'],
+            provider: mockDataStore3
+          }
+        };
+
+        dataService.addDataStoreFilter('/test/1/*', 'test1');
+        dataService.addDataStoreFilter('/test/1/2/*', 'test2');
+        dataService.addDataStoreFilter('/test/1/2/3/*', 'test3');
+
+        expect(dataService.dataroutessorted).to.eql([
+          '/_TAGS/test/1/2/3/*',
+          '/_TAGS/test/1/2/*',
+          '/_TAGS/test/1/*',
+          '/test/1/2/3/*',
+          '/test/1/2/*',
+          '/test/1/*'
+        ]);
+
+        expect(dataService.db('/test/1/2/3/*')).to.be(mockDataStore3);
+        expect(Object.keys(dataService.dataroutes)).to.eql([
+          '/test/1/*',
+          '/_TAGS/test/1/*',
+          '/test/1/2/*',
+          '/_TAGS/test/1/2/*',
+          '/test/1/2/3/*',
+          '/_TAGS/test/1/2/3/*'
+        ]);
+
+        dataService.removeDataStoreFilter('/test/1/2/3/*');
+
+        expect(Object.keys(dataService.dataroutes)).to.eql([
+          '/test/1/*',
+          '/_TAGS/test/1/*',
+          '/test/1/2/*',
+          '/_TAGS/test/1/2/*'
+        ]);
+        expect(dataService.dataroutessorted).to.eql([
+          '/_TAGS/test/1/2/*',
+          '/_TAGS/test/1/*',
+          '/test/1/2/*',
+          '/test/1/*'
+        ]);
+        expect(dataService.db('/test/1/2/3/*')).to.be(mockDataStore2);
+        done();
       });
     });
   }
