@@ -192,8 +192,6 @@ describe('name', function() {
       password: happnPassword
     });
 
-    console.log('here', client);
-
     await client.set('/test/write', { hello: 'world' });
   });
 });
