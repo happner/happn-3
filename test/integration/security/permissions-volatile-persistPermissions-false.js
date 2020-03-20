@@ -67,24 +67,6 @@ describe(
       }
     };
 
-    const adminGroup = {
-      name: 'TEST-GROUP',
-      custom_data: {
-        customString: 'customGroupString'
-      },
-      permissions: {
-        '/permission/1': {
-          actions: ['*']
-        },
-        '/permission/2': {
-          actions: ['on']
-        },
-        '/permission/3': {
-          actions: ['set']
-        }
-      }
-    };
-
     const testUser = {
       username: 'TEST-USER',
       password: 'TEST_PWD',
