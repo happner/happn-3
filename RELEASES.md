@@ -729,3 +729,9 @@
 -----------------
   - fix: #272 - primus leaks on client __endSocket
   - fix: removed Promisify of handleMessage in session service
+
+11.2.4 2020-03-16
+-----------------
+  - refactor: prioritization of data providers by length of filter pattern desc
+  - fix: when using volatile permissions, system permissions starting with _ are retained in same datastore as groups
+  - fix #283: client connection status is set to ACTIVE before authentication happens, added new status RECONNECT_ACTIVE

@@ -6,9 +6,12 @@ describe(
     var expect = require('expect.js');
     var fs = require('fs');
     var happn = require('../../../lib/index');
+    var happnClient = happn.client;
     var default_timeout = 10000;
     var tmpFile = __dirname + '/tmp/testdata_' + require('shortid').generate() + '.db';
     var currentService = null;
+    var happnPort = 55505;
+    var happnPassword = 'password';
 
     function stopService() {
       return new Promise((resolve, reject) => {
@@ -24,11 +27,14 @@ describe(
     async function initService(filename, name, sessionTokenSecret, persistPermissions) {
       await stopService();
       currentService = await happn.service.create({
-        port: 55505,
+        port: happnPort,
         name: name,
         services: {
           security: {
             config: {
+              adminUser: {
+                password: happnPassword
+              },
               sessionTokenSecret,
               persistPermissions
             }
@@ -157,6 +163,22 @@ describe(
         currentService.services.security.config.sessionTokenSecret
       );
       expect(previousSessionTokenSecret.length).to.be(11);
+    });
+
+    it('after restarting the mesh the _ADMIN can still write to the datastore', async () => {
+      await initService(tmpFile, 'admin_login', 'test_secret', false);
+
+      //restart service
+      await initService(tmpFile, 'admin_login', undefined, false);
+
+      var client = await happnClient.create({
+        port: happnPort,
+        username: '_ADMIN',
+        password: happnPassword
+      });
+
+      await client.set('/test/write', { hello: 'world' });
+      await client.disconnect();
     });
   }
 );
