@@ -1654,7 +1654,7 @@ UNCONFIGURED SESSION CLEANUP
 
 ```javascript
 const serviceConfig = {
-  secure: secureInstance === undefined ? true : secureInstance,
+  secure: true,
   services: {
     session: {
       config: {
@@ -1748,6 +1748,30 @@ var happn = require('happn-3');
 happn.client.create({protocol:'https', allowSelfSignedCerts:true},function(e, instance) {
 ...
 
+```
+
+WEBSOCKET COMPRESSION
+---------------------
+*primusOpts in the configuration can be adjusted to allow for per-message deflate compression for messages larger than 1024 bytes, clients will automatically compress messages when they reconnect*
+
+```javascript
+const serviceConfig = {
+  services: {
+    session: {
+      config: {
+        primusOpts:{
+          compression: true
+        }
+      }
+    }
+  }
+};
+
+var happn = require('../lib/index')
+var service = happn.service;
+service.create(serviceConfig, function(e, happnInst) {
+  //server created with compression switched on
+});
 ```
 
 PAYLOAD ENCRYPTION
