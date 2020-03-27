@@ -740,3 +740,4 @@
 -----------------
   - test: per message deflate compression configuration
   - doc: per message deflate compression README update
+  - fix: 403 returned on token ttl, issue #287
