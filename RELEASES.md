@@ -741,4 +741,4 @@
   - test: per message deflate compression configuration
   - doc: per message deflate compression README update
   - fix: 403 returned on token ttl, issue #287
-  - feature: leaner publish functionality on the client
+  - feature: leaner publish functionality on the client, issue #281
