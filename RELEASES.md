@@ -736,8 +736,9 @@
   - fix: when using volatile permissions, system permissions starting with _ are retained in same datastore as groups
   - fix #283: client connection status is set to ACTIVE before authentication happens, added new status RECONNECT_ACTIVE
 
-11.2.5 2020-03-27
+11.3.0 2020-03-30
 -----------------
   - test: per message deflate compression configuration
   - doc: per message deflate compression README update
   - fix: 403 returned on token ttl, issue #287
+  - feature: leaner publish functionality on the client

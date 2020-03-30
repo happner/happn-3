@@ -212,6 +212,30 @@ my_client_instance.set('e2e_test1/testsubscribe/data/', {property1:'property1',p
 
 *NB - by setting the option merge:true, the data at the end of the path is not overwritten by your json, it is rather merged with the data in your json, overwriting the fields you specify in your set data, but leaving the fields that are already at that branch.*
 
+PUBLISH
+-------------------------
+
+*publishes the json to all topic subscribers that match e2e_test1/testsubscribe/data, the data is not stored or returned in the response, only the _meta is returned*
+
+```javascript
+
+my_client_instance.publish('e2e_test1/testsubscribe/data/', {property1:'property1',property2:'property2',property3:'property3'}, function(e, result){
+
+	//your result object has a special _meta property (not enumerable) that contains its actual _id, path, created and modified dates
+  //so you get back:
+  result = {
+    _meta:{
+      published: true,
+      type: 'response',
+      status: 'ok',
+      eventId: 4, //eventId matching event handler on client
+      sessionId: '[guid: your current session id]'
+    }
+  }
+});
+
+```
+
 SET SIBLING
 -------------------------
 

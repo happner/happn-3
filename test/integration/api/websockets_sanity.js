@@ -1746,5 +1746,47 @@ describe(
         }
       );
     });
+
+    it('should publish and receive the published data, the publish response should be lean', function(callback) {
+      listenerclient.on(
+        '/2_websockets_embedded_sanity/' + test_id + '/testpublish/data/event/*',
+        {
+          event_type: 'set',
+          count: 1
+        },
+        function(data) {
+          expect(data).to.eql({
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          });
+          callback();
+        },
+        function(e) {
+          if (e) return callback(e);
+          publisherclient.publish(
+            '/2_websockets_embedded_sanity/' + test_id + '/testpublish/data/event/1',
+            {
+              property1: 'property1',
+              property2: 'property2',
+              property3: 'property3'
+            },
+            function(e, result) {
+              if (e) return callback(e);
+              delete result._meta.eventId;
+              delete result._meta.sessionId;
+              expect(result).to.eql({
+                _meta: {
+                  path: '/2_websockets_embedded_sanity/' + test_id + '/testpublish/data/event/1',
+                  type: 'response',
+                  status: 'ok',
+                  published: true
+                }
+              });
+            }
+          );
+        }
+      );
+    });
   }
 );
