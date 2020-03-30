@@ -202,7 +202,7 @@ SET
 
 my_client_instance.set('e2e_test1/testsubscribe/data/', {property1:'property1',property2:'property2',property3:'property3'}, {noPublish:true}, function(e, result){
 
-	//your result object has a special _meta property (not enumerable) that contains its actual _id, path, created and modified dates
+	//your result object has a special _meta property that contains its actual _id, path, created and modified dates
 	//so you get back {property1:'property1',property2:'property2',property3:'property3', _meta:{path:'e2e_test1/testsubscribe/data/', created:20151011893020}}
 
 
@@ -221,8 +221,7 @@ PUBLISH
 
 my_client_instance.publish('e2e_test1/testsubscribe/data/', {property1:'property1',property2:'property2',property3:'property3'}, function(e, result){
 
-	//your result object has a special _meta property (not enumerable) that contains its actual _id, path, created and modified dates
-  //so you get back:
+	//your result does not contain the changed data, but it still has the _meta property:
   result = {
     _meta:{
       published: true,
