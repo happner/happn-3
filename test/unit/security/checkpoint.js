@@ -568,7 +568,7 @@ describe(
         ) {
           expect(e).to.be(null);
           expect(authorised).to.be(false);
-          expect(reason).to.be('no policy for session type: undefined');
+          expect(reason).to.be('no policy for session type');
           checkpoint._authorizeSession(
             testData.sessionNoPolicy,
             testData.path,
