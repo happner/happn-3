@@ -4,8 +4,9 @@ describe(
     .testName(__filename, 3),
   function() {
     var expect = require('expect.js');
-    var Protocol = require('../../../lib/services/protocol/service');
-
+    const Protocol = require('../../../lib/services/protocol/service');
+    const delay = require('await-delay');
+    this.timeout(5000);
     it('tests the processMessageIn method, happn_1.3.0 protocol', function(done) {
       var protocolMock = new Protocol({
         logger: {
@@ -1008,6 +1009,83 @@ describe(
         action: 'test-action',
         sessionId: 'test-session-id'
       });
+    });
+
+    it('tests the __disconnectUnauthorizedSession method', async () => {
+      const protocolMock = new Protocol({
+        logger: {
+          createLogger: function() {
+            return {
+              $$TRACE: function() {}
+            };
+          }
+        }
+      });
+
+      const disconnectSessionArgs = [];
+
+      protocolMock.happn = {
+        connect: {},
+        log: {
+          warn: function() {}
+        },
+        services: {
+          log: {
+            warn: function() {}
+          },
+          session: {
+            disconnectSession: function(sessionId, callback, reason) {
+              disconnectSessionArgs.push({ sessionId, reason });
+            }
+          }
+        }
+      };
+
+      //message, errorMessage, cleansedRequest
+      protocolMock.__disconnectUnauthorizedSession(
+        {
+          session: {
+            id: 1
+          }
+        },
+        'expired session token',
+        {}
+      );
+      protocolMock.__disconnectUnauthorizedSession(
+        {
+          session: {
+            id: 2
+          }
+        },
+        'session inactivity threshold reached',
+        {}
+      );
+      protocolMock.__disconnectUnauthorizedSession(
+        {
+          session: {
+            id: 3
+          }
+        },
+        'session usage limit reached',
+        {}
+      );
+      protocolMock.__disconnectUnauthorizedSession(
+        {
+          session: {
+            id: 4
+          }
+        },
+        'some arbitrary reason',
+        {}
+      );
+
+      await delay(2000);
+      expect(disconnectSessionArgs).to.eql([
+        { sessionId: 1, reason: { reason: 'token-expired' } },
+        { sessionId: 2, reason: { reason: 'inactivity-threshold' } },
+        { sessionId: 3, reason: { reason: 'usage-limit' } },
+        { sessionId: 4, reason: { reason: 'unauthorized-request' } }
+      ]);
     });
   }
 );
