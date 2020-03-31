@@ -316,7 +316,7 @@ describe(
                             expect(cachedToken).to.be(null);
 
                             doRequest('/TEST/WEB/ROUTE', sessionToken, false, function(response) {
-                              expect(response.statusCode).to.equal(403);
+                              expect(response.statusCode).to.equal(401);
 
                               done();
                             });

@@ -568,7 +568,7 @@ describe(
         ) {
           expect(e).to.be(null);
           expect(authorised).to.be(false);
-          expect(reason).to.be('no policy for session type: undefined');
+          expect(reason).to.be('no policy for session type');
           checkpoint._authorizeSession(
             testData.sessionNoPolicy,
             testData.path,
@@ -576,7 +576,7 @@ describe(
             function(e, authorised, reason) {
               expect(e).to.be(null);
               expect(authorised).to.be(false);
-              expect(reason).to.be('no policy attached to session: {}');
+              expect(reason).to.be('no policy attached to session');
               setTimeout(function() {
                 checkpoint._authorizeSession(
                   testData.sessionWithTtl,
