@@ -738,7 +738,7 @@
 
 11.3.0 2020-03-30
 -----------------
-  - test: per message deflate compression configuration
+  - test: per message deflate compression configuration, issue #282
   - doc: per message deflate compression README update
   - fix: 403 returned on token ttl, issue #287
   - feature: leaner publish functionality on the client, issue #281
