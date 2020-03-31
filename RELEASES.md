@@ -742,3 +742,4 @@
   - doc: per message deflate compression README update
   - fix: 403 returned on token ttl, issue #287
   - feature: leaner publish functionality on the client, issue #281
+  - refactor: CONSTANTS being used for authorization failure messages

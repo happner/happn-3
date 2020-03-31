@@ -576,7 +576,7 @@ describe(
             function(e, authorised, reason) {
               expect(e).to.be(null);
               expect(authorised).to.be(false);
-              expect(reason).to.be('no policy attached to session: {}');
+              expect(reason).to.be('no policy attached to session');
               setTimeout(function() {
                 checkpoint._authorizeSession(
                   testData.sessionWithTtl,
