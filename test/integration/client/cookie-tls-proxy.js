@@ -24,27 +24,35 @@ describe(testHelper.testName(__filename, 3), function() {
     service.kill();
   });
 
-  function doPost(path, token, query, callback, excludeToken) {
+  it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn', async () => {
+    const service = await startHappnService('https');
+    const client = await connectClient({
+      protocol: 'https',
+      username: '_ADMIN',
+      password: 'happn'
+    });
+    await testClient(client.session.token, 55000);
+    await client.disconnect();
+    service.kill();
+  });
+
+  function doPost(path, token, port, callback) {
     var options = {
-      url: 'https://127.0.0.1:11235' + path,
+      url: `https://127.0.0.1:${port || 11235}` + path,
       method: 'POST',
       data: { post: 'data' }
     };
 
-    if (!excludeToken) {
-      if (!query)
-        options.headers = {
-          Cookie: ['happn_token_https=' + token]
-        };
-      else options.url += '?happn_token=' + token;
-    }
+    options.headers = {
+      Cookie: ['happn_token_https=' + token]
+    };
 
     request(options, callback);
   }
 
-  async function startHappnService() {
+  async function startHappnService(protocol) {
     let servicePath = path.resolve(__dirname, '../../__fixtures/utils/happn-server.js');
-    let serviceProc = ChildProcess.fork(servicePath, ['-s', 'true']);
+    let serviceProc = ChildProcess.fork(servicePath, ['-s', 'true', '-h', protocol]);
     await delay(2e3);
     return serviceProc;
   }
@@ -56,9 +64,9 @@ describe(testHelper.testName(__filename, 3), function() {
     return proxyProc;
   }
 
-  function testClient(token) {
+  function testClient(token, port) {
     return new Promise((resolve, reject) => {
-      doPost('/test/web/route', token, false, function(error, response) {
+      doPost('/test/web/route', token, port, function(error, response) {
         try {
           testHelper.expect(error).to.eql(null);
           testHelper.expect(response.statusCode).to.equal(200);
