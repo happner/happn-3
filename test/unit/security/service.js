@@ -2926,7 +2926,7 @@ describe(
       });
     });
 
-    it.only('tests the sessionFromRequest method', function(done) {
+    it('tests the sessionFromRequest method', function(done) {
       mockServices(function(e, happnMock) {
         if (e) return done(e);
         let warningHappened = false;
