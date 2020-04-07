@@ -53,7 +53,7 @@ describe(testHelper.testName(__filename, 3), function() {
   }
 
   async function startProxyService() {
-    let proxyPath = path.resolve(__dirname, '../../__fixtures/utils/proxy.js');
+    let proxyPath = path.resolve(__dirname, '../../__fixtures/node-proxy/proxy.js');
     let proxyProc = ChildProcess.fork(proxyPath);
     await delay(2e3);
     return proxyProc;

@@ -2926,7 +2926,7 @@ describe(
       });
     });
 
-    it('tests the sessionFromRequest method', function(done) {
+    it.only('tests the sessionFromRequest method', function(done) {
       mockServices(function(e, happnMock) {
         if (e) return done(e);
         let warningHappened = false;
@@ -2949,6 +2949,7 @@ describe(
         expect(
           happnMock.services.security.sessionFromRequest(
             {
+              headers: {},
               happn_session: {
                 test: 'session'
               }
@@ -2964,6 +2965,7 @@ describe(
         expect(
           happnMock.services.security.sessionFromRequest(
             {
+              headers: {},
               cookies: {
                 get: () => {
                   return 'TEST-TOKEN';
@@ -2991,6 +2993,7 @@ describe(
         expect(
           happnMock.services.security.sessionFromRequest(
             {
+              headers: {},
               cookies: {
                 get: cookieName => {
                   return {

@@ -743,3 +743,7 @@
   - fix: 403 returned on token ttl, issue #287
   - feature: leaner publish functionality on the client, issue #281
   - refactor: CONSTANTS being used for authorization failure messages
+
+11.3.1 2020-04-07
+-----------------
+  - cookie name appended with _https if protocol is https - fixes #290
