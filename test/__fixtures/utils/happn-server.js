@@ -6,17 +6,24 @@ program
   .option("-p, --port [port]", "Port")
   .option("-s, --secure [secure]", "start secure")
   .option("-h, --protocol [protocol]", "protocol")
+  .option("-c, --cookie [cookie]", "https cookie")
   .parse(process.argv);
 
 const port = program.port || 55000;
-const config = {port};
+const config = {port, services:{}};
 if (program.secure === "true") config.secure = true;
+
 if (program.protocol === "https") {
-  config.services = {
-    transport:{
-      config:{
-        mode: 'https'
-      }
+  config.services.transport = {
+    config:{
+      mode: 'https'
+    }
+  }
+}
+if (program.cookie === "true") {
+  config.services.security = {
+    config:{
+      httpsCookie: true
     }
   }
 }

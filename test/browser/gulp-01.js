@@ -58,6 +58,32 @@ gulp.task('default', async () => {
     }
   });
 
+  (
+    await serverHelper.createServer({
+      secure: true,
+      port: 55003,
+      services: {
+        transport: {
+          config: {
+            mode: 'https'
+          }
+        },
+        security: {
+          config: {
+            httpsCookie: true
+          }
+        }
+      }
+    })
+  ).connect.use('/test/web/route', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(
+      JSON.stringify({
+        received: 1
+      })
+    );
+  });
+
   var karmaServer = new Server({
     configFile: __dirname + path.sep + '01.karma.conf.js',
     singleRun: true

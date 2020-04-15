@@ -1,6 +1,6 @@
 // Karma configuration
 // Generated on Tue Dec 01 2015 11:18:30 GMT+0200 (SAST)
-
+const fs = require('fs');
 module.exports = function(config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -14,7 +14,8 @@ module.exports = function(config) {
       'browser_client.js',
       '01_security_hsts_cookie.js',
       '02_websockets_embedded_sanity_encryptedpayloads.js',
-      '03_heartbeats.js'
+      '03_heartbeats.js',
+      '04_https_cookie.js'
     ],
 
     // list of files / patterns to load in the browser
@@ -61,6 +62,11 @@ module.exports = function(config) {
     // Concurrency level
     // how many browser should be started simultanous
     concurrency: Infinity,
-    browserNoActivityTimeout: 60000
+    browserNoActivityTimeout: 60000,
+    protocol: 'https',
+    httpsServerOptions: {
+      key: fs.readFileSync(`${__dirname}/__fixtures/key.rsa`, 'utf8'),
+      cert: fs.readFileSync(`${__dirname}/__fixtures/cert.pem`, 'utf8')
+    }
   });
 };

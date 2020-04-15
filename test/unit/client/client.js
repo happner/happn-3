@@ -535,14 +535,15 @@ describe(testHelper.testName(__filename, 3), function() {
     let mockDocument = {};
     happnClient.__writeCookie(
       {
-        cookieName: 'happn_token',
+        httpsCookie: true,
+        cookieName: 'test_happn_token',
         token: '[test token]',
         cookieDomain: '[test cookie domain]'
       },
       mockDocument
     );
     expect(mockDocument.cookie).to.be(
-      'happn_token_https=[test token]; path=/; domain=[test cookie domain]; Secure;'
+      'test_happn_token_https=[test token]; path=/; domain=[test cookie domain]; Secure;'
     );
     happnClient.options.protocol = 'http';
     mockDocument = {};

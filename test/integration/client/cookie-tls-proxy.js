@@ -10,7 +10,7 @@ describe(testHelper.testName(__filename, 3), function() {
   this.timeout(120e3);
 
   it('tests the secure cookie can be grabbed based on the proxies forward headers', async () => {
-    const service = await startHappnService();
+    const service = await startHappnService(undefined, true);
     const proxy = await startProxyService();
     const client = await connectClient({
       protocol: 'https',
@@ -25,13 +25,32 @@ describe(testHelper.testName(__filename, 3), function() {
   });
 
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn', async () => {
-    const service = await startHappnService('https');
+    const service = await startHappnService('https', true);
     const client = await connectClient({
       protocol: 'https',
       username: '_ADMIN',
       password: 'happn'
     });
     await testClient(client.session.token, 55000);
+    await client.disconnect();
+    service.kill();
+  });
+
+  it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn, negative', async () => {
+    const service = await startHappnService('https', false);
+    const client = await connectClient({
+      protocol: 'https',
+      username: '_ADMIN',
+      password: 'happn'
+    });
+    let errorHappened = false;
+    try {
+      await testClient(client.session.token, 55000);
+    } catch (e) {
+      testHelper.expect(e.message).to.be('expected 401 to equal 200');
+      errorHappened = true;
+    }
+    testHelper.expect(errorHappened).to.be(true);
     await client.disconnect();
     service.kill();
   });
@@ -50,9 +69,16 @@ describe(testHelper.testName(__filename, 3), function() {
     request(options, callback);
   }
 
-  async function startHappnService(protocol) {
+  async function startHappnService(protocol, httpsCookie) {
     let servicePath = path.resolve(__dirname, '../../__fixtures/utils/happn-server.js');
-    let serviceProc = ChildProcess.fork(servicePath, ['-s', 'true', '-h', protocol]);
+    let serviceProc = ChildProcess.fork(servicePath, [
+      '-s',
+      'true',
+      '-h',
+      protocol,
+      '-c',
+      httpsCookie ? 'true' : 'false'
+    ]);
     await delay(2e3);
     return serviceProc;
   }

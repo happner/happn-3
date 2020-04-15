@@ -39,11 +39,6 @@ describe('02_security_hsts_cookie', function() {
     }
   });
 
-  it('checks our cookie is set to secure on socket login', function(done) {
-    if (document.cookie !== '') return done(new Error('cookie should be blank as it is secure'));
-    done();
-  });
-
   it('should initialize the http client', function(callback) {
     this.timeout(default_timeout);
 
