@@ -44,6 +44,7 @@ describe(
           services: {
             stats: {
               config: {
+                emit: true,
                 debug: true,
                 statsServer: '127.0.0.1',
                 statsPort: 49494,

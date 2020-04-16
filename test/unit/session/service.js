@@ -76,7 +76,9 @@ describe(
         expect(data).to.eql({
           id: client.sessionId,
           protocol: 'happn',
-          happn: sessionService.happn.services.system.getDescription()
+          happn: sessionService.happn.services.system.getDescription(),
+          address: undefined,
+          headers: {}
         });
         done();
       });

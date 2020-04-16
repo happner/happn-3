@@ -747,3 +747,4 @@
 11.3.1 2020-04-07
 -----------------
   - cookie name appended with _https if protocol is https - fixes #290
+  - stats now only being created if emit:true in config
