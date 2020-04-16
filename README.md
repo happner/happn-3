@@ -1802,7 +1802,7 @@ serviceConfig.services.security = {
 var happn = require('happn');
 var service = happn.service;
 service.create(serviceConfig, function(e, happnInst) {
-  //server created with compression switched on
+  //server created with httpsCookie switched on
 });
 
 ```
