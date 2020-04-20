@@ -206,6 +206,7 @@ describe(
         setHeader: function() {},
         end: function(content) {
           expect(clientCode.length > content.length).to.be(true);
+          process.env.NODE_ENV = 'test';
           done();
         }
       };

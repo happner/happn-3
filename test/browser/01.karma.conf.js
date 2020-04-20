@@ -11,7 +11,7 @@ module.exports = function(config) {
     frameworks: ['mocha', 'chai'],
 
     files: [
-      'browser_client.js',
+      'browser-client-02.js',
       '01_security_hsts_cookie.js',
       '02_websockets_embedded_sanity_encryptedpayloads.js',
       '03_heartbeats.js'

@@ -8,17 +8,26 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var service = happn.service;
+    var fs = require('fs');
 
-    function doRequest(path, token, callback) {
+    function doRequest(path, token, reqOptions, callback) {
+      if (!callback) {
+        callback = reqOptions;
+        reqOptions = {};
+      }
+
       var options = {
         url: 'http://127.0.0.1:55000' + path,
+        method: reqOptions.method || 'GET',
         headers: {
           Cookie: ['happn_token=' + token]
-        }
+        },
+        formData: reqOptions.formData
       };
 
       request(options, function(error, response, body) {
-        callback(response, body);
+        if (error) return callback(error);
+        callback(null, response, body);
       });
     }
 
@@ -32,7 +41,7 @@ describe(
 
       it("the server should respond with '200 OK' when request has valid token", function(callback) {
         try {
-          doRequest('/secure/route/test', self.adminClient.session.token, function(response) {
+          doRequest('/secure/route/test', self.adminClient.session.token, function(err, response) {
             expect(response.statusCode).to.equal(200);
             expect(response.headers['content-type']).to.equal('application/json');
             expect(response.body).to.equal('{"secure":"value"}');
@@ -45,7 +54,7 @@ describe(
 
       it("the server should respond with '401 Unauthorized' when request has no token", function(callback) {
         try {
-          doRequest('/secure/route/test', null, function(response) {
+          doRequest('/secure/route/test', null, function(err, response) {
             expect(response.statusCode).to.equal(401);
             expect(response.headers['content-type']).to.equal('text/plain');
             expect(response.headers['www-authenticate']).to.equal('happn-auth');
@@ -58,9 +67,29 @@ describe(
         }
       });
 
+      it("the server should wait for the whole payload before responding with '401 Unauthorized'", async function() {
+        const bigBuffer = Buffer.alloc(30 * 1024 * 1024);
+        const filename = path.join(__dirname, 'tmp', 'uploadFile');
+        await fs.promises.writeFile(filename, bigBuffer);
+        await new Promise((resolve, reject) => {
+          doRequest(
+            '/secure/route/test',
+            null,
+            { method: 'POST', formData: { attachments: [fs.createReadStream(filename)] } },
+            function(error, response) {
+              if (error) return reject(error);
+              expect(response.statusCode).to.equal(401);
+              expect(response.headers['content-type']).to.equal('text/plain');
+              expect(response.body).to.equal('invalid token format or null token');
+              resolve();
+            }
+          );
+        });
+      });
+
       it("the server should respond with '403 Forbidden' when request has token from client without permission", function(callback) {
         try {
-          doRequest('/secure/route/test', self.testClient.session.token, function(response) {
+          doRequest('/secure/route/test', self.testClient.session.token, function(err, response) {
             expect(response.statusCode).to.equal(403);
             expect(response.headers['content-type']).to.equal('text/plain');
             expect(response.body).to.equal('unauthorized access to path /@HTTP/secure/route/test');
@@ -69,6 +98,28 @@ describe(
         } catch (e) {
           callback(e);
         }
+      });
+
+      it("the server should wait for the whole payload before responding with '403 Forbidden'", async function() {
+        const bigBuffer = Buffer.alloc(30 * 1024 * 1024);
+        const filename = path.join(__dirname, 'tmp', 'uploadFile');
+        await fs.promises.writeFile(filename, bigBuffer);
+        await new Promise((resolve, reject) => {
+          doRequest(
+            '/secure/route/test',
+            self.testClient.session.token,
+            { method: 'POST', formData: { attachments: [fs.createReadStream(filename)] } },
+            function(error, response) {
+              if (error) return reject(error);
+              expect(response.statusCode).to.equal(403);
+              expect(response.headers['content-type']).to.equal('text/plain');
+              expect(response.body).to.equal(
+                'unauthorized access to path /@HTTP/secure/route/test'
+              );
+              resolve();
+            }
+          );
+        });
       });
     });
 
@@ -96,7 +147,7 @@ describe(
 
         it("the server should respond with '401 Unauthorized' with custom unauthorized HTML page when request has no token", function(callback) {
           try {
-            doRequest('/secure/route/test', null, function(response) {
+            doRequest('/secure/route/test', null, function(err, response) {
               expect(response.statusCode).to.equal(401);
               expect(response.headers['content-type']).to.equal('text/html');
               expect(response.headers['www-authenticate']).to.equal('happn-auth');
@@ -110,7 +161,7 @@ describe(
 
         it("the server should respond with '403 Forbidden' with custom forbidden HTML page when request has token from client without permission", function(callback) {
           try {
-            doRequest('/secure/route/test', self.testClient.session.token, function(response) {
+            doRequest('/secure/route/test', self.testClient.session.token, function(err, response) {
               expect(response.statusCode).to.equal(403);
               expect(response.headers['content-type']).to.equal('text/html');
               expect(response.body).to.equal('<body>\nForbidden\n</body>\n');
@@ -147,7 +198,7 @@ describe(
 
         it("the server should respond with '500 Internal Server Error' for invalid 'unauthorizedResponsePath'", function(callback) {
           try {
-            doRequest('/secure/route/test', null, function(response) {
+            doRequest('/secure/route/test', null, function(err, response) {
               expect(response.statusCode).to.equal(500);
               expect(response.body.indexOf('ENOENT')).to.not.eql(-1);
               callback();
@@ -159,7 +210,7 @@ describe(
 
         it("the server should respond with '500 Internal Server Error' for invalid 'forbiddenResponsePath'", function(callback) {
           try {
-            doRequest('/secure/route/test', self.testClient.session.token, function(response) {
+            doRequest('/secure/route/test', self.testClient.session.token, function(err, response) {
               expect(response.statusCode).to.equal(500);
               expect(response.body.indexOf('ENOENT')).to.not.eql(-1);
               callback();
