@@ -725,7 +725,8 @@
 -----------------
   - fix #274: Bring back IE11 compatibility.
 
-11.2.3 2020-03-05-----------------
+11.2.3 2020-03-05
+-----------------
   - fix: #272 - primus leaks on client __endSocket
   - fix: removed Promisify of handleMessage in session service
 
