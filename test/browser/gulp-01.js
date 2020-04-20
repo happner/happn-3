@@ -15,7 +15,7 @@ gulp.task('default', async () => {
     overwrite: true
   });
 
-  fs.writeFileSync(__dirname + path.sep + 'browser_client.js', client_code, 'utf8');
+  fs.writeFileSync(__dirname + path.sep + 'browser-client-02.js', client_code, 'utf8');
 
   await serverHelper.createServer({
     secure: true,

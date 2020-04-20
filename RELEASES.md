@@ -744,7 +744,9 @@
   - feature: leaner publish functionality on the client, issue #281
   - refactor: CONSTANTS being used for authorization failure messages
 
-11.3.1 2020-04-07
+11.3.1 2020-04-20
 -----------------
   - cookie name appended with _https if protocol is https - fixes #290
   - stats now only being created if emit:true in config
+  - fix #292 - eat the rest of the post after sending an unauthorized/forbidden
+
