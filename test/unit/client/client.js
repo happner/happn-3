@@ -543,7 +543,7 @@ describe(testHelper.testName(__filename, 3), function() {
       mockDocument
     );
     expect(mockDocument.cookie).to.be(
-      'test_happn_token_https=[test token]; path=/; domain=[test cookie domain]; Secure;'
+      'test_happn_token=[test token]; path=/; domain=[test cookie domain]; Secure;'
     );
     happnClient.options.protocol = 'http';
     mockDocument = {};
