@@ -12,5 +12,5 @@ env:
 services: mongodb
 script:
   - "npm run-script test-cover"
-  - "npm run test-browser
+  - "npm run test-browser"
 after_success: "npm run report-coverage"
