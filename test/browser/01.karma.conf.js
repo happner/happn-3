@@ -76,10 +76,7 @@ module.exports = function(config) {
     },
     coverageReporter: {
       dir: '../../coverage-web/',
-      reporters: [
-        { type: 'lcov', subdir: 'report-lcov' },
-        { type: 'text-summary', subdir: '..', file: 'coverage-web.txt' }
-      ]
+      reporters: [{ type: 'lcov', subdir: 'report-lcov' }, { type: 'text-summary' }]
     }
   });
 };
