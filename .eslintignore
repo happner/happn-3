@@ -4,3 +4,4 @@ __*/
 lib/services/connect/public/browser_primus.js
 test/integration/session/management_sanity.js
 test/browser/browser-client-02.js
+test/browser/browser_client.js
