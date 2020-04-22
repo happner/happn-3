@@ -4,19 +4,19 @@ const fs = require('fs');
 module.exports = function(config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: '../../',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha', 'chai'],
 
     files: [
-      'browser-client-02.js',
-      '01_security_hsts_cookie.js',
-      '02_websockets_embedded_sanity_encryptedpayloads.js',
-      '03_heartbeats.js',
-      '04_https_cookie.js',
-      '05_https_cookieLogin.js'
+      'test/browser/browser-client-02.js',
+      'test/browser/01_security_hsts_cookie.js',
+      'test/browser/02_websockets_embedded_sanity_encryptedpayloads.js',
+      'test/browser/03_heartbeats.js',
+      'test/browser/04_https_cookie.js',
+      'test/browser/05_https_cookieLogin.js'
     ],
 
     // list of files / patterns to load in the browser
@@ -34,7 +34,7 @@ module.exports = function(config) {
     reporters: ['mocha', 'coverage'],
 
     preprocessors: {
-      'browser-client-02.js': ['coverage']
+      'test/browser/browser-client-02.js': ['coverage']
     },
 
     // web server port
@@ -75,8 +75,8 @@ module.exports = function(config) {
       cert: fs.readFileSync(`${__dirname}/__fixtures/cert.pem`, 'utf8')
     },
     coverageReporter: {
-      dir: '../../coverage-web/',
-      reporters: [{ type: 'lcov', subdir: 'report-lcov' }, { type: 'text-summary' }]
+      dir: './',
+      reporters: [{ type: 'lcov', subdir: 'coverage-web' }, { type: 'text-summary' }]
     }
   });
 };

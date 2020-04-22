@@ -6,7 +6,7 @@ const Happn = require('../../..'),
   testHelper = require('../../__fixtures/utils/test_helper').create(),
   request = require('request');
 
-describe.only(testHelper.testName(__filename, 3), function() {
+describe(testHelper.testName(__filename, 3), function() {
   this.timeout(120e3);
 
   it('tests the secure cookie can be grabbed based on the proxies forward headers', async () => {
