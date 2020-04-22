@@ -15,7 +15,8 @@ module.exports = function(config) {
       '01_security_hsts_cookie.js',
       '02_websockets_embedded_sanity_encryptedpayloads.js',
       '03_heartbeats.js',
-      '04_https_cookie.js'
+      '04_https_cookie.js',
+      '05_https_cookieLogin.js'
     ],
 
     // list of files / patterns to load in the browser
@@ -30,7 +31,11 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha'],
+    reporters: ['mocha', 'coverage'],
+
+    preprocessors: {
+      'browser-client-02.js': ['coverage']
+    },
 
     // web server port
     port: 9876,
@@ -50,14 +55,15 @@ module.exports = function(config) {
     browsers: ['Chrome_without_security'],
     customLaunchers: {
       Chrome_without_security: {
-        base: 'Chrome',
+        base: 'ChromeHeadless',
+        // base: 'Chrome', // to see output
         flags: ['--disable-web-security', '--ignore-certificate-errors']
       }
     },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
+    singleRun: false,
 
     // Concurrency level
     // how many browser should be started simultanous
@@ -67,6 +73,13 @@ module.exports = function(config) {
     httpsServerOptions: {
       key: fs.readFileSync(`${__dirname}/__fixtures/key.rsa`, 'utf8'),
       cert: fs.readFileSync(`${__dirname}/__fixtures/cert.pem`, 'utf8')
+    },
+    coverageReporter: {
+      dir: '../../coverage-web/',
+      reporters: [
+        { type: 'lcov', subdir: 'report-lcov' },
+        { type: 'text-summary', subdir: '..', file: 'coverage-web.txt' }
+      ]
     }
   });
 };

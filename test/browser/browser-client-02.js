@@ -933,7 +933,8 @@ function noop() {}
       _this.__performSystemRequest(
         'configure-session',
         {
-          protocol: PROTOCOL
+          protocol: PROTOCOL,
+          browser: browser
         },
         null,
         function(e) {
@@ -946,6 +947,16 @@ function noop() {}
       );
     });
   };
+
+  function getCookie(name) {
+    var value = '; ' + document.cookie;
+    var parts = value.split('; ' + name + '=');
+    if (parts.length === 2)
+      return parts
+        .pop()
+        .split(';')
+        .shift();
+  }
 
   HappnClient.prototype.login = maybePromisify(function(callback) {
     var _this = this;
@@ -970,6 +981,14 @@ function noop() {}
       .then(function(serverInfo) {
         _this.serverInfo = serverInfo;
         if (!_this.serverInfo.secure) return _this.__doLogin(loginParameters, callback);
+
+        if (_this.options.useCookie) {
+          if (browser) {
+            loginParameters.token = getCookie(serverInfo.cookieName);
+          } else {
+            return callback(new Error('Logging in with cookie only valid in browser'));
+          }
+        }
 
         if (!loginParameters.token && !loginParameters.username)
           return callback(new Error('happn server is secure, please specify a username or token'));
@@ -1910,6 +1929,12 @@ function noop() {}
     if (!this.socket) return callback();
     if (!options) options = {};
     var _this = this;
+
+    if (browser) {
+      if (options.deleteCookie) {
+        document.cookie = this.serverInfo.cookieName + '=';
+      }
+    }
 
     if (options.revokeToken || options.revokeSession)
       return _this.revokeToken(function(e) {

@@ -627,7 +627,8 @@ describe(
           action: 'configure-session',
           eventId: 1,
           data: {
-            protocol: 'happn_' + package.protocol
+            protocol: 'happn_' + package.protocol,
+            browser: false
           },
           sessionId: 'test'
         });
