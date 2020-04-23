@@ -825,9 +825,20 @@ function noop() {}
   });
 
   HappnClient.prototype.__writeCookie = function(session, sessionDocument) {
+    sessionDocument.cookie = this.__getCookie(session);
+  };
+
+  HappnClient.prototype.__getCookie = function(session) {
     var cookie = (session.cookieName || 'happn_token') + '=' + session.token + '; path=/;';
     if (session.cookieDomain) cookie += ' domain=' + session.cookieDomain + ';';
     if (this.options.protocol === 'https') cookie += ' Secure;';
+    return cookie;
+  };
+
+  HappnClient.prototype.__expireCookie = function(session, sessionDocument) {
+    session.token = '';
+    var cookie = this.__getCookie(session);
+    cookie += '; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
     sessionDocument.cookie = cookie;
   };
 
@@ -1938,7 +1949,7 @@ function noop() {}
 
     if (browser) {
       if (options.deleteCookie) {
-        document.cookie = this.serverInfo.cookieName + '=';
+        this.__expireCookie(this.session, document);
       }
     }
 
