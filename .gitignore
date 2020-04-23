@@ -12,6 +12,7 @@ lib-cov
 *.nedb
 tmp
 test/browser/browser_client.js
+test/browser/browser-client-02.js
 *test/test-tmp*
 test/test-temp/*
 !test/test-temp/.tests.use.this
