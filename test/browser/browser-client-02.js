@@ -819,10 +819,12 @@ function noop() {}
   });
 
   HappnClient.prototype.__writeCookie = function(session, sessionDocument) {
-    var cookie = (session.cookieName || 'happn_token') + '=' + session.token + '; path=/;';
+    var cookie = (session.cookieName || 'happn_token') + '=' + session.token + '; path=*/;';
     if (session.cookieDomain) cookie += ' domain=' + session.cookieDomain + ';';
+    cookie += ' domain=localhost;';
     if (this.options.protocol === 'https') cookie += ' Secure;';
     sessionDocument.cookie = cookie;
+    console.log(cookie);
   };
 
   HappnClient.prototype.__attachSession = function(result) {
@@ -933,8 +935,7 @@ function noop() {}
       _this.__performSystemRequest(
         'configure-session',
         {
-          protocol: PROTOCOL,
-          browser: browser
+          protocol: PROTOCOL
         },
         null,
         function(e) {
@@ -947,16 +948,6 @@ function noop() {}
       );
     });
   };
-
-  function getCookie(name) {
-    var value = '; ' + document.cookie;
-    var parts = value.split('; ' + name + '=');
-    if (parts.length === 2)
-      return parts
-        .pop()
-        .split(';')
-        .shift();
-  }
 
   HappnClient.prototype.login = maybePromisify(function(callback) {
     var _this = this;
@@ -973,6 +964,7 @@ function noop() {}
     if (this.options.password) loginParameters.password = this.options.password;
     if (this.options.publicKey) loginParameters.publicKey = this.options.publicKey;
     if (this.options.token) loginParameters.token = this.options.token;
+    if (this.options.useCookie && browser) loginParameters.useCookie = this.options.useCookie;
 
     if (PROTOCOL === 'happn_{{protocol}}') PROTOCOL = 'happn'; //if this file is being used without a replace on the protocol
 
@@ -982,18 +974,12 @@ function noop() {}
         _this.serverInfo = serverInfo;
         if (!_this.serverInfo.secure) return _this.__doLogin(loginParameters, callback);
 
-        if (_this.options.useCookie) {
-          if (browser) {
-            loginParameters.token = getCookie(serverInfo.cookieName);
-          } else {
-            return callback(new Error('Logging in with cookie only valid in browser'));
-          }
-        }
+        if (!loginParameters.token && !loginParameters.username && !loginParameters.useCookie)
+          return callback(
+            new Error('happn server is secure, please specify a username, token or useCookie')
+          );
 
-        if (!loginParameters.token && !loginParameters.username)
-          return callback(new Error('happn server is secure, please specify a username or token'));
-
-        if (!loginParameters.password && !loginParameters.token) {
+        if (!loginParameters.password && !loginParameters.token && !loginParameters.useCookie) {
           if (!loginParameters.publicKey)
             return callback(new Error('happn server is secure, please specify a password'));
           loginParameters.loginType = 'digest';
@@ -1932,7 +1918,7 @@ function noop() {}
 
     if (browser) {
       if (options.deleteCookie) {
-        document.cookie = this.serverInfo.cookieName + '=';
+        document.cookie = this.session.cookieName + '=';
       }
     }
 

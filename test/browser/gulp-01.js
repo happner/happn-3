@@ -19,7 +19,7 @@ gulp.task('default', async () => {
 
   await serverHelper.createServer({
     secure: true,
-    encryptPayloads: true,
+    encryptPayloads: false,
     services: {
       security: {
         config: {
@@ -38,7 +38,7 @@ gulp.task('default', async () => {
     services: {
       transport: {
         config: {
-          mode: 'https'
+          mode: 'http'
         }
       }
     }
@@ -65,7 +65,7 @@ gulp.task('default', async () => {
       services: {
         transport: {
           config: {
-            mode: 'https'
+            mode: 'http'
           }
         },
         security: {

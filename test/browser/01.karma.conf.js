@@ -55,8 +55,8 @@ module.exports = function(config) {
     browsers: ['Chrome_without_security'],
     customLaunchers: {
       Chrome_without_security: {
-        base: 'ChromeHeadless',
-        // base: 'Chrome', // to see output
+        // base: 'ChromeHeadless',
+        base: 'Chrome', // to see output
         flags: ['--disable-web-security', '--ignore-certificate-errors']
       }
     },
