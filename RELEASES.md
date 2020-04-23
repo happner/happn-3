@@ -746,10 +746,10 @@
 
 11.3.1 2020-04-20
 -----------------
-  - fix #290 cookie name appended with _https if protocol is https
+  - fixes #290 cookie name appended with _https if protocol is https
   - feature login with cookie fixes #297
   - possible breaking: stats now only being created if emit:true in config (no-one really uses the stats...)
-  - fix #292 - eat the rest of the post after sending an unauthorized/forbidden
-  - fix #295 - _ADMIN user locked out of web requests causes crash
-  - feature: IP address whitelisting #299
+  - fixes #292 - eat the rest of the post after sending an unauthorized/forbidden
+  - fixes #295 - _ADMIN user locked out of web requests causes crash
+  - feature: IP address whitelisting fixes #299
 
