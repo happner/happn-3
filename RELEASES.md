@@ -743,3 +743,13 @@
   - fix: 403 returned on token ttl, issue #287
   - feature: leaner publish functionality on the client, issue #281
   - refactor: CONSTANTS being used for authorization failure messages
+
+11.3.1 2020-04-20
+-----------------
+  - fixes #290 cookie name appended with _https if protocol is https
+  - feature login with cookie fixes #297
+  - possible breaking: stats now only being created if emit:true in config (no-one really uses the stats...)
+  - fixes #292 - eat the rest of the post after sending an unauthorized/forbidden
+  - fixes #295 - _ADMIN user locked out of web requests causes crash
+  - feature: IP address whitelisting fixes #299
+

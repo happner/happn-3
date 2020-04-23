@@ -2949,6 +2949,8 @@ describe(
         expect(
           happnMock.services.security.sessionFromRequest(
             {
+              connection: {},
+              headers: {},
               happn_session: {
                 test: 'session'
               }
@@ -2964,6 +2966,8 @@ describe(
         expect(
           happnMock.services.security.sessionFromRequest(
             {
+              connection: {},
+              headers: {},
               cookies: {
                 get: () => {
                   return 'TEST-TOKEN';
@@ -2991,6 +2995,8 @@ describe(
         expect(
           happnMock.services.security.sessionFromRequest(
             {
+              connection: {},
+              headers: {},
               cookies: {
                 get: cookieName => {
                   return {

@@ -15,7 +15,7 @@ gulp.task('default', async () => {
     overwrite: true
   });
 
-  fs.writeFileSync(__dirname + path.sep + 'browser_client.js', client_code, 'utf8');
+  fs.writeFileSync(__dirname + path.sep + 'browser-client-02.js', client_code, 'utf8');
 
   await serverHelper.createServer({
     secure: true,
@@ -56,6 +56,32 @@ gulp.task('default', async () => {
         }
       }
     }
+  });
+
+  (
+    await serverHelper.createServer({
+      secure: true,
+      port: 55003,
+      services: {
+        transport: {
+          config: {
+            mode: 'https'
+          }
+        },
+        security: {
+          config: {
+            httpsCookie: true
+          }
+        }
+      }
+    })
+  ).connect.use('/test/web/route', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(
+      JSON.stringify({
+        received: 1
+      })
+    );
   });
 
   var karmaServer = new Server({

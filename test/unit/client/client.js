@@ -527,5 +527,36 @@ describe(testHelper.testName(__filename, 3), function() {
     });
   });
 
-  it('tests the __getConnection function ', function() {});
+  it('tests the __writeCookie function ', function() {
+    this.timeout(5000);
+    const happnClient = mockHappnClient(null, null, null, null, null, null, function() {}, null);
+    happnClient.options = happnClient.options || {};
+    happnClient.options.protocol = 'https';
+    let mockDocument = {};
+    happnClient.__writeCookie(
+      {
+        httpsCookie: true,
+        cookieName: 'test_happn_token',
+        token: '[test token]',
+        cookieDomain: '[test cookie domain]'
+      },
+      mockDocument
+    );
+    expect(mockDocument.cookie).to.be(
+      'test_happn_token=[test token]; path=/; domain=[test cookie domain]; Secure;'
+    );
+    happnClient.options.protocol = 'http';
+    mockDocument = {};
+    happnClient.__writeCookie(
+      {
+        cookieName: 'happn_token',
+        token: '[test token]',
+        cookieDomain: '[test cookie domain]'
+      },
+      mockDocument
+    );
+    expect(mockDocument.cookie).to.be(
+      'happn_token=[test token]; path=/; domain=[test cookie domain];'
+    );
+  });
 });

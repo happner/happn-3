@@ -1,20 +1,22 @@
 // Karma configuration
 // Generated on Tue Dec 01 2015 11:18:30 GMT+0200 (SAST)
-
+const fs = require('fs');
 module.exports = function(config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: '../../',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha', 'chai'],
 
     files: [
-      'browser_client.js',
-      '01_security_hsts_cookie.js',
-      '02_websockets_embedded_sanity_encryptedpayloads.js',
-      '03_heartbeats.js'
+      'test/browser/browser-client-02.js',
+      'test/browser/01_security_hsts_cookie.js',
+      'test/browser/02_websockets_embedded_sanity_encryptedpayloads.js',
+      'test/browser/03_heartbeats.js',
+      'test/browser/04_https_cookie.js',
+      'test/browser/05_https_cookieLogin.js'
     ],
 
     // list of files / patterns to load in the browser
@@ -29,7 +31,11 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha'],
+    reporters: ['mocha', 'coverage'],
+
+    preprocessors: {
+      'test/browser/browser-client-02.js': ['coverage']
+    },
 
     // web server port
     port: 9876,
@@ -49,18 +55,28 @@ module.exports = function(config) {
     browsers: ['Chrome_without_security'],
     customLaunchers: {
       Chrome_without_security: {
-        base: 'Chrome',
+        base: 'ChromeHeadless',
+        // base: 'Chrome', // to see output
         flags: ['--disable-web-security', '--ignore-certificate-errors']
       }
     },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
+    singleRun: false,
 
     // Concurrency level
     // how many browser should be started simultanous
     concurrency: Infinity,
-    browserNoActivityTimeout: 60000
+    browserNoActivityTimeout: 60000,
+    protocol: 'https',
+    httpsServerOptions: {
+      key: fs.readFileSync(`${__dirname}/__fixtures/key.rsa`, 'utf8'),
+      cert: fs.readFileSync(`${__dirname}/__fixtures/cert.pem`, 'utf8')
+    },
+    coverageReporter: {
+      dir: './',
+      reporters: [{ type: 'lcov', subdir: 'coverage-web' }, { type: 'text-summary' }]
+    }
   });
 };

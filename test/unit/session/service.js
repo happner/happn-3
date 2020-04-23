@@ -76,7 +76,10 @@ describe(
         expect(data).to.eql({
           id: client.sessionId,
           protocol: 'happn',
-          happn: sessionService.happn.services.system.getDescription()
+          happn: 'description',
+          headers: {},
+          encrypted: false,
+          address: 'intra-proc'
         });
         done();
       });

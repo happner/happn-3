@@ -1323,6 +1323,19 @@ SECURITY PROFILES
                 ttl: 60000 * 10,//session goes stale after 10 minutes
                 inactivity_threshold:Infinity
               }
+            }, {
+              name:"ip address whitelist",// this ensures the _ADMIN user can only login from a whitelisted set of IP addresses (in this case locally)
+              session:{
+                $and:[{
+                  user:{username:{$eq:'WEB_SESSION'}}
+                }]
+              },
+              policy: {
+                sourceIPWhitelist: [
+                  '127.0.0.1', 
+                  '::ffff:127.0.0.1' //NOTE: if proxied be sure to also allow for IPV6 prefixed addresses
+                ]
+              }
             }
           ]
         }
@@ -1770,6 +1783,40 @@ var happn = require('happn-3');
 
 happn.client.create({protocol:'https', allowSelfSignedCerts:true},function(e, instance) {
 ...
+
+```
+
+HTTPS COOKIE, AND COOKIE NAME
+-----------------------------
+
+*On the browser, by default the the token established in a successful authentication is put into a cookie, the cookie name is by default happn_token, but is configurable in the security service config. If the httpsCookie option is switched on, the browser will store the cookie name with _https appended to it if it is connecting to the server via https, and the server will know to check incoming https requests for the correct name. This is so that the client can switch between http and https and re-login in http mode without causing a failure when it tries to save over the Secure cookie it created in a previous https session.*
+
+```javascript
+const serviceConfig = {
+  secure:true,
+  services: {}
+};
+//this is an https server
+serviceConfig.services.transport = {
+  config:{
+    mode: 'https'
+  }
+}
+
+//we append _https to Secure cookies over https, and also use a custom cookieName myCookie
+serviceConfig.services.security = {
+  config:{
+    cookieName: 'myCookie',//default is happn_token, but now the browser will store the cookie as myCookie_https
+                           //the server will know to look for myCookie_https in incoming requests
+    httpsCookie: true
+  }
+}
+
+var happn = require('happn');
+var service = happn.service;
+service.create(serviceConfig, function(e, happnInst) {
+  //server created with httpsCookie switched on
+});
 
 ```
 
