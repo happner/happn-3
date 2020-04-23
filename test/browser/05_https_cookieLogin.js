@@ -65,8 +65,9 @@ describe('05 cookie login', function() {
     // reconnect without deleting cookie.
     client = await connectClientCookie(opts);
     await testClient(55003);
+    expect(document.cookie.indexOf('happn_token_https')).to.not.eql(-1);
     await client.disconnect({ deleteCookie: true });
-    expect(document.cookie.indexOf('happn_token')).to.eql(-1);
+    expect(document.cookie.indexOf('happn_token_https')).to.eql(-1);
     try {
       await connectClientCookie(opts);
       throw new Error('should not connect');
