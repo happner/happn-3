@@ -1323,6 +1323,19 @@ SECURITY PROFILES
                 ttl: 60000 * 10,//session goes stale after 10 minutes
                 inactivity_threshold:Infinity
               }
+            }, {
+              name:"ip address whitelist",// this ensures the _ADMIN user can only login from a whitelisted set of IP addresses (in this case locally)
+              session:{
+                $and:[{
+                  user:{username:{$eq:'WEB_SESSION'}}
+                }]
+              },
+              policy: {
+                sourceIPWhitelist: [
+                  '127.0.0.1', 
+                  '::ffff:127.0.0.1' //NOTE: if proxied be sure to also allow for IPV6 prefixed addresses
+                ]
+              }
             }
           ]
         }

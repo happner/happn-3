@@ -1,3 +1,5 @@
+//happn client v11.3.1
+//protocol v4
 /* eslint-disable no-console */
 (function() {
   // begin enclosed
@@ -7,7 +9,7 @@
   var crypto;
   var Primus;
 
-  var PROTOCOL = 'happn_{{protocol}}';
+  var PROTOCOL = 'happn_4';
   var STATUS;
 
   if (typeof window !== 'undefined' && typeof document !== 'undefined') browser = true;
@@ -91,10 +93,250 @@
     }
 
     //DO NOT DELETE
-    //{{constants}}
+    
+this.CONSTANTS = {
+  ERROR_TYPE: {
+    NOT_FOUND: 404,
+    SYSTEM: 500,
+    ACCESS_DENIED: 403,
+    INVALID_CREDENTIALS: 401
+  },
+  CONSISTENCY: {
+    DEFERRED: 1, //queues the publication, then calls back
+    TRANSACTIONAL: 2, //waits until all recipients have been written to
+    ACKNOWLEDGED: 3 //waits until all recipients have acknowledged
+  },
+  CLIENT_STATE: {
+    UNINITIALIZED: 0,
+    ACTIVE: 1,
+    DISCONNECTED: 2,
+    ERROR: 3,
+    RECONNECTING: 4,
+    CONNECTING: 5,
+    CONNECTED: 6,
+    DISCONNECTING: 7,
+    CONNECT_ERROR: 8,
+    RECONNECT_ACTIVE: 9
+  },
+  CONNECTION_POOL_TYPE: {
+    ORDERED: 0,
+    RANDOM: 1
+  },
+  SYSTEM_HEALTH: {
+    EXCELLENT: 0,
+    FAIR: 1,
+    TAKING_STRAIN: 2,
+    POOR: 3
+  },
+  ERROR_SEVERITY: {
+    LOW: 0,
+    MEDIUM: 1,
+    HIGH: 2,
+    FATAL: 3
+  },
+  AUTHORIZE_ACTIONS: {
+    GET: 'get',
+    SET: 'set',
+    ON: 'on',
+    REMOVE: 'remove'
+  },
+  UNAUTHORISED_REASONS: {
+    EXPIRED_TOKEN: 'expired session token',
+    INACTIVITY_THRESHOLD_REACHED: 'session inactivity threshold reached',
+    SESSION_USAGE: 'session usage limit reached',
+    NO_POLICY_SESSION: 'no policy attached to session',
+    NO_POLICY_SESSION_TYPE: 'no policy for session type'
+  },
+  CLIENT_HEADERS: {
+    X_FORWARDED_PROTO: 'x-forwarded-proto',
+    X_FORWARDED_PORT: 'x-forwarded-port',
+    X_FORWARDED_FOR: 'x-forwarded-for',
+    HOST: 'host',
+    SEC_WEBSOCKET_EXTENSIONS: 'sec-websocket-extensions',
+    SEC_WEBSOCKET_KEY: 'sec-websocket-key',
+    SEC_WEBSOCKET_VERSION: 'sec-websocket-version'
+  }
+};
+
+
 
     //DO NOT DELETE
-    //{{utils}}
+    
+this.utils = {
+  /*
+   Shared between the browser client and the server and nodejs client
+   */
+  prepareWildPath: function(path) {
+    //strips out duplicate sequential wildcards, ie simon***bishop -> simon*bishop
+
+    if (!path) return "";
+
+    var prepared = "";
+
+    var lastChar = null;
+
+    for (var i = 0; i < path.length; i++) {
+      if (path[i] === "*" && lastChar === "*") continue;
+
+      prepared += path[i];
+
+      lastChar = path[i];
+    }
+
+    return prepared;
+  },
+  makeRe: function(pattern) {
+    return new RegExp("^" + this.escapeRegex(pattern).replace(/\\\*/g, ".*") + "$", "i");
+  },
+  escapeRegex: function(str) {
+    if (typeof str !== "string") throw new TypeError("Expected a string");
+
+    return str.replace(/[|\\{}()[\]^$+*?.]/g, "\\//{{utils}}");
+  },
+  wildcardMatch: function(pattern, matchTo) {
+    //precise match, no wildcards
+    if (pattern.indexOf("*") === -1) return pattern === matchTo;
+
+    var preparedPattern = this.prepareWildPath(pattern); //replace **,***,**** with *
+
+    //one is * or ** or *** etc
+    if (preparedPattern === "*") return true; //one is anything
+
+    if (preparedPattern === matchTo) return true; //equal to each other
+
+    return this.makeRe(preparedPattern).test(matchTo);
+  },
+  whilst: function(test, iterator, cb) {
+    cb = cb || noop;
+
+    if (!test()) return cb(null);
+
+    var _this = this;
+
+    _this.__attempts = 0;
+
+    var next = function(err, args) {
+      _this.__attempts++;
+
+      if (err) return cb(err, _this.__attempts);
+
+      if (test.apply(this, args)) return iterator(_this.__attempts, next);
+
+      cb.apply(null, [null].concat(args, _this.__attempts));
+    }.bind(_this);
+
+    iterator(_this.__attempts, next);
+  },
+  //taken from https://github.com/alessioalex/tiny-each-async
+  async: function(arr, parallelLimit, iteratorFn, cb) {
+    var pending = 0;
+    var index = 0;
+    var lastIndex = arr.length - 1;
+    var called = false;
+    var limit;
+    var callback;
+    var iterate;
+
+    if (typeof parallelLimit === "number") {
+      limit = parallelLimit;
+      iterate = iteratorFn;
+      callback = cb || function noop() {};
+    } else {
+      iterate = parallelLimit;
+      callback = iteratorFn || function noop() {};
+      limit = arr.length;
+    }
+
+    if (!arr.length) {
+      return callback();
+    }
+
+    var iteratorLength = iterate.length;
+
+    var shouldCallNextIterator = function shouldCallNextIterator() {
+      return !called && pending < limit && index < lastIndex;
+    };
+
+    var iteratorCallback = function iteratorCallback(err) {
+      if (called) {
+        return;
+      }
+
+      pending--;
+
+      if (err || (index === lastIndex && !pending)) {
+        called = true;
+        callback(err);
+      } else if (shouldCallNextIterator()) {
+        processIterator(++index);
+      }
+    };
+
+    var processIterator = function processIterator() {
+      pending++;
+
+      var args =
+        iteratorLength === 2
+          ? [arr[index], iteratorCallback]
+          : [arr[index], index, iteratorCallback];
+
+      iterate.apply(null, args);
+
+      if (shouldCallNextIterator()) {
+        processIterator(++index);
+      }
+    };
+
+    processIterator();
+  },
+  clone: function(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  },
+  checkPath: function(path, action) {
+    if (action === "set" && path.indexOf("*") > -1)
+      throw new Error(
+        "Bad path, if the action is 'set' the path cannot contain the * wildcard character"
+      );
+
+    if (path.match(/^[a-zA-Z0-9/(){}+=&:%@._*\-\s]+$/) == null)
+      throw new Error(
+        "Bad path, can only contain characters a-z A-Z 0-9 / & + = : @ % * ( ) _ -, ie: factory1@I&J(western-cape)/plant1:conveyer_2/stats=true/capacity=10%/*"
+      );
+  },
+  computeiv: function(secret) {
+    if (typeof secret !== "string")
+      throw new Error("secret must be a string and cannot be null or undefined");
+
+    if (secret.length !== 32) throw new Error("secret must be 32 chars long");
+
+    var iv = "";
+
+    for (let x = 0; x < 32; x = x + 2) iv += secret[x];
+
+    return iv;
+  },
+  removeLast: function(str, last) {
+    if (
+      !str || //null undefined or empty
+      !str.substring || //not a string
+      !last || //last is null undefined or empty
+      str[str.length - 1] !== last
+    )
+      //string doesnt end with specified last character
+      return str;
+
+    return str.substring(0, str.length - 1);
+  },
+  asyncCallback: function() {
+    var fn = arguments[0].bind.apply(arguments[0], Array.from(arguments));
+    if (setImmediate) return setImmediate(fn);
+    setTimeout(fn, 0);
+  }
+};
+
+function noop() {}
+
+
 
     STATUS = this.CONSTANTS.CLIENT_STATE;
   }

@@ -1,7 +1,6 @@
-const HappnClient = window.HappnClient,
-  expect = window.expect;
-
 describe('04 https cookie', function() {
+  const HappnClient = window.HappnClient,
+    expect = window.expect;
   this.timeout(120e3);
 
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn', async () => {

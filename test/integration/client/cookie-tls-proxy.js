@@ -36,6 +36,18 @@ describe(testHelper.testName(__filename, 3), function() {
     service.kill();
   });
 
+  it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn', async () => {
+    const service = await startHappnService('https', true);
+    const client = await connectClient({
+      protocol: 'https',
+      username: '_ADMIN',
+      password: 'happn'
+    });
+    await testClient(client.session.token, 55000);
+    await client.disconnect();
+    service.kill();
+  });
+
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn, negative', async () => {
     const service = await startHappnService('https', false);
     const client = await connectClient({
@@ -52,6 +64,20 @@ describe(testHelper.testName(__filename, 3), function() {
     }
     testHelper.expect(errorHappened).to.be(true);
     await client.disconnect();
+    service.kill();
+  });
+
+  it('we can only useCookie in browser', async () => {
+    const service = await startHappnService('https', true);
+    try {
+      await connectClient({
+        protocol: 'https',
+        useCookie: true
+      });
+    } catch (e) {
+      testHelper.expect(e.message).to.eql('Logging in with cookie only valid in browser');
+    }
+
     service.kill();
   });
 

@@ -47,6 +47,7 @@ public/*
 
 examine
 coverage
+coverage-web
 .nyc_output
 .jshintrc
 report.*

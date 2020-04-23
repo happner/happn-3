@@ -34,3 +34,5 @@ registry.ini
 report.*
 webSrc
 .vscode
+coverage
+coverage-web

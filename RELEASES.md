@@ -747,6 +747,7 @@
 11.3.1 2020-04-20
 -----------------
   - fix #290 cookie name appended with _https if protocol is https
+  - feature login with cookie
   - possible breaking: stats now only being created if emit:true in config (no-one really uses the stats...)
   - fix #292 - eat the rest of the post after sending an unauthorized/forbidden
   - fix #295 - _ADMIN user locked out of web requests causes crash

@@ -1,4 +1,4 @@
-describe('02_security_hsts_cookie', function() {
+describe('01_security_hsts_cookie', function() {
   var expect, happn_client;
 
   if (typeof window === 'undefined') {
