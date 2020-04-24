@@ -753,3 +753,10 @@
   - fixes #295 - _ADMIN user locked out of web requests causes crash
   - feature: IP address whitelisting fixes #299
 
+11.4.0 2020-04-24
+-----------------
+  - feature - authentic and disconnect events have more client data #300
+  - fix: safeSessionData no longer includes token
+  - protocol feature: client now sends happn version up with configure session
+  - neatened up security directory changes event names into constants
+

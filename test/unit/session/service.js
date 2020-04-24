@@ -34,7 +34,8 @@ describe(
           username: 'username',
           publicKey: 'publicKey',
           secret: 'secret'
-        }
+        },
+        url: 'test.url.com'
       });
       expect(safe).to.eql({
         id: 'sessionData.id',
@@ -43,12 +44,16 @@ describe(
         timestamp: 'sessionData.timestamp',
         isEncrypted: true,
         policy: 'sessionData.policy',
-        token: 'sessionData.token',
-        encryptedSecret: 'sessionData.encryptedSecret',
-        user: {
-          username: 'username',
-          publicKey: 'publicKey'
-        }
+        protocol: undefined,
+        tlsEncrypted: undefined,
+        cookieName: undefined,
+        browser: false,
+        intraProc: false,
+        sourceAddress: null,
+        sourcePort: null,
+        upgradeUrl: 'test.url.com',
+        happnVersion: undefined,
+        user: { username: 'username', publicKey: 'publicKey' }
       });
     });
 
@@ -79,7 +84,8 @@ describe(
           happn: 'description',
           headers: {},
           encrypted: false,
-          address: 'intra-proc'
+          address: 'intra-proc',
+          url: undefined
         });
         done();
       });

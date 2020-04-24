@@ -331,7 +331,7 @@ describe(tests.testName(__filename, 3), function() {
     proxy.kill();
   });
 
-  function checkLocks(username){
+  function checkLocks(username) {
     return new Promise((resolve, reject) => {
       happnInstance1.services.security.__locks.get(username, function(e, lock) {
         if (e) reject(e);

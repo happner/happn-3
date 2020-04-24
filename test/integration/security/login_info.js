@@ -152,20 +152,22 @@ describe(
           .catch(done);
 
         setTimeout(function RunAfterClientHasLoggedInAndOut() {
-          expect(events.connect.happn.name).to.equal(service2Name);
-          expect(events.disconnect.happn.name).to.equal(service2Name);
-
+          expect(events.connect).to.eql(events.disconnect);
           expect(events.connect.happn.name).to.equal(service2Name);
           expect(events.authentic.info.KEY).to.equal('VALUE');
-          expect(events.disconnect.info.KEY).to.equal('VALUE');
-
           expect(events.connect.happn.name).to.equal(service2Name);
           expect(events.authentic.info._browser).to.equal(false);
-          expect(events.disconnect.info._local).to.equal(false);
-
           expect(events.connect.happn.name).to.equal(service2Name);
           expect(events.authentic.id).to.equal(sessionId);
-          expect(events.disconnect.id).to.equal(sessionId);
+          expect(events.authentic.timestamp > 0).to.be(true);
+          expect(events.authentic.tlsEncrypted).to.be(false);
+          expect(events.authentic.cookieName).to.be('happn_token');
+          expect(events.authentic.browser).to.be(false);
+          expect(events.authentic.intraProc).to.be(false);
+          expect(events.authentic.sourceAddress).to.be('127.0.0.1');
+          expect(events.authentic.sourcePort > 0).to.be(true);
+          expect(events.authentic.upgradeUrl.length > 0).to.be(true);
+          expect(events.authentic.happnVersion).to.be(require('../../../package.json').version);
 
           done();
         }, 200); // depending on how long it waits, more and more happn clients
