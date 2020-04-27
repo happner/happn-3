@@ -1,7 +1,6 @@
 const tests = require('../../__fixtures/utils/test_helper').create();
 
 describe(tests.testName(__filename, 3), function() {
-  var HAPPN_VERSION = require('../../../package.json').version;
   var happn = require('../../../lib/index');
   var service = happn.service;
   var happn_client = happn.client;
