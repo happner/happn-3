@@ -125,7 +125,7 @@ describe(tests.testName(__filename, 3), function() {
     sessionEventsTest(callback);
   });
 
-  it.only('tests session events on a secure mesh', function(callback) {
+  it('tests session events on a secure mesh', function(callback) {
     sessionEventsTest(
       {
         secure: true
