@@ -753,6 +753,6 @@
   - fixes #295 - _ADMIN user locked out of web requests causes crash
   - feature: IP address whitelisting fixes #299
 
-11.3.1 2020-04-20
+11.3.2 2020-04-20
 -----------------
   - fix #303 - upgrade to async@3 throughout
