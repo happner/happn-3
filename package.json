@@ -1,6 +1,6 @@
 {
   "name": "happn-3",
-  "version": "11.3.1",
+  "version": "11.3.2",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "keywords": [
     "mongo",
@@ -35,7 +35,7 @@
     "prepare": "rm -rf node_modules/happn-cluster/node_modules/happn-3 && rm -rf node_modules/happn/node_modules/happn-util-crypto && require-self"
   },
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^3.2.0",
     "bluebird": "^3.5.0",
     "body-parser": "^1.18.3",
     "connect": "^3.6.6",
@@ -45,13 +45,13 @@
     "fs-extra": "^7.0.1",
     "handlebars": "^4.1.0",
     "happn-logger": "^0.1.1",
-    "happn-nedb": "^1.8.1",
+    "happn-nedb": "^1.9.1",
     "happn-password-hash-and-salt": "^1.2.0",
     "happn-primus-wrapper": "^7.3.5",
     "happn-sillyname": "^0.1.1",
     "happn-stats": "^1.0.8",
     "happn-tcp-port-used": "^1.0.3",
-    "happn-util-crypto": "^1.0.0",
+    "happn-util-crypto": "^1.0.2",
     "happner-hyperid": "^2.0.0",
     "homedir": "^0.6.0",
     "hsts": "^2.1.0",
