@@ -761,55 +761,50 @@ describe(
             property3: 'property3'
           });
 
-          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/2', {
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/3', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          });
+
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/4', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          });
+
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/5', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          });
+
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/6', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          });
+
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/7', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          });
+
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/8', {
+            property1: 'property1',
+            property2: 'property2',
+            property3: 'property3'
+          });
+
+          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/9', {
             property1: 'property1',
             property2: 'property2',
             property3: 'property3'
           });
 
           setTimeout(function() {
-            if (hits !== 2) return callback(new Error('hits were over the agreed on 2'));
-            callback();
-          }, 1500);
-        }
-      );
-    });
-
-    it('subscribes with a count - we ensure the event only gets kicked off for the correct amounts', function(callback) {
-      var hits = 0;
-      //first listen for the change
-      listenerclient.on(
-        '/1_eventemitter_embedded_sanity/' + test_id + '/count/2/*',
-        {
-          event_type: 'set',
-          count: 2
-        },
-        function() {
-          hits++;
-        },
-        function(e) {
-          if (e) return callback(e);
-
-          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/1', {
-            property1: 'property1',
-            property2: 'property2',
-            property3: 'property3'
-          });
-
-          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/2', {
-            property1: 'property1',
-            property2: 'property2',
-            property3: 'property3'
-          });
-
-          publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/2', {
-            property1: 'property1',
-            property2: 'property2',
-            property3: 'property3'
-          });
-
-          setTimeout(function() {
-            if (hits !== 2) return callback(new Error('hits were over the agreed on 2'));
+            if (hits === 9) return callback(new Error('hits should be less than 9'));
             callback();
           }, 1500);
         }
