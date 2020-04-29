@@ -41,6 +41,8 @@ describe(
         id: 'sessionData.id',
         info: 'sessionData.info',
         type: 'sessionData.type',
+        msgCount: undefined,
+        legacyPing: false,
         timestamp: 'sessionData.timestamp',
         isEncrypted: true,
         policy: 'sessionData.policy',
@@ -53,6 +55,7 @@ describe(
         sourcePort: null,
         upgradeUrl: 'test.url.com',
         happnVersion: undefined,
+        happn: undefined,
         user: { username: 'username', publicKey: 'publicKey' }
       });
     });
@@ -80,12 +83,23 @@ describe(
         expect(client.sessionId).to.not.be(undefined);
         expect(data).to.eql({
           id: client.sessionId,
+          info: undefined,
+          type: undefined,
+          msgCount: 0,
+          legacyPing: false,
+          timestamp: undefined,
+          isEncrypted: false,
+          policy: undefined,
           protocol: 'happn',
-          happn: 'description',
-          headers: {},
-          encrypted: false,
-          address: 'intra-proc',
-          url: undefined
+          tlsEncrypted: false,
+          cookieName: undefined,
+          browser: false,
+          intraProc: true,
+          sourceAddress: undefined,
+          sourcePort: undefined,
+          upgradeUrl: undefined,
+          happnVersion: undefined,
+          happn: 'description'
         });
         done();
       });
