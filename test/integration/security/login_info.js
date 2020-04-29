@@ -99,14 +99,11 @@ describe(
         setTimeout(function RunAfterClientHasLoggedInAndOut() {
           expect(events.connect.happn.name).to.equal(service1Name);
           expect(events.disconnect.happn.name).to.equal(service1Name);
-          //
           expect(events.disconnect.info.KEY).to.equal('VALUE');
           expect(events.authentic.info.KEY).to.equal('VALUE');
           expect(events.disconnect.info._local).to.equal(false);
-          //
           expect(events.connect.id).to.equal(sessionId);
           expect(events.disconnect.id).to.equal(sessionId);
-          //
           done();
         }, 1000);
       });
@@ -152,7 +149,6 @@ describe(
           .catch(done);
 
         setTimeout(function RunAfterClientHasLoggedInAndOut() {
-          //expect(events.connect).to.eql(events.disconnect);
           expect(events.connect.happn.name).to.equal(service2Name);
           expect(events.authentic.info.KEY).to.equal('VALUE');
           expect(events.connect.happn.name).to.equal(service2Name);
