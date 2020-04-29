@@ -1401,7 +1401,7 @@ describe(
       });
     });
 
-    xit('tests the delegate_handover function when delegate runcount > count', function(done) {
+    it('tests the delegate_handover function when delegate runcount > count', function(done) {
       this.timeout(5000);
 
       var happnClient = mockHappnClient();
@@ -1414,9 +1414,32 @@ describe(
         }
       };
 
-      var message = 'This is a message';
-      happnClient.delegate_handover(message, delegate);
+      var message = JSON.stringify({
+        message: 'test'
+      });
+      happnClient.delegate_handover(message, {}, delegate);
       setTimeout(done, 2000);
+    });
+
+    it('tests the delegate_handover function when delegate runcount == count', function(done) {
+      this.timeout(5000);
+      let tm = setTimeout(() => {
+        done(new Error('unexpected'));
+      }, 3000);
+      var happnClient = mockHappnClient();
+      happnClient._offListener = (_id, cb) => cb();
+      var delegate = {
+        count: 1,
+        runcount: 0,
+        handler: () => {
+          clearTimeout(tm);
+          done();
+        }
+      };
+      var message = JSON.stringify({
+        message: 'test'
+      });
+      happnClient.delegate_handover(message, {}, delegate);
     });
 
     it('tests the delegate_handover function when runcount will equal count after 1 iteration', function(done) {
