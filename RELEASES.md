@@ -756,3 +756,4 @@
 11.3.2 2020-04-20
 -----------------
   - fix #303 - upgrade to async@3 throughout
+  - fix: publication count functionality in client, adjusted backward compatibility tests for this
