@@ -11,7 +11,7 @@ describe(
     };
     var serviceInstance;
 
-    this.timeout(5000);
+    this.timeout(30000);
 
     function createService(callback) {
       serviceConfig.port = 55555;
