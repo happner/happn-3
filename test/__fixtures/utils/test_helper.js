@@ -6,6 +6,7 @@ const shortid = require('shortid'),
 
 function TestHelper() {
   this.__testFiles = [];
+  this.package = require('../../../package.json');
   this.expect = require('expect.js');
   this.semver = require('semver');
   this.npm = require('npm-programmatic');

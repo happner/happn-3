@@ -9,6 +9,7 @@ describe(
     var happn = require('../../../lib/index');
     var service = happn.service;
     var fs = require('fs');
+    this.timeout(10000);
 
     function doRequest(path, token, reqOptions, callback) {
       if (!callback) {

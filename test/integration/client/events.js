@@ -10,9 +10,7 @@ describe(
       secure: true
     };
     var serviceInstance;
-
     this.timeout(30000);
-
     function createService(callback) {
       serviceConfig.port = 55555;
       service.create(serviceConfig, function(e, happnInst) {

@@ -757,3 +757,11 @@
 -----------------
   - fix #303 - upgrade to async@3 throughout
   - fix: publication count functionality in client, adjusted backward compatibility tests for this
+
+11.4.0 2020-04-29
+-----------------
+  - feature - new connect event #300
+  - feature - connect, authentic, configure-session, disconnect events have more client data #300
+  - fix: safeSessionData no longer includes token
+  - protocol feature: client now sends happn version up with configure session
+  - neatened up security directory changes event names into constants

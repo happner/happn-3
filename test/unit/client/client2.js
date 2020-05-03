@@ -626,10 +626,7 @@ describe(
         expect(data).to.eql({
           action: 'configure-session',
           eventId: 1,
-          data: {
-            protocol: 'happn_' + package.protocol,
-            browser: false
-          },
+          data: { protocol: 'happn_4', version: package.version, browser: false },
           sessionId: 'test'
         });
         done();
