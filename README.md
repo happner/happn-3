@@ -1820,6 +1820,27 @@ service.create(serviceConfig, function(e, happnInst) {
 
 ```
 
+HTTP/S KEEPALIVES
+-----------------------------
+*socket keepalives are set to 2 minutes by default, but this can be configured as follows:*
+```javascript
+const serviceConfig = {
+  services: {
+    transport: {
+        config: {
+          keepAliveTimeout:180000 //3 minutes
+        }
+      }
+    } 
+  };
+
+var happn = require('../lib/index')
+var service = happn.service;
+service.create(serviceConfig, function(e, happnInst) {
+  //server created with 3 minute http/s socket keepalive
+});
+```
+
 WEBSOCKET COMPRESSION
 ---------------------
 *primusOpts in the configuration can be adjusted to allow for per-message deflate compression for messages larger than 1024 bytes, clients will automatically compress messages when they reconnect*
