@@ -765,3 +765,7 @@
   - fix: safeSessionData no longer includes token
   - protocol feature: client now sends happn version up with configure session
   - neatened up security directory changes event names into constants
+
+11.4.1 2020-05-22
+-----------------
+  - feature: configurable http/s keepalive
