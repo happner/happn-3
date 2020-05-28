@@ -769,3 +769,7 @@
 11.4.1 2020-05-22
 -----------------
   - feature: configurable http/s keepalive
+
+11.4.2 2020-05-27
+-----------------
+  - fix: added eachSeries to subscription service securityDirectoryChanged 
