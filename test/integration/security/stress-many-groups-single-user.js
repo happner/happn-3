@@ -66,8 +66,8 @@ describe(tests.testName(__filename, 3), function() {
           //do nothing
         },
         e => {
-          // eslint-disable-next-line no-console
           if (e) {
+            // eslint-disable-next-line no-console
             console.log('failed attaching to event' + e.message);
             return reject(e);
           }
