@@ -103,7 +103,6 @@ describe(tests.testName(__filename, 3), function() {
 
   it('can support concurrent subscriptions with differing expire counts', async () => {
     const updates = [];
-    //const on = util.promisify(listenerclient.on).bind(listenerclient);
     const handle1 = await listenerclient.on('/some/path/three', { count: 2 }, data =>
       updates.push({ name: 'sub1', data: data })
     );
@@ -122,12 +121,86 @@ describe(tests.testName(__filename, 3), function() {
       { name: 'sub2', data: { key: 'VAL-2' } }
     ]);
 
-    const handle3 = await listenerclient.on('/some/event/four', { count: 2 }, data =>
+    const handle3 = await listenerclient.on('/some/path/four', { count: 2 }, data =>
       updates.push({ name: 'sub1', data: data })
     );
 
-    tests.expect(listenerclient.state.events['/ALL@/some/event/four']).to.not.be.empty;
+    tests.expect(listenerclient.state.events['/ALL@/some/path/four']).to.not.be.empty;
     await listenerclient.off(handle3);
-    tests.expect(listenerclient.state.events['/ALL@/some/event/four']).to.be.empty;
+    tests.expect(listenerclient.state.events['/ALL@/some/path/four']).to.be.empty;
+  });
+
+  it('once convenience method', async () => {
+    const updates = [];
+    const handle1 = await listenerclient.once('/some/path/five', { count: 2 }, data =>
+      updates.push({ name: 'sub1', data: data })
+    );
+    const handle2 = await listenerclient.once('/some/path/five', { count: 1 }, data =>
+      updates.push({ name: 'sub2', data: data })
+    );
+    const handle3 = await listenerclient.once('/some/path/five', data =>
+      updates.push({ name: 'sub3', data: data })
+    );
+    tests.expect(handle1).to.be.a('number');
+    tests.expect(handle2).to.be.a('number');
+    tests.expect(handle3).to.be.a('number');
+
+    tests.expect(listenerclient.state.events['/ALL@/some/path/five'].length).to.be(3);
+
+    await publisherclient.set('/some/path/five', { key: 'VAL-2' });
+    await tests.delay(1000);
+    tests.expect(updates).eql([
+      { name: 'sub1', data: { key: 'VAL-2' } },
+      { name: 'sub2', data: { key: 'VAL-2' } },
+      { name: 'sub3', data: { key: 'VAL-2' } }
+    ]);
+    tests.expect(listenerclient.state.events['/ALL@/some/path/five']).to.be.empty;
+
+    // eslint-disable-next-line no-unused-vars
+    const handle4 = await listenerclient.once('/some/path/five', data => {
+      updates.push({ name: 'sub4', data: data });
+    });
+
+    tests.expect(listenerclient.state.events['/ALL@/some/path/five']).to.not.be.empty;
+    await listenerclient.off(handle4);
+    tests.expect(listenerclient.state.events['/ALL@/some/path/five']).to.be.empty;
+
+    updates.splice(0, updates.length);
+
+    await listenerclient.once('/some/path/five', { event_type: 'remove' }, data => {
+      updates.push({ name: 'sub5', data: data });
+    });
+    await publisherclient.set('/some/path/five', { key: 'VAL-2' });
+    await tests.delay(1000);
+    tests.expect(listenerclient.state.events['/ALL@/some/path/five']).to.not.be.empty;
+    tests.expect(updates).eql([]);
+    await publisherclient.remove('/some/path/five');
+    await tests.delay(1000);
+    tests.expect(listenerclient.state.events['/ALL@/some/path/five']).to.be.empty;
+    tests.expect(updates).eql([{ name: 'sub5', data: { removed: 1 } }]);
+  });
+
+  it('onAll and offAll convenience methods', async () => {
+    const updates = [];
+    const handle1 = await listenerclient.onAll(data => updates.push({ name: 'sub1', data: data }));
+    const handle2 = await listenerclient.onAll(data => updates.push({ name: 'sub2', data: data }));
+    tests.expect(listenerclient.state.events['/ALL@*']).to.not.be.empty;
+    await listenerclient.off(handle1);
+    tests.expect(listenerclient.state.events['/ALL@*']).to.not.be.empty;
+    await listenerclient.off(handle2);
+    tests.expect(listenerclient.state.events['/ALL@*']).to.be.empty;
+
+    await listenerclient.onAll(data => updates.push({ name: 'sub3', data: data }));
+    await listenerclient.onAll(data => updates.push({ name: 'sub4', data: data }));
+    await publisherclient.set('/some/path/six', { key: 'VAL-2' });
+    await tests.delay(1000);
+    tests.expect(updates).eql([
+      { name: 'sub3', data: { key: 'VAL-2' } },
+      { name: 'sub4', data: { key: 'VAL-2' } }
+    ]);
+    tests.expect(listenerclient.state.events['/ALL@*']).to.not.be.empty;
+    await listenerclient.offAll();
+    await tests.delay(1000);
+    tests.expect(listenerclient.state.events['/ALL@*']).to.be.empty;
   });
 });

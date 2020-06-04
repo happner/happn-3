@@ -774,7 +774,8 @@
 -----------------
   - fix: added eachSeries to subscription service securityDirectoryChanged 
 
-11.4.3 2020-06-04
+11.5.0 2020-06-04
 -----------------
   - fix #309: added slice to doHandover in client, as in place modification of the state.events causes follow on handlers to be missed
-  - feature: explicit micro promisify on .on and onAll
+  - feature: explicit promisify on .on and onAll for client, allows for subscription promises to work
+  - feature: once convenience method on client subscriptions
