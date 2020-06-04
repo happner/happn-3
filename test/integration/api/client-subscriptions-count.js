@@ -87,7 +87,7 @@ describe(tests.testName(__filename, 3), function() {
     await off(sub2);
   });
 
-  it('can support concurrent subscriptions with count expiry - works', async () => {
+  it('can support concurrent subscriptions with same expire counts expiry', async () => {
     const updates = [];
     const on = util.promisify(listenerclient.on).bind(listenerclient);
     await on('/some/path/three', { count: 1 }, data => updates.push({ name: 'sub1', data: data }));
@@ -101,12 +101,19 @@ describe(tests.testName(__filename, 3), function() {
     ]);
   });
 
-  it('can support concurrent subscriptions with count expiry - broken', async () => {
+  it('can support concurrent subscriptions with differing expire counts', async () => {
     const updates = [];
-    const on = util.promisify(listenerclient.on).bind(listenerclient);
-    await on('/some/path/three', { count: 2 }, data => updates.push({ name: 'sub1', data: data }));
+    //const on = util.promisify(listenerclient.on).bind(listenerclient);
+    const handle1 = await listenerclient.on('/some/path/three', { count: 2 }, data =>
+      updates.push({ name: 'sub1', data: data })
+    );
     await publisherclient.set('/some/path/three', { key: 'VAL' });
-    await on('/some/path/three', { count: 1 }, data => updates.push({ name: 'sub2', data: data }));
+    const handle2 = await listenerclient.on('/some/path/three', { count: 1 }, data =>
+      updates.push({ name: 'sub2', data: data })
+    );
+    tests.expect(handle1).to.be.a('number');
+    tests.expect(handle2).to.be.a('number');
+
     await publisherclient.set('/some/path/three', { key: 'VAL-2' });
     await new Promise(resolve => setTimeout(resolve, 1000));
     tests.expect(updates).eql([
@@ -114,5 +121,13 @@ describe(tests.testName(__filename, 3), function() {
       { name: 'sub1', data: { key: 'VAL-2' } },
       { name: 'sub2', data: { key: 'VAL-2' } }
     ]);
+
+    const handle3 = await listenerclient.on('/some/event/four', { count: 2 }, data =>
+      updates.push({ name: 'sub1', data: data })
+    );
+
+    tests.expect(listenerclient.state.events['/ALL@/some/event/four']).to.not.be.empty;
+    await listenerclient.off(handle3);
+    tests.expect(listenerclient.state.events['/ALL@/some/event/four']).to.be.empty;
   });
 });
