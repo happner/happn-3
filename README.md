@@ -566,19 +566,46 @@ my_client_instance.on('/e2e_test1/testsubscribe/data/delete_me', //the path you 
 					},
 					function(e){
 						//passes in an error if you were unable to register your listener
-					});
+          });
+//this is now promise based as of v11.5.0
+const handle = await my_client_instance.on('/e2e_test1/testsubscribe/data/delete_me', //the path you are listening on
+					{event_type:'remove', // either set, remove or all - defaults to all
+					 count:0},// how many times you want your handler to handle for before it is removed - default is 0 (infinity)
+					function(//your listener event handler
+						message, //the actual object data being set or removed
+            meta){ //the meta data - path, modified,created _id etc.
+            //event happened
+          });
+await my_client_instance.off(handle); //unsubscribe
 ```
 
 Catch all listener:
 ```javascript
 my_client_instance.onAll(function(//your listener event handler
 						message, //the actual object data being set or removed
-						meta){ //the meta data - path, modified,created _id, also tells you what type of operation happened - ie. GET, SET etc.
+						meta){ 
+              //the meta data - path, modified,created _id, also tells you what type of operation happened - ie. GET, SET etc.
 					},
 					function(e){
 						//passes in an error if you were unable to register your listener
-					});
+          });
+//this is now promise based as of v11.5.0
+const handle = await my_client_instance.onAll(function(//your listener event handler
+  message, //the actual object data being set or removed
+  meta){ //the meta data - path, modified,created _id, also tells you what type of operation happened - ie. GET, SET etc.
+});
+```
 
+Once listener:
+```javascript
+const handle = await my_client_instance.once('/e2e_test1/testsubscribe/data/delete_me', //the path you are listening on
+					{ event_type:'*' }, // either set, remove or all - defaults to all
+					function(//your listener event handler
+						message, //the actual object data being set or removed
+            meta){ //the meta data - path, modified,created _id etc.
+            //event happened
+          });
+await my_client_instance.off(handle); //unsubscribe, these will auto-expire after they have received a single message
 ```
 
 EVENT DATA
