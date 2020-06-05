@@ -69,13 +69,15 @@ describe(tests.testName(__filename, 3), function() {
     }
   });
 
-  it('can support concurrent subscriptions without counts - works', async () => {
+  it('can support concurrent subscriptions without counts', async () => {
     const updates = [];
-    const on = util.promisify(listenerclient.on).bind(listenerclient);
-    const off = util.promisify(listenerclient.off).bind(listenerclient);
-    const sub1 = await on('/some/path/three', data => updates.push({ name: 'sub1', data: data }));
+    const sub1 = await listenerclient.on('/some/path/three', data =>
+      updates.push({ name: 'sub1', data: data })
+    );
     await publisherclient.set('/some/path/three', { key: 'VAL' });
-    const sub2 = await on('/some/path/three', data => updates.push({ name: 'sub2', data: data }));
+    const sub2 = await listenerclient.on('/some/path/three', data =>
+      updates.push({ name: 'sub2', data: data })
+    );
     await publisherclient.set('/some/path/three', { key: 'VAL-2' });
     await new Promise(resolve => setTimeout(resolve, 1000));
     tests.expect(updates).eql([
@@ -83,16 +85,19 @@ describe(tests.testName(__filename, 3), function() {
       { name: 'sub1', data: { key: 'VAL-2' } },
       { name: 'sub2', data: { key: 'VAL-2' } }
     ]);
-    await off(sub1);
-    await off(sub2);
+    await listenerclient.off(sub1);
+    await listenerclient.off(sub2);
   });
 
   it('can support concurrent subscriptions with same expire counts expiry', async () => {
     const updates = [];
-    const on = util.promisify(listenerclient.on).bind(listenerclient);
-    await on('/some/path/three', { count: 1 }, data => updates.push({ name: 'sub1', data: data }));
+    await listenerclient.on('/some/path/three', { count: 1 }, data =>
+      updates.push({ name: 'sub1', data: data })
+    );
     await publisherclient.set('/some/path/three', { key: 'VAL' });
-    await on('/some/path/three', { count: 1 }, data => updates.push({ name: 'sub2', data: data }));
+    await listenerclient.on('/some/path/three', { count: 1 }, data =>
+      updates.push({ name: 'sub2', data: data })
+    );
     await publisherclient.set('/some/path/three', { key: 'VAL-2' });
     await new Promise(resolve => setTimeout(resolve, 1000));
     tests.expect(updates).eql([
