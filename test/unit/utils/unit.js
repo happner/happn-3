@@ -207,41 +207,6 @@ describe(
       done();
     });
 
-    it('tests wildcardAggregate', function(done) {
-      var aggregated = utils.wildcardAggregatePermissions({
-        '/test/*/*/*': { actions: ['on', 'set'] },
-        '/test/1/2/*': { actions: ['on', 'set'] },
-        '/test/1/3/*': { actions: ['on', 'set'] }
-      });
-
-      expect(aggregated).to.eql({
-        '/test/*/*/*': { actions: ['on', 'set'] }
-      });
-
-      aggregated = utils.wildcardAggregatePermissions({
-        '/test/*/*/*': { actions: ['*'] },
-        '/test/1/2/*': { actions: ['on', 'set'] },
-        '/test/1/3/*': { actions: ['on', 'set'] }
-      });
-
-      expect(aggregated).to.eql({
-        '/test/*/*/*': { actions: ['*'] }
-      });
-
-      aggregated = utils.wildcardAggregatePermissions({
-        '/test/*/*/*': { actions: ['on', 'set'] },
-        '/test/1/2/*': { actions: ['on', 'set'] },
-        '/test/1/3/*': { actions: ['get'] }
-      });
-
-      expect(aggregated).to.eql({
-        '/test/*/*/*': { actions: ['on', 'set'] },
-        '/test/1/3/*': { actions: ['get'] }
-      });
-
-      done();
-    });
-
     it('test computeiv function', function(done) {
       var secret = 'thirtytwobitsecret12345678901234';
       var iv2 = utils.computeiv(secret);
@@ -284,6 +249,30 @@ describe(
         done();
       };
       utils.asyncCallback(callback, 'param1', 'param2', 'param3');
+    });
+
+    it('tests wrapImmediate', function(done) {
+      var callback = function(param1, param2, param3) {
+        expect(param1).to.be('param1');
+        expect(param2).to.be('param2');
+        expect(param3).to.be('param3');
+        done();
+      };
+      utils.wrapImmediate(callback);
+      callback('param1', 'param2', 'param3');
+    });
+
+    it('tests wrapImmediate', function(done) {
+      var started = Date.now();
+      var callback = function(param1, param2, param3) {
+        expect(param1).to.be('param1');
+        expect(param2).to.be('param2');
+        expect(param3).to.be('param3');
+        expect(Date.now() - started).to.be.greaterThan(1000);
+        done();
+      };
+      utils.wrapImmediate(callback, 1000);
+      callback('param1', 'param2', 'param3');
     });
   }
 );
