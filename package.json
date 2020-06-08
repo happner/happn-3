@@ -69,8 +69,6 @@
     "tame-search": "^1.4.1",
     "traverse": "^0.6.6",
     "uglify-es": "^3.3.9",
-    "underscore": "^1.10.2",
-    "underscore.string": "^3.3.5",
     "user-home": "^2.0.0",
     "uuid": "^3.3.2",
     "ws": "6.1.4"
