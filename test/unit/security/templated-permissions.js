@@ -144,39 +144,37 @@ describe(
           },
           mockedIdentity
         );
-        expect(templated).to.eql({
-          tree: {
-            test: {
-              path: {
-                '1': {
-                  $leaf: 'test/path/1',
-                  actions: ['get']
-                },
-                '2': {
-                  $leaf: 'test/path/2',
-                  actions: ['get']
-                }
-              }
-            },
-            gauge: {
-              test_user: {
-                '*': {
-                  $leaf: '/gauge/test_user/*',
-                  actions: ['on', 'set']
-                }
-              }
-            },
-            custom: {
-              test_custom_field: {
-                '*': {
-                  $leaf: '/custom/test_custom_field/*',
-                  actions: ['on', 'set']
-                }
+        expect(templated.tree).to.eql({
+          test: {
+            path: {
+              '1': {
+                $leaf: 'test/path/1',
+                actions: ['get']
               },
-              test_custom_field1: {
-                $leaf: '/custom/test_custom_field1',
-                actions: ['*']
+              '2': {
+                $leaf: 'test/path/2',
+                actions: ['get']
               }
+            }
+          },
+          gauge: {
+            test_user: {
+              '*': {
+                $leaf: '/gauge/test_user/*',
+                actions: ['on', 'set']
+              }
+            }
+          },
+          custom: {
+            test_custom_field: {
+              '*': {
+                $leaf: '/custom/test_custom_field/*',
+                actions: ['on', 'set']
+              }
+            },
+            test_custom_field1: {
+              $leaf: '/custom/test_custom_field1',
+              actions: ['*']
             }
           }
         });
@@ -213,8 +211,64 @@ describe(
           mockedIdentity
         );
 
-        expect(templated).to.eql({
-          tree: {
+        expect(templated.tree).to.eql({
+          test: {
+            path: {
+              '1': {
+                $leaf: 'test/path/1',
+                actions: ['get']
+              },
+              '2': {
+                $leaf: 'test/path/2',
+                actions: ['get']
+              }
+            }
+          },
+          gauge: {
+            test_user: {
+              '*': {
+                $leaf: '/gauge/test_user/*',
+                actions: ['on', 'set']
+              }
+            }
+          },
+          custom: {
+            test_custom_field: {
+              '*': {
+                $leaf: '/custom/test_custom_field/*',
+                actions: ['on', 'set']
+              }
+            },
+            test_custom_field1: {
+              $leaf: '/custom/test_custom_field1',
+              actions: ['*']
+            }
+          }
+        });
+        done();
+      });
+    });
+
+    it('tests the __loadPermissionSet method does permissions replacements, using a mocked identity with templated permissions', function(done) {
+      initializeCheckpoint(function(e, checkpoint) {
+        if (e) return done(e);
+        var mockedIdentity = {
+          user: {
+            username: 'test_user',
+            custom_data: {
+              custom_field: 'test_custom_field',
+              custom_field1: 'test_custom_field1'
+            },
+            groups: {
+              test_group_1: {},
+              test_group_2: {}
+            }
+          }
+        };
+
+        checkpoint.__loadPermissionSet(mockedIdentity, function(e, permissionSet) {
+          if (e) return done(e);
+          expect(permissionSet.tree).to.eql({
             test: {
               path: {
                 '1': {
@@ -247,66 +301,6 @@ describe(
                 actions: ['*']
               }
             }
-          }
-        });
-        done();
-      });
-    });
-
-    it('tests the __loadPermissionSet method does permissions replacements, using a mocked identity with templated permissions', function(done) {
-      initializeCheckpoint(function(e, checkpoint) {
-        if (e) return done(e);
-        var mockedIdentity = {
-          user: {
-            username: 'test_user',
-            custom_data: {
-              custom_field: 'test_custom_field',
-              custom_field1: 'test_custom_field1'
-            },
-            groups: {
-              test_group_1: {},
-              test_group_2: {}
-            }
-          }
-        };
-
-        checkpoint.__loadPermissionSet(mockedIdentity, function(e, permissionSet) {
-          if (e) return done(e);
-          expect(permissionSet).to.eql({
-            tree: {
-              test: {
-                path: {
-                  '1': {
-                    $leaf: 'test/path/1',
-                    actions: ['get']
-                  },
-                  '2': {
-                    $leaf: 'test/path/2',
-                    actions: ['get']
-                  }
-                }
-              },
-              gauge: {
-                test_user: {
-                  '*': {
-                    $leaf: '/gauge/test_user/*',
-                    actions: ['on', 'set']
-                  }
-                }
-              },
-              custom: {
-                test_custom_field: {
-                  '*': {
-                    $leaf: '/custom/test_custom_field/*',
-                    actions: ['on', 'set']
-                  }
-                },
-                test_custom_field1: {
-                  $leaf: '/custom/test_custom_field1',
-                  actions: ['*']
-                }
-              }
-            }
           });
           done();
         });
@@ -333,43 +327,41 @@ describe(
 
         checkpoint.__loadPermissionSet(mockedIdentity, function(e, permissionSet) {
           if (e) return done(e);
-          expect(permissionSet).to.eql({
-            tree: {
-              test: {
-                path: {
-                  '1': {
-                    $leaf: 'test/path/1',
-                    actions: ['get']
-                  },
-                  '2': {
-                    $leaf: 'test/path/2',
-                    actions: ['get']
-                  },
-                  '3': {
-                    $leaf: 'test/path/3',
-                    actions: ['get']
-                  }
-                }
-              },
-              gauge: {
-                test_user: {
-                  '*': {
-                    $leaf: '/gauge/test_user/*',
-                    actions: ['on', 'set']
-                  }
-                }
-              },
-              custom: {
-                test_custom_field: {
-                  '*': {
-                    $leaf: '/custom/test_custom_field/*',
-                    actions: ['on', 'set']
-                  }
+          expect(permissionSet.tree).to.eql({
+            test: {
+              path: {
+                '1': {
+                  $leaf: 'test/path/1',
+                  actions: ['get']
                 },
-                test_custom_field1: {
-                  $leaf: '/custom/test_custom_field1',
-                  actions: ['*']
+                '2': {
+                  $leaf: 'test/path/2',
+                  actions: ['get']
+                },
+                '3': {
+                  $leaf: 'test/path/3',
+                  actions: ['get']
                 }
+              }
+            },
+            gauge: {
+              test_user: {
+                '*': {
+                  $leaf: '/gauge/test_user/*',
+                  actions: ['on', 'set']
+                }
+              }
+            },
+            custom: {
+              test_custom_field: {
+                '*': {
+                  $leaf: '/custom/test_custom_field/*',
+                  actions: ['on', 'set']
+                }
+              },
+              test_custom_field1: {
+                $leaf: '/custom/test_custom_field1',
+                actions: ['*']
               }
             }
           });
