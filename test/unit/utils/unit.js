@@ -271,8 +271,7 @@ describe(
         expect(Date.now() - started).to.be.greaterThan(1000);
         done();
       };
-      utils.wrapImmediate(callback, 1000);
-      callback('param1', 'param2', 'param3');
+      utils.wrapImmediate(callback, 1000)('param1', 'param2', 'param3');
     });
   }
 );

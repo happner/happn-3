@@ -64,23 +64,23 @@ describe(tests.testName(__filename, 3), function() {
           '*': {
             '1': {
               '2': {
-                $leaf: true,
+                $leaf: '/test/permission/*/1/2',
                 actions: ['set'],
                 prohibit: ['get']
               }
             },
-            $leaf: true,
+            $leaf: '/test/permission/*',
             actions: ['remove'],
             '*': {
               '2': {
-                $leaf: true,
+                $leaf: '/test/permission/*/*/2',
                 prohibit: ['remove']
               }
             }
           }
         },
         '*': {
-          $leaf: true,
+          $leaf: '/test/*',
           actions: ['get']
         }
       }
@@ -94,16 +94,16 @@ describe(tests.testName(__filename, 3), function() {
           '*': {
             '1': {
               '2': {
-                $leaf: true,
+                $leaf: '/test/permission/*/1/2',
                 actions: ['set']
               }
             },
-            $leaf: true,
+            $leaf: '/test/permission/*',
             actions: ['remove']
           }
         },
         '*': {
-          $leaf: true,
+          $leaf: '/test/*',
           actions: ['get']
         }
       }
@@ -117,23 +117,23 @@ describe(tests.testName(__filename, 3), function() {
           '1': {
             '*': {
               '2': {
-                $leaf: true,
+                $leaf: '/test/permission/1/*/2',
                 actions: ['remove']
               }
             }
           },
           '2': {
-            $leaf: true,
+            $leaf: '/test/permission/2',
             actions: ['set']
           },
           '*': {
             '1': {
               '2': {
-                $leaf: true,
+                $leaf: '/test/permission/*/1/2',
                 actions: ['get']
               },
               '3': {
-                $leaf: true,
+                $leaf: '/test/permission/*/1/3',
                 actions: ['set']
               }
             }
