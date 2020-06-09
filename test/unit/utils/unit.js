@@ -273,5 +273,24 @@ describe(
       };
       utils.wrapImmediate(callback, 1000)('param1', 'param2', 'param3');
     });
+
+    it('tests wildcardMatch utils service ', function(done) {
+      expect(utils.wildcardMatch('/test/complex/*/short', '/test/complex/and/short')).to.be(true);
+      expect(utils.wildcardMatch('/test/complex/*', '/test/complex/and/short')).to.be(true);
+      expect(utils.wildcardMatch('/test/*/*/short', '/test/complex/and/short')).to.be(true);
+      expect(utils.wildcardMatch('/test*', '/test/complex/and/short')).to.be(true);
+      expect(utils.wildcardMatch('*/short', '/test/complex/and/short')).to.be(true);
+      expect(utils.wildcardMatch('/test*/short', '/test/complex/and/short')).to.be(true);
+
+      expect(utils.wildcardMatch('/test/complex/*/short', '/test/complex/and/long')).to.be(false);
+      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short')).to.be(false);
+      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short')).to.be(false);
+      expect(utils.wildcardMatch('/test/*/*/short', '/test/complex/and/long')).to.be(false);
+      expect(utils.wildcardMatch('/test*', '/tes/complex/and/short')).to.be(false);
+      expect(utils.wildcardMatch('*/short', '/test/complex/and/long')).to.be(false);
+      expect(utils.wildcardMatch('/test*/short', '/test/complex/and/short/')).to.be(false);
+
+      done();
+    });
   }
 );
