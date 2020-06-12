@@ -318,12 +318,45 @@ describe(
         false
       );
 
+      expect(
+        utils.wildcardMatch('/test/complex/*/short', '/test/complex/and/long', 'object', 1, true)
+      ).to.be(false);
+      expect(
+        utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'object', 1, true)
+      ).to.be(false);
+      expect(
+        utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'object', 1, true)
+      ).to.be(false);
+      expect(
+        utils.wildcardMatch('/test/*/*/short', '/test/complex/and/long', 'object', 1, true)
+      ).to.be(false);
+      expect(utils.wildcardMatch('/test*', '/tes/complex/and/short', 'object', 1, true)).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('*/short', '/test/complex/and/long', 'object', 1, true)).to.be(
+        false
+      );
+      expect(
+        utils.wildcardMatch('/test*/short', '/test/complex/and/short/', 'object', 1, true)
+      ).to.be(false);
+
       expect(utils.regexCaches.default.length > 0).to.be(true);
       expect(utils.regexCaches.defaultMax.max).to.be(10000);
       expect(utils.regexCaches.defaultMax.length).to.be(6);
       expect(utils.regexCaches.small.length).to.be(3);
       expect(utils.regexCaches.small.max).to.be(3);
 
+      expect(utils.regexCaches.object.length).to.be(6);
+      expect(utils.regexCaches.object.max).to.be(undefined);
+      var errMessage = '';
+      try {
+        expect(utils.wildcardMatch('/test*', '/tes/complex/and/short', undefined, 1, true)).to.be(
+          false
+        );
+      } catch (e) {
+        errMessage = e.message;
+      }
+      expect(errMessage).to.be('The default regex cache must be of type LRU');
       done();
     });
   }
