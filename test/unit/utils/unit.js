@@ -282,13 +282,47 @@ describe(
       expect(utils.wildcardMatch('*/short', '/test/complex/and/short')).to.be(true);
       expect(utils.wildcardMatch('/test*/short', '/test/complex/and/short')).to.be(true);
 
-      expect(utils.wildcardMatch('/test/complex/*/short', '/test/complex/and/long')).to.be(false);
-      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short')).to.be(false);
-      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short')).to.be(false);
-      expect(utils.wildcardMatch('/test/*/*/short', '/test/complex/and/long')).to.be(false);
-      expect(utils.wildcardMatch('/test*', '/tes/complex/and/short')).to.be(false);
-      expect(utils.wildcardMatch('*/short', '/test/complex/and/long')).to.be(false);
-      expect(utils.wildcardMatch('/test*/short', '/test/complex/and/short/')).to.be(false);
+      expect(
+        utils.wildcardMatch('/test/complex/*/short', '/test/complex/and/long', 'defaultMax')
+      ).to.be(false);
+      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'defaultMax')).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'defaultMax')).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test/*/*/short', '/test/complex/and/long', 'defaultMax')).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test*', '/tes/complex/and/short', 'defaultMax')).to.be(false);
+      expect(utils.wildcardMatch('*/short', '/test/complex/and/long', 'defaultMax')).to.be(false);
+      expect(utils.wildcardMatch('/test*/short', '/test/complex/and/short/', 'defaultMax')).to.be(
+        false
+      );
+
+      expect(
+        utils.wildcardMatch('/test/complex/*/short', '/test/complex/and/long', 'small', 3)
+      ).to.be(false);
+      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'small', 3)).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'small', 3)).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test/*/*/short', '/test/complex/and/long', 'small', 3)).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test*', '/tes/complex/and/short', 'small', 3)).to.be(false);
+      expect(utils.wildcardMatch('*/short', '/test/complex/and/long', 'small', 3)).to.be(false);
+      expect(utils.wildcardMatch('/test*/short', '/test/complex/and/short/', 'small', 3)).to.be(
+        false
+      );
+
+      expect(utils.regexCaches.default.length > 0).to.be(true);
+      expect(utils.regexCaches.defaultMax.max).to.be(10000);
+      expect(utils.regexCaches.defaultMax.length).to.be(6);
+      expect(utils.regexCaches.small.length).to.be(3);
+      expect(utils.regexCaches.small.max).to.be(3);
 
       done();
     });
