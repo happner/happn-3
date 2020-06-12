@@ -125,17 +125,17 @@ describe(
         TEST_GROUP: {
           permissions: {
             '/test/group/explicit': {
-              action: ['set']
+              actions: ['set']
             },
             '/test/group/*': {
-              action: ['*']
+              actions: ['*']
             }
           }
         },
         TEST_GROUP_1: {
           permissions: {
             '/test/group/*': {
-              action: ['*']
+              actions: ['*']
             }
           }
         }
@@ -149,14 +149,10 @@ describe(
 
       initializeCheckpoint(function(e, checkpoint) {
         if (e) return done(e);
-
         checkpoint.__loadPermissionSet(identity, function(e, permissionSet) {
           if (e) return done(e);
-
-          expect(permissionSet.explicit['/test/group/explicit'].action[0]).to.be('set');
-          expect(permissionSet.wildcard['/test/group/*'].action[0]).to.be('*');
-          expect(Object.keys(permissionSet.wildcard).length).to.be(1);
-
+          expect(permissionSet.search('/test/group/explicit')).to.eql(['*', 'set']);
+          expect(permissionSet.search('/test/group/*')).to.eql(['*']);
           done();
         });
       });
@@ -177,10 +173,8 @@ describe(
 
         var permissionSet = checkpoint.__createPermissionSet(permissions);
 
-        expect(permissionSet.explicit['/test/group/explicit'].action[0]).to.be('set');
-        expect(permissionSet.wildcard['/test/group/*'].action[0]).to.be('*');
-        expect(Object.keys(permissionSet.wildcard).length).to.be(1);
-
+        expect(permissionSet.search('/test/group/explicit')).to.eql(['*', 'set']);
+        expect(permissionSet.search('/test/group/*')).to.eql(['*']);
         done();
       });
     });
@@ -218,15 +212,13 @@ describe(
         checkpoint.__loadPermissionSet(identity, function(e, permissionSet) {
           if (e) return done(e);
 
-          expect(permissionSet.explicit['/test/explicit'].actions[0]).to.be('set');
-          expect(permissionSet.wildcard['/test/wild/*'].actions[0]).to.be('*');
-          expect(Object.keys(permissionSet.wildcard).length).to.be(1);
+          expect(permissionSet.search('/test/explicit')).to.eql(['set']);
+          expect(permissionSet.search('/test/wild/*')).to.eql(['*']);
 
+          expect(checkpoint.__authorized(permissionSet, '/test/explicit/1', 'set')).to.be(false);
           expect(checkpoint.__authorized(permissionSet, '/test/explicit', 'set')).to.be(true);
           expect(checkpoint.__authorized(permissionSet, '/test/wild/blah', 'on')).to.be(true);
-          expect(checkpoint.__authorized(permissionSet, '/test/explicit/1', 'set')).to.be(false);
           expect(checkpoint.__authorized(permissionSet, '/test', 'get')).to.be(false);
-
           done();
         });
       });

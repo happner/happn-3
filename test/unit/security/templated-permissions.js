@@ -144,25 +144,37 @@ describe(
           },
           mockedIdentity
         );
-
-        expect(templated).to.eql({
-          explicit: {
-            'test/path/1': {
-              actions: ['get']
-            },
-            'test/path/2': {
-              actions: ['get']
-            },
-            '/custom/test_custom_field1': {
-              actions: ['*']
+        expect(templated.tree).to.eql({
+          test: {
+            path: {
+              '1': {
+                $leaf: 'test/path/1',
+                actions: ['get']
+              },
+              '2': {
+                $leaf: 'test/path/2',
+                actions: ['get']
+              }
             }
           },
-          wildcard: {
-            '/gauge/test_user/*': {
-              actions: ['on', 'set']
+          gauge: {
+            test_user: {
+              '*': {
+                $leaf: '/gauge/test_user/*',
+                actions: ['on', 'set']
+              }
+            }
+          },
+          custom: {
+            test_custom_field: {
+              '*': {
+                $leaf: '/custom/test_custom_field/*',
+                actions: ['on', 'set']
+              }
             },
-            '/custom/test_custom_field/*': {
-              actions: ['on', 'set']
+            test_custom_field1: {
+              $leaf: '/custom/test_custom_field1',
+              actions: ['*']
             }
           }
         });
@@ -199,24 +211,37 @@ describe(
           mockedIdentity
         );
 
-        expect(templated).to.eql({
-          explicit: {
-            'test/path/1': {
-              actions: ['get']
-            },
-            'test/path/2': {
-              actions: ['get']
-            },
-            '/custom/test_custom_field1': {
-              actions: ['*']
+        expect(templated.tree).to.eql({
+          test: {
+            path: {
+              '1': {
+                $leaf: 'test/path/1',
+                actions: ['get']
+              },
+              '2': {
+                $leaf: 'test/path/2',
+                actions: ['get']
+              }
             }
           },
-          wildcard: {
-            '/gauge/test_user/*': {
-              actions: ['on', 'set']
+          gauge: {
+            test_user: {
+              '*': {
+                $leaf: '/gauge/test_user/*',
+                actions: ['on', 'set']
+              }
+            }
+          },
+          custom: {
+            test_custom_field: {
+              '*': {
+                $leaf: '/custom/test_custom_field/*',
+                actions: ['on', 'set']
+              }
             },
-            '/custom/test_custom_field/*': {
-              actions: ['on', 'set']
+            test_custom_field1: {
+              $leaf: '/custom/test_custom_field1',
+              actions: ['*']
             }
           }
         });
@@ -243,24 +268,37 @@ describe(
 
         checkpoint.__loadPermissionSet(mockedIdentity, function(e, permissionSet) {
           if (e) return done(e);
-          expect(permissionSet).to.eql({
-            explicit: {
-              'test/path/1': {
-                actions: ['get']
-              },
-              'test/path/2': {
-                actions: ['get']
-              },
-              '/custom/test_custom_field1': {
-                actions: ['*']
+          expect(permissionSet.tree).to.eql({
+            test: {
+              path: {
+                '1': {
+                  $leaf: 'test/path/1',
+                  actions: ['get']
+                },
+                '2': {
+                  $leaf: 'test/path/2',
+                  actions: ['get']
+                }
               }
             },
-            wildcard: {
-              '/gauge/test_user/*': {
-                actions: ['on', 'set']
+            gauge: {
+              test_user: {
+                '*': {
+                  $leaf: '/gauge/test_user/*',
+                  actions: ['on', 'set']
+                }
+              }
+            },
+            custom: {
+              test_custom_field: {
+                '*': {
+                  $leaf: '/custom/test_custom_field/*',
+                  actions: ['on', 'set']
+                }
               },
-              '/custom/test_custom_field/*': {
-                actions: ['on', 'set']
+              test_custom_field1: {
+                $leaf: '/custom/test_custom_field1',
+                actions: ['*']
               }
             }
           });
@@ -289,27 +327,41 @@ describe(
 
         checkpoint.__loadPermissionSet(mockedIdentity, function(e, permissionSet) {
           if (e) return done(e);
-          expect(permissionSet).to.eql({
-            explicit: {
-              'test/path/1': {
-                actions: ['get']
-              },
-              'test/path/2': {
-                actions: ['get']
-              },
-              'test/path/3': {
-                actions: ['get']
-              },
-              '/custom/test_custom_field1': {
-                actions: ['*']
+          expect(permissionSet.tree).to.eql({
+            test: {
+              path: {
+                '1': {
+                  $leaf: 'test/path/1',
+                  actions: ['get']
+                },
+                '2': {
+                  $leaf: 'test/path/2',
+                  actions: ['get']
+                },
+                '3': {
+                  $leaf: 'test/path/3',
+                  actions: ['get']
+                }
               }
             },
-            wildcard: {
-              '/gauge/test_user/*': {
-                actions: ['on', 'set']
+            gauge: {
+              test_user: {
+                '*': {
+                  $leaf: '/gauge/test_user/*',
+                  actions: ['on', 'set']
+                }
+              }
+            },
+            custom: {
+              test_custom_field: {
+                '*': {
+                  $leaf: '/custom/test_custom_field/*',
+                  actions: ['on', 'set']
+                }
               },
-              '/custom/test_custom_field/*': {
-                actions: ['on', 'set']
+              test_custom_field1: {
+                $leaf: '/custom/test_custom_field1',
+                actions: ['*']
               }
             }
           });

@@ -5,7 +5,6 @@ describe(tests.testName(__filename, 3), function() {
   const service = happn.service;
   const happn_client = happn.client;
   var happnInstance = null;
-  const util = require('util');
   this.timeout(60000);
 
   before('should initialize the service', function(callback) {

@@ -779,3 +779,8 @@
   - fix #309: added slice to doHandover in client, as in place modification of the state.events causes follow on handlers to be missed
   - feature: explicit promisify on .on and onAll for client, allows for subscription promises to work
   - feature: once convenience method on client subscriptions
+
+11.5.1 2020-06-12
+-----------------
+  - fixes #313 #314 - permissions tree and regex caching optimisations
+  - wrapImmediate utility function and wrapImmediate of nedb provider functions

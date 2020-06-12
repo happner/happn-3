@@ -207,41 +207,6 @@ describe(
       done();
     });
 
-    it('tests wildcardAggregate', function(done) {
-      var aggregated = utils.wildcardAggregatePermissions({
-        '/test/*/*/*': { actions: ['on', 'set'] },
-        '/test/1/2/*': { actions: ['on', 'set'] },
-        '/test/1/3/*': { actions: ['on', 'set'] }
-      });
-
-      expect(aggregated).to.eql({
-        '/test/*/*/*': { actions: ['on', 'set'] }
-      });
-
-      aggregated = utils.wildcardAggregatePermissions({
-        '/test/*/*/*': { actions: ['*'] },
-        '/test/1/2/*': { actions: ['on', 'set'] },
-        '/test/1/3/*': { actions: ['on', 'set'] }
-      });
-
-      expect(aggregated).to.eql({
-        '/test/*/*/*': { actions: ['*'] }
-      });
-
-      aggregated = utils.wildcardAggregatePermissions({
-        '/test/*/*/*': { actions: ['on', 'set'] },
-        '/test/1/2/*': { actions: ['on', 'set'] },
-        '/test/1/3/*': { actions: ['get'] }
-      });
-
-      expect(aggregated).to.eql({
-        '/test/*/*/*': { actions: ['on', 'set'] },
-        '/test/1/3/*': { actions: ['get'] }
-      });
-
-      done();
-    });
-
     it('test computeiv function', function(done) {
       var secret = 'thirtytwobitsecret12345678901234';
       var iv2 = utils.computeiv(secret);
@@ -284,6 +249,115 @@ describe(
         done();
       };
       utils.asyncCallback(callback, 'param1', 'param2', 'param3');
+    });
+
+    it('tests wrapImmediate', function(done) {
+      var callback = function(param1, param2, param3) {
+        expect(param1).to.be('param1');
+        expect(param2).to.be('param2');
+        expect(param3).to.be('param3');
+        done();
+      };
+      utils.wrapImmediate(callback);
+      callback('param1', 'param2', 'param3');
+    });
+
+    it('tests wrapImmediate', function(done) {
+      var started = Date.now();
+      var callback = function(param1, param2, param3) {
+        expect(param1).to.be('param1');
+        expect(param2).to.be('param2');
+        expect(param3).to.be('param3');
+        expect(Date.now() - started).to.be.greaterThan(1000);
+        done();
+      };
+      utils.wrapImmediate(callback, 1000)('param1', 'param2', 'param3');
+    });
+
+    it('tests wildcardMatch utils service ', function(done) {
+      expect(utils.wildcardMatch('/test/complex/*/short', '/test/complex/and/short')).to.be(true);
+      expect(utils.wildcardMatch('/test/complex/*', '/test/complex/and/short')).to.be(true);
+      expect(utils.wildcardMatch('/test/*/*/short', '/test/complex/and/short')).to.be(true);
+      expect(utils.wildcardMatch('/test*', '/test/complex/and/short')).to.be(true);
+      expect(utils.wildcardMatch('*/short', '/test/complex/and/short')).to.be(true);
+      expect(utils.wildcardMatch('/test*/short', '/test/complex/and/short')).to.be(true);
+
+      expect(
+        utils.wildcardMatch('/test/complex/*/short', '/test/complex/and/long', 'defaultMax')
+      ).to.be(false);
+      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'defaultMax')).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'defaultMax')).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test/*/*/short', '/test/complex/and/long', 'defaultMax')).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test*', '/tes/complex/and/short', 'defaultMax')).to.be(false);
+      expect(utils.wildcardMatch('*/short', '/test/complex/and/long', 'defaultMax')).to.be(false);
+      expect(utils.wildcardMatch('/test*/short', '/test/complex/and/short/', 'defaultMax')).to.be(
+        false
+      );
+
+      expect(
+        utils.wildcardMatch('/test/complex/*/short', '/test/complex/and/long', 'small', 3)
+      ).to.be(false);
+      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'small', 3)).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'small', 3)).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test/*/*/short', '/test/complex/and/long', 'small', 3)).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('/test*', '/tes/complex/and/short', 'small', 3)).to.be(false);
+      expect(utils.wildcardMatch('*/short', '/test/complex/and/long', 'small', 3)).to.be(false);
+      expect(utils.wildcardMatch('/test*/short', '/test/complex/and/short/', 'small', 3)).to.be(
+        false
+      );
+
+      expect(
+        utils.wildcardMatch('/test/complex/*/short', '/test/complex/and/long', 'object', 1, true)
+      ).to.be(false);
+      expect(
+        utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'object', 1, true)
+      ).to.be(false);
+      expect(
+        utils.wildcardMatch('/test/complex/*', '/blah/complex/and/short', 'object', 1, true)
+      ).to.be(false);
+      expect(
+        utils.wildcardMatch('/test/*/*/short', '/test/complex/and/long', 'object', 1, true)
+      ).to.be(false);
+      expect(utils.wildcardMatch('/test*', '/tes/complex/and/short', 'object', 1, true)).to.be(
+        false
+      );
+      expect(utils.wildcardMatch('*/short', '/test/complex/and/long', 'object', 1, true)).to.be(
+        false
+      );
+      expect(
+        utils.wildcardMatch('/test*/short', '/test/complex/and/short/', 'object', 1, true)
+      ).to.be(false);
+
+      expect(utils.regexCaches.default.length > 0).to.be(true);
+      expect(utils.regexCaches.defaultMax.max).to.be(10000);
+      expect(utils.regexCaches.defaultMax.length).to.be(6);
+      expect(utils.regexCaches.small.length).to.be(3);
+      expect(utils.regexCaches.small.max).to.be(3);
+
+      expect(utils.regexCaches.object.length).to.be(6);
+      expect(utils.regexCaches.object.max).to.be(undefined);
+      var errMessage = '';
+      try {
+        expect(utils.wildcardMatch('/test*', '/tes/complex/and/short', undefined, 1, true)).to.be(
+          false
+        );
+      } catch (e) {
+        errMessage = e.message;
+      }
+      expect(errMessage).to.be('The default regex cache must be of type LRU');
+      done();
     });
   }
 );
