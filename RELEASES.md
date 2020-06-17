@@ -784,3 +784,9 @@
 -----------------
   - fixes #313 #314 - permissions tree and regex caching optimisations
   - wrapImmediate utility function and wrapImmediate of nedb provider functions
+
+11.5.2 2020-06-17
+-----------------
+  - test: renamed _ security integration tests to use -
+  - test: user deleted backward compatibility and integration tests
+  - log: delete and add user or group info logs

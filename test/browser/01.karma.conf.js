@@ -16,7 +16,8 @@ module.exports = function(config) {
       'test/browser/02_websockets_embedded_sanity_encryptedpayloads.js',
       'test/browser/03_heartbeats.js',
       'test/browser/04_https_cookie.js',
-      'test/browser/05_https_cookieLogin.js'
+      'test/browser/05_https_cookieLogin.js',
+      'test/browser/06_login_promise.js'
     ],
 
     // list of files / patterns to load in the browser
