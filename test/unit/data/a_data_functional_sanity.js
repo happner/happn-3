@@ -258,11 +258,8 @@ describe(
               if (e) return callback(e);
 
               expect(response.data.data.test).to.equal('data');
-
               expect(response.data._meta.path).to.equal('/tag/' + testId);
-
               expect(response._meta.tag).to.equal(tag);
-
               expect(response._meta.path.indexOf('/_TAGS' + '/tag/' + testId)).to.equal(0);
 
               callback();

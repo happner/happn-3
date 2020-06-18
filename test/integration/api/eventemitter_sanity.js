@@ -310,7 +310,8 @@ describe(
         {
           property1: 'property1',
           property2: 'property2',
-          property3: 'property3'
+          property3: 'property3',
+          property5: 'property5'
         },
         null,
         function(e) {
@@ -322,7 +323,8 @@ describe(
               '/testsubscribe/data/merge/' +
               test_path_end,
             {
-              property4: 'property4'
+              property4: 'property4',
+              property5: 'property5-new'
             },
             {
               merge: true
@@ -340,6 +342,7 @@ describe(
                   if (e) return callback(e);
 
                   expect(results.property4).to.be('property4');
+                  expect(results.property5).to.be('property5-new');
                   expect(results.property1).to.be('property1');
 
                   callback();
