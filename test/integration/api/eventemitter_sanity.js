@@ -303,6 +303,55 @@ describe(
     });
 
     it('should set data, and then merge a new document into the data without overwriting old fields', function(callback) {
+      var test_path_end = require('shortid').generate();
+
+      publisherclient.set(
+        '/1_eventemitter_embedded_sanity/' + test_id + '/testsubscribe/data/merge/' + test_path_end,
+        {
+          property1: 'property1',
+          property2: 'property2',
+          property3: 'property3'
+        },
+        null,
+        function(e) {
+          if (e) return callback(e);
+
+          publisherclient.set(
+            '/1_eventemitter_embedded_sanity/' +
+              test_id +
+              '/testsubscribe/data/merge/' +
+              test_path_end,
+            {
+              property4: 'property4'
+            },
+            {
+              merge: true
+            },
+            function(e) {
+              if (e) return callback(e);
+
+              publisherclient.get(
+                '/1_eventemitter_embedded_sanity/' +
+                  test_id +
+                  '/testsubscribe/data/merge/' +
+                  test_path_end,
+                null,
+                function(e, results) {
+                  if (e) return callback(e);
+
+                  expect(results.property4).to.be('property4');
+                  expect(results.property1).to.be('property1');
+
+                  callback();
+                }
+              );
+            }
+          );
+        }
+      );
+    });
+
+    it('should set data, and then merge a new document into the data without mutating the input object', function(callback) {
       try {
         var test_path_end = require('shortid').generate();
 
@@ -319,36 +368,20 @@ describe(
           null,
           function(e) {
             if (e) return callback(e);
-
+            var mergeObject = { data: { property4: 'property4' } };
             publisherclient.set(
               '/1_eventemitter_embedded_sanity/' +
                 test_id +
                 '/testsubscribe/data/merge/' +
                 test_path_end,
-              {
-                property4: 'property4'
-              },
+              mergeObject.data,
               {
                 merge: true
               },
               function(e) {
                 if (e) return callback(e);
-
-                publisherclient.get(
-                  '/1_eventemitter_embedded_sanity/' +
-                    test_id +
-                    '/testsubscribe/data/merge/' +
-                    test_path_end,
-                  null,
-                  function(e, results) {
-                    if (e) return callback(e);
-
-                    expect(results.property4).to.be('property4');
-                    expect(results.property1).to.be('property1');
-
-                    callback();
-                  }
-                );
+                expect(mergeObject.data).to.eql({ property4: 'property4' });
+                callback();
               }
             );
           }
