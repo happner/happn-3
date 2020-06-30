@@ -1,7 +1,6 @@
 var Happn = require('../../..'),
   service = Happn.service,
-  expect = require('expect.js'),
-  Promise = require('bluebird');
+  expect = require('expect.js');
 
 describe(
   require('../../__fixtures/utils/test_helper')

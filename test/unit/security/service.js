@@ -9,7 +9,7 @@ describe(
     var uuid = require('uuid');
     var Logger = require('happn-logger');
     var CheckPoint = require('../../../lib/services/security/checkpoint');
-    var Promise = require('bluebird');
+    const util = require('util');
     //var log = require('why-is-node-running');
 
     var serviceConfig = {
@@ -1868,7 +1868,7 @@ describe(
             callback(null, 2);
           };
 
-          instance.services.security.processLogin = Promise.promisify(
+          instance.services.security.processLogin = util.promisify(
             instance.services.security.processLogin
           );
 

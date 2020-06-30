@@ -7,7 +7,6 @@ describe(
     var expect = require('expect.js');
     var happn = require('../../../lib/index');
     var fs = require('fs-extra');
-    var Promise = require('bluebird');
 
     var testId = Date.now();
 

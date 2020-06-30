@@ -3,6 +3,7 @@ const happn = require('../../../lib/index');
 const request = require('request');
 
 describe(tests.testName(__filename, 3), function() {
+  this.timeout(5000);
   beforeEach('creates a secure instance', createInstance);
   beforeEach('creates a user', createUser);
   afterEach('destroys secure instance', destroyInstance);
@@ -46,6 +47,7 @@ describe(tests.testName(__filename, 3), function() {
   async function performOperationAndDeleteTest() {
     await performOperation(testClient);
     await deleteUser();
+    await tests.delay(1000);
     try {
       await performOperation(testClient);
     } catch (e) {

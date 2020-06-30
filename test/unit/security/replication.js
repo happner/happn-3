@@ -3,7 +3,6 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    var Promise = require('bluebird');
     var expect = require('expect.js');
     var SecurityService = require('../../../lib/services/security/service');
 

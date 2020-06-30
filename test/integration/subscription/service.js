@@ -3,8 +3,8 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    var expect = require('expect.js'),
-      Promise = require('bluebird');
+    var expect = require('expect.js');
+    const util = require('util');
 
     function mockSubscriptionService(config, testItems, callback) {
       var UtilsService = require('../../../lib/services/utils/service');
@@ -141,8 +141,8 @@ describe(
         var subscribePrepared = instance.prepareSubscribeMessage(subscribeMessage);
         var unsubscribePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
 
-        instance.processSubscribe = Promise.promisify(instance.processSubscribe);
-        instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
+        instance.processSubscribe = util.promisify(instance.processSubscribe);
+        instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
         instance
           .processSubscribe(subscribePrepared)
@@ -229,8 +229,8 @@ describe(
         var subscribeMessage1Prepared = instance.prepareSubscribeMessage(subscribeMessage1);
         var unsubscribeMessagePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
 
-        instance.processSubscribe = Promise.promisify(instance.processSubscribe);
-        instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
+        instance.processSubscribe = util.promisify(instance.processSubscribe);
+        instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
         instance
           .processSubscribe(subscribeMessagePrepared)
@@ -323,8 +323,8 @@ describe(
         var subscribeMessage1Prepared = instance.prepareSubscribeMessage(subscribeMessage1);
         var unsubscribeMessagePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
 
-        instance.processSubscribe = Promise.promisify(instance.processSubscribe);
-        instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
+        instance.processSubscribe = util.promisify(instance.processSubscribe);
+        instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
         instance
           .processSubscribe(subscribeMessagePrepared)
@@ -385,8 +385,8 @@ describe(
 
         var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
-        instance.processSubscribe = Promise.promisify(instance.processSubscribe);
-        instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
+        instance.processSubscribe = util.promisify(instance.processSubscribe);
+        instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
         instance.processSubscribe(prepared).then(function(result) {
           expect(result.response._meta.status).to.be('ok');
@@ -430,8 +430,8 @@ describe(
 
         var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
-        instance.processSubscribe = Promise.promisify(instance.processSubscribe);
-        instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
+        instance.processSubscribe = util.promisify(instance.processSubscribe);
+        instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
         instance.processSubscribe(prepared).then(function(result) {
           expect(result.response._meta.status).to.be('ok');
@@ -464,8 +464,8 @@ describe(
 
         var prepared = instance.prepareSubscribeMessage(subscribeMessage);
 
-        instance.processSubscribe = Promise.promisify(instance.processSubscribe);
-        instance.processUnsubscribe = Promise.promisify(instance.processUnsubscribe);
+        instance.processSubscribe = util.promisify(instance.processSubscribe);
+        instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
         instance
           .processSubscribe(prepared)

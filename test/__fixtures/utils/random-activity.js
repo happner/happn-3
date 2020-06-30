@@ -1,9 +1,6 @@
 var Happn = require('../../lib/index'),
   service = Happn.service,
-  expect = require('expect.js'),
-  async = require('async'),
-  shortid = require('shortid'),
-  Promise = require('bluebird');
+  async = require('async');
 
 describe('subscriptions', function () {
 

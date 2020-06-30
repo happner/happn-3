@@ -1,6 +1,5 @@
 var Happn = require('../../lib/index');
 var expect = require('expect.js');
-var Promise = require('bluebird');
 
 //checks info is stored next to login
 describe(require('path').basename(__filename), function() {
