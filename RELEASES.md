@@ -791,3 +791,7 @@
   - test: user deleted backward compatibility and integration tests
   - log: delete and add user or group info logs
   - fix #316: merge upsert mutates input data
+
+11.5.3 2020-06-30
+-----------------
+  - refactor: removed bluebird dependency
