@@ -1,11 +1,8 @@
 var path = require('path');
 var filename = path.basename(__filename);
-
-var Promise = require('bluebird');
 var expect = require('expect.js');
 var net = require('net');
 var Happn = require('../..');
-
 describe(filename, function() {
   var server;
 
@@ -121,11 +118,10 @@ describe(filename, function() {
 
         .then(function(_client) {
           client = _client;
-          client.onAsync = Promise.promisify(client.on);
         })
 
         .then(function() {
-          return client.onAsync('/test/*', received);
+          return client.on('/test/*', received);
         })
 
         .then(function() {

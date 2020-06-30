@@ -1,5 +1,4 @@
 var expect = require('expect.js');
-var Promise = require('bluebird');
 var happn = require('../../../lib/index');
 var service = happn.service;
 var client = happn.client;
@@ -9,7 +8,6 @@ var happnClient;
 var lastMetrics;
 var lastFragment;
 var StatsServer = require('happn-stats').StatsServer;
-
 describe(
   require('../../__fixtures/utils/test_helper')
     .create()
@@ -65,8 +63,6 @@ describe(
         .create({})
         .then(function(client) {
           happnClient = client;
-          happnClient.onAsync = Promise.promisify(happnClient.on);
-          happnClient.setAsync = Promise.promisify(happnClient.set);
         })
         .then(function() {
           done();

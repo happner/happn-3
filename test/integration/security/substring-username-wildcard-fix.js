@@ -6,7 +6,7 @@ describe(
     var happn = require('../../../lib/index');
     var serviceInstance;
     var async = require('async');
-    var Promisify = require('bluebird').promisify;
+    var Promisify = require('util').promisify;
 
     var getService = function(config, callback) {
       happn.service.create(config, callback);

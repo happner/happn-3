@@ -6,7 +6,6 @@ describe(
   function() {
     var Happn = require('../../..');
     var expect = require('expect.js');
-    var Promise = require('bluebird');
     var async = require('async');
 
     this.timeout(60000);

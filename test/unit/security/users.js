@@ -7,10 +7,8 @@ describe(
 
     var expect = require('expect.js');
     var async = require('async');
-    var Promise = require('bluebird');
-
     var Logger = require('happn-logger');
-
+    const util = require('util');
     var Services = {};
 
     Services.SecurityService = require('../../../lib/services/security/service');
@@ -26,7 +24,7 @@ describe(
     Services.ErrorService = require('../../../lib/services/error/service');
     Services.LogService = require('../../../lib/services/log/service');
 
-    var mockService = Promise.promisify(function(happn, serviceName, config, callback) {
+    var mockService = util.promisify(function(happn, serviceName, config, callback) {
       if (typeof config === 'function') {
         callback = config;
         if (config !== false) config = {};

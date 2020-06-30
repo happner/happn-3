@@ -1,5 +1,3 @@
-var Promise = require('bluebird');
-
 module.exports = Update3;
 
 function Update3(updater, analysis){

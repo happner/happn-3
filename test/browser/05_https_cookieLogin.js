@@ -3,6 +3,15 @@ describe('05 cookie login', function() {
   const expect = window.expect;
   this.timeout(120e3);
 
+  it('tests we are able to login with a cookie and not raise a runaway promise warning', async () => {
+    let opts = {
+      port: 55003,
+      protocol: 'https',
+      useCookie: true
+    };
+    connectClientCookieNotPromise(opts);
+  });
+
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn', async () => {
     let opts = {
       port: 55003,
@@ -146,5 +155,9 @@ describe('05 cookie login', function() {
         return resolve(instance);
       });
     });
+  }
+
+  function connectClientCookieNotPromise(opts, callback) {
+    HappnClient.create(opts, callback);
   }
 });

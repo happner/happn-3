@@ -8,10 +8,7 @@ describe(
     var service = happn.service;
     var happn_client = happn.client;
     var happnInstance = null;
-    var bluebird = require('bluebird');
-
     this.timeout(5000);
-
     var publisherclient;
     var listenerclient;
     var defaultVariableDepth = 5;
@@ -71,8 +68,6 @@ describe(
           defaultVariableDepth: defaultVariableDepth
         }
       });
-      // eslint-disable-next-line require-atomic-updates
-      listenerclient.onAsync = bluebird.promisify(listenerclient.on, { multiArgs: true });
     });
 
     it('does a variable depth on, ensure the client state items are correct', function(done) {
@@ -225,10 +220,10 @@ describe(
       listenerclient
         .set('/initialEmitTest/path', { test: 1 })
         .then(function() {
-          return listenerclient.onAsync('/initialEmitTest/path', {}, handleEvent);
+          return listenerclient.on('/initialEmitTest/path', {}, handleEvent);
         })
         .then(function(reference) {
-          reference1 = reference[0];
+          reference1 = reference;
           expect(Object.keys(listenerclient.state.events).length).to.be(1);
           expect(
             listenerclient.state.refCount[
@@ -236,10 +231,10 @@ describe(
             ]
           ).to.be(1);
           expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(1);
-          return listenerclient.onAsync('/initialEmitTest/**', { initialEmit: true }, handleEvent);
+          return listenerclient.on('/initialEmitTest/**', { initialEmit: true }, handleEvent);
         })
         .then(function(reference) {
-          reference2 = reference[0];
+          reference2 = reference;
           expect(eventData.length).to.be(1);
           expect(Object.keys(listenerclient.state.events).length).to.be(2);
           expect(listenerclient.state.events['/ALL@/initialEmitTest/**'].length).to.be(1);
@@ -254,14 +249,10 @@ describe(
             ]
           ).to.be(1);
           expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(2);
-          return listenerclient.onAsync(
-            '/initialEmitTest/**',
-            { initialCallback: true },
-            handleEvent
-          );
+          return listenerclient.on('/initialEmitTest/**', { initialCallback: true }, handleEvent);
         })
         .then(function(reference) {
-          reference3 = reference[0];
+          reference3 = reference;
           expect(eventData.length).to.be(1);
           expect(Object.keys(listenerclient.state.events).length).to.be(2);
           expect(listenerclient.state.events['/ALL@/initialEmitTest/**'].length).to.be(2);
@@ -491,7 +482,7 @@ describe(
         test: 'data6'
       });
 
-      await listenerclient.onAsync(
+      await listenerclient.on(
         '/initialEmitSpecificCorrectDepth/testsubscribe/**',
         {
           event_type: 'set',
@@ -580,7 +571,7 @@ describe(
       listenerclient
         .set('/initialEmitTest/path', { test: 1 })
         .then(function() {
-          return listenerclient.onAsync('/initialEmitTest/path', {}, handleEvent);
+          return listenerclient.on('/initialEmitTest/path', {}, handleEvent);
         })
         .then(function() {
           expect(Object.keys(listenerclient.state.events).length).to.be(1);
@@ -590,7 +581,7 @@ describe(
             ]
           ).to.be(1);
           expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(1);
-          return listenerclient.onAsync('/initialEmitTest/**', { initialEmit: true }, handleEvent);
+          return listenerclient.on('/initialEmitTest/**', { initialEmit: true }, handleEvent);
         })
         .then(function() {
           expect(eventData.length).to.be(1);
@@ -607,11 +598,7 @@ describe(
             ]
           ).to.be(1);
           expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(2);
-          return listenerclient.onAsync(
-            '/initialEmitTest/**',
-            { initialCallback: true },
-            handleEvent
-          );
+          return listenerclient.on('/initialEmitTest/**', { initialCallback: true }, handleEvent);
         })
         .then(function() {
           expect(eventData.length).to.be(1);
@@ -673,8 +660,8 @@ describe(
         eventData.push(data);
       };
 
-      await listenerclient.onAsync('/overlap/**', { depth: 3 }, handleEvent);
-      await listenerclient.onAsync('/overlap/**', { depth: 5 }, handleEvent);
+      await listenerclient.on('/overlap/**', { depth: 3 }, handleEvent);
+      await listenerclient.on('/overlap/**', { depth: 5 }, handleEvent);
 
       await publisherclient.set('/overlap/1/2/3', {
         test: 'data1'
@@ -711,8 +698,8 @@ describe(
         eventData.push(data);
       };
 
-      await listenerclient.onAsync('/overlap-default/**', { depth: 3 }, handleEvent);
-      await listenerclient.onAsync('/overlap-default/**', handleEvent);
+      await listenerclient.on('/overlap-default/**', { depth: 3 }, handleEvent);
+      await listenerclient.on('/overlap-default/**', handleEvent);
 
       await publisherclient.set('/overlap-default/1/2/3', {
         test: 'data1'
@@ -755,8 +742,8 @@ describe(
         eventData.push(data);
       };
 
-      await listenerclient.onAsync('/overlap-default-specified/**', { depth: 3 }, handleEvent);
-      await listenerclient.onAsync('/overlap-default-specified/**', handleEvent);
+      await listenerclient.on('/overlap-default-specified/**', { depth: 3 }, handleEvent);
+      await listenerclient.on('/overlap-default-specified/**', handleEvent);
 
       await publisherclient.set('/overlap-default-specified/1/2/3', {
         test: 'data1'
