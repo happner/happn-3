@@ -795,3 +795,7 @@
 11.5.3 2020-06-30
 -----------------
   - refactor: removed bluebird dependency
+
+11.5.4 2020-07-15
+-----------------
+  - optimisation: tame-search upgrade for faster unsubscribes
