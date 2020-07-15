@@ -336,16 +336,16 @@ describe(
           .then(function(result) {
             expect(result.response._meta.status).to.be('ok');
             expect(instance.allListeners('1').length).to.be(2);
-            expect(instance.allListeners('1')[0].key).to.be('1');
+            expect(instance.allListeners('1')[0].subscriberKey).to.be('1');
             expect(instance.allListeners('1')[0].data.path).to.be('/test/path/*');
-            expect(instance.allListeners('1')[1].key).to.be('1');
+            expect(instance.allListeners('1')[1].subscriberKey).to.be('1');
             expect(instance.allListeners('1')[1].data.path).to.be('/test/path/1');
             unsubscribeMessagePrepared.request.options.referenceId = referenceId;
             return instance.processUnsubscribe(unsubscribeMessagePrepared);
           })
           .then(function() {
             expect(instance.allListeners('1').length).to.be(1);
-            expect(instance.allListeners('1')[0].key).to.be('1');
+            expect(instance.allListeners('1')[0].subscriberKey).to.be('1');
             expect(instance.allListeners('1')[0].data.path).to.be('/test/path/1');
             done();
           });
