@@ -799,3 +799,8 @@
 11.5.4 2020-07-15
 -----------------
   - optimisation: tame-search upgrade for faster unsubscribes
+
+11.6.0 2020-08-13
+-----------------
+  - feature: default info level log in JSON format on session attach and detach - SMC-729
+  - test: scripts for client connection leaks and infinite loop issue - SMC-731
