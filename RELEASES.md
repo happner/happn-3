@@ -804,3 +804,7 @@
 -----------------
   - feature: default info level log in JSON format on session attach and detach - SMC-729
   - test: scripts for client connection leaks and infinite loop issue - SMC-731
+
+11.7.0 2020-08-19
+-----------------
+  - feature: ability to switch off info level log in JSON format on session attach and detach - SMC-775
