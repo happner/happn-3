@@ -3,6 +3,8 @@ describe(test.testName(__filename, 3), function() {
   const Logger = require('happn-logger');
   const SessionService = require('../../../lib/services/session/service');
 
+  this.timeout(5000);
+
   it('should test the stats method', function() {
     const sessionService = new SessionService({
       logger: Logger
@@ -200,6 +202,7 @@ describe(test.testName(__filename, 3), function() {
         }
       }
     });
+    sessionService.config = {};
     sessionService.logSessionAttached({
       user: {
         username: 'test-username'
@@ -236,6 +239,7 @@ describe(test.testName(__filename, 3), function() {
         }
       }
     });
+    sessionService.config = {};
     sessionService.logSessionDetached({
       user: {
         username: 'test-username'
@@ -246,5 +250,81 @@ describe(test.testName(__filename, 3), function() {
       happnVersion: '1.2.3',
       protocol: 'happn_4'
     });
+  });
+
+  it('should test the logSessionAttached method is disabled', function(done) {
+    const sessionService = new SessionService({
+      logger: {
+        createLogger: () => {
+          return {
+            $$TRACE: () => {},
+            info: message => {
+              test.expect(message).to.eql(
+                JSON.stringify({
+                  event: 'session attached',
+                  username: 'test-username',
+                  sourceAddress: '127.0.0.1',
+                  sourcePort: 5678,
+                  upgradeUrl: 'http://test/upgrade',
+                  happnVersion: '1.2.3',
+                  happnProtocolVersion: 'happn_4'
+                })
+              );
+              done(new Error('should not have happened'));
+            }
+          };
+        }
+      }
+    });
+    sessionService.config = { disableSessionEventLogging: true };
+    sessionService.logSessionAttached({
+      user: {
+        username: 'test-username'
+      },
+      sourceAddress: '127.0.0.1',
+      sourcePort: 5678,
+      upgradeUrl: 'http://test/upgrade',
+      happnVersion: '1.2.3',
+      protocol: 'happn_4'
+    });
+    setTimeout(done, 2000);
+  });
+
+  it('should test the logSessionDetached method is disabled', function(done) {
+    const sessionService = new SessionService({
+      logger: {
+        createLogger: () => {
+          return {
+            $$TRACE: () => {},
+            info: message => {
+              test.expect(message).to.eql(
+                JSON.stringify({
+                  event: 'session detached',
+                  username: 'test-username',
+                  sourceAddress: '127.0.0.1',
+                  sourcePort: 5678,
+                  upgradeUrl: 'http://test/upgrade',
+                  happnVersion: '1.2.3',
+                  happnProtocolVersion: 'happn_4'
+                })
+              );
+              done(new Error('should not have happened'));
+            }
+          };
+        }
+      }
+    });
+    sessionService.config = { disableSessionEventLogging: true };
+    sessionService.logSessionDetached({
+      user: {
+        username: 'test-username'
+      },
+      sourceAddress: '127.0.0.1',
+      sourcePort: 5678,
+      upgradeUrl: 'http://test/upgrade',
+      happnVersion: '1.2.3',
+      protocol: 'happn_4'
+    });
+    setTimeout(done, 2000);
   });
 });

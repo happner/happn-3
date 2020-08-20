@@ -910,6 +910,36 @@ my_client_instance.onEvent('reconnect-successful', (evt) => {
 
 ```
 
+After version 11.6.0, by default some basic session info is logged whenever a client attached or detaches in the format, as stringified JSON:
+
+```json
+{
+    event, //session attached / session detatched
+    username, //user name or 'anonymous (unsecure connection)',
+    sourceAddress, //session source address,
+    sourcePort, //client side port
+    upgradeUrl,// primus upgrade url for establishing the connection socket
+    happnVersion, // for new clients, package version
+    happnProtocolVersion // happn_4, happn (old connections)
+  }
+```
+
+This can be switched off by updating the session service config:
+```javascript
+const Happn = require('happn-3');
+let myService = await Happn.service.create({
+  name: 'TEST-NAME',
+  secure: true,
+  services: {
+    session: {
+      config: {
+        disableSessionEventLogging:true
+      }
+    }
+  }
+});
+```
+
 SECURITY SERVER
 ---------------
 
