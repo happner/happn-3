@@ -808,3 +808,7 @@
 11.7.0 2020-08-19
 -----------------
   - feature: ability to switch off info level log in JSON format on session attach and detach - SMC-775
+
+11.7.1 2020-09-17
+-----------------
+  - patch: race condition on load permissionset - SMC-1028
