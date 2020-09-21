@@ -779,4 +779,4 @@
 
 ## 11.7.1 2020-09-21
 
-- bug: maybePromisify does not call resolve the promise if options and an undefined callback is passed
+- bug: maybePromisify does not call resolve the promise if options and an undefined callback is passed - SMC-1108
