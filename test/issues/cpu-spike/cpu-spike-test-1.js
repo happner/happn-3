@@ -106,7 +106,7 @@ function startOldActivity(clientCount) {
       const clientId2 = Math.floor(Math.random() * clientCount);
       console.log(`doing set: ${clientId1} to ${clientId2}`);
       existingOldClients[clientId1].set(`/event/${clientId2}`, clientId1, e => {
-        console.log(`did set: ${clientId1} to ${clientId2}`);
+        if (!e) console.log(`did set: ${clientId1} to ${clientId2}`);
       });
     }
     setTimeout(startOldActivity(clientCount), 1000);
@@ -122,7 +122,7 @@ function startNewActivity(clientCount) {
       const clientId2 = Math.floor(Math.random() * clientCount);
       console.log(`doing set: ${clientId1} to ${clientId2}`);
       existingNewClients[clientId1].set(`/event/${clientId2}`, clientId1, e => {
-        console.log(`did set: ${clientId1} to ${clientId2}`);
+        if (!e) console.log(`did set: ${clientId1} to ${clientId2}`);
       });
     }
     setTimeout(startNewActivity(clientCount), 1000);
