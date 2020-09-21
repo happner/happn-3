@@ -83,7 +83,7 @@ describe(
         });
     });
 
-    it.only('handles if the callback is an undefined parameter', async function() {
+    it('handles if the callback is an undefined parameter', async function() {
       this.timeout(10000);
 
       let badCallback;
