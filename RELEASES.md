@@ -808,3 +808,9 @@
 11.7.0 2020-08-19
 -----------------
   - feature: ability to switch off info level log in JSON format on session attach and detach - SMC-775
+  
+11.7.1 2020-09-21
+----------------- 
+  - bug: maybePromisify does not call resolve the promise if options and an undefined callback is passed - SMC-1108
+  
+  

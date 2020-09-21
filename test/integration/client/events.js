@@ -83,6 +83,29 @@ describe(
         });
     });
 
+    it('handles if the callback is an undefined parameter', async function() {
+      this.timeout(10000);
+
+      let badCallback;
+
+      const clientInstance = await happn.client.create({
+        config: {
+          port: 55555,
+          username: '_ADMIN',
+          password: 'happn'
+        }
+      });
+
+      await clientInstance.set(
+        '/setting/data/before/end',
+        {
+          test: 'data'
+        },
+        {},
+        badCallback
+      );
+    });
+
     it('logs on with a client and attached to the client side reconnection events, we destroy the client sockets on the server - check the reconnect events fire, check reconnection happens and we can push data ok', function(callback) {
       var eventsFired = {
         'reconnect-scheduled': false,
