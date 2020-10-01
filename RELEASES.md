@@ -813,4 +813,6 @@
 ----------------- 
   - bug: maybePromisify does not call resolve the promise if options and an undefined callback is passed - SMC-1108
   
-  
+11.7.2 2020-09-30
+-----------------
+  - patch: race condition on load permissionset - SMC-1028

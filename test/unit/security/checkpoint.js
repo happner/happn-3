@@ -517,6 +517,53 @@ describe(
       });
     });
 
+    it('it tests race condition in loadPermissionSet', function(done) {
+      const identity = {
+        user: {
+          groups: {
+            group1: {},
+            group2: {},
+            group3: {},
+            group4: {}
+          }
+        }
+      };
+      const groups = [
+        {
+          permissions: {
+            'test/1': {}
+          }
+        },
+        null,
+        {
+          permissions: {
+            'test/2': {}
+          }
+        },
+        {
+          permissions: {
+            'test/3': {}
+          }
+        }
+      ];
+      initializeCheckpoint(function(e, checkpoint) {
+        if (e) return done(e);
+        checkpoint.__cache_checkpoint_permissionset.getSync = () => {
+          return null;
+        };
+        checkpoint.securityService.groups.getGroup = (groupName, opts, cb) => {
+          return cb(null, groups.pop());
+        };
+        checkpoint.__loadPermissionSet(identity, (e, permissionSet) => {
+          if (e) return done(e);
+          expect(JSON.parse(JSON.stringify(permissionSet.tree))).to.eql({
+            test: [null, { $leaf: 'test/1' }, { $leaf: 'test/2' }, { $leaf: 'test/3' }]
+          });
+          done();
+        });
+      });
+    });
+
     it('it tests _authorizeSession function, session has no policy', function(done) {
       this.timeout(60000);
 
