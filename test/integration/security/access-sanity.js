@@ -37,6 +37,7 @@ describe(
           services: {
             security: {
               config: {
+                updateSubscriptionsOnSecurityDirectoryChanged: false,
                 lockTokenToUserId: true
               }
             }
@@ -1061,6 +1062,7 @@ describe(
       });
 
       it('tests the remove permission', function(done) {
+        this.timeout(5000);
         testClient.set(
           '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission',
           {
@@ -1076,6 +1078,11 @@ describe(
                 '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission',
                 'set'
               )
+              .then(() => {
+                return new Promise(resolve => {
+                  setTimeout(resolve, 2000);
+                });
+              })
               .then(function() {
                 testClient.set(
                   '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission',

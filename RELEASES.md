@@ -816,3 +816,7 @@
 11.7.2 2020-09-30
 -----------------
   - patch: race condition on load permissionset - SMC-1028
+
+11.7.3 2020-09-30
+-----------------
+  - patch: selective security cache clearing and concurrency 1 queue on dataChanged event - SMC-1189
