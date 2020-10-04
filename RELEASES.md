@@ -820,3 +820,4 @@
 11.7.3 2020-09-30
 -----------------
   - patch: selective security cache clearing and concurrency 1 queue on dataChanged event - SMC-1189
+  - feature: ability to switch off removal of subscriptions on security directory changed effected sessions
