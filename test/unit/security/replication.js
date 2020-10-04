@@ -1,3 +1,4 @@
+const async = require('async');
 describe(
   require('../../__fixtures/utils/test_helper')
     .create()
@@ -92,13 +93,19 @@ describe(
       };
 
       obj.groups = {
-        clearCaches: function() {}
+        clearCaches: function() {
+          return Promise.resolve();
+        }
       };
 
-      obj.resetSessionPermissions = function() {};
+      obj.resetSessionPermissions = function() {
+        return Promise.resolve();
+      };
 
       obj.checkpoint = {
-        clearCaches: function() {}
+        clearCaches: function() {
+          return Promise.resolve();
+        }
       };
 
       obj.emitChanges = function() {};
@@ -126,10 +133,19 @@ describe(
 
       var security = new SecurityService(opts);
 
+      security.__dataChangedQueue = async.queue((task, callback) => {
+        security.__dataChangedInternal(
+          task.whatHappnd,
+          task.changedData,
+          task.additionalInfo,
+          callback
+        );
+      }, 1);
+
       createMockHappn(security);
       stubDataChangedSteps(security);
 
-      security.dataChanged('whatHappnd', 'changedData', 'additionalInfo', function(e) {
+      security.dataChanged('unlink-group', 'changedData', 'additionalInfo', function(e) {
         if (e) return done(e);
 
         try {
@@ -137,7 +153,7 @@ describe(
             '/security/dataChanged': {
               additionalInfo: 'additionalInfo',
               changedData: 'changedData',
-              whatHappnd: 'whatHappnd'
+              whatHappnd: 'unlink-group'
             }
           });
           done();

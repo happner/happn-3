@@ -258,12 +258,16 @@ describe(
             expect(authorized).to.be(false);
 
             var cached = checkpoint.__cache_checkpoint_authorization.getSync(
-              'TEST-SESSION-ID' + '/test/path' + 'set'
+              'TEST-SESSION-ID:/test/path:set'
             );
 
             expect(cached === false).to.be(true);
 
-            checkpoint.clearCaches();
+            checkpoint.clearCaches([
+              {
+                id: 'TEST-SESSION-ID'
+              }
+            ]);
 
             expect(
               checkpoint.__cache_checkpoint_authorization.getSync(
@@ -289,14 +293,14 @@ describe(
         expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(
           null
         );
-
+        const permissionSetKey = require('crypto')
+          .createHash('sha1')
+          .update(['TEST1', 'TEST2'].join('/'))
+          .digest('base64');
         //session, path, action, callback
         checkpoint._authorizeUser(
           {
-            permissionSetKey: require('crypto')
-              .createHash('sha1')
-              .update(['TEST1', 'TEST2'].join('/'))
-              .digest('base64'),
+            permissionSetKey,
             id: 'TEST-SESSION-ID',
             username: 'TEST',
             user: {
@@ -321,7 +325,7 @@ describe(
 
             expect(cached).to.not.be(null);
 
-            checkpoint.clearCaches();
+            checkpoint.clearCaches([{ previousPermissionSetKey: testPermissionSetKey }]);
 
             expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(
               null

@@ -37,7 +37,7 @@ describe(
           services: {
             security: {
               config: {
-                updateSubscriptionsOnSecurityDirectoryChanged: false,
+                updateSubscriptionsOnSecurityDirectoryChanged: true,
                 lockTokenToUserId: true
               }
             }

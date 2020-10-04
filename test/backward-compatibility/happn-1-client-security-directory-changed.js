@@ -392,28 +392,6 @@ describe(
       });
     });
 
-    it('should do a bunch of operations, remove the the group from a client, wait a sec and see we are unable to perform operations, negative test', function(done) {
-      this.timeout(15000);
-
-      createTestClient(function(e, client) {
-        if (e) return done(e);
-
-        currentClient = client;
-
-        doOperations(client, null, function(e) {
-          if (e) return done(e);
-
-          removeGroup(client, false, function(e) {
-            if (e) return done(e);
-
-            setTimeout(function() {
-              doOperations(client, null, done);
-            }, 300);
-          });
-        });
-      });
-    });
-
     it('should do a set operations, modify the set permission, wait a sec and see we are unable to perform the set operation, negative test', function(done) {
       this.timeout(15000);
 
@@ -433,9 +411,31 @@ describe(
 
               setTimeout(function() {
                 doSetOperation(client, null, done);
-              }, 300);
+              }, 1000);
             }
           );
+        });
+      });
+    });
+
+    it('should do a bunch of operations, remove the the group from a client, wait a sec and see we are unable to perform operations, negative test', function(done) {
+      this.timeout(15000);
+
+      createTestClient(function(e, client) {
+        if (e) return done(e);
+
+        currentClient = client;
+
+        doOperations(client, null, function(e) {
+          if (e) return done(e);
+
+          removeGroup(client, false, function(e) {
+            if (e) return done(e);
+
+            setTimeout(function() {
+              doOperations(client, null, done);
+            }, 300);
+          });
         });
       });
     });
