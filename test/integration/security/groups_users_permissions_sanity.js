@@ -943,16 +943,13 @@ describe(
             if (e) return callback(e);
 
             expect(user.groups).to.be(undefined);
-
-            expect(testServices.security.users.__cache_users.getSync(linkUser.username)).to.eql(
-              user
+            // we dont cache users that have no groups
+            expect(testServices.security.users.__cache_users.getSync(linkUser.username)).to.not.be(
+              null
             );
             expect(
               testServices.security.users.__cache_passwords.getSync(linkUser.username)
             ).to.not.be(null);
-            expect(
-              testServices.security.users.__cache_passwords.getSync(linkUser.username)
-            ).to.not.be(undefined);
 
             testServices.security.users.clearCaches().then(function() {
               expect(testServices.security.users.__cache_users.getSync(linkUser.username)).to.be(

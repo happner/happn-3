@@ -9,6 +9,7 @@ describe(
     var async = require('async');
     var Logger = require('happn-logger');
     const util = require('util');
+    const _ = require('lodash');
     var Services = {};
 
     Services.SecurityService = require('../../../lib/services/security/service');
@@ -565,6 +566,61 @@ describe(
           happn.services.security.users.listUsersByGroup(null, function(e) {
             expect(e.toString()).to.be('Error: validation error: groupName must be specified');
             done();
+          });
+        });
+      });
+    });
+
+    it('tests getUserNoGroups', function(done) {
+      mockServices(function(e, happn) {
+        if (e) return done(e);
+        createUsersAndGroups(happn, function(e) {
+          if (e) return done(e);
+          happn.services.security.users.getUser('test_1', (e, user) => {
+            expect(e).to.be(null);
+            expect(_.omit(user, ['userid'])).to.eql({
+              username: 'test_1',
+              custom_data: { role: 'OEM Admin', extra: 1 },
+              groups: {
+                test_0: { data: {} },
+                test_1: { data: {} },
+                test_2: { data: {} },
+                test_3: { data: {} },
+                test_4: { data: {} },
+                test_5: { data: {} },
+                test_6: { data: {} },
+                test_7: { data: {} },
+                test_8: { data: {} },
+                test_9: { data: {} }
+              }
+            });
+          });
+          happn.services.security.users.getUserNoGroups('test_1', (e, user) => {
+            expect(e).to.be(null);
+            expect(_.omit(user, ['userid'])).to.eql({
+              username: 'test_1',
+              custom_data: { role: 'OEM Admin', extra: 1 }
+            });
+            happn.services.security.users.getUser('test_1', (e, user) => {
+              expect(e).to.be(null);
+              expect(_.omit(user, ['userid'])).to.eql({
+                username: 'test_1',
+                custom_data: { role: 'OEM Admin', extra: 1 },
+                groups: {
+                  test_0: { data: {} },
+                  test_1: { data: {} },
+                  test_2: { data: {} },
+                  test_3: { data: {} },
+                  test_4: { data: {} },
+                  test_5: { data: {} },
+                  test_6: { data: {} },
+                  test_7: { data: {} },
+                  test_8: { data: {} },
+                  test_9: { data: {} }
+                }
+              });
+              done();
+            });
           });
         });
       });

@@ -1936,6 +1936,7 @@ describe(
                   id: 1,
                   username: 'test-user-1',
                   isToken: false,
+                  previousPermissionSetKey: undefined,
                   permissionSetKey: '5xfClf+YJ9/4BdiLw/kvXH2uvh0=',
                   happn: undefined,
                   user: {
@@ -2004,6 +2005,7 @@ describe(
                   id: 1,
                   username: 'test-user-1',
                   isToken: false,
+                  previousPermissionSetKey: undefined,
                   permissionSetKey: '2jmj7l5rSw0yVb/vlWAYkK/YBwk=',
                   protocol: 1,
                   happn: undefined,
@@ -2070,8 +2072,7 @@ describe(
             })
             .then(function(effectedSessions) {
               setTimeout(function() {
-                //should be empty
-                expect(effectedSessions).to.eql([]);
+                expect(effectedSessions.length).to.eql(1);
                 expect(ended).to.be(true);
                 stopService(instance, done);
               }, 1000);
@@ -2129,6 +2130,7 @@ describe(
                   id: 1,
                   username: 'test-user-1',
                   isToken: false,
+                  previousPermissionSetKey: undefined,
                   permissionSetKey: '2jmj7l5rSw0yVb/vlWAYkK/YBwk=',
                   protocol: 1,
                   happn: undefined,
@@ -2198,6 +2200,7 @@ describe(
                   id: 1,
                   username: 'test-user-1',
                   isToken: false,
+                  previousPermissionSetKey: '5xfClf+YJ9/4BdiLw/kvXH2uvh0=',
                   permissionSetKey: '5xfClf+YJ9/4BdiLw/kvXH2uvh0=',
                   protocol: 1,
                   happn: undefined,
@@ -2269,6 +2272,7 @@ describe(
                   id: 1,
                   username: 'test-user-1',
                   isToken: false,
+                  previousPermissionSetKey: '5xfClf+YJ9/4BdiLw/kvXH2uvh0=',
                   permissionSetKey: '5xfClf+YJ9/4BdiLw/kvXH2uvh0=',
                   protocol: 1,
                   happn: undefined,
@@ -2340,6 +2344,7 @@ describe(
                   id: 1,
                   username: 'test-user-1',
                   isToken: false,
+                  previousPermissionSetKey: '5xfClf+YJ9/4BdiLw/kvXH2uvh0=',
                   permissionSetKey: '5xfClf+YJ9/4BdiLw/kvXH2uvh0=',
                   protocol: 1,
                   happn: undefined,
@@ -2417,6 +2422,7 @@ describe(
                   id: 1,
                   username: 'test-user-1',
                   isToken: false,
+                  previousPermissionSetKey: '5xfClf+YJ9/4BdiLw/kvXH2uvh0=',
                   permissionSetKey: '5xfClf+YJ9/4BdiLw/kvXH2uvh0=',
                   protocol: 1,
                   happn: undefined,
