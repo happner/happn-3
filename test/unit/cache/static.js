@@ -12,15 +12,7 @@ describe(
 
     var testId = require('shortid').generate();
 
-    var lru_config = {
-      defaultCacheOpts: {
-        type: 'LRU',
-        cache: {
-          max: 300,
-          maxAge: 0
-        }
-      }
-    };
+    var config = {};
 
     before('should initialize the service', function(callback) {
       var UtilService = require('../../../lib/services/utils/service');
@@ -32,7 +24,7 @@ describe(
         }
       };
 
-      serviceInstance.initialize(lru_config, callback);
+      serviceInstance.initialize(config, callback);
     });
 
     after(function(done) {
@@ -69,7 +61,7 @@ describe(
         .set(key, data, { clone: false })
 
         .then(function() {
-          serviceInstance.__defaultCache
+          serviceInstance
             .get(key)
             .then(function(result) {
               expect(result === data).to.be(true);
@@ -86,9 +78,9 @@ describe(
 
       var data = { dkey: key };
 
-      var Cache = require('../../../lib/services/cache/cache_lru');
+      var Cache = require('../../../lib/services/cache/cache_static');
 
-      var cache = new Cache();
+      var cache = new Cache({});
 
       cache.utilities = require('../../../lib/services/utils/shared');
 
@@ -113,9 +105,9 @@ describe(
 
       var data = { dkey: key };
 
-      var Cache = require('../../../lib/services/cache/cache_lru');
+      var Cache = require('../../../lib/services/cache/cache_static');
 
-      var cache = new Cache();
+      var cache = new Cache({});
 
       cache
         .set(key, data, { clone: false })
@@ -131,6 +123,20 @@ describe(
         })
 
         .catch(done);
+    });
+
+    it('gets the cache keys', function() {
+      var key = testId + 'test1';
+
+      var data = { dkey: key };
+
+      var Cache = require('../../../lib/services/cache/cache_static');
+
+      var cache = new Cache();
+      cache.setSync(key + '1', data, { clone: false });
+      cache.setSync(key + '2', data, { clone: false });
+      cache.setSync(key + '3', data, { clone: false });
+      expect(cache.keys().sort()).to.eql([key + '1', key + '2', key + '3']);
     });
   }
 );
