@@ -107,9 +107,11 @@ describe(test.testName(__filename, 3), function() {
       };
 
       happn.services.security.groups.upsertGroup(testGroup, function(e) {
-        test.expect(e.toString()).to.be(
-          'Error: group permissions invalid: missing allowed actions or prohibit rules: /test/path/2'
-        );
+        test
+          .expect(e.toString())
+          .to.be(
+            'Error: group permissions invalid: missing allowed actions or prohibit rules: /test/path/2'
+          );
         done();
       });
     });
@@ -239,9 +241,9 @@ describe(test.testName(__filename, 3), function() {
               test.expect(fetchedGroup.permissions['/test/path/*'].actions).to.eql(['get', 'on']);
 
               for (var permCounter = 0; permCounter < permissionCount; permCounter++)
-                test.expect(
-                  fetchedGroup.permissions['/test/path/' + permCounter.toString()].actions
-                ).to.eql(['get']);
+                test
+                  .expect(fetchedGroup.permissions['/test/path/' + permCounter.toString()].actions)
+                  .to.eql(['get']);
 
               done();
             });
@@ -300,9 +302,9 @@ describe(test.testName(__filename, 3), function() {
               test.expect(fetchedGroup.permissions['/test/path/*'].actions).to.eql(['get', 'on']);
 
               for (var permCounter = 0; permCounter < permissionCount; permCounter++)
-                test.expect(
-                  fetchedGroup.permissions['/test/path/' + permCounter.toString()].actions
-                ).to.eql(['get']);
+                test
+                  .expect(fetchedGroup.permissions['/test/path/' + permCounter.toString()].actions)
+                  .to.eql(['get']);
 
               done();
             });
