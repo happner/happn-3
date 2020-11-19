@@ -822,3 +822,8 @@
   - patch: selective security cache clearing and concurrency 1 queue on dataChanged event - SMC-1189
   - feature: ability to switch off removal of subscriptions on security directory changed effected sessions
   - fix #180: path_only selects now work on mongo
+
+11.8.0 2020-11-19
+-----------------
+  - feature: SMC-1269 - logging a JSON object on socket error
+  - feature: SMC-1321 - only print error message for fail to decode JSON socket error, also just warning
