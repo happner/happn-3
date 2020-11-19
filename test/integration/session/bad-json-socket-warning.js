@@ -39,9 +39,11 @@ describe(test.testName(__filename, 3), function() {
     const CaptureStdout = require('capture-stdout');
     const captureStdout = new CaptureStdout();
     captureStdout.startCapture();
+    serviceInstance.services.session.log.setLevel('debug');
     serviceInstance.services.session.on('client-socket-error', errorObj => {
       captureStdout.stopCapture();
       const arrJson = captureStdout.getCapturedText();
+      serviceInstance.services.session.log.setLevel(process.env.LOG_LEVEL || 'off');
       try {
         test
           .expect(
@@ -61,7 +63,7 @@ describe(test.testName(__filename, 3), function() {
       }
       done();
     });
-    clientInstance.socket.socket._socket._write('}', 'utf-8', e => {
+    clientInstance.socket.socket._socket._write('}', 'utf-8', () => {
       clientInstance.disconnect();
     });
   });
