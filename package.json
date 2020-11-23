@@ -1,6 +1,6 @@
 {
   "name": "happn-3",
-  "version": "11.8.0",
+  "version": "11.8.1",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "keywords": [
     "mongo",
@@ -43,7 +43,7 @@
     "fast-clone": "^1.5.3",
     "fs-extra": "^7.0.1",
     "handlebars": "^4.7.6",
-    "happn-logger": "^1.1.0",
+    "happn-logger": "^1.1.1",
     "happn-nedb": "^1.9.1",
     "happn-password-hash-and-salt": "^1.2.0",
     "happn-primus-wrapper": "^7.3.5",
