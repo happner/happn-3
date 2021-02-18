@@ -38,7 +38,8 @@ describe(
                     username: name,
                     groups: {}
                   });
-                }
+                },
+                attachPermissions: function(user) {return new Promise((resolve) => {return resolve(user)})}
               },
               groups: {
                 getGroup: function(name, opts, callback) {

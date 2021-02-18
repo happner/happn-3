@@ -31,6 +31,7 @@ describe(
     }
 
     before('it starts secure service, with lockTokenToUserId switched on', function(done) {
+      this.timeout(5000);
       getService(
         {
           secure: true,
@@ -103,6 +104,85 @@ describe(
             expect(e.toString()).to.be('AccessDenied: Invalid credentials');
             done();
           });
+      });
+    });
+
+    context.skip('testing persisting on permissions', function() {
+      let addedTestGroup;
+      let addedTestuser;
+
+      let testGroup2 = {
+        name: 'TEST GROUP2' + test_id,
+        custom_data: {
+          customString: 'custom1',
+          customNumber: 0
+        }
+      };
+      testGroup2.permissions = {};
+      testGroup2.permissions[
+        '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/user_and_group/get_and_set'
+      ] = {
+        actions: ['on']
+      };
+
+      var testUser = {
+        username: 'TEST USER@blah.com' + test_id,
+        password: 'TEST PWD',
+        custom_data: {
+          something: 'usefull'
+        }
+      };
+
+      before(
+        'creates a group and a user, adds the group to the user, logs in with test user',
+        async () => {
+          addedTestGroup = await serviceInstance.services.security.users.upsertGroup(testGroup2, {
+            overwrite: false
+          });
+          addedTestuser = await serviceInstance.services.security.users.upsertUser(testUser, {
+            overwrite: false
+          });
+
+          await serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser);
+
+          testClient = await serviceInstance.services.session.localClient({
+            username: testUser.username,
+            password: 'TEST PWD'
+          });
+        }
+      );
+      it('checks allowed on ', function(done) {
+        testClient.on(
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/user_and_group/get_and_set',
+          {},
+          function() {},
+          done
+        );
+      });
+
+      it('unlinks the test group from the user, checks that the user no longer has access', function(done) {
+        this.timeout(5000);
+
+        serviceInstance.services.security.users.unlinkGroup(addedTestGroup, addedTestuser, function(
+          e
+        ) {
+          if (e) return done(e);
+
+          setTimeout(function() {
+            testClient.on(
+              '/TEST/a7_eventemitter_security_access/' +
+                test_id +
+                '/comp/user_and_group/get_and_set',
+              {},
+              function() {},
+              function(e) {
+                if (!e) return done(new Error('this should not have been allowed...'));
+                expect(e.toString()).to.be('AccessDenied: unauthorized');
+                done();
+              }
+            );
+          }, 2000);
+        });
       });
     });
 

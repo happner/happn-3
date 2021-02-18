@@ -65,6 +65,7 @@
     "serve-static": "^1.13.2",
     "shortid": "^2.2.14",
     "sift": "^7.0.1",
+    "sinon": "^9.2.4",
     "tame-search": "^2.0.0",
     "traverse": "^0.6.6",
     "uglify-es": "^3.3.9",

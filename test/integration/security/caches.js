@@ -58,7 +58,9 @@ describe(testHelper.testName(__filename, 3), function() {
 
         expect(serviceInstance.services.security.groups.__cache_groups.__cache.max).to.be(5);
         expect(serviceInstance.services.security.users.__cache_users.__cache.max).to.be(5);
-        expect(serviceInstance.services.security.groups.__cache_permissions.__cache.max).to.be(5);
+        expect(serviceInstance.services.security.groups.permissionManager.cache.__cache.max).to.be(
+          5
+        );
         expect(
           serviceInstance.services.security.checkpoint.__cache_checkpoint_authorization.__cache.max
         ).to.be(5);
@@ -307,7 +309,7 @@ describe(testHelper.testName(__filename, 3), function() {
             .length
         ).to.be(6);
         expect(
-          serviceInstance.services.security.groups.__cache_permissions.__cache.values().length
+          serviceInstance.services.security.groups.permissionManager.cache.__cache.values().length
         ).to.be(5);
         expect(
           serviceInstance.services.security.checkpoint.__cache_compiled_permissions_templates.__cache.values()
