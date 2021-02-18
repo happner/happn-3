@@ -2,221 +2,11 @@ const sinon = require('sinon');
 const PermissionsManager = require('../../../lib/services/security/permissions');
 const test = require('../../__fixtures/utils/test_helper').create();
 
-// module.exports = class Permissions {
-//   constructor(config, type, happn, securityService) {
-//     this.__config = this.defaults(config);
-//     this.securityService = securityService;
-//     this.cacheService = happn.services.cache;
-//     this.dataService = happn.services.data;
-//     this.type = type;
-//     this.cache = this.cacheService.new(`cache_security_${this.type}_permissions`, {
-//       type: 'LRU',
-//       cache: this.__config.__cache_permissions
-//     });
-//     this.__userPrefix = this.__config.__userPermissionsPrefix;
-//   }
-
-//   static create(config, type, happn, securityService) {
-//     return new Permissions(config, type, happn, securityService);
-//   }
-
-
-
-//   removePermission(name, path, action) {
-//     return new Promise((resolve, reject) => {
-//       if (!name) return reject(new Error(`please supply a ${this.type}Name`));
-//       if (!action) action = '*';
-//       if (!path) path = '*';
-
-//       return this.__removePermission(name, path, action)
-//         .then(result => {
-//           if (result.data.removed)
-//             return this.securityService.dataChanged(
-//               CONSTANTS.SECURITY_DIRECTORY_EVENTS.PERMISSION_REMOVED,
-//               {
-//                 ...this.__getNameObj(name),
-//                 path,
-//                 action
-//               },
-//               null,
-//               () => {
-//                 resolve(result);
-//               }
-//             );
-
-//           resolve(result);
-//         })
-//         .catch(reject);
-//     });
-//   }
-
-//   __removePermission(name, path, action) {
-//     return new Promise((resolve, reject) => {
-//       this.dataService.remove(
-//         [
-//           '/_SYSTEM/_SECURITY/_PERMISSIONS',
-//           this.__prepareName(name),
-//           action,
-//           this.__escapePermissionsPath(path)
-//         ].join('/'),
-//         (e, result) => {
-//           if (e) return reject(e);
-//           resolve(result);
-//         }
-//       );
-//     });
-//   }
-
-//   upsertPermission(name, path, action, authorized) {
-//     return new Promise((resolve, reject) => {
-//       return this.__upsertPermission(name, path, action, authorized)
-//         .then(result => {
-//           this.securityService.dataChanged(
-//             CONSTANTS.SECURITY_DIRECTORY_EVENTS.PERMISSION_UPSERTED,
-//             {
-//               ...this.__getNameObj(name),
-//               path: path,
-//               action: action,
-//               authorized: authorized
-//             },
-//             () => {
-//               resolve(result);
-//             }
-//           );
-//         })
-//         .catch(reject);
-//     });
-//   }
-
-//   validatePermissions(permissions) {
-//     var errors = [];
-
-//     Object.keys(permissions).forEach(function(permissionPath) {
-//       var permission = permissions[permissionPath];
-
-//       if (!permission.actions && !permission.prohibit)
-//         return errors.push('missing allowed actions or prohibit rules: ' + permissionPath);
-
-//       if (permission.actions)
-//         permission.actions.forEach(function(action) {
-//           if (ALLOWED_PERMISSIONS.indexOf(action) === -1)
-//             return errors.push('unknown action: ' + action + ' for path: ' + permissionPath);
-//         });
-
-//       if (permission.prohibit)
-//         permission.prohibit.forEach(function(action) {
-//           if (ALLOWED_PERMISSIONS.indexOf(action) === -1)
-//             return errors.push(
-//               'unknown prohibit action: ' + action + ' for path: ' + permissionPath
-//             );
-//         });
-//     });
-
-//     if (errors.length === 0) return true;
-//     else return errors;
-//   }
-
-//   __upsertMultiplePermissions(name, permissions) {
-//     return new Promise((resolve, reject) => {
-//       var promises = [];
-
-//       if (!name) return reject(new Error(`please supply a ${this.type}Name`));
-
-//       var permissionsValidation = this.validatePermissions(permissions);
-
-//       if (permissionsValidation !== true)
-//         return reject(new Error('group permissions invalid: ' + permissionsValidation.join(',')));
-//       Object.keys(permissions).forEach(permissionPath => {
-//         var permission = permissions[permissionPath];
-
-//         if (permission.actions)
-//           permission.actions.forEach(action => {
-//             promises.push(this.__upsertPermission(name, permissionPath, action));
-//           });
-
-//         if (permission.prohibit)
-//           permission.prohibit.forEach(action => {
-//             promises.push(this.__upsertPermission(name, permissionPath, action, false));
-//           });
-//       });
-
-//       Promise.all(promises)
-//         .then(responses => {
-//           resolve(responses);
-//         })
-//         .catch(reject);
-//     });
-//   }
-
-//   __upsertPermission(name, path, action, authorized) {
-//     return new Promise((resolve, reject) => {
-//       if (!name) return reject(new Error(`please supply a ${this.type}Name`));
-
-//       var validPath = this.__validatePermissionsPath(path);
-//       if (validPath !== true) return reject(new Error(validPath));
-
-//       if (!action) action = '*';
-//       if (authorized == null) authorized = true;
-
-//       authorized = !!authorized; //must always be stored true or false
-
-//       this.dataService.upsert(
-//         [
-//           '/_SYSTEM/_SECURITY/_PERMISSIONS',
-//           this.__prepareName(name),
-//           action,
-//           this.__escapePermissionsPath(path)
-//         ].join('/'),
-//         {
-//           action: action,
-//           authorized: authorized,
-//           path: path
-//         },
-//         (e, result) => {
-//           if (e) return reject(e);
-//           resolve(result);
-//         }
-//       );
-//     });
-//   }
-
-//   __escapePermissionsPath(path) {
-//     return path.replace(/\*/g, '{{w}}');
-//   }
-
-//   __unescapePermissionsPath(path) {
-//     return path.replace(/\{\{w}}/g, '*');
-//   }
-
-//   __validatePermissionsPath(path) {
-//     if (!path) return 'permission path is null';
-
-//     if (path.indexOf('{{w}}') > -1)
-//       return 'invalid permission path, cannot contain special string {{w}}';
-
-//     return true;
-//   }
-
-//   __getNameObj(name) {
-//     let nameObj = {};
-//     let suffix = this.type === 'user' ? 'name' : 'Name';
-//     nameObj[this.type + suffix] = name;
-//     return nameObj;
-//   }
-
-//   __prepareName(name) {
-//     return this.type === 'user' ? this.__userPrefix + name : name;
-//   }
-// };
-
 describe(test.testName(__filename, 3), function() {
   this.timeout(10000);
-  var async = require('async');
   var Logger = require('happn-logger');
   const util = require('util');
   var Services = {};
-  const CONSTANTS = require('../../../lib/').constants;
-  const SD_EVENTS = CONSTANTS.SECURITY_DIRECTORY_EVENTS;
   Services.SecurityService = require('../../../lib/services/security/service');
   Services.CacheService = require('../../../lib/services/cache/service');
   Services.DataService = require('../../../lib/services/data/service');
@@ -287,6 +77,7 @@ describe(test.testName(__filename, 3), function() {
     mockServices(function(e, happn) {
       if (e) return done(e);
       let pm = new PermissionsManager(null, 'test', happn);
+      test.expect(pm.type).to.be('test');
       done();
     });
   });
@@ -295,6 +86,8 @@ describe(test.testName(__filename, 3), function() {
     mockServices(function(e, happn) {
       if (e) return done(e);
       let pm = PermissionsManager.create(null, 'test', happn);
+      test.expect(pm.type).to.be('test');
+
       done();
     });
   });
@@ -379,35 +172,30 @@ describe(test.testName(__filename, 3), function() {
       try {
         if (e) return done(e);
         let pm = new PermissionsManager(null, 'test', happn);
-        let testEntity = {name:"testName"}
+        let testEntity = { name: 'testName' };
 
         let attached = await pm.attachPermissions(testEntity);
-        test.expect(attached).to.eql({...testEntity, permissions: {}})
-        
-        await upsertTestPermissions(happn)
+        test.expect(attached).to.eql({ ...testEntity, permissions: {} });
 
-        pm.cache.remove('testName')
-         attached = await pm.attachPermissions(testEntity);
+        await upsertTestPermissions(happn);
+
+        pm.cache.remove('testName');
+        attached = await pm.attachPermissions(testEntity);
         test.expect(attached).to.eql({
-          name: "testName",
+          name: 'testName',
           permissions: {
-            "/another/test/path": {
-              actions: [
-                "get"
-              ]
+            '/another/test/path': {
+              actions: ['get']
             },
-            "/some/test/path": {
-              actions: [
-                "on",
-                "set"
-              ]
+            '/some/test/path': {
+              actions: ['on', 'set']
             }
           }
-        })
-        await removeTestPermissions(happn)
-        pm.cache.remove('testName')
-        attached = await pm.attachPermissions(testEntity);        
-        test.expect(attached).to.eql({...testEntity, permissions: {}})
+        });
+        await removeTestPermissions(happn);
+        pm.cache.remove('testName');
+        attached = await pm.attachPermissions(testEntity);
+        test.expect(attached).to.eql({ ...testEntity, permissions: {} });
         done();
       } catch (e) {
         done(e);
@@ -420,27 +208,27 @@ describe(test.testName(__filename, 3), function() {
       try {
         if (e) return done(e);
         let pm = new PermissionsManager(null, 'test', happn);
-        let testEntity = {name:"testName"}
+        let testEntity = { name: 'testName' };
         await upsertTestPermissions(happn);
 
-        await pm.__removePermission('testName','/some/test/path', 'on')
-        test.expect(await  happn.services.data.get( '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/on//some/test/path')).to.be.undefined
-        attached = await pm.attachPermissions(testEntity);
+        await pm.__removePermission('testName', '/some/test/path', 'on');
+        test.expect(
+          await happn.services.data.get(
+            '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/on//some/test/path'
+          )
+        ).to.be.undefined;
+        let attached = await pm.attachPermissions(testEntity);
         test.expect(attached).to.eql({
-          name: "testName",
+          name: 'testName',
           permissions: {
-            "/another/test/path": {
-              actions: [
-                "get"
-              ]
+            '/another/test/path': {
+              actions: ['get']
             },
-            "/some/test/path": {
-              actions: [
-                "set"
-              ]
+            '/some/test/path': {
+              actions: ['set']
             }
           }
-        })
+        });
         done();
       } catch (e) {
         done(e);
@@ -452,34 +240,39 @@ describe(test.testName(__filename, 3), function() {
     mockServices(async (e, happn) => {
       try {
         if (e) return done(e);
-        let securityService = {} 
-        securityService.dataChanged = sinon.stub();          
-        securityService.dataChanged.callsArgWith(3, null)
+        let securityService = {};
+        securityService.dataChanged = sinon.stub();
+        securityService.dataChanged.callsArgWith(3, null);
         let pm = new PermissionsManager(null, 'test', happn, securityService);
-        let testEntity = {name:"testName"}
+        let testEntity = { name: 'testName' };
         await upsertTestPermissions(happn);
-        await pm.removePermission('testName','/some/test/path', 'on')
-        test.expect(await  happn.services.data.get( '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/on//some/test/path')).to.be.undefined
-        attached = await pm.attachPermissions(testEntity);
+        await pm.removePermission('testName', '/some/test/path', 'on');
+        test.expect(
+          await happn.services.data.get(
+            '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/on//some/test/path'
+          )
+        ).to.be.undefined;
+        let attached = await pm.attachPermissions(testEntity);
         test.expect(attached).to.eql({
-          name: "testName",
+          name: 'testName',
           permissions: {
-            "/another/test/path": {
-              actions: [
-                "get"
-              ]
+            '/another/test/path': {
+              actions: ['get']
             },
-            "/some/test/path": {
-              actions: [
-                "set"
-              ]
+            '/some/test/path': {
+              actions: ['set']
             }
           }
-        })
-        
-        sinon.assert.calledOnce(securityService.dataChanged) 
-        sinon.assert.calledWith(securityService.dataChanged, 'permission-removed',  { testName: 'testName', path: '/some/test/path', action: 'on' }, null  ) 
-        done();      
+        });
+
+        sinon.assert.calledOnce(securityService.dataChanged);
+        sinon.assert.calledWith(
+          securityService.dataChanged,
+          'permission-removed',
+          { testName: 'testName', path: '/some/test/path', action: 'on' },
+          null
+        );
+        done();
       } catch (e) {
         done(e);
       }
@@ -490,27 +283,27 @@ describe(test.testName(__filename, 3), function() {
     mockServices(async (e, happn) => {
       try {
         if (e) return done(e);
-        let securityService = {} 
+        let securityService = {};
         let pm = new PermissionsManager(null, 'test', happn, securityService);
-        let testEntity = {name:"testName"}
-        
-        await pm.__upsertPermission('testName','/some/test/path', 'on')
-        let pathData = await happn.services.data.get( '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/on//some/test/path')
-        test.expect(pathData.data).to.eql({ action: 'on',
-        authorized: true,
-        path: '/some/test/path' })
-        attached = await pm.attachPermissions(testEntity);
+        let testEntity = { name: 'testName' };
+
+        await pm.__upsertPermission('testName', '/some/test/path', 'on');
+        let pathData = await happn.services.data.get(
+          '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/on//some/test/path'
+        );
+        test
+          .expect(pathData.data)
+          .to.eql({ action: 'on', authorized: true, path: '/some/test/path' });
+        let attached = await pm.attachPermissions(testEntity);
         test.expect(attached).to.eql({
-          name: "testName",
-          permissions: {            
-            "/some/test/path": {
-              actions: [
-                "on"
-              ]
+          name: 'testName',
+          permissions: {
+            '/some/test/path': {
+              actions: ['on']
             }
           }
-        })
-        done();      
+        });
+        done();
       } catch (e) {
         done(e);
       }
@@ -521,76 +314,81 @@ describe(test.testName(__filename, 3), function() {
     mockServices(async (e, happn) => {
       try {
         if (e) return done(e);
-        let securityService = {} 
-        securityService.dataChanged = sinon.stub();          
-        securityService.dataChanged.callsArgWith(2, null)
+        let securityService = {};
+        securityService.dataChanged = sinon.stub();
+        securityService.dataChanged.callsArgWith(2, null);
         let pm = new PermissionsManager(null, 'test', happn, securityService);
-        let testEntity = {name:"testName"}
+        let testEntity = { name: 'testName' };
 
-        await pm.upsertPermission('testName','/some/test/path', 'on')
-        let pathData = await happn.services.data.get( '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/on//some/test/path')
-        test.expect(pathData.data).to.eql({ action: 'on',
-        authorized: true,
-        path: '/some/test/path' })
+        await pm.upsertPermission('testName', '/some/test/path', 'on');
+        let pathData = await happn.services.data.get(
+          '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/on//some/test/path'
+        );
+        test
+          .expect(pathData.data)
+          .to.eql({ action: 'on', authorized: true, path: '/some/test/path' });
         let attached = await pm.attachPermissions(testEntity);
         test.expect(attached).to.eql({
-          name: "testName",
-          permissions: {            
+          name: 'testName',
+          permissions: {
             '/some/test/path': {
-              actions: [
-                "on"
-              ]
+              actions: ['on']
             }
           }
-        })
-        sinon.assert.calledOnce(securityService.dataChanged) 
-        sinon.assert.calledWith(securityService.dataChanged, 'permission-upserted',  { testName: 'testName', path: '/some/test/path', action: 'on',  authorized: true } ) 
-        done();      
+        });
+        sinon.assert.calledOnce(securityService.dataChanged);
+        sinon.assert.calledWith(securityService.dataChanged, 'permission-upserted', {
+          testName: 'testName',
+          path: '/some/test/path',
+          action: 'on',
+          authorized: true
+        });
+        done();
       } catch (e) {
         done(e);
       }
     });
   });
 
-  it('tests the validatePermissions method, valid permissions', function(done) {    
+  it('tests the validatePermissions method, valid permissions', function(done) {
     mockServices(async (e, happn) => {
       try {
         if (e) return done(e);
         let pm = new PermissionsManager(null, 'test', happn);
-        test.expect(pm.validatePermissions({})).to.be(true)
+        test.expect(pm.validatePermissions({})).to.be(true);
         let validPermissions = {
-          "/path1": {actions: ["set","get","on"]},
-          "/path2": {prohibit: ["delete", "post", "options"]},
-          "/path3": {actions: ["set","get","on"],prohibit: ["delete", "post", "options"]}
-        }
-        test.expect(pm.validatePermissions(validPermissions)).to.be(true)
-        done();      
+          '/path1': { actions: ['set', 'get', 'on'] },
+          '/path2': { prohibit: ['delete', 'post', 'options'] },
+          '/path3': { actions: ['set', 'get', 'on'], prohibit: ['delete', 'post', 'options'] }
+        };
+        test.expect(pm.validatePermissions(validPermissions)).to.be(true);
+        done();
       } catch (e) {
         done(e);
       }
     });
   });
 
-  it('tests the validatePermissions method, invalid permissions', function(done) {    
+  it('tests the validatePermissions method, invalid permissions', function(done) {
     mockServices(async (e, happn) => {
       try {
         if (e) return done(e);
         let pm = new PermissionsManager(null, 'test', happn);
-        let badPermissions1 = {"/path1" : {}}
-        let error1 = 'missing allowed actions or prohibit rules: /path1'
-        
-        let badPermissions2 = {"/path2" : {actions: ["notAnAction"]}}
-        let error2 = 'unknown action: notAnAction for path: /path2'
-        
-        let badPermissions3 = {"/path3" : {prohibit: ["alsoNotAnAction"]}}
-        let error3 = 'unknown prohibit action: alsoNotAnAction for path: /path3'
-        test.expect(pm.validatePermissions(badPermissions1)).to.eql([error1])
-        test.expect(pm.validatePermissions(badPermissions2)).to.eql([error2])
-        test.expect(pm.validatePermissions(badPermissions3)).to.eql([error3])
+        let badPermissions1 = { '/path1': {} };
+        let error1 = 'missing allowed actions or prohibit rules: /path1';
 
-        let badPermissions4 = {...badPermissions1, ...badPermissions2, ...badPermissions3} 
-        test.expect(pm.validatePermissions(badPermissions4)).to.eql([error1,error2,error3])
-        done();      
+        let badPermissions2 = { '/path2': { actions: ['notAnAction'] } };
+        let error2 = 'unknown action: notAnAction for path: /path2';
+
+        let badPermissions3 = { '/path3': { prohibit: ['alsoNotAnAction'] } };
+        let error3 = 'unknown prohibit action: alsoNotAnAction for path: /path3';
+        test.expect(pm.validatePermissions(badPermissions1)).to.eql([error1]);
+        test.expect(pm.validatePermissions(badPermissions2)).to.eql([error2]);
+        test.expect(pm.validatePermissions(badPermissions3)).to.eql([error3]);
+
+        let badPermissions4 = { ...badPermissions1, ...badPermissions2, ...badPermissions3 };
+        test.expect(pm.validatePermissions(badPermissions4)).to.eql([error1, error2, error3]);
+        done();
       } catch (e) {
         done(e);
       }
@@ -602,15 +400,14 @@ describe(test.testName(__filename, 3), function() {
       try {
         if (e) return done(e);
         let pm = new PermissionsManager(null, 'test', happn);
-        let testEntity = {name:"testName"}
 
         let validPermissions = {
-          "/path1": {actions: ["set","get","on"]},
-          "/path2": {prohibit: ["delete", "post", "options"]},
-          "/path3": {actions: ["set","get","on"],prohibit: ["delete", "post", "options"]}
-        }
-        pm.upsertMultiplePermissions("testName", validPermissions)
-        let permissionList = await pm.listPermissions("testName");
+          '/path1': { actions: ['set', 'get', 'on'] },
+          '/path2': { prohibit: ['delete', 'post', 'options'] },
+          '/path3': { actions: ['set', 'get', 'on'], prohibit: ['delete', 'post', 'options'] }
+        };
+        pm.upsertMultiplePermissions('testName', validPermissions);
+        let permissionList = await pm.listPermissions('testName');
         test.expect(permissionList).to.eql([
           { action: 'delete', authorized: false, path: '/path2' },
           { action: 'delete', authorized: false, path: '/path3' },
@@ -624,8 +421,8 @@ describe(test.testName(__filename, 3), function() {
           { action: 'post', authorized: false, path: '/path3' },
           { action: 'set', authorized: true, path: '/path1' },
           { action: 'set', authorized: true, path: '/path3' }
-        ])
-        done();      
+        ]);
+        done();
       } catch (e) {
         done(e);
       }
@@ -649,7 +446,8 @@ describe(test.testName(__filename, 3), function() {
 
   async function removeTestPermissions(happn) {
     await happn.services.data.remove(
-      '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/set//some/test/path');
+      '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/set//some/test/path'
+    );
     await happn.services.data.remove(
       '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/on//some/test/path',
       null
