@@ -55,7 +55,7 @@ describe(
       }
     });
 
-    it('the publisher should set string data', function(callback) {
+    it.only('the publisher should set string data', function(callback) {
       this.timeout(default_timeout);
 
       try {
