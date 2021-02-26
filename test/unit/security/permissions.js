@@ -77,7 +77,7 @@ describe(test.testName(__filename, 3), function() {
     mockServices(function(e, happn) {
       if (e) return done(e);
       let pm = new PermissionsManager(null, 'test', happn);
-      test.expect(pm).to.be.ok;
+      test.expect(pm.type).to.be('test');
       done();
     });
   });
@@ -86,7 +86,8 @@ describe(test.testName(__filename, 3), function() {
     mockServices(function(e, happn) {
       if (e) return done(e);
       let pm = PermissionsManager.create(null, 'test', happn);
-      test.expect(pm).to.be.ok;
+      test.expect(pm.type).to.be('test');
+
       done();
     });
   });
