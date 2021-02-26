@@ -637,13 +637,13 @@ describe(
           custom_data: { role: 'OEM Admin', extra: 27 },
           permissions: {
             'test/path/1': {
-              actions: [ 'get', 'on', 'set']
+              actions: ['get', 'on', 'set']
             },
             'test/path/2': {
               prohibit: ['put', 'delete', 'post']
             },
             'test/path/3': {
-              actions: [ 'get','on', 'set'],
+              actions: ['get', 'on', 'set'],
               prohibit: ['put', 'delete', 'post']
             }
           }
@@ -654,13 +654,13 @@ describe(
               expect(_.omit(upsertedUser, ['userid'])).to.eql(_.omit(user, ['password']));
               expect(_.omit(retrievedUser, ['userid'])).to.eql({
                 username: 'test_permissions',
-                 custom_data: { role: 'OEM Admin', extra: 27 },
+                custom_data: { role: 'OEM Admin', extra: 27 },
                 permissions: {
                   'test/path/1': {
-                    actions: [ 'get', 'on', 'set']
+                    actions: ['get', 'on', 'set']
                   },
                   'test/path/3': {
-                    actions: [ 'get','on', 'set']
+                    actions: ['get', 'on', 'set']
                   }
                 }
               }); //We don't return prohibited actions
