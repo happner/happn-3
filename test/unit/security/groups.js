@@ -528,27 +528,37 @@ describe(test.testName(__filename, 3), function() {
         })
         .then(function() {
           test.expect(happn.services.security.groups.__cache_groups.keys().length).to.be(5);
-          test.expect(happn.services.security.groups.permissionManager.cache.keys().length).to.be(5);
+          test
+            .expect(happn.services.security.groups.permissionManager.cache.keys().length)
+            .to.be(5);
           happn.services.security.groups.clearCaches(SD_EVENTS.UPSERT_GROUP, {
             name: 'TEST_ALL_GR_100'
           });
           test.expect(happn.services.security.groups.__cache_groups.keys().length).to.be(4);
-          test.expect(happn.services.security.groups.permissionManager.cache.keys().length).to.be(4);
+          test
+            .expect(happn.services.security.groups.permissionManager.cache.keys().length)
+            .to.be(4);
           happn.services.security.groups.clearCaches(SD_EVENTS.DELETE_GROUP, {
             obj: { name: 'TEST_ALL_GR_200' }
           });
           test.expect(happn.services.security.groups.__cache_groups.keys().length).to.be(3);
-          test.expect(happn.services.security.groups.permissionManager.cache.keys().length).to.be(3);
+          test
+            .expect(happn.services.security.groups.permissionManager.cache.keys().length)
+            .to.be(3);
           happn.services.security.groups.clearCaches(SD_EVENTS.PERMISSION_UPSERTED, {
             groupName: 'TEST_ALL_GR_300'
           });
           test.expect(happn.services.security.groups.__cache_groups.keys().length).to.be(2);
-          test.expect(happn.services.security.groups.permissionManager.cache.keys().length).to.be(2);
+          test
+            .expect(happn.services.security.groups.permissionManager.cache.keys().length)
+            .to.be(2);
           happn.services.security.groups.clearCaches(SD_EVENTS.PERMISSION_REMOVED, {
             groupName: 'TEST_ALL_GR_400'
           });
           test.expect(happn.services.security.groups.__cache_groups.keys().length).to.be(1);
-          test.expect(happn.services.security.groups.permissionManager.cache.keys().length).to.be(1);
+          test
+            .expect(happn.services.security.groups.permissionManager.cache.keys().length)
+            .to.be(1);
           done();
         })
         .catch(done);
