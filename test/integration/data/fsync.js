@@ -1,6 +1,6 @@
 const tester = require('../../__fixtures/utils/test_helper').create();
 
-describe.only(tester.testName(__filename, 3), function() {
+describe(tester.testName(__filename, 3), function() {
   var expect = require('expect.js');
   var happn = require('../../../lib/index');
   var service = happn.service;
