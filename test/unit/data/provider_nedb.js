@@ -2,7 +2,7 @@ const testName = require('../../__fixtures/utils/test_helper')
   .create()
   .testName(__filename, 3);
 
-describe.only(testName, function() {
+describe(testName, function() {
   this.timeout(60000);
 
   const expect = require('expect.js');

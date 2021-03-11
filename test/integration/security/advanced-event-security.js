@@ -3,31 +3,15 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    const request = require('request');
     const happn = require('../../../lib/index');
     let serviceInstance;
     let adminClient;
     const expect = require('expect.js');
     const test_id = Date.now() + '_' + require('shortid').generate();
-    let testClient, testClient1;
+    let testClient;
 
     function getService(config, callback) {
       happn.service.create(config, callback);
-    }
-
-    function doRequest(path, token) {
-      return new Promise((resolve, reject) => {
-        let options = {
-          url: 'http://127.0.0.1:55000' + path
-        };
-        options.headers = {
-          Cookie: ['happn_token=' + token]
-        };
-        request(options, function(error, response) {
-          if (error) return reject(error);
-          resolve(response);
-        });
-      });
     }
 
     beforeEach('it starts secure service, with lockTokenToUserId switched on', function(done) {
@@ -191,6 +175,7 @@ describe(
                 fired = true;
               },
               function(e) {
+                if (e) done(e);
                 adminClient.set(
                   '/TEST/a7_eventemitter_security_access/' + test_id + '/group/on',
                   { prop1: 1 },
@@ -215,6 +200,7 @@ describe(
             fired = true;
           },
           function(e) {
+            if (e) done(e);
             serviceInstance.services.security.users.unlinkGroup(
               addedTestGroup,
               addedTestuser,
@@ -324,6 +310,7 @@ describe(
             fired = true;
           },
           function(e) {
+            if (e) done(e);
             serviceInstance.services.security.groups
               .removePermission(
                 addedTestGroup.name,
@@ -360,6 +347,7 @@ describe(
             fired = true;
           },
           e => {
+            if (e) done(e);
             serviceInstance.services.security.users.unlinkGroup(
               addedTestGroup2,
               addedTestuser,
@@ -450,7 +438,7 @@ describe(
           {},
           function() {
             fired = true;
-          },                  
+          },
           e => {
             if (e) done(e);
             serviceInstance.services.security.users
