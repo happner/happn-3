@@ -592,7 +592,8 @@ describe(
                 test_7: { data: {} },
                 test_8: { data: {} },
                 test_9: { data: {} }
-              }
+              },
+              permissions: {}
             });
           });
           happn.services.security.users.getUserNoGroups('test_1', (e, user) => {

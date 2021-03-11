@@ -499,6 +499,7 @@ describe(
                 custom_data: {
                   something: 'usefull'
                 },
+                permissions: {},
                 username: testUser.username
               });
 
