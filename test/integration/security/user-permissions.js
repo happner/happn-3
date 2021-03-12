@@ -18,21 +18,6 @@ describe(
       happn.service.create(config, callback);
     }
 
-    // function doRequest(path, token) {
-    //   return new Promise((resolve, reject) => {
-    //     let options = {
-    //       url: 'http://127.0.0.1:55000' + path
-    //     };
-    //     options.headers = {
-    //       Cookie: ['happn_token=' + token]
-    //     };
-    //     request(options, function(error, response) {
-    //       if (error) return reject(error);
-    //       resolve(response);
-    //     });
-    //   });
-    // }
-
     before('it starts secure service, with lockTokenToUserId switched on', function(done) {
       getService(
         {
@@ -994,6 +979,7 @@ describe(
           }
         );
       });
+
       it('links the user to a test group, checks that the user has access to the groups permissions', function(done) {
         this.timeout(5000);
         serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser, function(
@@ -1090,39 +1076,43 @@ describe(
                     {},
                     cb
                   ),
-                // cb => testClient.on(
-                //   '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/user_and_group/get_and_on',
-                //   // Should not work - group permission
-                //   {},
-                //   function(){},
-                //   function(e) {
-                //     if (!e) return cb(new Error('this should not have been allowed...'));
-                //     expect(e.toString()).to.be('AccessDenied: unauthorized');
-                //     cb();
-                //   }
                 cb =>
-                  testClient.get(
+                  testClient.on(
                     '/TEST/a7_eventemitter_security_access/' +
                       test_id +
-                      '/comp/user_and_group/get_and_set',
+                      '/comp/user_and_group/get_and_on',
+                    // Should not work - group permission
                     {},
-                    cb
-                  ),
-                cb =>
-                  testClient.set(
-                    '/TEST/a7_eventemitter_security_access/' +
-                      test_id +
-                      '/comp/user_and_group/get_and_set',
-                    {
-                      test: 'data'
-                    },
-                    {},
+                    function() {},
                     function(e) {
                       if (!e) return cb(new Error('this should not have been allowed...'));
                       expect(e.toString()).to.be('AccessDenied: unauthorized');
                       cb();
                     }
                   )
+                // cb =>
+                //   testClient.get(
+                //     '/TEST/a7_eventemitter_security_access/' +
+                //       test_id +
+                //       '/comp/user_and_group/get_and_set',
+                //     {},
+                //     cb
+                //   ),
+                // cb =>
+                //   testClient.set(
+                //     '/TEST/a7_eventemitter_security_access/' +
+                //       test_id +
+                //       '/comp/user_and_group/get_and_set',
+                //     {
+                //       test: 'data'
+                //     },
+                //     {},
+                //     function(e) {
+                //       if (!e) return cb(new Error('this should not have been allowed...'));
+                //       expect(e.toString()).to.be('AccessDenied: unauthorized');
+                //       cb();
+                //     }
+                //   )
               ],
               done
             );
