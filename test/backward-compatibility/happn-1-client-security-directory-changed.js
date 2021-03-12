@@ -10,7 +10,7 @@ describe(
     var test_id;
     var shortid = require('shortid');
     var currentClient;
-    let testGroup; 
+    let testGroup;
 
     var old_happn = require('happn');
     var happn_client = old_happn.client;
