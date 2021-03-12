@@ -39,10 +39,8 @@ describe(
                     groups: {}
                   });
                 },
-                attachPermissions: function(user) {
-                  return new Promise(resolve => {
-                    return resolve(user);
-                  });
+                attachPermissions: async function(user) {                  
+                    return user;                
                 }
               },
               groups: {
