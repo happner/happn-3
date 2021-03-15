@@ -1090,29 +1090,6 @@ describe(
                       cb();
                     }
                   )
-                // cb =>
-                //   testClient.get(
-                //     '/TEST/a7_eventemitter_security_access/' +
-                //       test_id +
-                //       '/comp/user_and_group/get_and_set',
-                //     {},
-                //     cb
-                //   ),
-                // cb =>
-                //   testClient.set(
-                //     '/TEST/a7_eventemitter_security_access/' +
-                //       test_id +
-                //       '/comp/user_and_group/get_and_set',
-                //     {
-                //       test: 'data'
-                //     },
-                //     {},
-                //     function(e) {
-                //       if (!e) return cb(new Error('this should not have been allowed...'));
-                //       expect(e.toString()).to.be('AccessDenied: unauthorized');
-                //       cb();
-                //     }
-                //   )
               ],
               done
             );
@@ -1184,12 +1161,12 @@ describe(
         serviceInstance.services.security.users
           .upsertPermission(
             addedTestuser.username,
-            '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission',
+            '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permission',
             'set'
           )
           .then(function() {
             testClient.set(
-              '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission',
+              '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permission',
               {
                 test: 'data'
               },
@@ -1225,6 +1202,7 @@ describe(
                   },
                   function(e) {
                     expect(e.toString()).to.be('AccessDenied: unauthorized');
+                    
                     done();
                   }
                 );
@@ -1233,6 +1211,18 @@ describe(
           }
         );
       });
+
+
+      it('tests the listPermission method', function(done) {
+          serviceInstance.services.security.users
+              .listPermissions(addedTestuser.username)
+              .then(function(permissions) {
+                expect(permissions).to.eql(permissionList) //Permissions list at bottom of this file
+                done()
+              })
+              .catch(done);
+          }
+        );
 
       it('deletes the test user, tests we are notified about the session closure, then have no access, on delegated authority as well', function(done) {
         testClient.onSystemMessage(function(eventType) {
@@ -1269,5 +1259,129 @@ describe(
         });
       });
     });
+
+
+let permissionList = [
+  {
+    action: '*',
+    authorized: true,
+    path: '/@HTTP/TEST/a7_eventemitter_security_access/' + test_id + '/web_access'
+  },
+  {
+    action: '*',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/all/*'
+  },
+  {
+    action: '*',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/all_access'
+  },
+  {
+    action: 'get',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on'
+  },
+  {
+    action: 'get',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on'
+  },
+  {
+    action: 'get',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/user_and_group/get_and_on'
+  },
+  {
+    action: 'get',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/user_and_group/get_and_set'
+  },
+  {
+    action: 'get',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/get'
+  },
+  {
+    action: 'get',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/get_all/*'
+  },
+  {
+    action: 'get',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/new_permission'
+  },
+  {
+    action: 'on',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_on'
+  },
+  {
+    action: 'on',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/on_not_get'
+  },
+  {
+    action: 'on',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/on'
+  },
+  {
+    action: 'on',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/on_all/*'
+  },
+  {
+    action: 'remove',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/remove'
+  },
+  {
+    action: 'remove',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/remove_all/*'
+  },
+  {
+    action: 'set',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_get'
+  },
+  {
+    action: 'set',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/set_not_on'
+  },
+  {
+    action: 'set',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/new_permission'
+  },
+  {
+    action: 'set',
+    authorized: false,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/prohibit-permission'
+  },
+  {
+    action: 'set',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/remove-permission'
+  },
+  {
+    action: 'set',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/set'
+  },
+  {
+    action: 'set',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/set_all/*'
+  },
+  {
+    action: 'set',
+    authorized: true,
+    path: '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permission'
   }
-);
+]
+
+});
