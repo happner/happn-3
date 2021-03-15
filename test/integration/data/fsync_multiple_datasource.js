@@ -1,4 +1,4 @@
-describe.only(
+describe(
   require('../../__fixtures/utils/test_helper')
     .create()
     .testName(__filename, 3),
