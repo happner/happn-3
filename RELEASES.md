@@ -843,3 +843,4 @@
  - SMC-1808: getUsersNoGroups in /security/users now returns user permis… …
  - SMC-1808: chore: lint-fix
  - SMC-1897: merged userpermissions branch
+ - SMC-1808: chore - lint-fixes, doc: updated fsync and user permissions docs, dep: moved sinon to dev dependency
