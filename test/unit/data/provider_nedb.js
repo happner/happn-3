@@ -2,11 +2,16 @@ const testName = require('../../__fixtures/utils/test_helper')
   .create()
   .testName(__filename, 3);
 
-describe(testName, function() {
+describe.only(testName, function() {
   this.timeout(60000);
 
-  const expect = require('expect.js');
+  const fs = require('fs');
   const path = require('path');
+
+  const sinon = require('sinon');
+  const chai = require('chai');
+  chai.use(require('sinon-chai'));
+  const expect = chai.expect;
   const async = require('async');
 
   var dbFiles = [];
@@ -93,7 +98,7 @@ describe(testName, function() {
       });
     });
 
-    expect(foundExternalData).to.be(false);
+    expect(foundExternalData).to.be.false;
   });
 
   it('tests data being saved by the provider is decoupled, negative test [non-fsync]', async function() {
@@ -138,10 +143,12 @@ describe(testName, function() {
       });
     });
 
-    expect(foundExternalData).to.be(true);
+    expect(foundExternalData).to.be.true;
   });
 
   it('tests data being saved by the provider is decoupled [fsync]', async function() {
+    const fsyncSpy = sinon.spy(fs, 'fsync');
+
     const provider = await getNedbProvider(true, true);
     let foundExternalData = false;
 
@@ -180,10 +187,15 @@ describe(testName, function() {
       });
     });
 
-    expect(foundExternalData).to.be(false);
+    expect(foundExternalData).to.be.false;
+    expect(fsyncSpy).to.have.been.called;
+
+    fsyncSpy.restore();
   });
 
   it('tests data being saved by the provider is decoupled, negative test [fsync]', async function() {
+    const fsyncSpy = sinon.spy(fs, 'fsync');
+
     const provider = await getNedbProvider(false, true);
     let foundExternalData = false;
 
@@ -225,6 +237,9 @@ describe(testName, function() {
       });
     });
 
-    expect(foundExternalData).to.be(true);
+    expect(foundExternalData).to.be.true;
+    expect(fsyncSpy).to.have.been.called;
+
+    fsyncSpy.restore();
   });
 });
