@@ -831,3 +831,16 @@
 11.8.1 2020-11-23
 -----------------
   - SMC-1482 - fix: redirected logs not in correct format
+
+11.9.0 2021-03-01
+-----------------
+ - SMC-1808: created initial test file
+ - SMC-1808: Added unit tests for permission manager
+ - SMC-1808: Added chore lint-fix
+ - SMC-1897: added wrapper to db change callback
+ - SMC-1897: fsync test and refactor
+ - SMC-1808: getUsersNoGroups in /security/users now returns user permis… …
+ - SMC-1808: getUsersNoGroups in /security/users now returns user permis… …
+ - SMC-1808: chore: lint-fix
+ - SMC-1897: merged userpermissions branch
+ - SMC-1808: chore - lint-fixes, doc: updated fsync and user permissions docs, dep: moved sinon to dev dependency
