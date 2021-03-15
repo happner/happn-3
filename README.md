@@ -1251,6 +1251,63 @@ function (e, myHappn3Instance) {
 
 ```
 
+USER PERMISSIONS
+----------------
+*It is not necessary to use groups as the containers for permissions - permissions can also be added directly to users:*
+
+```javascript
+const myUser = {
+  username: 'test_username',
+  password: 'test_pwd',
+  permissions: {}
+};
+myUser.permissions['/test/path/*'] = {
+  actions: ['on', 'set']
+};
+
+await myHappn3Instance.services.security.users.upsertUser(testUser2, {});
+
+//this user specifically can set and listen on /test/path/*
+
+//you can now remove the 'on' permission:
+await myHappn3Instance.services.security.users.removePermission(
+  addedTestuser2.username,
+  '/test/path/*',
+  'on'
+)
+
+//you can now remove the 'set' permission:
+await myHappn3Instance.services.security.users.removePermission(
+  addedTestuser2.username,
+  '/test/path/*',
+  'set'
+)
+
+//you can now remove the 'all' permissions:
+await myHappn3Instance.services.security.users.removePermission(
+  addedTestuser2.username,
+  '/test/path/*'
+)
+
+//you can re-add a permission
+await myHappn3Instance.services.security.users.upsertPermission(
+  addedTestuser2.username,
+  '/test/path/*',
+  'set'
+)
+
+//you can list permissions for a user
+const permissions = await myHappn3Instance.services.security.users.listPermissions(
+  addedTestuser2.username
+)
+
+//list looks like this:
+[
+  { action: 'set', authorized: true, path: '/test/path/*' }
+]
+```
+
+
 VOLATILE PERMISSIONS
 --------------------
 

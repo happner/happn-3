@@ -46,14 +46,14 @@ var serverConfig = {
 
     data: {
       config: {
+        fsync: true, //if this is true - any nedb datastore with a file configured will immediately write-sync to it's file
         autoUpdateDBVersion:false, //if your db version is 0 and the db version in package.json is 1 the db will automatically be updated
         datastores: [//you can choose where you want the data persisted depending on the key
           {
             name: 'memory',
-            isDefault: true,
+            isDefault: true,// if a datastore with a matching pattern cannot be found - this one will be used
             patterns: [
-              '/a3_eventemitter_multiple_datasource/' + test_id + '/memorytest/*',
-              '/a3_eventemitter_multiple_datasource/' + test_id + '/memorynonwildcard'
+              '/any/*'
             ]
           },
           {
@@ -63,8 +63,7 @@ var serverConfig = {
                filename: [testfilePath],//where you want your data persisted to
             },
             patterns: [
-              '/a3_eventemitter_multiple_datasource/' + test_id + '/persistedtest/*',
-              '/a3_eventemitter_multiple_datasource/' + test_id + '/persistednonwildcard'
+              '/save_to_file/*'
             ]
           }
         ]

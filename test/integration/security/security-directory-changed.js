@@ -793,8 +793,6 @@ describe(
           expect(Object.keys(client.state.refCount).length).to.be(1);
           expect(Object.keys(client.state.listenerRefs).length).to.be(1);
 
-          //console.log('state before:::', JSON.stringify(client.state, null, 2));
-
           removePermission('/security_directory_changed/' + test_id + '/on/2', true, function(e) {
             if (e) return done(e);
 
