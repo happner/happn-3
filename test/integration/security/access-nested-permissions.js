@@ -121,6 +121,7 @@ describe.skip(test.testName(__filename, 3), function() {
       await adminClient.set('/ALLOWED/0', { test: 0 });
       await adminClient.set('/TEST/1/2/3', { test: 1 });
       await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
+      await adminClient.set('/TEST/4/5/6', { test: 3 });
 
       let results = await testClient.get('/ALLOWED/**');
       test.expect(results[0].test).to.be(0);
@@ -128,6 +129,22 @@ describe.skip(test.testName(__filename, 3), function() {
       results = await testClient.get('/TEST/**');
       test.expect(results[0].test).to.be(1);
       test.expect(results[1].test).to.be(2);
+      test.expect(results.length).to.be(2);
+    });
+
+    xit('gets data from an allowed set of nested permissions, including templated permissions', async () => {
+      await adminClient.set('/ALLOWED/0', { test: 0 });
+      await adminClient.set('/TEST/1/2/3', { test: 1 });
+      await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
+      await adminClient.set('/TEST/4/5/6', { test: 3 });
+
+      let results = await testClient.get('/ALLOWED/**');
+      test.expect(results[0].test).to.be(0);
+
+      results = await testClient.get('/TEST/**');
+      test.expect(results[0].test).to.be(1);
+      test.expect(results[1].test).to.be(2);
+      test.expect(results.length).to.be(2);
     });
   });
 
