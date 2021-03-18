@@ -834,13 +834,5 @@
 
 11.9.0 2021-03-01
 -----------------
- - SMC-1808: created initial test file
- - SMC-1808: Added unit tests for permission manager
- - SMC-1808: Added chore lint-fix
- - SMC-1897: added wrapper to db change callback
- - SMC-1897: fsync test and refactor
- - SMC-1808: getUsersNoGroups in /security/users now returns user permis… …
- - SMC-1808: getUsersNoGroups in /security/users now returns user permis… …
- - SMC-1808: chore: lint-fix
- - SMC-1897: merged userpermissions branch
- - SMC-1808: chore - lint-fixes, doc: updated fsync and user permissions docs, dep: moved sinon to dev dependency
+  - feature: SMC-1808 - Add support for permissions on the happn user
+  - feature: SMC-1897 - nedb data provider must sync db file after each persistent write
