@@ -3,6 +3,7 @@ const tests = require('../../__fixtures/utils/test_helper').create();
 describe(tests.testName(__filename, 3), function() {
   it('tests create and search', function() {
     const permissionsTree = PermissionsTree.create(flattenedObjectScenario1());
+    console.log(JSON.stringify(permissionsTree.tree, null, 2))
     tests.expect(permissionsTree.tree).to.eql(expectedTreeScenario1());
     tests.expect(permissionsTree.search('/test/permission/1/1/2')).to.eql(searchResultsScenario1());
   });
@@ -18,6 +19,25 @@ describe(tests.testName(__filename, 3), function() {
     tests.expect(permissionsTree.tree).to.eql(expectedTreeScenario3());
     tests.expect(permissionsTree.search('/test/permission/1/1/2')).to.eql(searchResultsScenario3());
   });
+
+
+  it.only('tests building a list from a tree', function() {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario4());
+    console.log(JSON.stringify(permissionsTree.tree, null, 2))
+    let permissions = permissionsTree.wildcardPathSearch('/test/permission/**', "get");
+    console.log(permissions)
+  });
+
+
+  function flattenedObjectScenario4() {
+    return {
+      '/test/permission/1/2/3': { actions: ['get'] },
+      '/test/permission/2/1/3': { actions: ['get'] },
+      '/test/permission/3/4/5': { actions: ['get'] },
+      '/test/permission/4/6/7': { actions: ['get'] },
+      '/test/permission/5/6/8': { actions: ['get'] }       
+    };
+  }
 
   function flattenedObjectScenario3() {
     return {
@@ -41,6 +61,14 @@ describe(tests.testName(__filename, 3), function() {
       '/test/permission/1/*/2': { actions: ['remove'] },
       '/test/permission/*/1/2': { actions: ['get'] },
       '/test/permission/*/1/3': { actions: ['set'] },
+      '/test/permission/2': { actions: ['set'] }
+    };
+  }
+  function flattenedObjectScenario0() {
+    return {
+      '/test/permission/1/2': { actions: ['remove'] },
+      '/test/permission/2/1': { actions: ['get'] },
+      '/test/permission/1/3': { actions: ['set'] },
       '/test/permission/2': { actions: ['set'] }
     };
   }
