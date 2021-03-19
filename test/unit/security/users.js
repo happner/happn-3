@@ -673,5 +673,34 @@ describe(
         });
       });
     });
+
+    it('__upsertUser should add a user', function(done) {
+      mockServices(function(e, happn) {
+        if (e) return done(e);
+        createUsersAndGroups(happn, function(e) {
+          if (e) return done(e);
+
+          const user = {
+            username: 'test_user',
+            password: 'test_user',
+            custom_data: { role: 'OEM Admin', extra: 'user_extra' }
+          };
+
+          happn.services.security.users.__upsertUser(user).then(upsertedUser => {
+            if (e) return done(e);
+
+            try {
+              expect(upsertedUser.username).to.be(user.username);
+              expect(upsertedUser.custom_data).to.eql(user.custom_data);
+              expect(upsertedUser.permissions).to.eql({});
+
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
+        });
+      });
+    });
   }
 );
