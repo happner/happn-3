@@ -122,11 +122,11 @@ describe(test.testName(__filename, 3), function() {
       console.log("RESULTS", results)
       test.expect(results[0].test).to.be(1);
       results = await testClient.get('/TEST/1/2/*');
-      test.expect(results[1].test).to.be(1);
-      // results = await testClient.get('/TEST/2/3/**');
+      console.log("RESULTS", results)
+      test.expect(results[0].test).to.be(1);
+      results = await testClient.get('/TEST/2/3/**');
       console.log(results)
       test.expect(results[0].test).to.be(2);
-      done()
   }).timeout(6000);
 
     it('gets data from an allowed set of nested permissions', async () => {
