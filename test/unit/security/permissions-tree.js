@@ -35,7 +35,7 @@ describe(tests.testName(__filename, 3), function() {
       '/test/permission/2/1/3': { actions: ['get'] },
       '/test/permission/3/4/5': { actions: ['get'] },
       '/test/permission/4/6/7': { actions: ['get'] },
-      '/test/permission/5/6/8': { actions: ['get'] }       
+      '/test/permission/5/6/8': { actions: ['get'] }
     };
   }
 
@@ -61,14 +61,6 @@ describe(tests.testName(__filename, 3), function() {
       '/test/permission/1/*/2': { actions: ['remove'] },
       '/test/permission/*/1/2': { actions: ['get'] },
       '/test/permission/*/1/3': { actions: ['set'] },
-      '/test/permission/2': { actions: ['set'] }
-    };
-  }
-  function flattenedObjectScenario0() {
-    return {
-      '/test/permission/1/2': { actions: ['remove'] },
-      '/test/permission/2/1': { actions: ['get'] },
-      '/test/permission/1/3': { actions: ['set'] },
       '/test/permission/2': { actions: ['set'] }
     };
   }

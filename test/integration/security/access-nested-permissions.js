@@ -107,7 +107,8 @@ describe(test.testName(__filename, 3), function() {
   });
 
   context('get', function() {
-    it.only('gets data from an allowed set of nested permissions', async () => {  //ADDED, UNNECESARY
+    it.only('gets data from an allowed set of nested permissions', async () => {
+      //ADDED, UNNECESARY
       await adminClient.set('/ALLOWED/0', { test: 0 });
       await adminClient.set('/TEST/1/2/3', { test: 1 });
       // await adminClient.set('/TEST/1/2/4', { test: 4 });
@@ -118,16 +119,16 @@ describe(test.testName(__filename, 3), function() {
       // let results = await testClient.get('/ALLOWED/**');
       // test.expect(results[0].test).to.be(0);
 
-      results = await testClient.get('/TEST/1/2/**');
-      console.log("RESULTS", results)
+      let results = await testClient.get('/TEST/1/2/**');
+      console.log('RESULTS', results);
       test.expect(results[0].test).to.be(1);
       results = await testClient.get('/TEST/1/2/*');
-      console.log("RESULTS", results)
+      console.log('RESULTS', results);
       test.expect(results[0].test).to.be(1);
       results = await testClient.get('/TEST/2/3/**');
-      console.log(results)
+      console.log(results);
       test.expect(results[0].test).to.be(2);
-  }).timeout(6000);
+    }).timeout(6000);
 
     it('gets data from an allowed set of nested permissions', async () => {
       await adminClient.set('/ALLOWED/0', { test: 0 });
