@@ -1,5 +1,5 @@
 const test = require('../../__fixtures/utils/test_helper').create();
-describe.skip(test.testName(__filename, 3), function() {
+describe(test.testName(__filename, 3), function() {
   const happn = require('../../../lib/index');
   let serviceInstance;
   let adminClient;
@@ -107,9 +107,11 @@ describe.skip(test.testName(__filename, 3), function() {
   });
 
   context('get', function() {
-    it('gets data from an allowed set of nested permissions', async () => {  //ADDED, UNNECESARY
+    it.only('gets data from an allowed set of nested permissions', async () => {  //ADDED, UNNECESARY
       await adminClient.set('/ALLOWED/0', { test: 0 });
       await adminClient.set('/TEST/1/2/3', { test: 1 });
+      // await adminClient.set('/TEST/1/2/4', { test: 4 });
+
       await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
       await adminClient.set('/TEST/2/3/5/6/7', { test: 3 });
 
@@ -117,14 +119,15 @@ describe.skip(test.testName(__filename, 3), function() {
       // test.expect(results[0].test).to.be(0);
 
       results = await testClient.get('/TEST/1/2/**');
+      console.log("RESULTS", results)
       test.expect(results[0].test).to.be(1);
-      // results = await testClient.get('/TEST/1/2/*');
-      // test.expect(results[1].test).to.be(1);
+      results = await testClient.get('/TEST/1/2/*');
+      test.expect(results[1].test).to.be(1);
       // results = await testClient.get('/TEST/2/3/**');
-      // console.log(results)
-      // test.expect(results[0].test).to.be(2);
-         
-  });
+      console.log(results)
+      test.expect(results[0].test).to.be(2);
+      done()
+  }).timeout(6000);
 
     it('gets data from an allowed set of nested permissions', async () => {
       await adminClient.set('/ALLOWED/0', { test: 0 });
