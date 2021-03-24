@@ -76,6 +76,21 @@ describe(tests.testName(__filename, 3), function() {
     ]);
   });
 
+  it.only('tests building a list with prohibitions', () => {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario7());
+    const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/2/**', 'get');
+
+    console.log(permissions);
+  });
+
+  function flattenedObjectScenario7() {
+    return {
+      '/test/permission/1/2/*': { actions: ['get'] },
+      '/test/permission/1/2/3': { prohibit: ['get'] },
+      '/test/permission/1/2/3/4/5': { prohibit: ['get'] }
+    };
+  }
+
   function flattenedObjectScenario6() {
     return {
       '/test/permission/1/2': { actions: ['get'] },
