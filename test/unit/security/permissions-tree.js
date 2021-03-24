@@ -7,7 +7,6 @@ const expect = require('chai').expect;
 describe(tests.testName(__filename, 3), function() {
   it('tests create and search', function() {
     const permissionsTree = PermissionsTree.create(flattenedObjectScenario1());
-    console.log(JSON.stringify(permissionsTree.tree, null, 2));
     expect(permissionsTree.tree).to.deep.equal(expectedTreeScenario1());
     expect(permissionsTree.search('/test/permission/1/1/2')).to.deep.equal(
       searchResultsScenario1()
@@ -32,7 +31,6 @@ describe(tests.testName(__filename, 3), function() {
 
   it('tests building a list from a tree', function() {
     const permissionsTree = PermissionsTree.create(flattenedObjectScenario4());
-    console.log(JSON.stringify(permissionsTree.tree, null, 2));
     let permissions = permissionsTree.wildcardPathSearch('/test/permission/**', 'get');
     console.log(permissions);
   });
@@ -46,44 +44,27 @@ describe(tests.testName(__filename, 3), function() {
       .with.property('message', 'Recursive wildcards are invalid unless at end of permission path');
   });
 
-  it('tests that a wildcard in the middle of a permission path returns all children if you have permissions to those', function() {
-    const permissionsTree = PermissionsTree.create(flattenedObjectScenario5());
-    const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/*/3', 'get');
-
-    expect(permissions).to.have.members(['/test/permission/1/2/3', '/test/permission/1/6/3']);
-  });
-
-  it('tests that a wildcard only returns those matched items, no child paths', function() {
-    const permissionsTree = PermissionsTree.create(flattenedObjectScenario6());
-    const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/*', 'get');
-
-    expect(permissions).to.have.members([
-      '/test/permission/1/2',
-      '/test/permission/1/7',
-      '/test/permission/1/5'
-    ]);
-  });
-
   it('tests that a recursive wildcard only returns those matched items, no child paths', function() {
-    const permissionsTree = PermissionsTree.create(flattenedObjectScenario6());
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario5());
     const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/**', 'get');
 
-    expect(permissions).to.have.members([
-      '/test/permission/1/2',
-      '/test/permission/1/7',
-      '/test/permission/1/5',
-      '/test/permission/1/9/5'
-    ]);
+    expect(permissions).to.deep.equal({
+      prohibited: ['/test/permission/1/1/3', '/test/permission/1/6', '/test/permission/1/9/5'],
+      allowed: ['/test/permission/1/2', '/test/permission/1/5', '/test/permission/1/7']
+    });
   });
 
-  it.only('tests building a list with prohibitions', () => {
-    const permissionsTree = PermissionsTree.create(flattenedObjectScenario7());
+  it('tests building a list with prohibitions', () => {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario6());
     const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/2/**', 'get');
 
-    console.log(permissions);
+    expect(permissions).to.deep.equal({
+      allowed: ['/test/permission/1/2/*'],
+      prohibited: ['/test/permission/1/2/3/4/5', '/test/permission/1/2/3']
+    });
   });
 
-  function flattenedObjectScenario7() {
+  function flattenedObjectScenario6() {
     return {
       '/test/permission/1/2/*': { actions: ['get'] },
       '/test/permission/1/2/3': { prohibit: ['get'] },
@@ -91,7 +72,7 @@ describe(tests.testName(__filename, 3), function() {
     };
   }
 
-  function flattenedObjectScenario6() {
+  function flattenedObjectScenario5() {
     return {
       '/test/permission/1/2': { actions: ['get'] },
       '/test/permission/1/6': { prohibit: ['get'] },
@@ -102,18 +83,7 @@ describe(tests.testName(__filename, 3), function() {
       '/test/permission/1/6/3': { actions: ['get'] },
       '/test/permission/1/5': { actions: ['get'] },
       '/test/permission/1/5/4': { actions: ['get'] },
-      '/test/permission/1/9/5': { actions: ['get'] }
-    };
-  }
-
-  function flattenedObjectScenario5() {
-    return {
-      '/test/permission/1/2/3': { actions: ['get'] },
-      '/test/permission/1/1/3': { prohibit: ['get'] },
-      '/test/permission/3/4/5': { actions: ['get'] },
-      '/test/permission/1/6/7': { actions: ['get'] },
-      '/test/permission/1/6/3': { actions: ['get'] },
-      '/test/permission/5/6/8': { actions: ['get'] }
+      '/test/permission/1/9/5': { prohibit: ['get'] }
     };
   }
 
