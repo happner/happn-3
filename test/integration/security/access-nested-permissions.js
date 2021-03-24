@@ -107,51 +107,34 @@ describe(test.testName(__filename, 3), function() {
   });
 
   context('get', function() {
-    it.only('gets data from an allowed set of nested permissions', async () => {  //ADDED, UNNECESARY
+
+    it.only('gets data from an allowed set of nested permissions', async () => {
       await adminClient.set('/ALLOWED/0', { test: 0 });
       await adminClient.set('/TEST/1/2/3', { test: 1 });
-      // await adminClient.set('/TEST/1/2/4', { test: 4 });
-
-      await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
-      await adminClient.set('/TEST/2/3/5/6/7', { test: 3 });
-
-      // let results = await testClient.get('/ALLOWED/**');
-      // test.expect(results[0].test).to.be(0);
-
-      results = await testClient.get('/TEST/1/2/**');
-      console.log("RESULTS", results)
-      test.expect(results[0].test).to.be(1);
-      results = await testClient.get('/TEST/1/2/*');
-      console.log("RESULTS", results)
-      test.expect(results[0].test).to.be(1);
-      results = await testClient.get('/TEST/2/3/**');
-      console.log(results)
-      test.expect(results[0].test).to.be(2);
-  }).timeout(6000);
-
-    it('gets data from an allowed set of nested permissions', async () => {
-      await adminClient.set('/ALLOWED/0', { test: 0 });
-      await adminClient.set('/TEST/1/2/3', { test: 1 });
-      await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
-      await adminClient.set('/TEST/4/5/6', { test: 3 });
-      await adminClient.set('/TEMPLATED/TEST/1/2', { test: 4 });
+      await adminClient.set('/TEST/2/3/4', { test: 2 });
+      await adminClient.set('/TEST/2/3/4/5/6', { test: 3 });
+      await adminClient.set('/TEST/4/5/6', { test: 4 });
+      await adminClient.set('/TEMPLATED/TEST/1/2', { test: 5 });
 
       //allowed templated user permission
       await adminClient.set('/TEMPLATED_ALLOWED/TEST/8', { test: 8 });
 
       let results = await testClient.get('/ALLOWED/**');
       test.expect(results[0].test).to.be(0);
+      results = await testClient.get('/TEST/2/3/4/5/6');
+      console.log(results)
+      // results = await testClient.get('/TEMPLATED_ALLOWED/TEST/8');
+      // test.expect(results.test).to.be(8);
+      // results = await testClient.get('/TEST/**');
+      // console.log(results)
+      // results = await testClient.get('/TEST/**');
+      // console.log(results)
+      // test.expect(results[0].test).to.be(1);
+      // test.expect(results[1].test).to.be(2);
+      // test.expect(results.length).to.be(2);
 
-      results = await testClient.get('/TEMPLATED_ALLOWED/TEST/8');
-      test.expect(results.test).to.be(8);
-
-      results = await testClient.get('/TEST/**');
-      test.expect(results[0].test).to.be(1);
-      test.expect(results[1].test).to.be(2);
-      test.expect(results.length).to.be(2);
-
-      results = await testClient.get('/TEMPLATED/TEST/**');
-      test.expect(results[0].test).to.be(4);
+      // results = await testClient.get('/TEMPLATED/TEST/**');
+      // test.expect(results[0].test).to.be(4);
     });
   });
 
