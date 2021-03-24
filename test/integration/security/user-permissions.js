@@ -94,6 +94,11 @@ describe(
       testUser.permissions['/TEST/a7_eventemitter_security_access/' + test_id + '/all_access'] = {
         actions: ['*']
       };
+      testUser.permissions[
+        '/TEST/a7_eventemitter_security_access/{{user.username}}/' + test_id + '/templated_access'
+      ] = {
+        actions: ['*']
+      };
       testUser.permissions['/TEST/a7_eventemitter_security_access/' + test_id + '/on'] = {
         actions: ['on']
       };
@@ -1222,6 +1227,41 @@ describe(
           .catch(done);
       });
 
+      it('checks templated permissions', function(done) {
+        const testUsername = 'TEST USER@blah.com' + test_id;
+        const templatedPath = `/TEST/a7_eventemitter_security_access/${testUsername}/${test_id}/templated_access`;
+        const testData = { test: 'data' };
+        testClient.on(
+          templatedPath,
+          {},
+          function(data) {
+            expect(data).to.eql(testData);
+            done();
+          },
+          function(e) {
+            if (e) return done(e);
+            testClient.set(templatedPath, testData, e => {
+              if (e) return done(e);
+            });
+          }
+        );
+      });
+
+      it('checks templated permissions - negative', function(done) {
+        const templatedPath = `/TEST/a7_eventemitter_security_access/badUsername/${test_id}/templated_access`;
+        testClient.on(
+          templatedPath,
+          {},
+          function() {
+            done(new Error('this should not happen'));
+          },
+          function(e) {
+            expect(e.message).to.be('unauthorized');
+            done();
+          }
+        );
+      });
+
       it('deletes the test user, tests we are notified about the session closure, then have no access, on delegated authority as well', function(done) {
         testClient.onSystemMessage(function(eventType) {
           if (eventType === 'server-side-disconnect') {
@@ -1257,7 +1297,6 @@ describe(
         });
       });
     });
-
     let permissionList = [
       {
         action: '*',
@@ -1273,6 +1312,12 @@ describe(
         action: '*',
         authorized: true,
         path: '/TEST/a7_eventemitter_security_access/' + test_id + '/all_access'
+      },
+      {
+        action: '*',
+        authorized: true,
+        path:
+          '/TEST/a7_eventemitter_security_access/{{user.username}}/' + test_id + '/templated_access'
       },
       {
         action: 'get',
