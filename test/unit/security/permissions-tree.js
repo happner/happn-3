@@ -44,13 +44,21 @@ describe(tests.testName(__filename, 3), function() {
       .with.property('message', 'Recursive wildcards are invalid unless at end of permission path');
   });
 
-  it('tests that a recursive wildcard only returns those matched items, no child paths', function() {
+  it('tests that a recursive wildcard only returns those matched items, with child paths', function() {
     const permissionsTree = PermissionsTree.create(flattenedObjectScenario5());
     const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/**', 'get');
 
     expect(permissions).to.deep.equal({
       prohibited: ['/test/permission/1/1/3', '/test/permission/1/6', '/test/permission/1/9/5'],
-      allowed: ['/test/permission/1/2', '/test/permission/1/5', '/test/permission/1/7']
+      allowed: [
+        '/test/permission/1/2/3',
+        '/test/permission/1/2',
+        '/test/permission/1/5/4',
+        '/test/permission/1/5',
+        '/test/permission/1/6/3',
+        '/test/permission/1/6/7',
+        '/test/permission/1/7'
+      ]
     });
   });
 
