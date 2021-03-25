@@ -54,9 +54,19 @@ describe(tests.testName(__filename, 3), function() {
     });
   });
 
-  it('tests building a list with prohibitions', () => {
+  it('tests building a recursive wildcard list with prohibitions', () => {
     const permissionsTree = PermissionsTree.create(flattenedObjectScenario6());
     const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/2/**', 'get');
+
+    expect(permissions).to.deep.equal({
+      allowed: ['/test/permission/1/2/*'],
+      prohibited: ['/test/permission/1/2/3/4/5', '/test/permission/1/2/3']
+    });
+  });
+
+  it('tests building a wildcard list with prohibitions', () => {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario6());
+    const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/2/*', 'get');
 
     expect(permissions).to.deep.equal({
       allowed: ['/test/permission/1/2/*'],
@@ -67,6 +77,9 @@ describe(tests.testName(__filename, 3), function() {
   function flattenedObjectScenario6() {
     return {
       '/test/permission/1/2/*': { actions: ['get'] },
+      '/test/permission/1/2/4': { actions: ['get'] },
+      '/test/permission/1/2/4/5': { actions: ['get'] },
+      '/test/permission/1/2/5/6': { actions: ['get'] },
       '/test/permission/1/2/3': { prohibit: ['get'] },
       '/test/permission/1/2/3/4/5': { prohibit: ['get'] }
     };
