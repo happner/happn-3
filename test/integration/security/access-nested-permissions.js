@@ -146,8 +146,13 @@ describe(test.testName(__filename, 3), function() {
         test.expect(e.message).to.eql('unauthorized');
       }
 
-      results = await testClient.get('/TEST/5/6/7/9');
-      test.expect(results.test).to.be(9);
+      try {
+        results = await testClient.get('/TEST/5/6/7/9');
+        throw new Error('Should new be authorized');
+      } catch (e) {
+        test.expect(e instanceof Error).to.be(true);
+        test.expect(e.message).to.eql('unauthorized');
+      }
 
       results = await testClient.get('/TEMPLATED/TEST/**');
       test.expect(results[0].test).to.be(4);
