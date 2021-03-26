@@ -141,9 +141,8 @@ describe(test.testName(__filename, 3), function() {
       results = await testClient.get('/TEST/**');
       test.expect(results[0].test).to.be(1);
       test.expect(results[1].test).to.be(2);
-      test.expect(results[2].test).to.be(9);
-      test.expect(results[3].test).to.be(5);
-      test.expect(results.length).to.be(4);
+      test.expect(results[2].test).to.be(5);
+      test.expect(results.length).to.be(3);
 
       try {
         results = await testClient.get('/TEST/5/6/*');

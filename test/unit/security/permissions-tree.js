@@ -69,7 +69,11 @@ describe(tests.testName(__filename, 3), function() {
 
     expect(permissions).to.deep.equal({
       allowed: ['/test/permission/1/2/*'],
-      prohibited: ['/test/permission/1/2/3/4/5', '/test/permission/1/2/3']
+      prohibited: [
+        '/test/permission/1/2/3/4/5',
+        '/test/permission/1/2/3',
+        '/test/permission/1/2/6/*'
+      ]
     });
   });
 
@@ -79,7 +83,11 @@ describe(tests.testName(__filename, 3), function() {
 
     expect(permissions).to.deep.equal({
       allowed: ['/test/permission/1/2/*'],
-      prohibited: ['/test/permission/1/2/3/4/5', '/test/permission/1/2/3']
+      prohibited: [
+        '/test/permission/1/2/3/4/5',
+        '/test/permission/1/2/3',
+        '/test/permission/1/2/6/*'
+      ]
     });
   });
 
@@ -90,7 +98,10 @@ describe(tests.testName(__filename, 3), function() {
       '/test/permission/1/2/4/5': { actions: ['get'] },
       '/test/permission/1/2/5/6': { actions: ['get'] },
       '/test/permission/1/2/3': { prohibit: ['get'] },
-      '/test/permission/1/2/3/4/5': { prohibit: ['get'] }
+      '/test/permission/1/2/3/4/5': { prohibit: ['get'] },
+      '/test/permission/1/2/6/*': { prohibit: ['get'] },
+      '/test/permission/1/2/6/4': { actions: ['get'] },
+      '/test/permission/1/2/6/4/7/8': { actions: ['get'] }
     };
   }
 
