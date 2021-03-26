@@ -91,6 +91,29 @@ describe(tests.testName(__filename, 3), function() {
     });
   });
 
+  it('tests building a wildcard list with prohibitions [2]', () => {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario7());
+    const permissions = permissionsTree.wildcardPathSearch('/TEST/**', 'get');
+
+    expect(permissions).to.deep.equal({
+      allowed: ['/TEST/1/2/3', '/TEST/2/3/*', '/TEST/5/6'],
+      prohibited: ['/TEST/2/3/4/5', '/TEST/5/6/*']
+    });
+  });
+
+  function flattenedObjectScenario7() {
+    return {
+      '/TEST/1/2/3': { actions: ['on', 'get'] },
+      '/TEST/2/3/*': { actions: ['on', 'get'] },
+      '/TEST/2/3/4/5': { prohibit: ['on', 'get'] },
+      '/TEST/5/6': { actions: ['on', 'get'] },
+      '/TEST/5/6/*': { prohibit: ['on', 'get'] },
+      '/TEST/5/6/7/9': { actions: ['on', 'get'] },
+      '/ALLOWED/*': { actions: ['on', 'get'] },
+      '/TEMPLATED/{{user.username}}/1/2': { actions: ['on', 'get'] }
+    };
+  }
+
   function flattenedObjectScenario6() {
     return {
       '/test/permission/1/2/*': { actions: ['get'] },
