@@ -35,36 +35,30 @@ describe(test.testName(__filename, 3), function() {
     'creates a group and a user, adds the group to the user, logs in with test user',
     async () => {
       let testGroup2 = {
-        name: 'TEST GROUP'
-      };
-      testGroup2.permissions = {};
-
-      testGroup2.permissions['/TEST/1/2/3'] = {
-        actions: ['on', 'get']
-      };
-
-      testGroup2.permissions['/TEST/2/3/*'] = {
-        actions: ['on', 'get']
-      };
-
-      testGroup2.permissions['/TEST/5/6'] = {
-        actions: ['on', 'get']
-      };
-
-      testGroup2.permissions['/TEST/5/6/*'] = {
-        prohibit: ['on', 'get']
-      };
-
-      testGroup2.permissions['/TEST/5/6/7/9'] = {
-        actions: ['on', 'get']
-      };
-
-      testGroup2.permissions['/ALLOWED/*'] = {
-        actions: ['on', 'get']
-      };
-
-      testGroup2.permissions['/TEMPLATED/{{user.username}}/1/2'] = {
-        actions: ['on', 'get']
+        name: 'TEST GROUP',
+        permissions: {
+          '/TEST/1/2/3': {
+            actions: ['on', 'get']
+          },
+          '/TEST/2/3/*': {
+            actions: ['on', 'get']
+          },
+          '/TEST/5/6': {
+            actions: ['on', 'get']
+          },
+          '/TEST/5/6/*': {
+            prohibit: ['on', 'get']
+          },
+          '/TEST/5/6/7/9': {
+            actions: ['on', 'get']
+          },
+          '/ALLOWED/*': {
+            actions: ['on', 'get']
+          },
+          '/TEMPLATED/{{user.username}}/1/2': {
+            actions: ['on', 'get']
+          }
+        }
       };
 
       addedTestGroup = await serviceInstance.services.security.users.upsertGroup(testGroup2, {
