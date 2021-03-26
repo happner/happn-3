@@ -118,7 +118,7 @@ describe(test.testName(__filename, 3), function() {
     }, 3000);
   });
 
-  context('get', function() {
+  context.only('get', function() {
     it('gets data from an allowed set of nested permissions', async () => {
       await adminClient.set('/ALLOWED/0', { test: 0 });
       await adminClient.set('/TEST/1/2/3', { test: 1 });
@@ -160,15 +160,15 @@ describe(test.testName(__filename, 3), function() {
     });
   });
 
-  context.only('events', function() {
+  context('events', function() {
     it('gets data from an allowed set of nested permissions', async () => {
       const events = [];
-      function handler(...args) {
-        console.log(...args)
-        // events.push(data);
+      function handler(data) {
+        // console.log(...args)
+        events.push(data);
       }
 
-      
+
       await testClient.on('/ALLOWED/*', handler);
 
       await adminClient.set('/ALLOWED/0', { test: 0 });
