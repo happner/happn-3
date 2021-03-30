@@ -17,6 +17,7 @@ describe(
     var serviceConfig = {
       secure: true
     };
+    let testGroup;
 
     before('should initialize the service', function(callback) {
       test_id = Date.now() + '_' + shortid.generate();
@@ -49,7 +50,7 @@ describe(
     var addedTestuser;
 
     function createTestClient(callback) {
-      var testGroup = {
+      testGroup = {
         name: 'TEST GROUP' + test_id,
         custom_data: {
           customString: 'custom1',
@@ -352,10 +353,10 @@ describe(
             setTimeout(function() {
               doOperations(client, null, function(e) {
                 expect(e.toString()).to.be('AccessDenied: unauthorized');
-
                 expect(groupUnlinkedChangedData).to.eql({
                   path:
-                    '/_SYSTEM/_SECURITY/_USER/TEST USER@blah.com0/_USER_GROUP/TEST GROUP' + test_id
+                    '/_SYSTEM/_SECURITY/_USER/TEST USER@blah.com0/_USER_GROUP/TEST GROUP' + test_id,
+                  permissions: testGroup.permissions
                 });
 
                 done();
@@ -792,8 +793,6 @@ describe(
           expect(Object.keys(client.state.refCount).length).to.be(1);
           expect(Object.keys(client.state.listenerRefs).length).to.be(1);
 
-          //console.log('state before:::', JSON.stringify(client.state, null, 2));
-
           removePermission('/security_directory_changed/' + test_id + '/on/2', true, function(e) {
             if (e) return done(e);
 
@@ -802,20 +801,24 @@ describe(
                 '/security_directory_changed/' + test_id + '/on/2',
                 function() {},
                 function(e) {
-                  expect(e).to.not.be(null);
-                  expect(e.toString()).to.be('AccessDenied: unauthorized');
-                  expect(securityServiceEventCount).to.be(1);
+                  try {
+                    expect(e).to.not.be(null);
+                    expect(e.toString()).to.be('AccessDenied: unauthorized');
+                    expect(securityServiceEventCount).to.be(1);
 
-                  expect(Object.keys(client.state.events).length).to.be(0);
-                  expect(Object.keys(client.state.refCount).length).to.be(0);
-                  expect(Object.keys(client.state.listenerRefs).length).to.be(0);
+                    expect(Object.keys(client.state.events).length).to.be(0);
+                    expect(Object.keys(client.state.refCount).length).to.be(0);
+                    expect(Object.keys(client.state.listenerRefs).length).to.be(0);
 
-                  //console.log('state after:::', JSON.stringify(client.state, null, 2));
+                    //console.log('state after:::', JSON.stringify(client.state, null, 2));
 
-                  done();
+                    done();
+                  } catch (e) {
+                    done(e);
+                  }
                 }
               );
-            }, 300);
+            }, 1300);
           });
         });
       });

@@ -592,14 +592,16 @@ describe(
                 test_7: { data: {} },
                 test_8: { data: {} },
                 test_9: { data: {} }
-              }
+              },
+              permissions: {}
             });
           });
           happn.services.security.users.getUserNoGroups('test_1', (e, user) => {
             expect(e).to.be(null);
             expect(_.omit(user, ['userid'])).to.eql({
               username: 'test_1',
-              custom_data: { role: 'OEM Admin', extra: 1 }
+              custom_data: { role: 'OEM Admin', extra: 1 },
+              permissions: {}
             });
             happn.services.security.users.getUser('test_1', (e, user) => {
               expect(e).to.be(null);
@@ -617,10 +619,85 @@ describe(
                   test_7: { data: {} },
                   test_8: { data: {} },
                   test_9: { data: {} }
-                }
+                },
+                permissions: {}
               });
               done();
             });
+          });
+        });
+      });
+    });
+
+    it('tests getUserNoGroups returns user permissions', function(done) {
+      mockServices(function(e, happn) {
+        if (e) return done(e);
+        let user = {
+          username: 'test_permissions',
+          password: 'test_permissions',
+          custom_data: { role: 'OEM Admin', extra: 27 },
+          permissions: {
+            'test/path/1': {
+              actions: ['get', 'on', 'set']
+            },
+            'test/path/2': {
+              prohibit: ['put', 'delete', 'post']
+            },
+            'test/path/3': {
+              actions: ['get', 'on', 'set'],
+              prohibit: ['put', 'delete', 'post']
+            }
+          }
+        };
+        happn.services.security.users.upsertUser(user, (e, upsertedUser) => {
+          happn.services.security.users.getUserNoGroups('test_permissions', (e, retrievedUser) => {
+            try {
+              expect(_.omit(upsertedUser, ['userid'])).to.eql(_.omit(user, ['password']));
+              expect(_.omit(retrievedUser, ['userid'])).to.eql({
+                username: 'test_permissions',
+                custom_data: { role: 'OEM Admin', extra: 27 },
+                permissions: {
+                  'test/path/1': {
+                    actions: ['get', 'on', 'set']
+                  },
+                  'test/path/3': {
+                    actions: ['get', 'on', 'set']
+                  }
+                }
+              }); //We don't return prohibited actions
+              done();
+            } catch (e) {
+              done(e);
+            }
+          });
+        });
+      });
+    });
+
+    it('__upsertUser should add a user', function(done) {
+      mockServices(function(e, happn) {
+        if (e) return done(e);
+        createUsersAndGroups(happn, function(e) {
+          if (e) return done(e);
+
+          const user = {
+            username: 'test_user',
+            password: 'test_user',
+            custom_data: { role: 'OEM Admin', extra: 'user_extra' }
+          };
+
+          happn.services.security.users.__upsertUser(user).then(upsertedUser => {
+            if (e) return done(e);
+
+            try {
+              expect(upsertedUser.username).to.be(user.username);
+              expect(upsertedUser.custom_data).to.eql(user.custom_data);
+              expect(upsertedUser.permissions).to.eql({});
+
+              done();
+            } catch (e) {
+              done(e);
+            }
           });
         });
       });

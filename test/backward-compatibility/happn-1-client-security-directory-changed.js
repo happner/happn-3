@@ -10,6 +10,7 @@ describe(
     var test_id;
     var shortid = require('shortid');
     var currentClient;
+    let testGroup;
 
     var old_happn = require('happn');
     var happn_client = old_happn.client;
@@ -63,7 +64,7 @@ describe(
     var addedTestuser;
 
     function createTestClient(callback) {
-      var testGroup = {
+      testGroup = {
         name: 'TEST GROUP' + test_id,
         custom_data: {
           customString: 'custom1',
@@ -351,7 +352,8 @@ describe(
 
                 expect(groupUnlinkedChangedData).to.eql({
                   path:
-                    '/_SYSTEM/_SECURITY/_USER/TEST USER@blah.com0/_USER_GROUP/TEST GROUP' + test_id
+                    '/_SYSTEM/_SECURITY/_USER/TEST USER@blah.com0/_USER_GROUP/TEST GROUP' + test_id,
+                  permissions: testGroup.permissions
                 });
 
                 done();

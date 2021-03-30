@@ -831,3 +831,8 @@
 11.8.1 2020-11-23
 -----------------
   - SMC-1482 - fix: redirected logs not in correct format
+
+11.9.0 2021-03-01
+-----------------
+  - feature: SMC-1808 - Add support for permissions on the happn user
+  - feature: SMC-1897 - nedb data provider must sync db file after each persistent write

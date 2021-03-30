@@ -38,6 +38,9 @@ describe(
                     username: name,
                     groups: {}
                   });
+                },
+                attachPermissions: async function(user) {
+                  return user;
                 }
               },
               groups: {
