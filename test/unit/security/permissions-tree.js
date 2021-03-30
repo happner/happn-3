@@ -277,6 +277,3 @@ describe(tests.testName(__filename, 3), function() {
     };
   }
 });
-const permissionsTree = PermissionsTree.create(flattenedTestGroup2());
-const permissions = permissionsTree.wildcardPathSearch('/TEST/**', 'get');
-expect(permissions).to.eql({allowed: [1]})
