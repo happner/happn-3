@@ -11,6 +11,7 @@ function TestHelper() {
   this.semver = require('semver');
   this.npm = require('npm-programmatic');
   this.path = require('path');
+  this.utils = require('../../../lib/services/utils/shared');
 }
 
 TestHelper.create = function(){

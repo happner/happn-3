@@ -1,7 +1,6 @@
 const test = require('../../__fixtures/utils/test_helper').create();
 describe(test.testName(__filename, 3), function() {
-  const happn = require('../../../lib/index'),
-    utils = require('../../../lib/services/utils/shared');
+  const happn = require('../../../lib/index');
   let happnInstance, testClient;
   this.timeout(20000);
   before('should initialize the service', startService);
@@ -34,7 +33,7 @@ describe(test.testName(__filename, 3), function() {
     test.expect(errorMessage).to.equal('Invalid credentials: invalid session token');
   });
 
-  var doRequest = utils.maybePromisify(function(path, token, query, callback) {
+  var doRequest = test.utils.maybePromisify(function(path, token, query, callback) {
     var request = require('request');
 
     var options = {
@@ -222,7 +221,7 @@ describe(test.testName(__filename, 3), function() {
     );
   }
 
-  var userLogin = utils.maybePromisify(function(credentials, callback) {
+  var userLogin = test.utils.maybePromisify(function(credentials, callback) {
     happn.client
       .create(credentials)
 
