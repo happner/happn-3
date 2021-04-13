@@ -660,11 +660,15 @@ describe(
                   'test/path/1': {
                     actions: ['get', 'on', 'set']
                   },
+                  'test/path/2': {
+                    prohibit: ['delete', 'post', 'put']
+                  },
                   'test/path/3': {
-                    actions: ['get', 'on', 'set']
+                    actions: ['get', 'on', 'set'],
+                    prohibit: ['delete', 'post', 'put']
                   }
                 }
-              }); //We don't return prohibited actions
+              });
               done();
             } catch (e) {
               done(e);

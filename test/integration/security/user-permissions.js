@@ -1226,8 +1226,6 @@ describe(
           })
           .catch(done);
       });
-<<<<<<< HEAD
-=======
 
       it('checks templated permissions', function(done) {
         const testUsername = 'TEST USER@blah.com' + test_id;
@@ -1263,7 +1261,6 @@ describe(
           }
         );
       });
->>>>>>> c2cc03879c85eb10724f349fc32617c706946b19
 
       it('deletes the test user, tests we are notified about the session closure, then have no access, on delegated authority as well', function(done) {
         testClient.onSystemMessage(function(eventType) {
@@ -1300,10 +1297,6 @@ describe(
         });
       });
     });
-<<<<<<< HEAD
-
-=======
->>>>>>> c2cc03879c85eb10724f349fc32617c706946b19
     let permissionList = [
       {
         action: '*',
@@ -1321,15 +1314,12 @@ describe(
         path: '/TEST/a7_eventemitter_security_access/' + test_id + '/all_access'
       },
       {
-<<<<<<< HEAD
-=======
         action: '*',
         authorized: true,
         path:
           '/TEST/a7_eventemitter_security_access/{{user.username}}/' + test_id + '/templated_access'
       },
       {
->>>>>>> c2cc03879c85eb10724f349fc32617c706946b19
         action: 'get',
         authorized: true,
         path: '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on'

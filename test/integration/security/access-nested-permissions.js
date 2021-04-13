@@ -34,7 +34,7 @@ describe(test.testName(__filename, 3), function() {
   before(
     'creates a group and a user, adds the group to the user, logs in with test user',
     async () => {
-      let testGroup2 = {
+      let testGroup = {
         name: 'TEST GROUP',
         permissions: {
           '/TEST/1/2/3': {
@@ -63,8 +63,20 @@ describe(test.testName(__filename, 3), function() {
           }
         }
       };
+      let testGroup2 = {
+        name: 'TEST GROUP2',
+        permissions: {
+          '/TEST/2/3/5/6': {
+            prohibit: ['on', 'get']
+          }
+        }
+      };
 
-      addedTestGroup = await serviceInstance.services.security.users.upsertGroup(testGroup2, {
+      addedTestGroup = await serviceInstance.services.security.users.upsertGroup(testGroup, {
+        overwrite: false
+      });
+
+      addedTestGroup2 = await serviceInstance.services.security.users.upsertGroup(testGroup2, {
         overwrite: false
       });
 
@@ -118,47 +130,47 @@ describe(test.testName(__filename, 3), function() {
   context('get', function() {
     it('gets data from an allowed set of nested permissions', async () => {
       await adminClient.set('/ALLOWED/0', { test: 0 });
-      // await adminClient.set('/TEST/1/2/3', { test: 1 });
-      // await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
-      // await adminClient.set('/TEST/4/5/6', { test: 3 });
-      // await adminClient.set('/TEMPLATED/TEST/1/2', { test: 4 });
-      // await adminClient.set('/TEST/5/6', { test: 5 });
-      // await adminClient.set('/TEST/5/6/7', { test: 7 });
-      // await adminClient.set('/TEST/5/6/7/9', { test: 9 });
+      await adminClient.set('/TEST/1/2/3', { test: 1 });
+      await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
+      await adminClient.set('/TEST/4/5/6', { test: 3 });
+      await adminClient.set('/TEMPLATED/TEST/1/2', { test: 4 });
+      await adminClient.set('/TEST/5/6', { test: 5 });
+      await adminClient.set('/TEST/5/6/7', { test: 7 });
+      await adminClient.set('/TEST/5/6/7/9', { test: 9 });
 
-      // //allowed templated user permission
-      // await adminClient.set('/TEMPLATED_ALLOWED/TEST/8', { test: 8 });
+      //allowed templated user permission
+      await adminClient.set('/TEMPLATED_ALLOWED/TEST/8', { test: 8 });
 
       let results = await testClient.get('/ALLOWED/**');
       test.expect(results[0].test).to.be(0);
 
-      //   results = await testClient.get('/TEMPLATED_ALLOWED/TEST/8');
-      //   test.expect(results.test).to.be(8);
+      results = await testClient.get('/TEMPLATED_ALLOWED/TEST/8');
+      test.expect(results.test).to.be(8);
 
-      //   results = await testClient.get('/TEST/**');
-      //   test.expect(results[0].test).to.be(1);
-      //   test.expect(results[1].test).to.be(2);
-      //   test.expect(results[2].test).to.be(5);
-      //   test.expect(results.length).to.be(3);
+      results = await testClient.get('/TEST/**');
+      test.expect(results[0].test).to.be(1);
+      test.expect(results[1].test).to.be(2);
+      test.expect(results[2].test).to.be(5);
+      test.expect(results.length).to.be(3);
 
-      //   try {
-      //     results = await testClient.get('/TEST/5/6/*');
-      //     throw new Error('Should new be authorized');
-      //   } catch (e) {
-      //     test.expect(e instanceof Error).to.be(true);
-      //     test.expect(e.message).to.eql('unauthorized');
-      //   }
+      try {
+        results = await testClient.get('/TEST/5/6/*');
+        throw new Error('Should new be authorized');
+      } catch (e) {
+        test.expect(e instanceof Error).to.be(true);
+        test.expect(e.message).to.eql('unauthorized');
+      }
 
-      //   try {
-      //     results = await testClient.get('/TEST/5/6/7/9');
-      //     throw new Error('Should new be authorized');
-      //   } catch (e) {
-      //     test.expect(e instanceof Error).to.be(true);
-      //     test.expect(e.message).to.eql('unauthorized');
-      //   }
+      try {
+        results = await testClient.get('/TEST/5/6/7/9');
+        throw new Error('Should new be authorized');
+      } catch (e) {
+        test.expect(e instanceof Error).to.be(true);
+        test.expect(e.message).to.eql('unauthorized');
+      }
 
-      //   results = await testClient.get('/TEMPLATED/TEST/**');
-      //   test.expect(results[0].test).to.be(4);
+      results = await testClient.get('/TEMPLATED/TEST/**');
+      test.expect(results[0].test).to.be(4);
     });
   });
 
@@ -166,8 +178,6 @@ describe(test.testName(__filename, 3), function() {
     it('recieves events from an allowed set of nested permissions', async () => {
       const events = [];
       function handler(data) {
-        // console.log('GOT DATA', data);
-        // console.log(...args)
         events.push(data);
       }
 
@@ -193,25 +203,57 @@ describe(test.testName(__filename, 3), function() {
       await testClient.offAll();
     }).timeout(10000);
 
-    it.only('recieves events from an allowed set of nested permissions', async () => {
+    it('recieves events from an allowed set of nested permissions', async () => {
       const events = [];
       function handler(data) {
-        // console.log('GOT DATA', data);
-        // console.log(...args)
         events.push(data);
       }
       await testClient.on('/TEST/**', handler);
-
+      await test.delay(2000);
       await adminClient.set('/TEST/1/2/3', { test: 1 });
-      await adminClient.set('/TEST/2/3/4/5', { test: "PROHIBITED" });
+      await adminClient.set('/TEST/2/3/4/5', { test: 'PROHIBITED' });
 
       await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
-      await adminClient.set('/TEST/5/6/7', { test: "PROHIBITED" });
+      await adminClient.set('/TEST/5/6/7', { test: 'PROHIBITED' });
       await test.delay(4000);
 
       test.expect(events[0].test).to.be(1);
       test.expect(events[1].test).to.be(2);
       test.expect(events.length).to.be(2);
+      await testClient.offAll();
+    }).timeout(10000);
+  });
+
+  context('events - changing permissions', function() {
+    it('recieves events from an allowed set of nested permissions', async () => {
+      const events = [];
+      function handler(data) {
+        events.push(data);
+      }
+
+      await testClient.on('/TEST/2/3/**', handler);
+
+      await adminClient.set('/TEST/2/3/7/7', { test: 1 });
+
+      await adminClient.set('/TEST/2/3/5/6', { test: 'not-prohibited' });
+
+      await test.delay(1000);
+
+      test.expect(events[0].test).to.be(1);
+      test.expect(events[1].test).to.be('not-prohibited');
+      test.expect(events.length).to.be(2);
+      await serviceInstance.services.security.users.linkGroup(addedTestGroup2, addedTestuser);
+      await test.delay(1000);
+      await adminClient.set('/TEST/2/3/5/6', { test: 'PROHIBITED' });
+      await test.delay(1000);
+      test.expect(events.length).to.be(2);
+      await serviceInstance.services.security.users.unlinkGroup(addedTestGroup2, addedTestuser);
+      await test.delay(1000);
+      await adminClient.set('/TEST/2/3/5/6', { test: 'not prohibited anymore' });
+      await test.delay(1000);
+      test.expect(events.length).to.be(3);
+      test.expect(events[2].test).to.be('not prohibited anymore');
+
       await testClient.offAll();
     }).timeout(10000);
   });

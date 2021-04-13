@@ -52,10 +52,10 @@ describe(tests.testName(__filename, 3), function() {
     expect(permissions).to.deep.equal({
       prohibited: ['/test/permission/1/1/3', '/test/permission/1/6', '/test/permission/1/9/5'],
       allowed: [
-        '/test/permission/1/2/3',
         '/test/permission/1/2',
-        '/test/permission/1/5/4',
+        '/test/permission/1/2/3',
         '/test/permission/1/5',
+        '/test/permission/1/5/4',
         '/test/permission/1/6/3',
         '/test/permission/1/6/7',
         '/test/permission/1/7'
@@ -97,7 +97,7 @@ describe(tests.testName(__filename, 3), function() {
 
     expect(permissions).to.deep.equal({
       allowed: ['/TEST/1/2/3', '/TEST/2/3/*', '/TEST/5/6'],
-      prohibited: ['/TEST/2/3/4/5', '/TEST/5/6/*']
+      prohibited: ['/TEST/2/3/4/5']
     });
   });
 
