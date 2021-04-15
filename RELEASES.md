@@ -832,7 +832,11 @@
 -----------------
   - SMC-1482 - fix: redirected logs not in correct format
 
-11.9.0 2021-03-01
+11.9.0 2021-03-19
+-----------------
+  - [ERRONEOUS PUBLISH - on tag dep-updates]
+
+11.10.0 2021-03-30
 -----------------
   - feature: SMC-1808 - Add support for permissions on the happn user
   - feature: SMC-1897 - nedb data provider must sync db file after each persistent write
