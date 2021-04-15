@@ -2998,7 +2998,7 @@ describe(
           }
         };
 
-        expect(
+        try {
           happnMock.services.security.sessionFromRequest(
             {
               connection: {},
@@ -3013,10 +3013,11 @@ describe(
               }
             },
             {}
-          )
-        ).to.eql(null);
-        expect(warningHappened).to.be(true);
-        done();
+          );
+        } catch (e) {
+          expect(e.message).to.be('test error');
+          done();
+        }
       });
     });
 
