@@ -29,7 +29,12 @@ describe(test.testName(__filename, 3), function() {
   });
 
   let addedTestGroup;
+  let addedTestGroup2;
+  let addedTestGroup3;
+
+
   let addedTestuser;
+
 
   before(
     'creates a group and a user, adds the group to the user, logs in with test user',
@@ -72,11 +77,36 @@ describe(test.testName(__filename, 3), function() {
         }
       };
 
+      let testGroup3 = {
+        name: 'TEST GROUP3',
+        permissions: {
+          '/TEST/1/2/3/4': {
+            actions: ['on', 'get']
+          }
+        }
+      };
+
+      let testGroup4 = {
+        name: 'TEST GROUP4',
+        permissions: {
+          '/TEST/1/2/*': {
+            actions: ['on', 'get']
+          },
+          '/TEST/1/2/3/4': {
+            prohibit: ['on', 'get']
+          }
+        }
+      };
+
       addedTestGroup = await serviceInstance.services.security.users.upsertGroup(testGroup, {
         overwrite: false
       });
 
       addedTestGroup2 = await serviceInstance.services.security.users.upsertGroup(testGroup2, {
+        overwrite: false
+      });
+
+      addedTestGroup3 = await serviceInstance.services.security.users.upsertGroup(testGroup3, {
         overwrite: false
       });
 
@@ -86,6 +116,13 @@ describe(test.testName(__filename, 3), function() {
         permissions: {}
       };
 
+      const testUser2 = {
+        username: 'TEST2',
+        password: 'TEST PWD2',
+        permissions: {}
+      };
+
+
       testUser.permissions['/TEMPLATED_ALLOWED/{{user.username}}/8'] = {
         actions: ['on', 'get']
       };
@@ -94,9 +131,16 @@ describe(test.testName(__filename, 3), function() {
         overwrite: false
       });
 
+
       await serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser);
 
       testClient = await serviceInstance.services.session.localClient({
+        username: testUser.username,
+        password: 'TEST PWD'
+      });
+
+      
+      testClient2 = await serviceInstance.services.session.localClient({
         username: testUser.username,
         password: 'TEST PWD'
       });
@@ -225,7 +269,7 @@ describe(test.testName(__filename, 3), function() {
   });
 
   context('events - changing permissions', function() {
-    it('recieves events from an allowed set of nested permissions', async () => {
+    it('Links and unlinks a group with prohibitions, and checks that events are recieved correctly', async () => {
       const events = [];
       function handler(data) {
         events.push(data);
@@ -245,14 +289,203 @@ describe(test.testName(__filename, 3), function() {
       await serviceInstance.services.security.users.linkGroup(addedTestGroup2, addedTestuser);
       await test.delay(1000);
       await adminClient.set('/TEST/2/3/5/6', { test: 'PROHIBITED' });
+
       await test.delay(1000);
       test.expect(events.length).to.be(2);
       await serviceInstance.services.security.users.unlinkGroup(addedTestGroup2, addedTestuser);
       await test.delay(1000);
+
       await adminClient.set('/TEST/2/3/5/6', { test: 'not prohibited anymore' });
       await test.delay(1000);
+
       test.expect(events.length).to.be(3);
       test.expect(events[2].test).to.be('not prohibited anymore');
+
+      await testClient.offAll();
+    }).timeout(10000);
+
+    it('Links and unlinks a group with permissions to a subpath of a wild path we have subscribed to (1/2/3/4 after subscribing to 1/2/**), and checks that events are recieved correctly', async () => {
+      const events = [];
+      function handler(data) {
+        events.push(data);
+      }
+      await testClient.on('/TEST/1/2/**', handler);
+
+      await adminClient.set('/TEST/1/2/3', { test: 1 });
+      await adminClient.set('/TEST/1/2/3/4', { test: 'not-allowed' });
+      await test.delay(1000);
+      test.expect(events[0].test).to.be(1);
+      test.expect(events.length).to.be(1);
+      await serviceInstance.services.security.users.linkGroup(addedTestGroup3, addedTestuser);
+      await test.delay(1000);
+      await adminClient.set('/TEST/1/2/3/4', { test: 'now allowed' });
+      await test.delay(1000);
+
+      test.expect(events[1].test).to.be('now allowed');
+      test.expect(events.length).to.be(2);
+      await serviceInstance.services.security.users.unlinkGroup(addedTestGroup3, addedTestuser);
+      await test.delay(1000);
+      await adminClient.set('/TEST/2/3/5/6', { test: 'not allowed anymore' });
+      await test.delay(1000);
+      test.expect(events.length).to.be(2);
+
+      await testClient.offAll();
+    }).timeout(10000);
+
+    it('upserts and removes prohibitions to a group, and checks that events are recieved correctly', async () => {
+      const events = [];
+      function handler(data) {
+        events.push(data);
+      }
+
+      await testClient.on('/TEST/2/3/**', handler);
+
+      await adminClient.set('/TEST/2/3/7/7', { test: 1 });
+
+      await adminClient.set('/TEST/2/3/5/6', { test: 'not-prohibited' });
+
+      await test.delay(1000);
+
+      test.expect(events[0].test).to.be(1);
+
+      test.expect(events[1].test).to.be('not-prohibited');
+      test.expect(events.length).to.be(2);
+      await serviceInstance.services.security.groups.upsertPermission(
+        addedTestGroup.name,
+        '/TEST/2/3/5/6',
+        'on',
+        false
+      );
+      await test.delay(1000);
+      await adminClient.set('/TEST/2/3/5/6', { test: 'PROHIBITED' });
+      await test.delay(1000);
+      test.expect(events.length).to.be(2);
+
+      await serviceInstance.services.security.groups.upsertPermission(
+        addedTestGroup.name,
+        '/TEST/2/3/5/6',
+        'on',
+        true
+      );
+
+      await test.delay(1000);
+      await adminClient.set('/TEST/2/3/5/6', { test: 'not prohibited anymore' });
+      await test.delay(1000);
+
+      test.expect(events.length).to.be(3);
+      test.expect(events[2].test).to.be('not prohibited anymore');
+      await testClient.offAll();
+    }).timeout(10000);
+
+    it('upserts and removes group permissions to a subpath of a wild path we have subscribed to (1/2/3/4 after subscribing to 1/2/**), and checks that events are recieved correctly', async () => {
+      const events = [];
+      function handler(data) {
+        events.push(data);
+      }
+      await testClient.on('/TEST/1/2/**', handler);
+
+      await adminClient.set('/TEST/1/2/3', { test: 1 });
+      await adminClient.set('/TEST/1/2/3/4', { test: 'not-allowed' });
+      await test.delay(1000);
+      test.expect(events[0].test).to.be(1);
+      test.expect(events.length).to.be(1);
+      await serviceInstance.services.security.groups.upsertPermission(
+        addedTestGroup.name,
+        '/TEST/1/2/3/4',
+        'on',
+        true
+      );
+      await test.delay(1000);
+      await adminClient.set('/TEST/1/2/3/4', { test: 'now allowed' });
+      await test.delay(1000);
+      test.expect(events[1].test).to.be('now allowed');
+      test.expect(events.length).to.be(2);
+      await serviceInstance.services.security.groups.removePermission(
+        addedTestGroup.name,
+        '/TEST/1/2/3/4',
+        'on'
+      );
+      await test.delay(1000);
+      await adminClient.set('/TEST/1/2/3/4', { test: 'not allowed anymore' });
+      await test.delay(1000);
+
+      test.expect(events.length).to.be(2);
+
+      await testClient.offAll();
+    }).timeout(10000);
+
+    it('upserts and removes prohibitions to a user, and checks that events are recieved correctly', async () => {
+      const events = [];
+      function handler(data) {
+        events.push(data);
+      }
+
+      await testClient.on('/TEST/2/3/**', handler);
+
+      await adminClient.set('/TEST/2/3/7/7', { test: 1 });
+
+      await adminClient.set('/TEST/2/3/5/6', { test: 'not-prohibited' });
+
+      await test.delay(1000);
+
+      test.expect(events[0].test).to.be(1);
+
+      test.expect(events[1].test).to.be('not-prohibited');
+      test.expect(events.length).to.be(2);
+      await serviceInstance.services.security.users.upsertPermission(
+        'TEST',
+        '/TEST/2/3/5/6',
+        'on',
+        false
+      );
+      await test.delay(1000);
+      await adminClient.set('/TEST/2/3/5/6', { test: 'PROHIBITED' });
+      await test.delay(1000);
+      test.expect(events.length).to.be(2);
+
+      await serviceInstance.services.security.users.upsertPermission(
+        'TEST',
+        '/TEST/2/3/5/6',
+        'on',
+        true
+      );
+      await test.delay(1000);
+      await adminClient.set('/TEST/2/3/5/6', { test: 'not prohibited anymore' });
+      await test.delay(1000);
+
+      test.expect(events.length).to.be(3);
+      test.expect(events[2].test).to.be('not prohibited anymore');
+      await testClient.offAll();
+    }).timeout(10000);
+
+    it('upserts and removes user permissions to a subpath of a wild path we have subscribed to (1/2/3/4 after subscribing to 1/2/**), and checks that events are recieved correctly', async () => {
+      const events = [];
+      function handler(data) {
+        events.push(data);
+      }
+      await testClient.on('/TEST/1/2/**', handler);
+
+      await adminClient.set('/TEST/1/2/3', { test: 1 });
+      await adminClient.set('/TEST/1/2/3/4', { test: 'not-allowed' });
+      await test.delay(1000);
+      test.expect(events[0].test).to.be(1);
+      test.expect(events.length).to.be(1);
+      await serviceInstance.services.security.users.upsertPermission(
+        'TEST',
+        '/TEST/1/2/3/4',
+        'on',
+        true
+      );
+      await test.delay(1000);
+      await adminClient.set('/TEST/1/2/3/4', { test: 'now allowed' });
+      await test.delay(1000);
+      test.expect(events[1].test).to.be('now allowed');
+      test.expect(events.length).to.be(2);
+      await serviceInstance.services.security.users.removePermission('TEST', '/TEST/1/2/3/4', 'on');
+      await test.delay(1000);
+      await adminClient.set('/TEST/1/2/3/4', { test: 'not allowed anymore' });
+      await test.delay(1000);
+      test.expect(events.length).to.be(2);
 
       await testClient.offAll();
     }).timeout(10000);
