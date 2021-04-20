@@ -60,6 +60,9 @@ describe(test.testName(__filename, 3), function() {
           '/TEST/5/6/7/9': {
             actions: ['on', 'get']
           },
+          '/TEST/7/8': {
+            actions: ['on', 'get']
+          },
           '/ALLOWED/*': {
             actions: ['on', 'get']
           },
@@ -172,7 +175,7 @@ describe(test.testName(__filename, 3), function() {
   });
 
   context('get', function() {
-    it('gets data from an allowed set of nested permissions', async () => {
+    it.only('gets data from an allowed set of nested permissions', async () => {
       await adminClient.set('/ALLOWED/0', { test: 0 });
       await adminClient.set('/TEST/1/2/3', { test: 1 });
       await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
@@ -216,7 +219,7 @@ describe(test.testName(__filename, 3), function() {
       results = await testClient.get('/TEMPLATED/TEST/**');
       test.expect(results[0].test).to.be(4);
     });
-  });
+  }).timeout(5000);
 
   context('events', function() {
     it('recieves events from an allowed set of nested permissions', async () => {
@@ -488,6 +491,51 @@ describe(test.testName(__filename, 3), function() {
       test.expect(events.length).to.be(2);
 
       await testClient.offAll();
+    }).timeout(10000);
+
+
+    it  
+    ('checks there are no collisions between a/b and a/b/*', async () => {
+      const events = [];
+      function handler(data) {
+        events.push(data);
+      }
+      await testClient.on('/TEST/7/**', handler);
+      await adminClient.set('/TEST/7/8', { test: 1 });
+      await adminClient.set('/TEST/7/8/9', { test: 'not listening' });
+      await test.delay(1000);
+
+      test.expect(events[0].test).to.be(1);
+      test.expect(events.length).to.be(1);
+
+      await serviceInstance.services.security.groups.upsertPermission(
+        addedTestGroup.name,
+        '/TEST/7/8/*',
+        'on',
+        false
+      );
+      await adminClient.set('/TEST/7/8', { test: 'should still be allowed' });
+      await test.delay(1000);
+      test.expect(events.length).to.be(2); 
+      test.expect(events[1].test).to.be('should still be allowed' );
+      // await serviceInstance.services.security.users.upsertPermission(
+      //   'TEST',
+      //   '/TEST/1/2/3/4',
+      //   'on',
+      //   true
+      // );
+      // await test.delay(1000);
+      // await adminClient.set('/TEST/1/2/3/4', { test: 'now allowed' });
+      // await test.delay(1000);
+      // test.expect(events[1].test).to.be('now allowed');
+      // test.expect(events.length).to.be(2);
+      // await serviceInstance.services.security.users.removePermission('TEST', '/TEST/1/2/3/4', 'on');
+      // await test.delay(1000);
+      // await adminClient.set('/TEST/1/2/3/4', { test: 'not allowed anymore' });
+      // await test.delay(1000);
+      // test.expect(events.length).to.be(2);
+
+      // await testClient.offAll();
     }).timeout(10000);
   });
 });
