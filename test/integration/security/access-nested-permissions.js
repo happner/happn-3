@@ -175,7 +175,7 @@ describe(test.testName(__filename, 3), function() {
   });
 
   context('get', function() {
-    it.only('gets data from an allowed set of nested permissions', async () => {
+    it('gets data from an allowed set of nested permissions', async () => {
       await adminClient.set('/ALLOWED/0', { test: 0 });
       await adminClient.set('/TEST/1/2/3', { test: 1 });
       await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
@@ -385,6 +385,7 @@ describe(test.testName(__filename, 3), function() {
       function handler(data) {
         events.push(data);
       }
+
       await testClient.on('/TEST/1/2/**', handler);
 
       await adminClient.set('/TEST/1/2/3', { test: 1 });
@@ -406,12 +407,11 @@ describe(test.testName(__filename, 3), function() {
       await serviceInstance.services.security.groups.removePermission(
         addedTestGroup.name,
         '/TEST/1/2/3/4',
-        'on'
+        'on'        
       );
       await test.delay(1000);
       await adminClient.set('/TEST/1/2/3/4', { test: 'not allowed anymore' });
       await test.delay(1000);
-
       test.expect(events.length).to.be(2);
 
       await testClient.offAll();

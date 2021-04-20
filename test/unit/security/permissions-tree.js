@@ -7,6 +7,10 @@ const expect = require('chai').expect;
 describe(tests.testName(__filename, 3), function() {
   it('tests create and search', function() {
     const permissionsTree = PermissionsTree.create(flattenedObjectScenario1());
+<<<<<<< Updated upstream
+=======
+    console.log(JSON.stringify(permissionsTree.tree, null, 2));
+>>>>>>> Stashed changes
     expect(permissionsTree.tree).to.deep.equal(expectedTreeScenario1());
     expect(permissionsTree.search('/test/permission/1/1/2')).to.deep.equal(
       searchResultsScenario1()
@@ -43,6 +47,7 @@ describe(tests.testName(__filename, 3), function() {
     expect(permissions)
       .to.be.instanceOf(Error)
       .with.property('message', 'Recursive wildcards are invalid unless at end of permission path');
+<<<<<<< Updated upstream
   });
 
   it('tests that a recursive wildcard only returns those matched items, with child paths', function() {
@@ -99,10 +104,50 @@ describe(tests.testName(__filename, 3), function() {
       allowed: ['/TEST/1/2/3', '/TEST/2/3/*', '/TEST/5/6'],
       prohibited: ['/TEST/2/3/4/5']
     });
+=======
+  });
+
+  it('tests that a wildcard in the middle of a permission path returns all children if you have permissions to those', function() {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario5());
+    const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/*/3', 'get');
+
+    expect(permissions).to.have.members(['/test/permission/1/2/3', '/test/permission/1/6/3']);
+  });
+
+  it('tests that a wildcard only returns those matched items, no child paths', function() {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario6());
+    const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/*', 'get');
+
+    expect(permissions).to.have.members([
+      '/test/permission/1/2',
+      '/test/permission/1/7',
+      '/test/permission/1/5'
+    ]);
+  });
+
+  it('tests that a recursive wildcard only returns those matched items, no child paths', function() {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario6());
+    const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/**', 'get');
+
+    expect(permissions).to.have.members([
+      '/test/permission/1/2',
+      '/test/permission/1/7',
+      '/test/permission/1/5',
+      '/test/permission/1/9/5'
+    ]);
+  });
+
+  it.only('tests building a list with prohibitions', () => {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario7());
+    const permissions = permissionsTree.wildcardPathSearch('/test/permission/1/2/**', 'get');
+
+    console.log(permissions);
+>>>>>>> Stashed changes
   });
 
   function flattenedObjectScenario7() {
     return {
+<<<<<<< Updated upstream
       '/TEST/1/2/3': { actions: ['on', 'get'] },
       '/TEST/2/3/*': { actions: ['on', 'get'] },
       '/TEST/2/3/4/5': { prohibit: ['on', 'get'] },
@@ -129,6 +174,15 @@ describe(tests.testName(__filename, 3), function() {
   }
 
   function flattenedObjectScenario5() {
+=======
+      '/test/permission/1/2/*': { actions: ['get'] },
+      '/test/permission/1/2/3': { prohibit: ['get'] },
+      '/test/permission/1/2/3/4/5': { prohibit: ['get'] }
+    };
+  }
+
+  function flattenedObjectScenario6() {
+>>>>>>> Stashed changes
     return {
       '/test/permission/1/2': { actions: ['get'] },
       '/test/permission/1/6': { prohibit: ['get'] },
@@ -139,7 +193,22 @@ describe(tests.testName(__filename, 3), function() {
       '/test/permission/1/6/3': { actions: ['get'] },
       '/test/permission/1/5': { actions: ['get'] },
       '/test/permission/1/5/4': { actions: ['get'] },
+<<<<<<< Updated upstream
       '/test/permission/1/9/5': { prohibit: ['get'] }
+=======
+      '/test/permission/1/9/5': { actions: ['get'] }
+    };
+  }
+
+  function flattenedObjectScenario5() {
+    return {
+      '/test/permission/1/2/3': { actions: ['get'] },
+      '/test/permission/1/1/3': { prohibit: ['get'] },
+      '/test/permission/3/4/5': { actions: ['get'] },
+      '/test/permission/1/6/7': { actions: ['get'] },
+      '/test/permission/1/6/3': { actions: ['get'] },
+      '/test/permission/5/6/8': { actions: ['get'] }
+>>>>>>> Stashed changes
     };
   }
 

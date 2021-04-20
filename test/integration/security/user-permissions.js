@@ -1226,6 +1226,7 @@ describe(
           })
           .catch(done);
       });
+<<<<<<< Updated upstream
 
       it('checks templated permissions', function(done) {
         const testUsername = 'TEST USER@blah.com' + test_id;
@@ -1261,6 +1262,8 @@ describe(
           }
         );
       });
+=======
+>>>>>>> Stashed changes
 
       it('deletes the test user, tests we are notified about the session closure, then have no access, on delegated authority as well', function(done) {
         testClient.onSystemMessage(function(eventType) {
@@ -1297,6 +1300,10 @@ describe(
         });
       });
     });
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     let permissionList = [
       {
         action: '*',
@@ -1314,12 +1321,15 @@ describe(
         path: '/TEST/a7_eventemitter_security_access/' + test_id + '/all_access'
       },
       {
+<<<<<<< Updated upstream
         action: '*',
         authorized: true,
         path:
           '/TEST/a7_eventemitter_security_access/{{user.username}}/' + test_id + '/templated_access'
       },
       {
+=======
+>>>>>>> Stashed changes
         action: 'get',
         authorized: true,
         path: '/TEST/a7_eventemitter_security_access/' + test_id + '/comp/get_not_on'
