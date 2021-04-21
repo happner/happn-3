@@ -847,4 +847,4 @@
 
 11.10.2 2021-04-21
 -----------------
-  - fix: SMC-1425 - client fixed to be backward compatible with <11.10.0 servers, which do not send back user with permissions on dataChanged
+  - fix: SMC-2474 - client fixed to be backward compatible with <11.10.0 servers, which do not send back user with permissions on dataChanged
