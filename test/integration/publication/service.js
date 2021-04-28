@@ -51,6 +51,9 @@ describe(
           subscription: {
             getRecipients: function() {
               return recipients;
+            },
+            getFilteredRecipients: function() {
+              return recipients;
             }
           },
           protocol: {

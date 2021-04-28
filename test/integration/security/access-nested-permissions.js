@@ -32,9 +32,7 @@ describe(test.testName(__filename, 3), function() {
   let addedTestGroup2;
   let addedTestGroup3;
 
-
   let addedTestuser;
-
 
   before(
     'creates a group and a user, adds the group to the user, logs in with test user',
@@ -89,18 +87,6 @@ describe(test.testName(__filename, 3), function() {
         }
       };
 
-      let testGroup4 = {
-        name: 'TEST GROUP4',
-        permissions: {
-          '/TEST/1/2/*': {
-            actions: ['on', 'get']
-          },
-          '/TEST/1/2/3/4': {
-            prohibit: ['on', 'get']
-          }
-        }
-      };
-
       addedTestGroup = await serviceInstance.services.security.users.upsertGroup(testGroup, {
         overwrite: false
       });
@@ -119,13 +105,6 @@ describe(test.testName(__filename, 3), function() {
         permissions: {}
       };
 
-      const testUser2 = {
-        username: 'TEST2',
-        password: 'TEST PWD2',
-        permissions: {}
-      };
-
-
       testUser.permissions['/TEMPLATED_ALLOWED/{{user.username}}/8'] = {
         actions: ['on', 'get']
       };
@@ -134,16 +113,9 @@ describe(test.testName(__filename, 3), function() {
         overwrite: false
       });
 
-
       await serviceInstance.services.security.users.linkGroup(addedTestGroup, addedTestuser);
 
       testClient = await serviceInstance.services.session.localClient({
-        username: testUser.username,
-        password: 'TEST PWD'
-      });
-
-      
-      testClient2 = await serviceInstance.services.session.localClient({
         username: testUser.username,
         password: 'TEST PWD'
       });
@@ -242,12 +214,12 @@ describe(test.testName(__filename, 3), function() {
 
       await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
 
-      await adminClient.set('/TEST/4/5/6', { test: "not-subscribed" });
+      await adminClient.set('/TEST/4/5/6', { test: 'not-subscribed' });
       await test.delay(4000);
 
       test.expect(events[1].test).to.be(1);
       test.expect(events[2].test).to.be(2);
-      test.expect(events.length).to.be(3)
+      test.expect(events.length).to.be(3);
       await testClient.offAll();
     }).timeout(10000);
 
@@ -408,7 +380,7 @@ describe(test.testName(__filename, 3), function() {
       await serviceInstance.services.security.groups.removePermission(
         addedTestGroup.name,
         '/TEST/1/2/3/4',
-        'on'        
+        'on'
       );
       await test.delay(1000);
       await adminClient.set('/TEST/1/2/3/4', { test: 'not allowed anymore' });
@@ -494,9 +466,7 @@ describe(test.testName(__filename, 3), function() {
       await testClient.offAll();
     }).timeout(10000);
 
-
-    it  
-    ('checks there are no collisions between a/b and a/b/*', async () => {
+    it('checks there are no collisions between a/b and a/b/*', async () => {
       const events = [];
       function handler(data) {
         events.push(data);
@@ -517,8 +487,8 @@ describe(test.testName(__filename, 3), function() {
       );
       await adminClient.set('/TEST/7/8', { test: 'should still be allowed' });
       await test.delay(1000);
-      test.expect(events.length).to.be(2); 
-      test.expect(events[1].test).to.be('should still be allowed' );
+      test.expect(events.length).to.be(2);
+      test.expect(events[1].test).to.be('should still be allowed');
       // await serviceInstance.services.security.users.upsertPermission(
       //   'TEST',
       //   '/TEST/1/2/3/4',

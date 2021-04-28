@@ -840,3 +840,11 @@
 -----------------
   - feature: SMC-1808 - Add support for permissions on the happn user
   - feature: SMC-1897 - nedb data provider must sync db file after each persistent write
+
+11.10.1 2021-04-15
+-----------------
+  - fix: SMC-1425 - maybePromisify and stale token, after server token change causing unhandled error
+
+11.10.2 2021-04-21
+-----------------
+  - fix: SMC-2474 - client fixed to be backward compatible with <11.10.0 servers, which do not send back user with permissions on dataChanged

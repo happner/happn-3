@@ -10,7 +10,6 @@ describe(
     var Logger = require('happn-logger');
     var CheckPoint = require('../../../lib/services/security/checkpoint');
     const util = require('util');
-    //var log = require('why-is-node-running');
 
     var serviceConfig = {
       services: {
@@ -2998,7 +2997,7 @@ describe(
           }
         };
 
-        expect(
+        try {
           happnMock.services.security.sessionFromRequest(
             {
               connection: {},
@@ -3013,10 +3012,11 @@ describe(
               }
             },
             {}
-          )
-        ).to.eql(null);
-        expect(warningHappened).to.be(true);
-        done();
+          );
+        } catch (e) {
+          expect(e.message).to.be('test error');
+          done();
+        }
       });
     });
 

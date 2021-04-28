@@ -11,6 +11,10 @@ function TestHelper() {
   this.semver = require('semver');
   this.npm = require('npm-programmatic');
   this.path = require('path');
+  this.utils = require('../../../lib/services/utils/shared');
+  this.server = require('./server-helper').create();
+  this.security = require('./security-helper').create();
+  this.sinon = require('sinon');
 }
 
 TestHelper.create = function(){
