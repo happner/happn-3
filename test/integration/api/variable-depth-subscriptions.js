@@ -231,7 +231,6 @@ describe(
             ]
           ).to.be(1);
           expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(1);
-
           return listenerclient.on('/initialEmitTest/**', { initialEmit: true }, handleEvent);
         })
         .then(function(reference) {

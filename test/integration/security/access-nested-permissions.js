@@ -223,7 +223,7 @@ describe(test.testName(__filename, 3), function() {
       await testClient.offAll();
     }).timeout(10000);
 
-    it('recieves events from an allowed set of nested permissions', async () => {
+    it('further recieves events from an allowed set of nested permissions - checking that we don\'t recieve prohibited events', async () => {
       const events = [];
       function handler(data) {
         events.push(data);
