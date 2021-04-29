@@ -259,51 +259,6 @@ describe(
       ).to.eql([]); //Filtered because of message.request.path being prohibited
       done();
     });
-
-    // function filterRecipients(message, recipients) {
-    //   recipients = recipients.filter(rec => !(rec.data.options && rec.data.options.wild === true));
-    //   let prohibited;
-
-    //   [prohibited, recipients] = _.partition(recipients, ['data.options.prohibited', true]);
-    //   if (prohibited.length === 0) return recipients;
-    //   let prohibitionsDict = prohibited
-    //     .map(rec => rec.data)
-    //     .reduce((prohibitedLists, current) => {
-    //       prohibitedLists[current.session.id] = prohibitedLists[current.session.id] || {};
-    //       if (current.searchPath.endsWith('*')) {
-    //         prohibitedLists[current.session.id].wild = prohibitedLists[current.session.id].wild || [];
-    //         prohibitedLists[current.session.id].wild.push(current.searchPath.replace(/\/\*+$/, '/'));
-    //       }
-    //       //We add wildcard paths to the explict list as well as there is a possibility,
-    //       // with changing permissions, that may match a searchPath exactly.
-    //       prohibitedLists[current.session.id].explicit =
-    //         prohibitedLists[current.session.id].explicit || [];
-    //       prohibitedLists[current.session.id].explicit.push(current.searchPath);
-    //       return prohibitedLists;
-    //     }, {});
-
-    //   recipients = recipients.filter(rec => {
-    //     let sessionList = prohibitionsDict[rec.data.session.id];
-    //     if (!sessionList) return true;
-    //     if (
-    //       sessionList.explicit &&
-    //       (sessionList.explicit.includes(rec.data.searchPath) ||
-    //         sessionList.explicit.includes(message.request.path))
-    //     )
-    //       return false;
-    //     if (
-    //       sessionList.wild &&
-    //       sessionList.wild.some(
-    //         path =>
-    //           (rec.data.searchPath.startsWith(path) ||
-    //           message.request.path.startsWith(path)
-    //       )
-    //     ))
-    //       return false;
-    //     return true;
-    //   });
-    //   return recipients;
-    // }
   }
 );
 

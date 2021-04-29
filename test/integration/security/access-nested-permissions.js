@@ -489,24 +489,7 @@ describe(test.testName(__filename, 3), function() {
       await test.delay(1000);
       test.expect(events.length).to.be(2);
       test.expect(events[1].test).to.be('should still be allowed');
-      // await serviceInstance.services.security.users.upsertPermission(
-      //   'TEST',
-      //   '/TEST/1/2/3/4',
-      //   'on',
-      //   true
-      // );
-      // await test.delay(1000);
-      // await adminClient.set('/TEST/1/2/3/4', { test: 'now allowed' });
-      // await test.delay(1000);
-      // test.expect(events[1].test).to.be('now allowed');
-      // test.expect(events.length).to.be(2);
-      // await serviceInstance.services.security.users.removePermission('TEST', '/TEST/1/2/3/4', 'on');
-      // await test.delay(1000);
-      // await adminClient.set('/TEST/1/2/3/4', { test: 'not allowed anymore' });
-      // await test.delay(1000);
-      // test.expect(events.length).to.be(2);
-
-      // await testClient.offAll();
+      await testClient.offAll();
     }).timeout(10000);
   });
 });

@@ -207,7 +207,6 @@ describe(
     });
 
     it('does a normal subscription, initialEmit and initialCallback - checks the listener state, then unsubscribes and checks the listener state', function(done) {
-      this.timeout(10000);
       var eventData = [];
 
       var handleEvent = function(data) {
@@ -354,8 +353,7 @@ describe(
           ).to.be(0);
           expect(Object.keys(listenerclient.state.listenerRefs).length).to.be(0);
           done();
-        })
-        .catch(done);
+        });
     });
 
     it('should subscribe and get initial values on the callback', function(callback) {
