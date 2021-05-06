@@ -14,9 +14,16 @@ describe(test.testName(__filename, 3), function() {
     getService(
       {
         secure: true,
+        allowNestedPermissions: true,
         services: {
           security: {
             config: {}
+          },
+          protocol: {
+            config: { allowNestedPermissions: true }
+          },
+          subscription: {
+            config: { allowNestedPermissions: true }
           }
         }
       },
