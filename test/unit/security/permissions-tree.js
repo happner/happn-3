@@ -109,6 +109,33 @@ describe(tests.testName(__filename, 3), function() {
     });
   });
 
+  it('tests building a wildcard list with prohibitions where we have root access', () => {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario8());
+    const permissions = permissionsTree.wildcardPathSearch('/TEST/*', 'get');
+    expect(permissions).to.deep.equal({
+      allowed: ['/TEST/*'],
+      prohibited: []
+    });
+  });
+
+  it('tests building a wildcard list with prohibitions where we have root access, prohibition further down tree', () => {
+    const permissionsTree = PermissionsTree.create(flattenedObjectScenario9());
+    const permissions = permissionsTree.wildcardPathSearch('/TEST/*', 'on');
+    expect(permissions).to.deep.equal({ allowed: ['/TEST/*'], prohibited: ['/TEST/1/2/3'] });
+  });
+
+  function flattenedObjectScenario9() {
+    return {
+      '/*': { actions: ['*'] },
+      '/TEST/1/2/3': { prohibit: ['on'] }
+    };
+  }
+  function flattenedObjectScenario8() {
+    return {
+      '/*': { actions: ['*'] }
+    };
+  }
+
   function flattenedObjectScenario7() {
     return {
       '/TEST/1/2/3': { actions: ['on', 'get'] },

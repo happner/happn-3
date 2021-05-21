@@ -259,16 +259,13 @@ describe(test.testName(__filename, 3), function() {
       }
 
       await testClient.on('/TEST/2/3/**', handler);
-
       await adminClient.set('/TEST/2/3/7/7', { test: 1 });
-
       await adminClient.set('/TEST/2/3/5/6', { test: 'not-prohibited' });
-
       await test.delay(1000);
-
       test.expect(events[0].test).to.be(1);
       test.expect(events[1].test).to.be('not-prohibited');
       test.expect(events.length).to.be(2);
+
       await serviceInstance.services.security.users.linkGroup(addedTestGroup2, addedTestuser);
       await test.delay(1000);
       await adminClient.set('/TEST/2/3/5/6', { test: 'PROHIBITED' });
@@ -303,7 +300,6 @@ describe(test.testName(__filename, 3), function() {
       await test.delay(1000);
       await adminClient.set('/TEST/1/2/3/4', { test: 'now allowed' });
       await test.delay(1000);
-
       test.expect(events[1].test).to.be('now allowed');
       test.expect(events.length).to.be(2);
       await serviceInstance.services.security.users.unlinkGroup(addedTestGroup3, addedTestuser);
@@ -470,6 +466,33 @@ describe(test.testName(__filename, 3), function() {
       await test.delay(1000);
       test.expect(events.length).to.be(2);
 
+      await testClient.offAll();
+    }).timeout(10000);
+
+    it('subscribes and unsubscribes on a nested wild path and checks that events are recieved correctly', async () => {
+      const events = [];
+      function handler(data) {
+        events.push(data);
+      }
+      await testClient.on('/TEST/1/2/**', handler);
+
+      await adminClient.set('/TEST/1/2/3', { test: 1 });
+      await adminClient.set('/TEST/1/2/3/4', { test: 'not-allowed' });
+      await test.delay(1000);
+      test.expect(events[0].test).to.be(1);
+      test.expect(events.length).to.be(1);
+      await testClient.offPath('/TEST/1/2/**');
+      await test.delay(1000);
+      await serviceInstance.services.security.users.upsertPermission(
+        'TEST',
+        '/TEST/1/2/3/4',
+        'on',
+        true
+      );
+      await adminClient.set('/TEST/1/2/3', { test: 'shouldnt fire' });
+      await adminClient.set('/TEST/1/2/3/4', { test: 'shouldnt fire' });
+      await test.delay(1000);
+      test.expect(events.length).to.be(1);
       await testClient.offAll();
     }).timeout(10000);
 

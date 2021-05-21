@@ -59,13 +59,13 @@ describe(
       subscriptionMock.__removeInvalidSubscriptions(effectedSession, allowedSubs, allowedPaths);
       expect(subscriptionMock.removeListenerExtended.callCount).to.be(2);
       expect(subscriptionMock.removeListenerExtended.args).to.eql(
-        ['/1/3/5', '/2/3/4/5'].map(path => [...invalidSubscriberArgs, path])
+        mapInvalidSubscriberArgs(['/1/3/5', '/2/3/4/5'])
       );
       done();
     });
 
     it('tests the subscripition services __removeExplicitlyRevokedSubscriptions method', done => {
-      subscriptionMock.removeListener = sinon.stub();
+      subscriptionMock.removeListenerExtended = sinon.stub();
       let effectedSession = { id: 'testSession' };
       let prohibitedPaths = {
         explicit: ['/1/2/3', '/4/5/*'],
@@ -83,9 +83,9 @@ describe(
         allowedSubs,
         prohibitedPaths
       );
-      expect(subscriptionMock.removeListener.callCount).to.be(2);
-      expect(subscriptionMock.removeListener.args).to.eql(
-        ['/1/2/3', '/4/5/6/5'].map(path => [...revokedSubscriberArgs, path])
+      expect(subscriptionMock.removeListenerExtended.callCount).to.be(2);
+      expect(subscriptionMock.removeListenerExtended.args).to.eql(
+        mapRevokedSubscriberArgs(['/1/2/3', '/4/5/6/5'])
       );
       done();
     });
@@ -218,6 +218,7 @@ describe(
     });
 
     it('tests the __filterRecipients method', done => {
+      // Note, in this test there are subscriptions that don't match the message path, because we are passing those in and just testing filtering
       let allowedSubs1 = ['/1/2', '/3/4/*', '/3/4/7/8', '/5/6/7'];
       let prohibitedSubs1 = ['/3/4/5/6', '/3/4/7/*'];
       let wildSubs = ['3/4/*'];
@@ -250,7 +251,7 @@ describe(
           .filter(rec => rec.data.session.id === 'test-session1')
           .map(rec => rec.data.path)
           .sort()
-      ).to.eql(['/1/2', '/3/4/*', '/5/6/7'].sort()); //allowedSubs1 - '/3/4/7/8'
+      ).to.eql(['/1/2', '/3/4/*', '/5/6/7'].sort()); //allowedSubs1 - '/3/4/7/8' - filtered because of prohibitions
       expect(
         filtered
           .filter(rec => rec.data.session.id === 'test-session2')
@@ -402,23 +403,33 @@ let wildSubscriberTemplate = {
     action: 'ALL'
   }
 };
-
-let invalidSubscriberArgs = [
-  {
-    data: {
-      ref: 'test-ref',
-      options: {
-        prohibited: {
-          $ne: true
+let mapInvalidSubscriberArgs = paths => {
+  return paths.map(path => [
+    {
+      data: {
+        ref: 'test-ref',
+        searchPath: path,
+        options: {
+          prohibited: {
+            $ne: true
+          }
         }
       }
-    }
-  },
-  'testSession',
-  'ALL'
-];
+    },
+    'testSession',
+    'ALL',
+    '*'
+  ]);
+};
+let mapRevokedSubscriberArgs = paths => {
+  return paths.map(path => [
+    { data: { options: { prohibited: { $ne: true } }, ref: 'test-ref', searchPath: path } },
+    'testSession',
+    'ALL',
+    '*'
+  ]);
+};
 
-let revokedSubscriberArgs = ['test-ref', 'testSession', 'ALL'];
 let addedProhibitionArgs = [
   'testSession',
   { options: { prohibited: true }, session: { id: 'testSession' } }
