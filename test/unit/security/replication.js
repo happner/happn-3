@@ -83,6 +83,8 @@ describe(
       obj.__initializeSessionManagement = function() {};
 
       obj.__ensureAdminUser = function() {};
+
+      obj.__initializeAuthProvider = function() {};
     }
 
     function stubDataChangedSteps(obj) {
