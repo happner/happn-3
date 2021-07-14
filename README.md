@@ -1306,6 +1306,41 @@ const permissions = await myHappn3Instance.services.security.users.listPermissio
   { action: 'set', authorized: true, path: '/test/path/*' }
 ]
 ```
+NESTED PERMISSIONS FOR GET AND SET
+--------------------
+*by default, nested permissions are not switched on, hence a call to get or listen on 'test/path/\*\*' will be unauthroized unless you explicitly have permissions on 'test/path/\*'* 
+
+### Switching on nested permissions:
+In the happn config, add an 'allowNestedPermissions' flag, set to true:
+
+```javascript
+const Happn = require('happn-3');
+let myService = await Happn.service.create({
+  name: 'TEST-NAME',
+  secure: true,
+  allowNestedPermissions: true,
+  services: {
+    ...
+  }
+});
+```
+### Nested permissions behaviour:
+If you attempt to get or listen on a path ending in '/\*\*', your permissions on that path, and its subpaths, will be evaluated, and you will get, or listen on, all subpaths which you have access to, and only those subpaths. Note that if you do not have permissions on any subpaths, you will still get an 'unauthorized' response.
+In the case of events, if you have subscribed on a nested path (ending in '/**'), your subscriptions will change if your permissions change on subpaths of that path.
+### Nested listener behaviour example: 
+```javascript
+  var myGroup = {
+    name:'TEST',
+    permissions:{
+      '/test/path/1':{actions:['get', 'on']}, 
+      '/test/path/2/3':{actions:['get', 'on']}, 
+      '/test/path/4/5/6':{actions:['get', 'on']}
+    }
+  };
+```
+A user who is a member of 'myGroup' and subscribes on 'test/path/\*\*' will get events on exactly '/test/path/1', '/test/path/2/3' and  '/test/path/4/5/6', and they will fire the handler for 'test/path/\*\*'
+If the group subsequently loses permissions on 'test/path/1', events on that path will no longer fire the handler, and similarly if the group gains permissions on 'test/path/xyz', events on that path will fire the handler.
+
 
 
 VOLATILE PERMISSIONS
