@@ -70,7 +70,7 @@
     "uglify-es": "^3.3.9",
     "user-home": "^2.0.0",
     "uuid": "^3.3.2",
-    "ws": "6.1.4"
+    "ws": "6.2.2"
   },
   "devDependencies": {
     "await-delay": "^1.0.0",
