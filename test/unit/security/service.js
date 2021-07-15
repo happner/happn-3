@@ -10,7 +10,6 @@ describe(
     var Logger = require('happn-logger');
     var CheckPoint = require('../../../lib/services/security/checkpoint');
     const util = require('util');
-    //var log = require('why-is-node-running');
 
     var serviceConfig = {
       services: {

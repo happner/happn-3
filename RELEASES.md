@@ -848,3 +848,7 @@
 11.10.2 2021-04-21
 -----------------
   - fix: SMC-2474 - client fixed to be backward compatible with <11.10.0 servers, which do not send back user with permissions on dataChanged
+
+11.11.0 2021-07-14
+-----------------
+  - feature: SMC-1810 - added support for getting and listening on nested permissions.
