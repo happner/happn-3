@@ -739,7 +739,7 @@ describe(
         checkpoint.__loadPermissionSet(identity, (e, permissionSet) => {
           if (e) return done(e);
           expect(JSON.parse(JSON.stringify(permissionSet.tree))).to.eql({
-            test: [null, { $leaf: 'test/1' }, { $leaf: 'test/2' }, { $leaf: 'test/3' }]
+            test: { 1: { $leaf: 'test/1' }, 2: { $leaf: 'test/2' }, 3: { $leaf: 'test/3' } }
           });
           done();
         });

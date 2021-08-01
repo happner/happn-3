@@ -49,6 +49,9 @@ describe(
             subscription: {
               getRecipients: function() {
                 return [];
+              },
+              getFilteredRecipients: function() {
+                return [];
               }
             }
           }

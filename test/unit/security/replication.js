@@ -84,7 +84,7 @@ describe(
 
       obj.__ensureAdminUser = function() {};
 
-      obj.__initializeAuthProvider = function() {};
+      obj.__initializeAuthProviders = function() {};
     }
 
     function stubDataChangedSteps(obj) {

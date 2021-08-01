@@ -1,6 +1,6 @@
 {
   "name": "happn-3",
-  "version": "11.10.2",
+  "version": "11.11.0",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "keywords": [
     "mongo",
@@ -36,14 +36,13 @@
   },
   "dependencies": {
     "async": "^3.2.0",
-    "bent": "^7.3.12",
+    "axios": "^0.21.1",
     "body-parser": "^1.18.3",
     "connect": "^3.6.6",
     "connect-cookies": "^0.0.0",
     "dev-null": "^0.1.1",
     "fast-clone": "^1.5.3",
     "fs-extra": "^7.0.1",
-    "got": "^11.8.2",
     "handlebars": "^4.7.6",
     "happn-logger": "^1.1.1",
     "happn-nedb": "^1.9.1",
@@ -108,7 +107,7 @@
     "request": "^2.88.2",
     "require-self": "^0.2.1",
     "semver": "^7.1.1",
-    "sinon": "^9.2.4",
+    "sinon": "^10.0.0",
     "sinon-chai": "^3.5.0",
     "why-is-node-running": "^2.1.0"
   },

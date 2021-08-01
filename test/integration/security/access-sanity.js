@@ -78,12 +78,10 @@ describe(
             username: '_ADMIN',
             password: 'happn'
           })
-
           .then(function(clientInstance) {
             adminClient = clientInstance;
             done();
           })
-
           .catch(function(e) {
             done(e);
           });
@@ -523,6 +521,7 @@ describe(
                 onBehalfOf: testClient.session.user.username
               },
               function(e, result) {
+                console.log({e,result})
                 if (e) return done(e);
                 expect(result._meta.path).to.be(
                   '/TEST/a7_eventemitter_security_access/' + test_id + '/get'

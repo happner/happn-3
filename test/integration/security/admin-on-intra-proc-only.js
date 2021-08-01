@@ -87,6 +87,7 @@ describe(
 
     it('fails to authenticate with the _ADMIN user, over a web post', function(done) {
       doWebRequest('/auth/login?username=_ADMIN&password=happn', 55001, function(e, body) {
+        console.log(body)
         expect(JSON.parse(body).error.message).to.be(
           'use of _ADMIN credentials over the network is disabled'
         );

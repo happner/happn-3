@@ -10,7 +10,6 @@ describe(
     var Logger = require('happn-logger');
     var CheckPoint = require('../../../lib/services/security/checkpoint');
     const util = require('util');
-    //var log = require('why-is-node-running');
 
     var serviceConfig = {
       services: {
@@ -1719,22 +1718,18 @@ describe(
           security: securityService
         }
       };
-      serviceConfig.services.security.config.authProvider = 'provider-base';
-      securityService.__initializeAuthProvider(serviceConfig.services.security.config);
-
-      securityService.authProvider.__initializeProfiles(serviceConfig.services.security.config);
-      // .then(function() {
-      expect(securityService.authProvider.__cache_Profiles[0].policy.ttl).to.be(4000);
-      expect(securityService.authProvider.__cache_Profiles[0].policy.inactivity_threshold).to.be(
-        2000
-      );
-      expect(securityService.authProvider.__cache_Profiles[1].policy.inactivity_threshold).to.be(
-        60000 * 60 * 48
-      );
-      delete serviceConfig.services.security.config.authProvider;
-      done();
-      // })
-      // .catch(done);
+      securityService
+        .__initializeProfiles(serviceConfig.services.security.config)
+        .then(function() {
+          expect(securityService.__cache_Profiles[0].policy.ttl).to.be(4000);
+          expect(securityService.__cache_Profiles[0].policy.inactivity_threshold).to.be(2000);
+          expect(securityService.__cache_Profiles[1].policy.inactivity_threshold).to.be(
+            60000 * 60 * 48
+          );
+          // delete serviceConfig.services.security.config.authProvider;
+          done();
+        })
+        .catch(done);
     });
 
     it('should create a user and login, getting a token - then should be able to use the token to log in again', function(done) {
@@ -1869,7 +1864,7 @@ describe(
         function(e, instance) {
           if (e) return done(e);
 
-          instance.services.security.authProvider.login = function(
+          instance.services.security.authProviders.default.login = function(
             credentials,
             sessionId,
             request,
