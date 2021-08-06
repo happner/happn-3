@@ -852,3 +852,7 @@
 11.11.0 2021-07-14
 -----------------
   - feature: SMC-1810 - added support for getting and listening on nested permissions.
+
+11.12.0 2021-08-06
+-----------------
+  - feature: SMC-3460 - added support for anonymous user.

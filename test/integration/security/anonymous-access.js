@@ -18,12 +18,6 @@ describe(test.testName(__filename, 3), function() {
     serviceInstanceAnonymous = await getService({
       secure: true,
       services: {
-        data: {
-          config: {
-            filename,
-            fsync: true
-          }
-        },
         security: {
           config: {
             allowAnonymousAccess: true
@@ -58,8 +52,6 @@ describe(test.testName(__filename, 3), function() {
       });
     serviceInstance.stop();
     serviceInstanceAnonymous.stop();
-    await test.delay(3000);
-    test.fs.unlinkSync(filename);
   });
 
   context('login', function() {
@@ -967,6 +959,7 @@ describe(test.testName(__filename, 3), function() {
     });
   }
 
+  // eslint-disable-next-line no-unused-vars
   function doRequest(path, token) {
     return new Promise((resolve, reject) => {
       let options = {
