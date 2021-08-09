@@ -855,4 +855,5 @@
 
 11.12.0 2021-08-06
 -----------------
-  - feature: SMC-3460 - added support for anonymous user.
+  - SMC-3460 - added support for anonymous user.
+  - SMC-3646 - set up coveralls and github actions

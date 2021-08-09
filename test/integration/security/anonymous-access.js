@@ -106,11 +106,7 @@ describe(test.testName(__filename, 3), function() {
       } catch (e) {
         message = e.message;
       }
-      test
-        .expect(message)
-        .to.be(
-          'validation error: user names cannot contain the special _SYSTEM, _GROUP, _PERMISSION, _USER_GROUP, _ADMIN, _ANONYMOUS segment or a forward slash /'
-        );
+      test.expect(message).to.be('validation failure: username cannot be reserved name _ANONYMOUS');
     });
 
     it('fails to add anonymous user - anonymous access not configured', async () => {
@@ -123,11 +119,7 @@ describe(test.testName(__filename, 3), function() {
       } catch (e) {
         message = e.message;
       }
-      test
-        .expect(message)
-        .to.be(
-          'validation error: user names cannot contain the special _SYSTEM, _GROUP, _PERMISSION, _USER_GROUP, _ADMIN, _ANONYMOUS segment or a forward slash /'
-        );
+      test.expect(message).to.be('validation failure: username cannot be reserved name _ANONYMOUS');
     });
   });
 
