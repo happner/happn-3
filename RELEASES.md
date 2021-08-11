@@ -852,3 +852,7 @@
 11.11.0 2021-07-14
 -----------------
   - feature: SMC-1810 - added support for getting and listening on nested permissions.
+
+11.11.1 2021-08-11
+-----------------
+- bugfix: SMC-3682 - only add criteria to db query if passed in
