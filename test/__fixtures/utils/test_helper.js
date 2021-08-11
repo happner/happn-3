@@ -15,6 +15,7 @@ function TestHelper() {
   this.server = require('./server-helper').create();
   this.security = require('./security-helper').create();
   this.sinon = require('sinon');
+  this.fs = require('fs');
 }
 
 TestHelper.create = function(){
@@ -47,6 +48,10 @@ TestHelper.prototype.newTestFile = function (options) {
   this.__testFiles.push(fileName);
   return fileName;
 };
+
+TestHelper.prototype.log = function(msg){
+  console.log(msg);
+}
 
 TestHelper.prototype.deleteFiles = function () {
   var errors = 0;

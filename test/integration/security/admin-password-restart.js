@@ -87,7 +87,7 @@ describe(
 
         //modify the original password
         currentService.services.security.users
-          .upsertUser({ username: '_ADMIN', password: modifiedPassword })
+          .__upsertUser({ username: '_ADMIN', password: modifiedPassword })
 
           .then(function() {
             //test the login works with the modified password
