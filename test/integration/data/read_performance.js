@@ -56,7 +56,7 @@ describe(
       let timeFirstSet;
       let timeLastSet;
       let timeFirstGet;
-      let timeLastGet;
+      let timesGet = [];
 
       var test_string = require('shortid').generate();
       var test_base_url =
@@ -83,13 +83,17 @@ describe(
       timeLastSet = Number(process.hrtime.bigint() - timeStart) / 1e6;
       expect(timeLastSet).to.be.lt(timeFirstSet + 1);
 
-      timeStart = process.hrtime.bigint();
-      expect((await getItem(test_base_url + (itemCountFirstCheck + itemCount - 1))).value).to.eql(
-        test_string + (itemCount - 1)
-      );
-      timeLastGet = Number(process.hrtime.bigint() - timeStart) / 1e6;
+      await async.timesSeries(itemCount, async n => {
+        timeStart = process.hrtime.bigint();
+        expect((await getItem(test_base_url + (n + itemCountFirstCheck))).value).to.eql(
+          test_string + n
+        );
+        timesGet.push(Number(process.hrtime.bigint() - timeStart) / 1e6);
+      });
 
-      expect(timeLastGet).to.be.lt(timeFirstGet + 1);
+      expect(timesGet.reduce((result, value) => result + value / timesGet.length, 0)).to.be.lt(
+        timeFirstGet + 1
+      );
 
       function setItem(path, value) {
         return client.set(path, value, {
