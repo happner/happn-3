@@ -914,13 +914,13 @@ After version 11.6.0, by default some basic session info is logged whenever a cl
 
 ```json
 {
-    event, //session attached / session detatched
-    username, //user name or 'anonymous (unsecure connection)',
-    sourceAddress, //session source address,
-    sourcePort, //client side port
-    upgradeUrl,// primus upgrade url for establishing the connection socket
-    happnVersion, // for new clients, package version
-    happnProtocolVersion // happn_4, happn (old connections)
+    "event", //session attached / session detatched
+    "username", //user name or 'anonymous (unsecure connection)',
+    "sourceAddress", //session source address,
+    "sourcePort", //client side port
+    "upgradeUrl",// primus upgrade url for establishing the connection socket
+    "happnVersion", // for new clients, package version
+    "happnProtocolVersion" // happn_4, happn (old connections)
   }
 ```
 
@@ -1250,6 +1250,30 @@ function (e, myHappn3Instance) {
  });
 
 ```
+
+ANONYMOUS USER
+--------------
+*The anonymous user can be enabled using the following configuration:*
+
+```javascript
+var happn = require('happn-3')
+var happnInstance = await happn.service.create({
+  secure: true,
+  services: {
+    security: {
+      config: {
+        allowAnonymousAccess: true //allow creation of anonymous user
+      }
+    }
+  }
+});
+
+const anonymousClient = await happn.client.create({
+        username: '_ANONYMOUS'
+      });
+```
+- the anonymous user can log in without a password, the username must just be _ANONYMOUS
+- the anonymous user can be given permissions to allow for actions in the system that dont require authentication
 
 USER PERMISSIONS
 ----------------

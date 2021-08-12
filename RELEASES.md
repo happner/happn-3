@@ -852,3 +852,8 @@
 11.11.0 2021-07-14
 -----------------
   - feature: SMC-1810 - added support for getting and listening on nested permissions.
+
+11.12.0 2021-08-06
+-----------------
+  - SMC-3460 - added support for anonymous user.
+  - SMC-3646 - set up coveralls and github actions
