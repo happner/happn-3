@@ -1,5 +1,3 @@
-const { pathExists } = require('fs-extra');
-
 describe(
   require('../../../__fixtures/utils/test_helper')
     .create()
@@ -27,7 +25,6 @@ describe(
     }
 
     it('Tests adding a non-happ3 auth provider, (by path) in config, the default auth provider should be the happn-3 provider', async () => {
-
       let instance = await getService({
         services: {
           security: {

@@ -1,6 +1,6 @@
 {
   "name": "happn-3",
-  "version": "11.11.0",
+  "version": "11.11.1-auth-providers",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "keywords": [
     "mongo",
@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "async": "^3.2.0",
-    "axios": "^0.21.1",
     "body-parser": "^1.18.3",
     "connect": "^3.6.6",
     "connect-cookies": "^0.0.0",

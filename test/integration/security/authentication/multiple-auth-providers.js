@@ -1,5 +1,3 @@
-const { pathExists } = require('fs-extra');
-
 describe(
   require('../../../__fixtures/utils/test_helper')
     .create()
@@ -84,9 +82,8 @@ describe(
             'session',
             null,
             async (e, result) => {
-                console.log(result)
-              expect(e).to.be(null)
-              expect(result.user).to.be(addedTestuser)
+              expect(e).to.be(null);
+              expect(result.user).to.be(addedTestuser);
               await stopService(instance);
             }
           );
