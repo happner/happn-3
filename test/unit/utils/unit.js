@@ -268,7 +268,7 @@ describe(
         expect(param1).to.be('param1');
         expect(param2).to.be('param2');
         expect(param3).to.be('param3');
-        expect(Date.now() - started).to.be.greaterThan(1000);
+        expect(Date.now() - started >= 1000).to.be(true);
         done();
       };
       utils.wrapImmediate(callback, 1000)('param1', 'param2', 'param3');

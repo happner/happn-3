@@ -1,6 +1,6 @@
 {
   "name": "happn-3",
-  "version": "11.12.0",
+  "version": "11.12.1",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "keywords": [
     "mongo",
