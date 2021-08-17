@@ -855,13 +855,17 @@
 
 11.12.0 2021-08-06
 -----------------
-  - SMC-3460 - added support for anonymous user.
-  - SMC-3646 - set up coveralls and github actions
+  - feature: SMC-3460 - added support for anonymous user.
+  - process: SMC-3646 - set up coveralls and github actions
 
 11.12.1 2021-08-11
 -----------------
-- bugfix: SMC-3682 - only add criteria to db query if passed in
+  - bugfix: SMC-3682 - only add criteria to db query if passed in
 
 11.12.2 2021-08-16
 -----------------
-- optimisation: SMC-3720 - in Publication.prototype.publish, don't call async.eachLimit on empty array
+  - optimisation: SMC-3720 - in Publication.prototype.publish, don't call async.eachLimit on empty array
+
+11.13.0 2021-08-17
+-----------------
+  - feature: SMC-2717 - cookie lifecycle events
