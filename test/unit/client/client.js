@@ -1,11 +1,8 @@
-const testHelper = require('../../__fixtures/utils/test_helper').create();
-describe(testHelper.testName(__filename, 3), function() {
-  this.timeout(10000);
-
-  var expect = require('expect.js');
-  var HappnClient = require('../../../lib/client');
-  var Constants = require('../../../lib/constants');
-
+const test = require('../../__fixtures/utils/test_helper').create();
+describe(test.testName(__filename, 3), function() {
+  this.timeout(15000);
+  const HappnClient = require('../../../lib/client');
+  const Constants = require('../../../lib/constants');
   function mockHappnClient(
     log,
     state,
@@ -35,7 +32,8 @@ describe(testHelper.testName(__filename, 3), function() {
       end: socketEnd || function() {},
       removeAllListeners: removeAllListeners || function() {},
       write: function() {},
-      on: function() {}
+      on: function() {},
+      destroy: function() {}
     };
 
     happnClient.options = clientOptions || {
@@ -91,8 +89,8 @@ describe(testHelper.testName(__filename, 3), function() {
       },
       null,
       function(e) {
-        expect(e.toString()).to.be('Error: client not active');
-        expect(e.detail).to.be('action: set, path: /test/path');
+        test.expect(e.toString()).to.be('Error: client not active');
+        test.expect(e.detail).to.be('action: set, path: /test/path');
         done();
       }
     );
@@ -109,8 +107,8 @@ describe(testHelper.testName(__filename, 3), function() {
       },
       null,
       function(e) {
-        expect(e.toString()).to.be('Error: client in an error state');
-        expect(e.detail).to.be('action: set, path: /test/path');
+        test.expect(e.toString()).to.be('Error: client in an error state');
+        test.expect(e.detail).to.be('action: set, path: /test/path');
         done();
       }
     );
@@ -127,8 +125,8 @@ describe(testHelper.testName(__filename, 3), function() {
       },
       null,
       function(e) {
-        expect(e.toString()).to.be('Error: client is disconnected');
-        expect(e.detail).to.be('action: set, path: /test/path');
+        test.expect(e.toString()).to.be('Error: client is disconnected');
+        test.expect(e.detail).to.be('action: set, path: /test/path');
         done();
       }
     );
@@ -145,8 +143,8 @@ describe(testHelper.testName(__filename, 3), function() {
       },
       null,
       function(e) {
-        expect(e.toString()).to.be('Error: client not initialized yet');
-        expect(e.detail).to.be('action: set, path: /test/path');
+        test.expect(e.toString()).to.be('Error: client not initialized yet');
+        test.expect(e.detail).to.be('action: set, path: /test/path');
         done();
       }
     );
@@ -160,8 +158,8 @@ describe(testHelper.testName(__filename, 3), function() {
         test: 'data'
       });
     } catch (e) {
-      expect(e.toString()).to.be('Error: client not active');
-      expect(e.detail).to.be('action: set, path: /test/path');
+      test.expect(e.toString()).to.be('Error: client not active');
+      test.expect(e.detail).to.be('action: set, path: /test/path');
       done();
     }
   });
@@ -174,8 +172,8 @@ describe(testHelper.testName(__filename, 3), function() {
         test: 'data'
       });
     } catch (e) {
-      expect(e.toString()).to.be('Error: client in an error state');
-      expect(e.detail).to.be('action: set, path: /test/path');
+      test.expect(e.toString()).to.be('Error: client in an error state');
+      test.expect(e.detail).to.be('action: set, path: /test/path');
       done();
     }
   });
@@ -188,8 +186,8 @@ describe(testHelper.testName(__filename, 3), function() {
         test: 'data'
       });
     } catch (e) {
-      expect(e.toString()).to.be('Error: client is disconnected');
-      expect(e.detail).to.be('action: set, path: /test/path');
+      test.expect(e.toString()).to.be('Error: client is disconnected');
+      test.expect(e.detail).to.be('action: set, path: /test/path');
       done();
     }
   });
@@ -202,8 +200,8 @@ describe(testHelper.testName(__filename, 3), function() {
         test: 'data'
       });
     } catch (e) {
-      expect(e.toString()).to.be('Error: client not initialized yet');
-      expect(e.detail).to.be('action: set, path: /test/path');
+      test.expect(e.toString()).to.be('Error: client not initialized yet');
+      test.expect(e.detail).to.be('action: set, path: /test/path');
       done();
     }
   });
@@ -216,8 +214,8 @@ describe(testHelper.testName(__filename, 3), function() {
         test: 'data'
       });
     } catch (e) {
-      expect(e.toString()).to.be('Error: client not initialized yet');
-      expect(e.detail).to.be('action: set, path: /test/path');
+      test.expect(e.toString()).to.be('Error: client not initialized yet');
+      test.expect(e.detail).to.be('action: set, path: /test/path');
       done();
     }
   });
@@ -235,7 +233,7 @@ describe(testHelper.testName(__filename, 3), function() {
     };
     var listener = happnClient.__getListener('test-handler', mockParameters, 'test-path', 15);
 
-    expect(listener).to.eql({
+    test.expect(listener).to.eql({
       handler: 'test-handler',
       count: 10,
       eventKey: JSON.stringify({
@@ -278,7 +276,7 @@ describe(testHelper.testName(__filename, 3), function() {
     happnClient.__clearListenerState = function() {};
 
     happnClient.__confirmRemoteOn(path, parameters, listener, function(e) {
-      expect(e.toString()).to.be('Error: test-error');
+      test.expect(e.toString()).to.be('Error: test-error');
       done();
     });
   });
@@ -307,7 +305,7 @@ describe(testHelper.testName(__filename, 3), function() {
     happnClient.__clearListenerState = function() {};
 
     happnClient.__confirmRemoteOn(path, parameters, listener, function(e) {
-      expect(e).to.be('test-error');
+      test.expect(e).to.be('test-error');
       done();
     });
   });
@@ -348,7 +346,7 @@ describe(testHelper.testName(__filename, 3), function() {
       if (e) return done(e);
 
       setTimeout(function() {
-        expect(remoteOnCalled).to.be(3);
+        test.expect(remoteOnCalled).to.be(3);
         done();
       }, 2000);
     });
@@ -383,7 +381,9 @@ describe(testHelper.testName(__filename, 3), function() {
     };
 
     happnClient.__reattachListeners(function(e) {
-      expect(e.toString()).to.be('Error: failed re-establishing listener to path: test/event/1/*');
+      test
+        .expect(e.toString())
+        .to.be('Error: failed re-establishing listener to path: test/event/1/*');
       done();
     });
   });
@@ -429,7 +429,9 @@ describe(testHelper.testName(__filename, 3), function() {
     };
 
     happnClient.__reattachListeners(function(e) {
-      expect(e.toString()).to.be('Error: failed re-establishing listener to path: test/event/1/*');
+      test
+        .expect(e.toString())
+        .to.be('Error: failed re-establishing listener to path: test/event/1/*');
       done();
     });
   });
@@ -460,15 +462,17 @@ describe(testHelper.testName(__filename, 3), function() {
     };
 
     let localEnded;
-    expect(
-      await destroySocketPromise({
-        _local: true,
-        end: () => {
-          localEnded = true;
-        }
-      })
-    ).to.be(undefined);
-    expect(localEnded).to.be(true);
+    test
+      .expect(
+        await destroySocketPromise({
+          _local: true,
+          end: () => {
+            localEnded = true;
+          }
+        })
+      )
+      .to.be(undefined);
+    test.expect(localEnded).to.be(true);
 
     let readyStateNot1Destroyed;
     let readyStateNot1DestroyedSocket = {
@@ -480,8 +484,8 @@ describe(testHelper.testName(__filename, 3), function() {
         readyStateNot1Destroyed = true;
       }
     };
-    expect(await destroySocketPromise(readyStateNot1DestroyedSocket)).to.be(undefined);
-    expect(readyStateNot1Destroyed).to.be(true);
+    test.expect(await destroySocketPromise(readyStateNot1DestroyedSocket)).to.be(undefined);
+    test.expect(readyStateNot1Destroyed).to.be(true);
 
     let readyState1Destroyed;
     let readyState1DestroyedSocket = {
@@ -495,15 +499,15 @@ describe(testHelper.testName(__filename, 3), function() {
         return readyStateNot1DestroyedSocket;
       },
       once: (evt, handler) => {
-        expect(evt === 'close');
+        test.expect(evt === 'close');
         readyState1DestroyedSocket.handler = handler;
         return readyState1DestroyedSocket;
       }
     };
     const readyState1DestroyedResult = await destroySocketPromise(readyState1DestroyedSocket);
-    await testHelper.delay(2000);
-    expect(readyState1DestroyedResult).to.be(undefined);
-    expect(readyState1Destroyed).to.be(true);
+    await test.delay(2000);
+    test.expect(readyState1DestroyedResult).to.be(undefined);
+    test.expect(readyState1Destroyed).to.be(true);
   });
 
   it('tests the __connectionCleanup function, socket present', function(done) {
@@ -523,7 +527,7 @@ describe(testHelper.testName(__filename, 3), function() {
     };
 
     happnClient.__connectionCleanup(null, e => {
-      testHelper.expect(e).to.be(undefined);
+      test.expect(e).to.be(undefined);
     });
   });
 
@@ -542,9 +546,9 @@ describe(testHelper.testName(__filename, 3), function() {
       },
       mockDocument
     );
-    expect(mockDocument.cookie).to.be(
-      'test_happn_token=[test token]; path=/; domain=[test cookie domain]; Secure;'
-    );
+    test
+      .expect(mockDocument.cookie)
+      .to.be('test_happn_token=[test token]; path=/; domain=[test cookie domain]; Secure;');
     happnClient.options.protocol = 'http';
     mockDocument = {};
     happnClient.__writeCookie(
@@ -555,8 +559,115 @@ describe(testHelper.testName(__filename, 3), function() {
       },
       mockDocument
     );
-    expect(mockDocument.cookie).to.be(
-      'happn_token=[test token]; path=/; domain=[test cookie domain];'
+    test
+      .expect(mockDocument.cookie)
+      .to.be('happn_token=[test token]; path=/; domain=[test cookie domain];');
+  });
+
+  it('tests the cookie lifecycle events, write and expire', function() {
+    this.timeout(5000);
+    const events = [];
+    const cookieEventHandler = (event, cookie) => {
+      events.push({ event, cookie });
+    };
+    const happnClient = mockHappnClient(null, null, null, null, null, null, function() {}, null);
+    happnClient.options = happnClient.options || {};
+    happnClient.options.protocol = 'https';
+    happnClient.cookieEventHandler = cookieEventHandler;
+    let mockDocument = {};
+    happnClient.__writeCookie(
+      {
+        httpsCookie: true,
+        cookieName: 'test_happn_token',
+        token: '[test token]',
+        cookieDomain: '[test cookie domain]'
+      },
+      mockDocument
     );
+    happnClient.__expireCookie(
+      {
+        httpsCookie: true,
+        cookieName: 'test_happn_token',
+        token: '[test token]',
+        cookieDomain: '[test cookie domain]'
+      },
+      mockDocument
+    );
+    test.expect(events).to.eql([
+      {
+        event: 'cookie-write',
+        cookie: 'test_happn_token=[test token]; path=/; domain=[test cookie domain]; Secure;'
+      },
+      {
+        event: 'cookie-expired',
+        cookie:
+          'test_happn_token=; path=/; domain=[test cookie domain]; Secure;; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
+      }
+    ]);
+  });
+
+  it('tests the cookie __setCookieCheckTimer', async () => {
+    this.timeout(5000);
+    const events = [];
+    global.document = {};
+    const cookieEventHandler = (event, cookie) => {
+      events.push({ event, cookie });
+    };
+    let mockDocument = {};
+    const happnClient = mockHappnClient(null, null, null, null, null, null, function() {}, null);
+    happnClient.options = happnClient.options || {};
+    happnClient.options.protocol = 'https';
+    happnClient.log = {
+      warn: () => {}
+    };
+
+    happnClient.__setCookieCheckTimer(); // we see that nothing happens on this call as cookieEventHandler is null
+
+    happnClient.cookieEventHandler = cookieEventHandler;
+
+    happnClient.__setCookieCheckTimer(
+      {
+        httpsCookie: true,
+        cookieName: 'test_happn_token',
+        token: '[test token]',
+        cookieDomain: '[test cookie domain]'
+      },
+      mockDocument
+    );
+    happnClient.__writeCookie(
+      {
+        httpsCookie: true,
+        cookieName: 'test_happn_token',
+        token: '[test token]',
+        cookieDomain: '[test cookie domain]'
+      },
+      mockDocument
+    );
+    happnClient.__expireCookie(
+      {
+        httpsCookie: true,
+        cookieName: 'test_happn_token',
+        token: '[test token]',
+        cookieDomain: '[test cookie domain]'
+      },
+      mockDocument
+    );
+    await test.delay(5000);
+    test.expect(events).to.eql([
+      { event: 'cookie-created', cookie: '' },
+      {
+        event: 'cookie-write',
+        cookie: 'test_happn_token=[test token]; path=/; domain=[test cookie domain]; Secure;'
+      },
+      {
+        event: 'cookie-expired',
+        cookie:
+          'test_happn_token=; path=/; domain=[test cookie domain]; Secure;; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
+      },
+      { event: 'cookie-deleted', cookie: '' }
+    ]);
+    happnClient.disconnect({ deleteCookie: true });
+    happnClient.__cookieCleanup(mockDocument);
+    global.document = null;
   });
 });
