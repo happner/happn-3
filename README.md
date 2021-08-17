@@ -1861,7 +1861,7 @@ Happn-3 can now be configured with multiple, and/or custom authentication provid
 and work as it has always done. In order to use a different authentication provider, you must pass in either an absolute path, or an installed module name, 
 in the security service config. Note that to use the happn-3 provider, or any future providers which are native to happn-3, you need not input an absolute path, 
 you can give a path relative to ./lib/services/security/authentication, where any native auth-providers will be stored.
-Example: Happn-3 and other provider, otherProvider default
+Example: Happn-3 and 2 other providers, otherAuthProvider default
 ```javascript
 const serviceConfig = {
   secure: true,
@@ -1869,10 +1869,10 @@ const serviceConfig = {
     security: {
       config: {
         authProviders:{
-          happn3 :'./happn3-provider.js'
+          happn3 :'./happn3-provider.js',
           otherAuthProvider: '/path/to/other/provider.js',
           moduleProvider: 'moduleName'       
-        }
+        },
         defaultAuthProvider: 'otherAuthProvider'
     }
   }
@@ -1884,7 +1884,12 @@ service.create(serviceConfig, function(e, happnInst) {
   //server created with three auth providers, one at /path/to/other/provider.js, one in module 'moduleName', and the standard happn-3 provider
 });
 ```
-In order to specify which authentication provider to use, requests should add a flag, authType: name, to the credentials object used at login, where name is the providers name (as it appears as a key in config.authProviders).
+In order to specify which authentication provider to use, requests should add a flag, authType: name, to the credentials object used at login, where name is the providers name (as it appears as a key in config.authProviders). For example to authenticate with moduleProvider:
+```
+happn.client.create({username: "user", password: "pass", authType: "moduleProvider"}, ...)
+\\or
+happpnInstance.services.security.login( {username: "user", password: "pass", authType: "moduleProvider"}, ...)
+
 Also note, that when using non default authprovider settings, the happn-3 auth provider must be included explicitly in security.config.
 
 CREATING CUSTOM AUTH PROVIDERS (AND TEMPLATE)
@@ -1902,7 +1907,7 @@ module.exports = function(BaseClass) {
     static create(happn,config) {
       return new AuthProvider(happn,config)
     }
-    
+
     __providerCredsLogin(credentials, sessionId, callback) {
       // Examine credentials.username and credentials.password
       //Login OK
