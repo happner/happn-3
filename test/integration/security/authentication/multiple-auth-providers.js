@@ -26,6 +26,7 @@ describe(
 
     it('Tests having two auth providers in config, and that the correct one can be called by adding authType to credentials', async () => {
       let instance = await getService({
+        secure: true,
         services: {
           security: {
             config: {
@@ -89,6 +90,78 @@ describe(
           );
         }
       );
+    });
+
+    it('Tests having two auth providers in config, and that the correct one can be called by adding authType at client  creation', async () => {
+      let instance = await getService({
+        port: 55555,
+        secure: true,
+        services: {
+          security: {
+            config: {
+              authProviders: {
+                happn3: 'happn3-provider',
+                second: path.resolve(
+                  __dirname,
+                  '../../../__fixtures/test/integration/security/authentication/workingAuth.js'
+                )
+              },
+              defaultAuthProvider: 'second'
+            }
+          }
+        }
+      });
+
+      let testUser = {
+        username: 'happnTestuser@somewhere.com',
+        password: 'password'
+      };
+
+      let testUser2 = {
+        username: 'secondTestuser@somewhere.com',
+        password: 'secondPass'
+      };
+
+      await instance.services.security.users.upsertUser(testUser, {
+        overwrite: false
+      });
+
+      let client = await happn.client.create({
+        port: 55555,
+        ...testUser,
+        authType: 'happn3'
+      });
+      expect(client).to.be.ok();
+      await client.disconnect({ reconnect: false });
+      try {
+        client = await happn.client.create({
+          port: 55555,
+          ...testUser2,
+          authType: 'happn3'
+        });
+        throw new Error('Should have errored');
+      } catch (e) {
+        expect(e.toString()).to.be('AccessDenied: Invalid credentials');
+      }
+      try {
+        let client = await happn.client.create({
+          port: 55555,
+          ...testUser
+          //should default auth provider to 'second'
+        });
+        throw new Error('Should have errored');
+      } catch (e) {
+        expect(e.toString()).to.be('AccessDenied: Invalid credentials');
+      }
+      expect(client).to.be.ok();
+      await client.disconnect({ reconnect: false });
+      client = await happn.client.create({
+        port: 55555,
+        ...testUser2
+      });
+      expect(client).to.be.ok();
+      await client.disconnect({ reconnect: false });
+      await stopService(instance);
     });
   }
 );
