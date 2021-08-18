@@ -144,7 +144,7 @@ describe(
         expect(e.toString()).to.be('AccessDenied: Invalid credentials');
       }
       try {
-        let client = await happn.client.create({
+        client = await happn.client.create({
           port: 55555,
           ...testUser
           //should default auth provider to 'second'
