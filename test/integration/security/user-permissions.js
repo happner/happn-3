@@ -1273,7 +1273,7 @@ describe(
           expect(e.toString()).to.eql('AccessDenied: unauthorized');
         }
         try {
-          testClient.set(
+          await testClient.set(
             '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permissions2',
             {
               test: 'data'
