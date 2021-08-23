@@ -869,3 +869,7 @@
 11.13.0 2021-08-17
 -----------------
   - feature: SMC-2717 - cookie lifecycle events
+
+11.13.1 2021-08-23
+-----------------
+  - fix: SMC-3807 - adding multiple user permissions
