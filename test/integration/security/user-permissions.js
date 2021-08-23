@@ -1181,77 +1181,6 @@ describe(
           .catch(done);
       });
 
-      it('tests the upserting and removal of multiple permissions', function(done) {
-        let addPermissions = {};
-        let removePermissions = {};
-
-        addPermissions[`/TEST/a7_eventemitter_security_access/${test_id}/upsert-permissions1`] = {
-          actions: ['set']
-        };
-        addPermissions[`/TEST/a7_eventemitter_security_access/${test_id}/upsert-permissions2`] = {
-          actions: ['set']
-        };
-
-        removePermissions[
-          `/TEST/a7_eventemitter_security_access/${test_id}/upsert-permissions1`
-        ] = { prohibit: ['set'] };
-        removePermissions[
-          `/TEST/a7_eventemitter_security_access/${test_id}/upsert-permissions2`
-        ] = { prohibit: ['set'] };
-
-        addedTestuser.permissions = addPermissions;
-
-        serviceInstance.services.security.users.upsertPermissions(addedTestuser, () => {
-          testClient.set(
-            '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permissions1',
-            {
-              test: 'data'
-            },
-            e => {
-              if (e) done(e);
-              testClient.set(
-                '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permissions2',
-                {
-                  test: 'data'
-                },
-                e => {
-                  if (e) done(e);
-                  addedTestuser.permissions = removePermissions;
-                  serviceInstance.services.security.users.upsertPermissions(
-                    //Remove the permissions again
-                    addedTestuser,
-                    e => {
-                      if (e) done(e);
-                      testClient.set(
-                        '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permissions1',
-                        {
-                          test: 'data'
-                        },
-                        e => {
-                          expect(e.toString()).to.eql('AccessDenied: unauthorized');
-                          testClient.set(
-                            '/TEST/a7_eventemitter_security_access/' +
-                              test_id +
-                              '/upsert-permissions2',
-                            {
-                              test: 'data'
-                            },
-                            e => {
-                              expect(e.toString()).to.eql('AccessDenied: unauthorized');
-                              done();
-                            }
-                          );
-                        }
-                      );
-                    }
-                  );
-                }
-              );
-            }
-          );
-        });
-      });
-
       it('tests the prohibit permission', function(done) {
         var prohibitPath =
           '/TEST/a7_eventemitter_security_access/' + test_id + '/prohibit-permission';
@@ -1296,6 +1225,63 @@ describe(
             done();
           })
           .catch(done);
+      });
+
+      it('tests the upserting and removal of multiple permissions', async () => {
+        let addPermissions = {};
+        let removePermissions = {};
+
+        addPermissions[`/TEST/a7_eventemitter_security_access/${test_id}/upsert-permissions1`] = {
+          actions: ['set']
+        };
+        addPermissions[`/TEST/a7_eventemitter_security_access/${test_id}/upsert-permissions2`] = {
+          actions: ['set']
+        };
+
+        removePermissions[
+          `/TEST/a7_eventemitter_security_access/${test_id}/upsert-permissions1`
+        ] = { prohibit: ['set'] };
+        removePermissions[
+          `/TEST/a7_eventemitter_security_access/${test_id}/upsert-permissions2`
+        ] = { prohibit: ['set'] };
+
+        addedTestuser.permissions = addPermissions;
+
+        await serviceInstance.services.security.users.upsertPermissions(addedTestuser);
+        await testClient.set(
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permissions1',
+          {
+            test: 'data'
+          }
+        );
+        await testClient.set(
+          '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permissions2',
+          {
+            test: 'data'
+          }
+        );
+        addedTestuser.permissions = removePermissions;
+        await serviceInstance.services.security.users.upsertPermissions(addedTestuser);
+        try {
+          await testClient.set(
+            '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permissions1',
+            {
+              test: 'data'
+            }
+          );
+        } catch (e) {
+          expect(e.toString()).to.eql('AccessDenied: unauthorized');
+        }
+        try {
+          testClient.set(
+            '/TEST/a7_eventemitter_security_access/' + test_id + '/upsert-permissions2',
+            {
+              test: 'data'
+            }
+          );
+        } catch (e) {
+          expect(e.toString()).to.eql('AccessDenied: unauthorized');
+        }
       });
 
       it('checks templated permissions', function(done) {
