@@ -873,3 +873,7 @@
 11.13.1 2021-08-23
 -----------------
   - fix: SMC-3807 - adding multiple user permissions
+
+11.13.2 2021-08-27
+-----------------
+  - fix: SMC-3242 - Will correctly listRelevantPermissions for onBehalfOf sessions
