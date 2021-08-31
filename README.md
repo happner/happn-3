@@ -1857,10 +1857,9 @@ serviceInstanceLocked.services.session.localClient({
 ```
 AUTHENTICATION PROVIDER(S)
 --------------------------
-Happn-3 can now be configured with multiple, and/or custom authentication providers. By default, happn-3 will launch using the "happn3" authentication provider, 
+Happn-3 can now be configured with multiple, and/or custom authentication providers. By default, happn-3 will launch using the "happn" authentication provider, 
 and work as it has always done. In order to use a different authentication provider, you must pass in either an absolute path, or an installed module name, 
-in the security service config. Note that to use the happn-3 provider, or any future providers which are native to happn-3, you need not input an absolute path, 
-you can give a path relative to ./lib/services/security/authentication, where any native auth-providers will be stored.
+in the security service config. Note that the standard happn provider is always available unless you specify the fal
 Example: Happn-3 and 2 other providers, otherAuthProvider default
 ```javascript
 const serviceConfig = {
@@ -1868,8 +1867,7 @@ const serviceConfig = {
   services: {
     security: {
       config: {
-        authProviders:{
-          happn3 :'./happn3-provider.js',
+        authProviders:{          
           otherAuthProvider: '/path/to/other/provider.js',
           moduleProvider: 'moduleName'       
         },
@@ -1881,10 +1879,33 @@ const serviceConfig = {
 var happn = require('../lib/index')
 var service = happn.service;
 service.create(serviceConfig, function(e, happnInst) {
-  //server created with three auth providers, one at /path/to/other/provider.js, one in module 'moduleName', and the standard happn-3 provider
+  //server created with three auth providers, one at /path/to/other/provider.js, one in module 'moduleName', and the standard happn provider
 });
 ```
-In order to specify which authentication provider to use, requests should add a flag, authType: name, to the credentials object used at login, where name is the providers name (as it appears as a key in config.authProviders). For example to authenticate with moduleProvider:
+ Note that the standard happn provider is always available unless you specify the flag happn: false in authProviders 
+
+ ```javascript
+const serviceConfig = {
+  secure: true,
+  services: {
+    security: {
+      config: {
+        authProviders:{          
+          otherAuthProvider: '/path/to/other/provider.js',          
+          happn:false      
+        },
+        defaultAuthProvider: 'otherAuthProvider'
+    }
+  }
+};
+
+var happn = require('../lib/index')
+var service = happn.service;
+service.create(serviceConfig, function(e, happnInst) {
+  //server created with only one auth provider,  at /path/to/other/provider.js, and NO  standard happn provider
+});
+```
+In order to specify which authentication provider to use, requests should add a flag, `authType: 'auth-provider-name'`, to the credentials object used at login, where name is the providers name (as it appears as a key in config.authProviders). For example to authenticate with moduleProvider:
 ```
 happn.client.create({username: "user", password: "pass", authType: "moduleProvider"}, ...)
 \\or

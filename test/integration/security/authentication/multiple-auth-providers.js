@@ -31,7 +31,6 @@ describe(
           security: {
             config: {
               authProviders: {
-                happn3: 'happn3-provider',
                 blankAuth: path.resolve(
                   __dirname,
                   '../../../__fixtures/test/integration/security/authentication/secondAuthProvider.js'
@@ -55,7 +54,7 @@ describe(
       });
 
       expect(Object.keys(instance.services.security.authProviders)).to.eql([
-        'happn3',
+        'happn',
         'blankAuth',
         'default'
       ]);
@@ -100,7 +99,6 @@ describe(
           security: {
             config: {
               authProviders: {
-                happn3: 'happn3-provider',
                 second: path.resolve(
                   __dirname,
                   '../../../__fixtures/test/integration/security/authentication/workingAuth.js'
@@ -129,7 +127,7 @@ describe(
       let client = await happn.client.create({
         port: 55555,
         ...testUser,
-        authType: 'happn3'
+        authType: 'happn'
       });
       expect(client).to.be.ok();
       await client.disconnect({ reconnect: false });
@@ -137,7 +135,7 @@ describe(
         client = await happn.client.create({
           port: 55555,
           ...testUser2,
-          authType: 'happn3'
+          authType: 'happn'
         });
         throw new Error('Should have errored');
       } catch (e) {

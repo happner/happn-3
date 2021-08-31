@@ -24,7 +24,7 @@ describe(
       });
     }
 
-    it('Tests adding a non-happ3 auth provider, (by path) in config, the default auth provider should be the happn-3 provider', async () => {
+    it('Tests adding a non-happ3 auth provider (by path) in config, by config the default auth provider should be the added provider', async () => {
       let instance = await getService({
         services: {
           security: {
@@ -42,6 +42,7 @@ describe(
       });
 
       expect(Object.keys(instance.services.security.authProviders)).to.eql([
+        'happn',
         'blankAuth',
         'default'
       ]);
@@ -53,8 +54,47 @@ describe(
         'Login called in second auth provider'
       );
       //Base class function
+      instance.services.security.authProviders.default.accessDenied('Error Message', async (e) => {
+        console.log(e.toString())
+        expect(e.toString()).to.be('AccessDenied: Error Message');
+        console.log("Stopping")
+        await stopService(instance);
+      });
+    });
+
+
+    it('Tests adding a non-happ3 auth provider (by path) in config, with happn = false', async () => {
+      let instance = await getService({
+        services: {
+          security: {
+            config: {
+              authProviders: {
+                blankAuth: path.resolve(
+                  __dirname,
+                  '../../../__fixtures/test/integration/security/authentication/secondAuthProvider.js'
+                ),
+                happn: false
+              },
+              defaultAuthProvider: 'blankAuth'
+            }
+          }
+        }
+      });
+
+      expect(Object.keys(instance.services.security.authProviders)).to.eql([
+        'blankAuth',
+        'default'
+      ]); //No happn
+      expect(instance.services.security.authProviders.default).to.be(
+        instance.services.security.authProviders.blankAuth
+      );
+      //Over-ridden function
+      expect(instance.services.security.authProviders.default.login()).to.eql(
+        'Login called in second auth provider'
+      );
+      //Base class function
       instance.services.security.authProviders.default.accessDenied('Error Message', async e => {
-        expect(e.toString()).to.be('AccessDenied: Error Message:');
+        expect(e.toString()).to.be('AccessDenied: Error Message');
         await stopService(instance);
       });
     });
