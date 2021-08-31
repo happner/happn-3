@@ -2028,6 +2028,9 @@ happn.client.create({protocol:'https', allowSelfSignedCerts:true},function(e, in
 
 ```
 
+BROWSER CLIENT AND COOKIES
+--------------------------
+
 HTTPS COOKIE, AND COOKIE NAME
 -----------------------------
 
@@ -2060,6 +2063,40 @@ service.create(serviceConfig, function(e, happnInst) {
   //server created with httpsCookie switched on
 });
 
+```
+
+LOGGING IN WITH THE COOKIE
+--------------------------
+*in an environment where there are multiple browser clients, and a primary client has logged in and the cookie has been written to storage, it is possible to create a client and log in with the existing cookie*
+
+```javascript
+let client = await HappnClient.create({
+  port: 55003,
+  protocol: 'https',
+  useCookie: true, //useCookie flag means the client will log in with watever session cookie is available
+});
+```
+
+COOKIE LIFECYCLE EVENTS
+-----------------------
+*a cookie event handler can be attached via the client options - this handler will field the following cookie lifecycle events:*
+  - cookie-write: when the cookie is written to storage (only on client you have attached handler to)
+  - cookie-created: when there was no cookie and a new one has appeared (broadcasted to any client in the current window)
+  - cookie-expired: happens when your client has disconnected with deleteCookie:true (only on client you have attached handler to)
+  - cookie-deleted: happens when there was a cookie and it has been expired by a client (broadcasted to any client in the current window)
+
+```javascript
+let client = await HappnClient.create({
+      port: 55003,
+      protocol: 'https',
+      useCookie: true,
+      cookieEventHandler: (event, cookie) => {
+        if (event === 'cookie-write') console.log(`I wrote this new cookie on login: ${cookie}`);
+        if (event === 'cookie-created') console.log(`Someone (maybe me) created a new cookie: ${cookie}`);
+        if (event === 'cookie-expired') console.log(`I expired this cookie on disconnect: ${cookie}`);
+        if (event === 'cookie-deleted') console.log(`Someone (maybe me) deleted this cookie on disconnect: ${cookie}`);
+      }
+    });
 ```
 
 HTTP/S KEEPALIVES

@@ -38,6 +38,8 @@ describe(test.testName(__filename, 3), function() {
   let addedTestGroup;
   let addedTestGroup2;
   let addedTestGroup3;
+  let addedTestGroup4;
+  let testUser;
 
   let addedTestuser;
 
@@ -94,6 +96,18 @@ describe(test.testName(__filename, 3), function() {
         }
       };
 
+      let testGroup4 = {
+        name: 'TEST GROUP4',
+        permissions: {
+          '/TEST/7/1/1': {
+            actions: ['on', 'get']
+          },
+          '/TEST/7/3/*': {
+            actions: ['on', 'get']
+          }
+        }
+      };
+
       addedTestGroup = await serviceInstance.services.security.users.upsertGroup(testGroup, {
         overwrite: false
       });
@@ -106,7 +120,11 @@ describe(test.testName(__filename, 3), function() {
         overwrite: false
       });
 
-      const testUser = {
+      addedTestGroup4 = await serviceInstance.services.security.users.upsertGroup(testGroup4, {
+        overwrite: false
+      });
+
+      testUser = {
         username: 'TEST',
         password: 'TEST PWD',
         permissions: {}
@@ -198,7 +216,21 @@ describe(test.testName(__filename, 3), function() {
       results = await testClient.get('/TEMPLATED/TEST/**');
       test.expect(results[0].test).to.be(4);
     });
-  }).timeout(5000);
+
+    it('delegated authority: checks get is accurate', async () => {
+      await adminClient.set('/TEST/7/1/1', { test: 1 });
+      await adminClient.set('/TEST/7/2', { test: 2 });
+      await adminClient.set('/TEST/7/3', { test: 3 });
+      await adminClient.set('/TEST/7/3/1', { test: 4 });
+      await adminClient.set('/TEST/7/3/1/2', { test: 5 });
+      let results = await adminClient.get('/TEST/7/**');
+      test.expect(results.map(result => result.test)).to.eql([1, 2, 3, 4, 5]);
+      await serviceInstance.services.security.users.linkGroup(addedTestGroup4, addedTestuser);
+      results = await adminClient.get('/TEST/7/**', { onBehalfOf: testUser.username });
+      test.expect(results.map(result => result.test)).to.eql([1, 4, 5]);
+      await serviceInstance.services.security.users.unlinkGroup(addedTestGroup4, addedTestuser);
+    }).timeout(5000);
+  });
 
   context('events', function() {
     it('recieves events from an allowed set of nested permissions', async () => {
@@ -283,6 +315,26 @@ describe(test.testName(__filename, 3), function() {
 
       await testClient.offAll();
     }).timeout(10000);
+
+    it('delegated authority: checks subscription is accurate', async () => {
+      let results = [];
+      let handler = data => {
+        results.push(data.test);
+      };
+
+      await serviceInstance.services.security.users.linkGroup(addedTestGroup4, addedTestuser);
+
+      await adminClient.on('/TEST/7/**', { onBehalfOf: testUser.username }, handler);
+
+      await adminClient.set('/TEST/7/1/1', { test: 1 });
+      await adminClient.set('/TEST/7/2', { test: 2 });
+      await adminClient.set('/TEST/7/3', { test: 3 });
+      await adminClient.set('/TEST/7/3/1', { test: 4 });
+      await adminClient.set('/TEST/7/3/1/2', { test: 5 });
+
+      test.expect(results).to.eql([1, 4, 5]);
+      await serviceInstance.services.security.users.unlinkGroup(addedTestGroup4, addedTestuser);
+    });
 
     it('Links and unlinks a group with permissions to a subpath of a wild path we have subscribed to (1/2/3/4 after subscribing to 1/2/**), and checks that events are recieved correctly', async () => {
       const events = [];
