@@ -89,12 +89,10 @@ describe(
         null,
         async (error, result) => {
           expect(result).to.be(undefined);
-          console.log(error.toString());
           expect(error.toString()).to.be('AccessDenied: __providerCredsLogin not implemented.');
           await stopService(instance);
         }
       );
     });
-    
   }
 );

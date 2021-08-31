@@ -1910,7 +1910,7 @@ In order to specify which authentication provider to use, requests should add a 
 happn.client.create({username: "user", password: "pass", authType: "moduleProvider"}, ...)
 \\or
 happpnInstance.services.security.login( {username: "user", password: "pass", authType: "moduleProvider"}, ...)
-
+```
 Also note, that when using non default authprovider settings, the happn-3 auth provider must be included explicitly in security.config.
 
 CREATING CUSTOM AUTH PROVIDERS (AND TEMPLATE)

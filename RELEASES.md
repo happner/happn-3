@@ -877,3 +877,7 @@
 11.13.2 2021-08-27
 -----------------
   - fix: SMC-3242 - Will correctly listRelevantPermissions for onBehalfOf sessions
+
+11.13.3 2021-08-31
+-----------------
+  - feature: SMC-2954 - Allows for configuration and use of multiple authentication providers.
