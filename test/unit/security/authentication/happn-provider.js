@@ -11,7 +11,6 @@ describe(
     before('It Creates a mock happn', async () => {
       mockHappn = await mockServices();
     });
-    
     after('stops services', async () => {
       await stopServices(mockHappn);
     });
@@ -164,7 +163,7 @@ describe(
             if (!happnMock.services[serviceName].stop) return eachServiceCB();
             happnMock.services[serviceName].stop(eachServiceCB);
           },
-          (e, r) => {
+          e => {
             if (e) return rej(e);
             res();
           }
