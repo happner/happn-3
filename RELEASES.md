@@ -877,3 +877,7 @@
 11.13.2 2021-08-27
 -----------------
   - fix: SMC-3242 - Will correctly listRelevantPermissions for onBehalfOf sessions
+
+11.13.3 2021-09-08
+-----------------
+  - fix: SMC-4044 - cookie events not dependent on client login

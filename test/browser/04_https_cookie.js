@@ -11,7 +11,7 @@ describe('04 https cookie', function() {
       password: 'happn'
     });
     await testClient(55003);
-    await client.disconnect();
+    await client.disconnect({ deleteCookie: true });
   });
 
   function doPost(path, port, callback) {
