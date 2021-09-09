@@ -593,11 +593,9 @@ describe(test.testName(__filename, 3), function() {
 
     await test.delay(2000);
 
-    test
-      .expect(eventsHappnToken)
-      .to.eql([{ event: 'cookie-created', cookie: 'happn_token_cookie' }]);
-    test.expect(eventsNotFound).to.eql([{ event: 'cookie-deleted', cookie: '' }]);
-    test.expect(eventsSpecified).to.eql([{ event: 'cookie-created', cookie: 'specified_cookie' }]);
+    test.expect(eventsHappnToken).to.eql([]);
+    test.expect(eventsNotFound).to.eql([]);
+    test.expect(eventsSpecified).to.eql([]);
 
     cookieInstances['happn_token'] = '';
     cookieInstances['specified_cookie'] = '';
@@ -605,18 +603,11 @@ describe(test.testName(__filename, 3), function() {
 
     await test.delay(2000);
 
-    test.expect(eventsHappnToken).to.eql([
-      { event: 'cookie-created', cookie: 'happn_token_cookie' },
-      { event: 'cookie-deleted', cookie: 'happn_token_cookie' }
-    ]);
-    test.expect(eventsNotFound).to.eql([
-      { event: 'cookie-deleted', cookie: '' },
-      { event: 'cookie-created', cookie: 'found_actually' }
-    ]);
-    test.expect(eventsSpecified).to.eql([
-      { event: 'cookie-created', cookie: 'specified_cookie' },
-      { event: 'cookie-deleted', cookie: 'specified_cookie' }
-    ]);
+    test
+      .expect(eventsHappnToken)
+      .to.eql([{ event: 'cookie-deleted', cookie: 'happn_token_cookie' }]);
+    test.expect(eventsNotFound).to.eql([{ event: 'cookie-created', cookie: 'found_actually' }]);
+    test.expect(eventsSpecified).to.eql([{ event: 'cookie-deleted', cookie: 'specified_cookie' }]);
 
     cookieInstances['happn_token'] = 'new_happn_token';
     cookieInstances['specified_cookie'] = 'new_specified_cookie';
@@ -625,17 +616,14 @@ describe(test.testName(__filename, 3), function() {
     await test.delay(2000);
 
     test.expect(eventsHappnToken).to.eql([
-      { event: 'cookie-created', cookie: 'happn_token_cookie' },
       { event: 'cookie-deleted', cookie: 'happn_token_cookie' },
       { event: 'cookie-created', cookie: 'new_happn_token' }
     ]);
     test.expect(eventsNotFound).to.eql([
-      { event: 'cookie-deleted', cookie: '' },
       { event: 'cookie-created', cookie: 'found_actually' },
       { event: 'cookie-deleted', cookie: 'found_actually' }
     ]);
     test.expect(eventsSpecified).to.eql([
-      { event: 'cookie-created', cookie: 'specified_cookie' },
       { event: 'cookie-deleted', cookie: 'specified_cookie' },
       { event: 'cookie-created', cookie: 'new_specified_cookie' }
     ]);

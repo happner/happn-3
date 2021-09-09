@@ -162,22 +162,18 @@ describe('05 cookie login', function() {
     const eventKeys = cookieEvents.map(evt => {
       return evt.event;
     });
+    console.log(JSON.stringify(eventKeys, null, 2));
     expect(eventKeys).to.eql([
-      // client1 handler detects no cookie:
-      'cookie-deleted1',
-      // client1 logs in - writes cookie:
+      //client 1 creates a cookie, client 2 connects with cookie
       'cookie-created1',
-      // client1 logs out and deletes cookie:
+      //client 1 deletes cookie, both deleted events are kicked off for client 1 and 2
       'cookie-deleted1',
-      // deletion is detected in handler for client 2:
       'cookie-deleted2',
-      // client1 logs in - writes cookie:
+      //client 1 reconnects, both created events are kicked off for client 1 and 2
       'cookie-created1',
-      // creation is detected in handler for client 2:
       'cookie-created2',
-      // client 2 disconnects, deletion is detected in handler for client 1:
+      //client 2 deletes cookie, both deleted events are kicked off for client 1 and 2
       'cookie-deleted1',
-      // client 2 handler detects its own deletion:
       'cookie-deleted2'
     ]);
     await client2.disconnect({ deleteCookie: true });
