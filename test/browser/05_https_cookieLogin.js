@@ -162,7 +162,6 @@ describe('05 cookie login', function() {
     const eventKeys = cookieEvents.map(evt => {
       return evt.event;
     });
-    console.log(JSON.stringify(eventKeys, null, 2));
     expect(eventKeys).to.eql([
       //client 1 creates a cookie, client 2 connects with cookie
       'cookie-created1',
