@@ -2011,7 +2011,7 @@ let client = await HappnClient.create({
 COOKIE LIFECYCLE EVENTS
 -----------------------
 *a cookie event handler can be attached via the client options - this handler will field the following cookie lifecycle events:*
-  - cookie-created: when there was no cookie and a new one has appeared (broadcasted to any client in the current window)s
+  - cookie-created: when there was no cookie and a new one has appeared (broadcasted to any client in the current window)
   - cookie-deleted: happens when there was a cookie and it has been expired by a client (broadcasted to any client in the current window)
 
 ```javascript
