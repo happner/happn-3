@@ -564,110 +564,115 @@ describe(test.testName(__filename, 3), function() {
       .to.be('happn_token=[test token]; path=/; domain=[test cookie domain];');
   });
 
-  it('tests the cookie lifecycle events, write and expire', function() {
+  it('tests the cookie lifecycle events, write and delete', async () => {
     this.timeout(5000);
-    const events = [];
-    const cookieEventHandler = (event, cookie) => {
-      events.push({ event, cookie });
+    const eventsHappnToken = [];
+    const eventsNotFound = [];
+    const eventsSpecified = [];
+    const cookieInstances = {
+      happn_token: 'happn_token_cookie',
+      no_cookie_found: '',
+      specified_cookie: 'specified_cookie'
     };
-    const happnClient = mockHappnClient(null, null, null, null, null, null, function() {}, null);
-    happnClient.options = happnClient.options || {};
-    happnClient.options.protocol = 'https';
-    happnClient.cookieEventHandler = cookieEventHandler;
-    let mockDocument = {};
-    happnClient.__writeCookie(
-      {
-        httpsCookie: true,
-        cookieName: 'test_happn_token',
-        token: '[test token]',
-        cookieDomain: '[test cookie domain]'
-      },
-      mockDocument
-    );
-    happnClient.__expireCookie(
-      {
-        httpsCookie: true,
-        cookieName: 'test_happn_token',
-        token: '[test token]',
-        cookieDomain: '[test cookie domain]'
-      },
-      mockDocument
-    );
-    test.expect(events).to.eql([
-      {
-        event: 'cookie-write',
-        cookie: 'test_happn_token=[test token]; path=/; domain=[test cookie domain]; Secure;'
-      },
-      {
-        event: 'cookie-expired',
-        cookie:
-          'test_happn_token=; path=/; domain=[test cookie domain]; Secure;; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
-      }
+    const cookieEventHandlerHappnToken = (event, cookie) => {
+      eventsHappnToken.push({ event, cookie });
+    };
+    const cookieEventHandlerNotFound = (event, cookie) => {
+      eventsNotFound.push({ event, cookie });
+    };
+    const cookieEventHandlerSpecified = (event, cookie) => {
+      eventsSpecified.push({ event, cookie });
+    };
+    const HappnClient = require('../../../lib/client');
+    HappnClient.__getCookieInstance = cookieName => {
+      return cookieInstances[cookieName];
+    };
+    HappnClient.addCookieEventHandler(cookieEventHandlerHappnToken, 'happn_token', 500);
+    HappnClient.addCookieEventHandler(cookieEventHandlerNotFound, 'no_cookie_found', 500);
+    HappnClient.addCookieEventHandler(cookieEventHandlerSpecified, 'specified_cookie', 550);
+
+    await test.delay(2000);
+
+    test.expect(eventsHappnToken).to.eql([]);
+    test.expect(eventsNotFound).to.eql([]);
+    test.expect(eventsSpecified).to.eql([]);
+
+    cookieInstances['happn_token'] = '';
+    cookieInstances['specified_cookie'] = '';
+    cookieInstances['no_cookie_found'] = 'found_actually';
+
+    await test.delay(2000);
+
+    test
+      .expect(eventsHappnToken)
+      .to.eql([{ event: 'cookie-deleted', cookie: 'happn_token_cookie' }]);
+    test.expect(eventsNotFound).to.eql([{ event: 'cookie-created', cookie: 'found_actually' }]);
+    test.expect(eventsSpecified).to.eql([{ event: 'cookie-deleted', cookie: 'specified_cookie' }]);
+
+    cookieInstances['happn_token'] = 'new_happn_token';
+    cookieInstances['specified_cookie'] = 'new_specified_cookie';
+    cookieInstances['no_cookie_found'] = '';
+
+    await test.delay(2000);
+
+    test.expect(eventsHappnToken).to.eql([
+      { event: 'cookie-deleted', cookie: 'happn_token_cookie' },
+      { event: 'cookie-created', cookie: 'new_happn_token' }
     ]);
+    test.expect(eventsNotFound).to.eql([
+      { event: 'cookie-created', cookie: 'found_actually' },
+      { event: 'cookie-deleted', cookie: 'found_actually' }
+    ]);
+    test.expect(eventsSpecified).to.eql([
+      { event: 'cookie-deleted', cookie: 'specified_cookie' },
+      { event: 'cookie-created', cookie: 'new_specified_cookie' }
+    ]);
+
+    //check we dont leak intervals
+    HappnClient.addCookieEventHandler(cookieEventHandlerHappnToken, 'happn_token', 500);
+    HappnClient.addCookieEventHandler(cookieEventHandlerNotFound, 'no_cookie_found', 500);
+    HappnClient.addCookieEventHandler(cookieEventHandlerSpecified, 'specified_cookie', 550);
+
+    test.expect(HappnClient.__cookieEventHandlers['specified_cookie_550'].length).to.be(1);
+    test.expect(HappnClient.__cookieEventHandlers['happn_token_500'].length).to.be(1);
+    test.expect(HappnClient.__cookieEventHandlers['no_cookie_found_500'].length).to.be(1);
+
+    HappnClient.clearCookieEventObjects();
+    HappnClient.clearCookieEventObjects(); // clear again
   });
 
-  it('tests the cookie __setCookieCheckTimer', async () => {
+  it('tests getCookieEventDefaults', async () => {
     this.timeout(5000);
-    const events = [];
-    global.document = {};
-    const cookieEventHandler = (event, cookie) => {
-      events.push({ event, cookie });
+    test.expect(HappnClient.getCookieEventDefaults(null, null)).to.eql({
+      cookieName: 'happn_token',
+      interval: 1000
+    });
+    test.expect(HappnClient.getCookieEventDefaults('happn_token_specified', 200)).to.eql({
+      cookieName: 'happn_token_specified',
+      interval: 1000
+    });
+    test.expect(HappnClient.getCookieEventDefaults('happn_token_specified', 650)).to.eql({
+      cookieName: 'happn_token_specified',
+      interval: 650
+    });
+  });
+
+  it('tests loginWithCookie', async () => {
+    HappnClient.__getCookieInstance = () => {
+      return 'instance';
     };
-    let mockDocument = {};
     const happnClient = mockHappnClient(null, null, null, null, null, null, function() {}, null);
     happnClient.options = happnClient.options || {};
     happnClient.options.protocol = 'https';
-    happnClient.log = {
-      warn: () => {}
-    };
-
-    happnClient.__setCookieCheckTimer(); // we see that nothing happens on this call as cookieEventHandler is null
-
-    happnClient.cookieEventHandler = cookieEventHandler;
-
-    happnClient.__setCookieCheckTimer(
-      {
-        httpsCookie: true,
-        cookieName: 'test_happn_token',
-        token: '[test token]',
-        cookieDomain: '[test cookie domain]'
-      },
-      mockDocument
-    );
-    happnClient.__writeCookie(
-      {
-        httpsCookie: true,
-        cookieName: 'test_happn_token',
-        token: '[test token]',
-        cookieDomain: '[test cookie domain]'
-      },
-      mockDocument
-    );
-    happnClient.__expireCookie(
-      {
-        httpsCookie: true,
-        cookieName: 'test_happn_token',
-        token: '[test token]',
-        cookieDomain: '[test cookie domain]'
-      },
-      mockDocument
-    );
-    await test.delay(5000);
-    test.expect(events).to.eql([
-      { event: 'cookie-created', cookie: '' },
-      {
-        event: 'cookie-write',
-        cookie: 'test_happn_token=[test token]; path=/; domain=[test cookie domain]; Secure;'
-      },
-      {
-        event: 'cookie-expired',
-        cookie:
-          'test_happn_token=; path=/; domain=[test cookie domain]; Secure;; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
-      },
-      { event: 'cookie-deleted', cookie: '' }
-    ]);
-    happnClient.disconnect({ deleteCookie: true });
-    happnClient.__cookieCleanup(mockDocument);
-    global.document = null;
+    this.timeout(5000);
+    let error;
+    function callback(e) {
+      error = e;
+    }
+    test.expect(happnClient.loginWithCookie({}, {}, false, callback)).to.be(false);
+    test.expect(error.message).to.be('Logging in with cookie only valid in browser');
+    const loginParameters = {};
+    happnClient.loginWithCookie(loginParameters, {}, true, callback);
+    test.expect(loginParameters).to.eql({ token: 'instance', useCookie: true });
   });
 });

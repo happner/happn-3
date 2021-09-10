@@ -9,7 +9,10 @@ describe('05 cookie login', function() {
       protocol: 'https',
       useCookie: true
     };
-    connectClientCookieNotPromise(opts, done);
+    connectClientCookieNotPromise(opts, e => {
+      expect(e.message).to.equal('happn server is secure, please specify a username or token');
+      done();
+    });
   });
 
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn', async () => {
@@ -114,60 +117,63 @@ describe('05 cookie login', function() {
 
   it('checks the cookie events', async () => {
     let cookieEvents = [];
-    const cookieEventHandler1 = (event, cookie) => {
+    const cookieEventHandler1 = async (event, cookie) => {
       cookieEvents.push({
         event: `${event}1`,
         cookie
       });
+      if (event === 'cookie-deleted' && client1) await client1.disconnect({ deleteCookie: true });
+      if (event === 'cookie-created' && client1) client1 = await HappnClient.create(opts1);
     };
-    const cookieEventHandler2 = (event, cookie) => {
+    const cookieEventHandler2 = async (event, cookie) => {
       cookieEvents.push({
         event: `${event}2`,
         cookie
       });
+      if (event === 'cookie-deleted' && client2) await client2.disconnect({ deleteCookie: true });
+      if (event === 'cookie-created' && client2) client2 = await HappnClient.create(opts2);
     };
-    let opts1 = {
-      port: 55003,
-      protocol: 'https',
+    var opts1 = {
+      port: 55004,
       username: '_ADMIN',
       password: 'happn',
       deleteCookie: true,
       cookieEventHandler: cookieEventHandler1,
-      cookieEventInterval: 750
+      cookieEventInterval: 500,
+      cookieName: 'test-cookie'
     };
-    let client1 = await HappnClient.create(opts1);
-    await delay(3000);
-    let client2 = await HappnClient.create({
-      port: 55003,
-      protocol: 'https',
+    var opts2 = {
+      port: 55004,
       useCookie: true,
-      cookieEventHandler: cookieEventHandler2
-    });
-    await delay(3000);
+      cookieEventHandler: cookieEventHandler2,
+      cookieEventInterval: 500,
+      cookieName: 'test-cookie'
+    };
+    var client1 = await HappnClient.create(opts1);
+    await delay(2000);
+    var client2 = await HappnClient.create(opts2);
+    await delay(2000);
     await client1.disconnect({ deleteCookie: true });
-    await delay(3000);
+    await delay(2000);
     client1 = await HappnClient.create(opts1); // we reconnect
-    await delay(5000);
+    await delay(2000);
+    await client2.disconnect({ deleteCookie: true });
+    await delay(3000);
     const eventKeys = cookieEvents.map(evt => {
       return evt.event;
     });
     expect(eventKeys).to.eql([
-      // client1 connects
-      'cookie-write1',
+      //client 1 creates a cookie, client 2 connects with cookie
       'cookie-created1',
-      //client 2 connects with client1's cookie
-      'cookie-write2',
-      'cookie-created2',
-      //client1 expires cookie on disconnection
-      'cookie-expired1',
+      //client 1 deletes cookie, both deleted events are kicked off for client 1 and 2
       'cookie-deleted1',
-      //client2 detects missing cookie, disconnects and emits cookie deleted
       'cookie-deleted2',
-      //client1 reconnects
-      'cookie-write1',
+      //client 1 reconnects, both created events are kicked off for client 1 and 2
       'cookie-created1',
-      //client2 detects cookie - and emits cookie created
-      'cookie-created2'
+      'cookie-created2',
+      //client 2 deletes cookie, both deleted events are kicked off for client 1 and 2
+      'cookie-deleted1',
+      'cookie-deleted2'
     ]);
     await client2.disconnect({ deleteCookie: true });
   });

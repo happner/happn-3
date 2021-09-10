@@ -2011,9 +2011,7 @@ let client = await HappnClient.create({
 COOKIE LIFECYCLE EVENTS
 -----------------------
 *a cookie event handler can be attached via the client options - this handler will field the following cookie lifecycle events:*
-  - cookie-write: when the cookie is written to storage (only on client you have attached handler to)
   - cookie-created: when there was no cookie and a new one has appeared (broadcasted to any client in the current window)
-  - cookie-expired: happens when your client has disconnected with deleteCookie:true (only on client you have attached handler to)
   - cookie-deleted: happens when there was a cookie and it has been expired by a client (broadcasted to any client in the current window)
 
 ```javascript
@@ -2022,9 +2020,7 @@ let client = await HappnClient.create({
       protocol: 'https',
       useCookie: true,
       cookieEventHandler: (event, cookie) => {
-        if (event === 'cookie-write') console.log(`I wrote this new cookie on login: ${cookie}`);
         if (event === 'cookie-created') console.log(`Someone (maybe me) created a new cookie: ${cookie}`);
-        if (event === 'cookie-expired') console.log(`I expired this cookie on disconnect: ${cookie}`);
         if (event === 'cookie-deleted') console.log(`Someone (maybe me) deleted this cookie on disconnect: ${cookie}`);
       }
     });
