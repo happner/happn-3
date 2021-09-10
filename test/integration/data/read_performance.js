@@ -49,10 +49,12 @@ describe(
       }
     });
 
-    it('reading after 10000 entries takes as long as 10 entries', async function() {
+    it('reading after 10000 entries takes only 2 times as long as 10 entries and writing takes only 3 times as long as 10 entries', async function() {
       this.timeout(default_timeout);
       const itemCountFirstCheck = 10;
       const itemCount = 10000;
+      let writeMultiplier = process.env.INTRAVENOUS ? 3 : 1.1;
+      let readMultiplier = process.env.INTRAVENOUS ? 2 : 1.1;
       let timeFirstSet;
       let timeLastSet;
       let timeFirstGet;
@@ -81,7 +83,7 @@ describe(
       timeStart = process.hrtime.bigint();
       await setItem(test_base_url, test_string);
       timeLastSet = Number(process.hrtime.bigint() - timeStart) / 1e6;
-      expect(timeLastSet).to.be.lt(timeFirstSet + 1);
+      expect(timeLastSet).to.be.lt(timeFirstSet * writeMultiplier);
 
       await async.timesSeries(itemCount, async n => {
         timeStart = process.hrtime.bigint();
@@ -92,7 +94,7 @@ describe(
       });
 
       expect(timesGet.reduce((result, value) => result + value / timesGet.length, 0)).to.be.lt(
-        timeFirstGet + 1
+        timeFirstGet * readMultiplier
       );
 
       function setItem(path, value) {
