@@ -881,3 +881,7 @@
 11.13.3 2021-09-08
 -----------------
   - fix: SMC-4044 - cookie events not dependent on client login
+
+11.13.4 2021-09-20
+-----------------
+  - fix: SMC-4161 - user permissions not cleaned up on user deletion

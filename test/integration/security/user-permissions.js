@@ -39,6 +39,23 @@ describe(
       );
     });
 
+    before('authenticates with the _ADMIN user, using the default password', function(done) {
+      serviceInstance.services.session
+        .localClient({
+          username: '_ADMIN',
+          password: 'happn'
+        })
+
+        .then(function(clientInstance) {
+          adminClient = clientInstance;
+          done();
+        })
+
+        .catch(function(e) {
+          done(e);
+        });
+    });
+
     after('should delete the temp data file', function(callback) {
       this.timeout(15000);
 
@@ -56,25 +73,6 @@ describe(
           callback();
         });
       }, 3000);
-    });
-
-    context('login', function() {
-      it('authenticates with the _ADMIN user, using the default password', function(done) {
-        serviceInstance.services.session
-          .localClient({
-            username: '_ADMIN',
-            password: 'happn'
-          })
-
-          .then(function(clientInstance) {
-            adminClient = clientInstance;
-            done();
-          })
-
-          .catch(function(e) {
-            done(e);
-          });
-      });
     });
 
     context('resources access testing', function() {
@@ -1342,7 +1340,8 @@ describe(
                   },
                   function(e) {
                     expect(e.toString()).to.be('AccessDenied: unauthorized');
-                    done();
+                    //we recreate the user, ensure  only theminimal permissions (guest are in place)
+                    recreateUserEnsurePermissionsRemoved(done);
                   }
                 );
               }
@@ -1354,6 +1353,32 @@ describe(
         });
       });
     });
+    function recreateUserEnsurePermissionsRemoved(done) {
+      const recreatedUser = {
+        username: 'TEST USER@blah.com' + test_id,
+        password: 'TEST PWD',
+        custom_data: {
+          something: 'usefull'
+        }
+      };
+      serviceInstance.services.security.users.upsertUser(
+        recreatedUser,
+        {
+          overwrite: false
+        },
+        e => {
+          if (e) return done(e);
+          serviceInstance.services.security.users
+            .listPermissions(recreatedUser.username)
+            .then(function(permissions) {
+              expect(permissions).to.eql(basicPermissionList); //Permissions list at bottom of this file
+              done();
+            })
+            .catch(done);
+        }
+      );
+    }
+    let basicPermissionList = [];
     let permissionList = [
       {
         action: '*',
