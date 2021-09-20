@@ -429,6 +429,23 @@ describe(test.testName(__filename, 3), function() {
     });
   });
 
+  it('tests the removeAllUserPermissions method', function(done) {
+    mockServices(async (_e, happn) => {
+      let pm = new PermissionsManager(null, 'test', happn);
+      pm.type = 'user';
+      try {
+        await pm.removeAllUserPermissions();
+      } catch (e) {
+        test.expect(e.message).to.be('please supply a username');
+        pm.dataService.remove = path => {
+          test.expect(path).to.be('/_SYSTEM/_SECURITY/_PERMISSIONS/_USER/test/*');
+          done();
+        };
+        await pm.removeAllUserPermissions('test');
+      }
+    });
+  });
+
   async function upsertTestPermissions(happn) {
     await happn.services.data.upsert(
       '/_SYSTEM/_SECURITY/_PERMISSIONS/testName/set//some/test/path',
