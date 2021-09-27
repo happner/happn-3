@@ -501,7 +501,7 @@ const serviceConfig4 = {
 
 describe(helper.testName(__filename, 3), tokenTests(serviceConfig1, serviceConfig2));
 
-describe(
+xdescribe(
   helper.testName(__filename, 3) + '-encrypted-payloads',
   tokenTests(serviceConfig3, serviceConfig4)
 );

@@ -8,7 +8,6 @@ describe(tests.testName(__filename, 3), function() {
   var happnInstance1 = null;
   var serviceConfig1 = {
     secure: true,
-    encryptPayloads: true,
     services: {
       security: {
         config: {

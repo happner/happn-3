@@ -4,7 +4,7 @@ const testHelper = require('../../__fixtures/utils/test_helper').create();
 const expect = require('expect.js');
 var openSockets;
 
-describe(testHelper.testName(__filename, 3), function() {
+xdescribe(testHelper.testName(__filename, 3), function() {
   var remote;
   var webSocketsClient;
   var path = require('path');
