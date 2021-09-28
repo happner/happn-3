@@ -885,3 +885,8 @@
 11.13.4 2021-09-20
 -----------------
   - fix: SMC-4161 - user permissions not cleaned up on user deletion
+
+11.13.5 2021-09-27
+-----------------
+  - fix: SMC-4209 - concurrency issue, user created logged on deleted, causes security directory update to fatal
+  - fix: SMC-4208 - merge insert now uses upsert, moved constants out of data service

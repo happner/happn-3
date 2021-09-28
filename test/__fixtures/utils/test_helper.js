@@ -12,6 +12,7 @@ function TestHelper() {
   this.npm = require('npm-programmatic');
   this.path = require('path');
   this.utils = require('../../../lib/services/utils/shared');
+  this.nodeUtils = require('util');
   this.server = require('./server-helper').create();
   this.security = require('./security-helper').create();
   this.sinon = require('sinon');
