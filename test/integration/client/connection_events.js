@@ -125,7 +125,7 @@ describe(tests.testName(__filename, 3), function() {
       })
 
       .then(function() {
-        return tests.delay(1000);
+        return tests.delay(3000);
       })
 
       .then(function() {
@@ -135,7 +135,7 @@ describe(tests.testName(__filename, 3), function() {
       .then(done)
 
       .catch(done);
-  });
+  }).timeout(5000);
 
   it('enables subscribe and unsubscribe', function(done) {
     var client;
