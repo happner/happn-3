@@ -4,7 +4,7 @@ const util = require('util');
 const tests = require('../../__fixtures/utils/test_helper').create();
 describe(tests.testName(__filename, 3), function() {
   var server;
-
+  this.timeout(5000);
   var startServer = function(callback) {
     Happn.service
       .create()
