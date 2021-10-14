@@ -23,7 +23,7 @@ describe(testHelper.testName(__filename, 3), function() {
     await client.disconnect();
     proxy.kill();
     service.kill();
-    await wait(1000);
+    await wait(2000);
   });
 
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn', async () => {
@@ -36,7 +36,7 @@ describe(testHelper.testName(__filename, 3), function() {
     await testClient(client.session.token, 55000);
     await client.disconnect();
     service.kill();
-    await wait(1000);
+    await wait(2000);
   });
 
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn', async () => {
@@ -49,7 +49,7 @@ describe(testHelper.testName(__filename, 3), function() {
     await testClient(client.session.token, 55000);
     await client.disconnect();
     service.kill();
-    await wait(1000);
+    await wait(2000);
   });
 
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn, negative', async () => {
@@ -69,7 +69,7 @@ describe(testHelper.testName(__filename, 3), function() {
     testHelper.expect(errorHappened).to.be(true);
     await client.disconnect();
     service.kill();
-    await wait(1000);
+    await wait(2000);
   });
 
   it('we can only useCookie in browser', async () => {
@@ -84,7 +84,7 @@ describe(testHelper.testName(__filename, 3), function() {
     }
 
     service.kill();
-    await wait(1000);
+    await wait(2000);
   });
 
   function doPost(path, token, port, callback) {
