@@ -49,11 +49,11 @@ describe(
       }
     });
 
-    it('reading after 10000 entries takes only 2 times as long as 10 entries and writing takes only 3.5 times as long as 10 entries', async function() {
+    it('reading after 10000 entries takes only 2 times as long as 10 entries and writing takes only 5 times as long as 10 entries', async function() {
       this.timeout(default_timeout);
       const itemCountFirstCheck = 10;
       const itemCount = 10000;
-      let writeMultiplier = process.env.INTRAVENOUS ? 3.5 : 1.1;
+      let writeMultiplier = process.env.INTRAVENOUS ? 5 : 1.1;
       let readMultiplier = process.env.INTRAVENOUS ? 2 : 1.1;
       let timeFirstSet;
       let timeLastSet;

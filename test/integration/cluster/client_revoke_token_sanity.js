@@ -17,7 +17,7 @@ describe(
     let delay = require('await-delay');
     let clearMongo = require('../../__fixtures/utils/cluster/clear-mongodb');
     let getClusterConfig = require('../../__fixtures/utils/cluster/get-cluster-config');
-    this.timeout(10000);
+
     let clusterServices = [];
     let mongoUrl = 'mongodb://127.0.0.1:27017';
     let mongoCollection = 'happn-cluster-test';
