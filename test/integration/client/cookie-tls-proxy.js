@@ -4,7 +4,8 @@ const Happn = require('../../..'),
   ChildProcess = require('child_process'),
   path = require('path'),
   testHelper = require('../../__fixtures/utils/test_helper').create(),
-  request = require('request');
+  request = require('request'),
+  wait = require('await-delay');
 
 describe(testHelper.testName(__filename, 3), function() {
   this.timeout(120e3);
@@ -20,8 +21,9 @@ describe(testHelper.testName(__filename, 3), function() {
     });
     await testClient(client.session.token);
     await client.disconnect();
-    await proxy.kill();
-    await service.kill();
+    proxy.kill();
+     service.kill();
+     await wait(500);
   });
 
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn', async () => {
@@ -33,7 +35,9 @@ describe(testHelper.testName(__filename, 3), function() {
     });
     await testClient(client.session.token, 55000);
     await client.disconnect();
-    await service.kill();
+    service.kill();
+    await wait(500);
+
   });
 
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn', async () => {
@@ -45,7 +49,8 @@ describe(testHelper.testName(__filename, 3), function() {
     });
     await testClient(client.session.token, 55000);
     await client.disconnect();
-    await service.kill();
+    service.kill();
+    await wait(500);
   });
 
   it('tests the secure cookie can be grabbed if we are going directly to an https instance of happn, negative', async () => {
@@ -64,7 +69,8 @@ describe(testHelper.testName(__filename, 3), function() {
     }
     testHelper.expect(errorHappened).to.be(true);
     await client.disconnect();
-    await service.kill();
+    service.kill();
+    await wait(500);
   });
 
   it('we can only useCookie in browser', async () => {
@@ -79,6 +85,7 @@ describe(testHelper.testName(__filename, 3), function() {
     }
 
     await service.kill();
+    await wait(500);
   });
 
   function doPost(path, token, port, callback) {
