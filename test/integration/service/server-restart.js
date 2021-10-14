@@ -14,7 +14,10 @@ describe(tests.testName(__filename, 3), function() {
       .catch(done);
   }
 
-  before('start server', startServer);
+  before('start server', function(done) {
+    this.timeout(5000);
+    startServer(done);
+  });
 
   after('stop server', function(done) {
     if (!server) return done();
