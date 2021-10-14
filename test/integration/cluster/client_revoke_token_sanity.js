@@ -97,6 +97,7 @@ describe(
     }
 
     before('start cluster', async () => {
+      this.timeout(5000);
       await clearMongoDb();
       await startCluster();
     });
