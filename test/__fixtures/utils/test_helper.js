@@ -2,7 +2,8 @@ const shortid = require('shortid'),
       fs = require('fs-extra'),
       request = require('request'),
       why = require('why-is-node-running'),
-      delay = require('await-delay');
+      delay = require('await-delay'),
+      readline = require('readline');
 
 function TestHelper() {
   this.__testFiles = [];
@@ -104,5 +105,20 @@ TestHelper.prototype.doRequest = function(path, token) {
     });
   });
 };
+
+TestHelper.prototype.lineCount = async function(filePath) {
+  if (!fs.existsSync(filePath)) {
+    return 0;
+  }
+  const reader = readline.createInterface({
+    input: fs.createReadStream(filePath),
+    crlfDelay: Infinity
+  });
+  let lineIndex = 0;
+  for await (const line of reader) {
+    lineIndex++;
+  }
+  return lineIndex;
+}
 
 module.exports = TestHelper;
