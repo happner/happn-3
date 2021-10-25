@@ -669,16 +669,13 @@ describe(test.testName(__filename, 3), function() {
       );
 
       await adminClient.set('/TEST/1/2/3', { test: 'should still not be allowed' });
-      let result;
+
       try {
-        result = await testClient.get('/TEST/1/2/3');
+        await testClient.get('/TEST/1/2/3');
       } catch (e) {
         test.expect(e.toString()).to.be('AccessDenied: unauthorized');
         errored++;
       }
-      console.log(result);
-
-      console.log(errored);
       test.expect(errored).to.be(2);
     });
   });
@@ -791,9 +788,8 @@ describe(test.testName(__filename, 3), function() {
       );
 
       await adminClient.set('/TEST/1/2/3', { test: 'should still not be allowed' });
-      let result;
       try {
-        result = await testClient.get('/TEST/1/2/3');
+        await testClient.get('/TEST/1/2/3');
       } catch (e) {
         test.expect(e.toString()).to.be('AccessDenied: unauthorized');
         errored++;
