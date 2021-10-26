@@ -124,7 +124,23 @@ describe(test.testName(__filename, 3), function() {
       await wait(1000);
       await adminClient.set('/TEST/1/2/3', { test: 'should still be allowed' });
       test.expect(events[0].test).to.be('should still be allowed');
-    });
+      ['on', 'get'].forEach(action =>
+        serviceInstance.services.security.groups.removePermission(
+          testGroup2.name,
+          '/TEST/1/2/3',
+          action
+        )
+      );
+      await wait(1000);
+      let errored = false;
+      try {
+        await testClient.on('/TEST/1/2/3', handler);
+      } catch (e) {
+        test.expect(e.toString()).to.eql('AccessDenied: unauthorized');
+        errored = true;
+      }
+      test.expect(errored).to.be(true);
+    }).timeout(5000);
 
     it('we remove a duplicated permisison from the users groups, check user still has access, with an allow on /* and subscription on /**', async () => {
       let testGroup3 = {
