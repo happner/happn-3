@@ -151,42 +151,6 @@ describe(
       );
     });
 
-    it('tags data', function(callback) {
-      var tag = require('shortid').generate();
-
-      serviceInstance.upsert(
-        '/tag/' + testId,
-        {
-          test: 'data'
-        },
-        {},
-        function(e) {
-          if (e) return callback(e);
-
-          serviceInstance.upsert(
-            '/tag/' + testId,
-            null,
-            {
-              tag: tag
-            },
-            function(e, response) {
-              if (e) return callback(e);
-
-              expect(response.data.data.test).to.equal('data');
-
-              expect(response.data._meta.path).to.equal('/tag/' + testId);
-
-              expect(response._meta.tag).to.equal(tag);
-
-              expect(response._meta.path.indexOf('/_TAGS' + '/tag/' + testId)).to.equal(0);
-
-              callback();
-            }
-          );
-        }
-      );
-    });
-
     it('removes data', function(callback) {
       serviceInstance.upsert(
         '/remove/' + testId,

@@ -326,49 +326,6 @@ describe(test.testName(__filename, 3), function() {
     expect(record, 'record found in persisted file, meant to be in memory').to.be.null;
   });
 
-  it('should tag some persisted data for the multiple datastore', async function() {
-    this.timeout(10000);
-
-    const randomTag = require('shortid').generate();
-
-    const test_path = '/a3_eventemitter_multiple_datasource/' + test_id + '/persistedtest/tag';
-
-    await multipleClient.set(
-      test_path,
-      {
-        property1: 'property1',
-        property2: 'property2',
-        property3: 'property3'
-      },
-      {
-        noPublish: true
-      }
-    );
-
-    expect(fsyncSpy).to.have.been.called;
-
-    const setResult = await multipleClient.set(test_path, null, {
-      tag: randomTag,
-      merge: true,
-      noPublish: true
-    });
-
-    expect(setResult.data.property1).to.equal('property1');
-    expect(setResult.data.property2).to.equal('property2');
-    expect(setResult.data.property3).to.equal('property3');
-
-    const tagged_path = setResult._meta.path;
-
-    const tagged = await multipleClient.get(tagged_path, null);
-
-    expect(tagged.data.property1).to.equal('property1');
-    expect(tagged.data.property2).to.equal('property2');
-    expect(tagged.data.property3).to.equal('property3');
-
-    const record = await findRecordInDataFile(tagged_path, tempFile1);
-    expect(record, 'record not found in persisted file').to.not.be.null;
-  });
-
   it('check the same event should be raised, regardless of what data source we are pushing to', function(callback) {
     this.timeout(10000);
     let caughtCount = 0;

@@ -898,66 +898,6 @@ describe(
       }
     });
 
-    it('should tag some test data', function(callback) {
-      var randomTag = require('shortid').generate();
-
-      publisherclient.set(
-        '/1_eventemitter_embedded_sanity/' + test_id + '/test/tag',
-        {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        },
-        {
-          noPublish: true
-        },
-        function(e) {
-          if (e) return callback(e);
-          publisherclient.set(
-            '/1_eventemitter_embedded_sanity/' + test_id + '/test/tag',
-            null,
-            {
-              tag: randomTag,
-              merge: true,
-              noPublish: true
-            },
-            function(e, result) {
-              if (e) return callback(e);
-              expect(result.data.property1).to.be('property1');
-              expect(result.data.property2).to.be('property2');
-              expect(result.data.property3).to.be('property3');
-
-              publisherclient.get(
-                '/_TAGS/1_eventemitter_embedded_sanity/' + test_id + '/test/tag/*',
-                null,
-                function(e, results) {
-                  expect(e).to.be(null);
-
-                  expect(results.length > 0).to.be(true);
-
-                  var found = false;
-
-                  results.map(function(tagged) {
-                    if (found) return;
-
-                    if (tagged._meta.tag === randomTag) {
-                      expect(tagged.data.property1).to.be('property1');
-                      expect(tagged.data.property2).to.be('property2');
-                      expect(tagged.data.property3).to.be('property3');
-                      found = true;
-                    }
-                  });
-
-                  if (!found) callback("couldn't find the tag snapshot");
-                  else callback();
-                }
-              );
-            }
-          );
-        }
-      );
-    });
-
     it('the listener should pick up a single published event', function(callback) {
       this.timeout(default_timeout);
       listenerclient.on(

@@ -568,77 +568,7 @@ SanityTests.prototype.run = function (server, publisherclient, listenerclient) {
     }
   });
 
-
-  it('should tag some test data', function (callback) {
-
-    var randomTag = require('shortid').generate();
-
-    _this.publisherclient.set('/2_websockets_embedded_sanity/' + _this.test_id + '/test/tag', {
-      property1: 'property1',
-      property2: 'property2',
-      property3: 'property3'
-    }, {
-      noPublish: true
-    }, function (e, result) {
-
-      ////////////////////console.log('did set');
-      ////////////////////console.log([e, result]);
-
-      if (e) return callback(e);
-
-      _this.publisherclient.set('/2_websockets_embedded_sanity/' + _this.test_id + '/test/tag', null, {
-        tag: randomTag,
-        merge: true,
-        noPublish: true
-      }, function (e, result) {
-
-        //console.log(e);
-
-        if (e) return callback(e);
-
-        ////////////////////console.log('merge tag results');
-        ////////////////////console.log(e);
-        ////////////////////console.log(result);
-
-        expect(result.data.property1).to.be('property1');
-        expect(result.data.property2).to.be('property2');
-        expect(result.data.property3).to.be('property3');
-
-        _this.publisherclient.get('/_TAGS/2_websockets_embedded_sanity/' + _this.test_id + '/test/tag/*', null, function (e, results) {
-
-          expect(e).to.be(null);
-
-          expect(results.length > 0).to.be(true);
-
-          var found = false;
-
-          results.map(function (tagged) {
-
-            if (found) return;
-
-            if (tagged._meta.tag == randomTag) {
-
-              expect(tagged.data.property1).to.be('property1');
-              expect(tagged.data.property2).to.be('property2');
-              expect(tagged.data.property3).to.be('property3');
-              found = true;
-            }
-
-          });
-
-          if (!found)
-            callback('couldn\'t find the tag snapshot');
-          else
-            callback();
-
-        });
-      });
-    });
-  });
-
-
   //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
-
   it('the listener should pick up a single published event', function (callback) {
 
     try {

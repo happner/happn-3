@@ -241,59 +241,6 @@ describe(tests.testName(__filename, 3), function() {
     });
   });
 
-  context('on tag', function() {
-    it('does not emit to clusterPeer if noCluster set', function(done) {
-      var emitted = {};
-
-      Promise.resolve()
-
-        .then(function() {
-          return normalClient.set('/some/data/to/tag', {
-            some: 'data'
-          });
-        })
-
-        .then(function() {
-          return normalClient.on('/some/data/to/tag', function(/*data, meta*/) {
-            emitted['normalClient /some/path/to/remove/on'] = 1;
-          });
-        })
-
-        .then(function() {
-          return intraProcessClient.on('/some/data/to/tag', function(/*data, meta*/) {
-            emitted['intraProcessClient /some/path/to/remove/on'] = 1;
-          });
-        })
-
-        .then(function() {
-          return clusterPeer.on('/some/data/to/tag', function(/*data, meta*/) {
-            emitted['clusterPeer /some/path/to/remove/on'] = 1;
-          });
-        })
-
-        .then(function() {
-          return normalClient.set('/some/data/to/tag', null, {
-            tag: 'tagName',
-            noCluster: true
-          });
-        })
-
-        .then(function() {
-          return tests.delay(200);
-        })
-
-        .then(function() {
-          expect(emitted).to.eql({
-            'normalClient /some/path/to/remove/on': 1,
-            'intraProcessClient /some/path/to/remove/on': 1
-          });
-        })
-
-        .then(done)
-        .catch(done);
-    });
-  });
-
   context('on merge', function() {
     it('does not emit to clusterPeer if noCluster set', function(done) {
       var emitted = {};

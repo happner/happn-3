@@ -377,63 +377,6 @@ describe(
       }
     });
 
-    it('should tag some persisted data for the multiple datastore', function(callback) {
-      this.timeout(10000);
-
-      var randomTag = require('shortid').generate();
-
-      var test_path = '/a3_eventemitter_multiple_datasource/' + test_id + '/persistedtest/tag';
-
-      multipleClient.set(
-        test_path,
-        {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        },
-        {
-          noPublish: true
-        },
-        function(e) {
-          if (e) return callback(e);
-
-          multipleClient.set(
-            test_path,
-            null,
-            {
-              tag: randomTag,
-              merge: true,
-              noPublish: true
-            },
-            function(e, result) {
-              if (e) return callback(e);
-
-              expect(result.data.property1).to.be('property1');
-              expect(result.data.property2).to.be('property2');
-              expect(result.data.property3).to.be('property3');
-
-              var tagged_path = result._meta.path;
-
-              multipleClient.get(tagged_path, null, function(e, tagged) {
-                expect(e).to.be(null);
-
-                expect(tagged.data.property1).to.be('property1');
-                expect(tagged.data.property2).to.be('property2');
-                expect(tagged.data.property3).to.be('property3');
-
-                findRecordInDataFile(tagged_path, tempFile1, function(e, record) {
-                  if (e) return callback(e);
-
-                  if (record) callback();
-                  else callback(new Error('record not found in persisted file'));
-                });
-              });
-            }
-          );
-        }
-      );
-    });
-
     it('check the same event should be raised, regardless of what data source we are pushing to', function(callback) {
       this.timeout(10000);
       var caughtCount = 0;

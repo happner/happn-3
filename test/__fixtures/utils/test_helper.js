@@ -121,4 +121,8 @@ TestHelper.prototype.lineCount = async function(filePath) {
   return lineIndex;
 }
 
+TestHelper.prototype.shortid = function() {
+  return require('shortid').generate();
+}
+
 module.exports = TestHelper;
