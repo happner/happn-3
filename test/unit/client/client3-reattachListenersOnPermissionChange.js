@@ -392,37 +392,41 @@ describe(test.testName(__filename, 3), function() {
         .to.be(true);
       done();
     });
-  });
 
-  it('tests that if there are no listeners on a chanel, __reattachListenersOnChannel will call __testAndCleanupChannel (once) ', done => {
-    let happnClient = mockHappnClient();
-    happnClient.state.events = {
-      channel1: [{ eventKey: '1/2/3' }, { eventKey: 'b/1/2/3/' }],
-      channel2: [{ eventKey: 'a/b' }, { eventKey: '2/a/b' }],
-      noListeners1: [],
-      noListeners2: undefined,
-      'nothing/to/see/here': {}
-    };
-    happnClient.__tryReattachListener = sinon.stub();
-    happnClient.__testAndCleanupChannel = sinon.stub();
-    happnClient.__reattachListenersOnChannel('noListeners1');
-    test.expect(happnClient.__tryReattachListener.notCalled).to.be(true);
-    test.expect(happnClient.__testAndCleanupChannel.calledOnce).to.be(true);
-    test.expect(happnClient.__testAndCleanupChannel.calledWith('noListeners1')).to.be(true);
-    happnClient.__reattachListenersOnChannel('noListeners2');
-    test.expect(happnClient.__tryReattachListener.notCalled).to.be(true);
-    test.expect(happnClient.__testAndCleanupChannel.callCount).to.be(2);
-    test.expect(happnClient.__testAndCleanupChannel.calledWith('noListeners2')).to.be(true);
-    done();
+    it('tests that if there are no listeners on a chanel, __reattachListenersOnChannel will call __testAndCleanupChannel (once) ', done => {
+      let happnClient = mockHappnClient();
+      happnClient.state.events = {
+        channel1: [{ eventKey: '1/2/3' }, { eventKey: 'b/1/2/3/' }],
+        channel2: [{ eventKey: 'a/b' }, { eventKey: '2/a/b' }],
+        noListeners1: [],
+        noListeners2: undefined,
+        'nothing/to/see/here': {}
+      };
+      happnClient.__tryReattachListener = sinon.stub();
+      happnClient.__testAndCleanupChannel = sinon.stub();
+      happnClient.__reattachListenersOnChannel('noListeners1');
+      test.expect(happnClient.__tryReattachListener.notCalled).to.be(true);
+      test.expect(happnClient.__testAndCleanupChannel.calledOnce).to.be(true);
+      test.expect(happnClient.__testAndCleanupChannel.calledWith('noListeners1')).to.be(true);
+      happnClient.__reattachListenersOnChannel('noListeners2');
+      test.expect(happnClient.__tryReattachListener.notCalled).to.be(true);
+      test.expect(happnClient.__testAndCleanupChannel.callCount).to.be(2);
+      test.expect(happnClient.__testAndCleanupChannel.calledWith('noListeners2')).to.be(true);
+      done();
+    });
   });
-
   context('__tryReattachListener', () => {
-    it('tests that __tryReattachListener returns early if no listeners on channel ', done => {
+    it('tests that __tryReattachListener returns clearListenerRef early if channel has been removed ', done => {
       let happnClient = mockHappnClient();
       happnClient.state.events = {};
       happnClient._offPath = sinon.stub();
+      happnClient.__clearListenerRef = sinon.stub();
+
       happnClient.__tryReattachListener({ lost: 'listener' }, 'channel1');
       test.expect(happnClient._offPath.notCalled).to.be(true);
+      test.expect(happnClient.__clearListenerRef.calledOnce).to.be(true);
+      test.expect(happnClient.__clearListenerRef.calledWith({ lost: 'listener' })).to.be(true);
+
       done();
     });
 
@@ -440,19 +444,21 @@ describe(test.testName(__filename, 3), function() {
     it('tests that __tryReattachListener will call offPath once, and log an error warning if _offPath returns an error (still tries remoteOn', done => {
       let happnClient = mockHappnClient();
       happnClient.state.events = { channel1: [{ eventKey: 'event1' }] };
-      happnClient.log.warn = sinon.stub();
+      happnClient.log.error = sinon.stub();
       happnClient._offPath = sinon.stub();
-      happnClient._offPath.callsArgWith(1, new Error('bad'));
+      let err = new Error('bad');
+      happnClient._offPath.callsArgWith(1, err);
       happnClient._remoteOn = sinon.stub();
 
       happnClient.__tryReattachListener({ eventKey: 'event1' }, 'channel1');
       test.expect(happnClient._offPath.calledOnce).to.be(true);
       test.expect(happnClient._offPath.calledWith('channel1')).to.be(true);
-      test.expect(happnClient.log.warn.calledOnce).to.be(true);
+      test.expect(happnClient.log.error.calledOnce).to.be(true);
       test
         .expect(
-          happnClient.log.warn.calledWith(
-            'failed detaching listener to channel, on re-establishment: channel1'
+          happnClient.log.error.calledWith(
+            'failed detaching listener to channel, on re-establishment: channel1',
+            err
           )
         )
         .to.be(true);
@@ -460,29 +466,119 @@ describe(test.testName(__filename, 3), function() {
       done();
     });
 
-    it('tests that __tryReattachListener will clear events on 401 and 403', done => {
+    it('tests that __tryReattachListener will clear events on 401 and 403 from _remoteOn', done => {
       let happnClient = mockHappnClient();
       happnClient._offPath = sinon.stub();
       happnClient._offPath.callsArg(1);
+      happnClient.__clearListenerRef = sinon.stub();
+      happnClient._remoteOn = sinon.stub();
+      happnClient._remoteOn.callsArgWith(2, { code: 403 });
       happnClient.state.events = {
         403: [{ eventKey: 'event1' }, { eventKey: 'event2' }],
         401: [{ eventKey: 'eventA' }, { eventKey: 'eventB' }],
         anotherChannel: [{ eventKey: 'something' }]
       };
-      happnClient._remoteOn = sinon.stub();
-      happnClient._remoteOn.callsArgWith(2, { code: 403 });
+
       happnClient.__tryReattachListener({ eventKey: 'event1' }, '403');
       test.expect(happnClient._remoteOn.callCount).to.be(1);
       test.expect(happnClient.state.events).to.eql({
         401: [{ eventKey: 'eventA' }, { eventKey: 'eventB' }],
         anotherChannel: [{ eventKey: 'something' }]
       });
+      test.expect(happnClient.__clearListenerRef.calledOnce).to.be(true);
+      test.expect(happnClient.__clearListenerRef.calledWith({ eventKey: 'event1' })).to.be(true);
       happnClient._remoteOn.callsArgWith(2, { code: 401 });
       happnClient.__tryReattachListener({ eventKey: 'eventB' }, '401');
       test.expect(happnClient._remoteOn.callCount).to.be(2);
       test.expect(happnClient.state.events).to.eql({
         anotherChannel: [{ eventKey: 'something' }]
       });
+      test.expect(happnClient.__clearListenerRef.callCount).to.be(2);
+      test.expect(happnClient.__clearListenerRef.calledWith({ eventKey: 'eventB' })).to.be(true);
+      done();
+    });
+
+    it('tests that __tryReattachListener will log an error and removeListenerRef on other error response from _remoteOn', done => {
+      let happnClient = mockHappnClient();
+      happnClient._offPath = sinon.stub();
+      happnClient._offPath.callsArg(1);
+      happnClient._remoteOn = sinon.stub();
+      happnClient._remoteOn.callsArgWith(2, { code: 501 });
+      happnClient.__clearListenerRef = sinon.stub();
+      happnClient.log.error = sinon.stub();
+      happnClient.state.events = {
+        testChannel: [{ eventKey: 'event1' }, { eventKey: 'event2' }]
+      };
+      happnClient.__tryReattachListener({ any: 'listener' }, 'testChannel');
+      test.expect(happnClient._remoteOn.callCount).to.be(1);
+      test.expect(happnClient.log.error.calledOnce).to.be(true);
+      test
+        .expect(
+          happnClient.log.error.calledWith(
+            'failed re-establishing listener to channel: testChannel',
+            { code: 501 }
+          )
+        )
+        .to.be(true);
+      test.expect(happnClient.__clearListenerRef.calledOnce).to.be(true);
+      test.expect(happnClient.__clearListenerRef.calledWith({ any: 'listener' })).to.be(true);
+      done();
+    });
+  });
+
+  context('__testAndCleanupChannel', () => {
+    it('tests that __testAndCleanupChannel will delete state.events[channel] if it recieves a 401 or 403', done => {
+      let happnClient = mockHappnClient();
+      happnClient._remoteOn = sinon.stub();
+      happnClient._remoteOn.callsArgWith(2, { code: 403 });
+      happnClient.state.events = {
+        403: [{ eventKey: 'event1' }, { eventKey: 'event2' }],
+        401: [{ eventKey: 'eventA' }, { eventKey: 'eventB' }],
+        anotherChannel: [{ eventKey: 'something' }]
+      };
+      happnClient.__testAndCleanupChannel('403');
+      test.expect(happnClient._remoteOn.callCount).to.be(1);
+      test.expect(happnClient.state.events).to.eql({
+        401: [{ eventKey: 'eventA' }, { eventKey: 'eventB' }],
+        anotherChannel: [{ eventKey: 'something' }]
+      });
+      happnClient._remoteOn.callsArgWith(2, { code: 401 });
+      happnClient.__testAndCleanupChannel('401');
+      test.expect(happnClient._remoteOn.callCount).to.be(2);
+      test.expect(happnClient.state.events).to.eql({
+        anotherChannel: [{ eventKey: 'something' }]
+      });
+      done();
+    });
+
+    it('tests that __testAndCleanupChannel will log an error if it recieves a non 401 or 403 error', done => {
+      let happnClient = mockHappnClient();
+      happnClient._remoteOn = sinon.stub();
+      happnClient.log.error = sinon.stub();
+      happnClient._remoteOn.callsArgWith(2, { code: 501 });
+      happnClient.__testAndCleanupChannel('501');
+      test.expect(happnClient._remoteOn.callCount).to.be(1);
+      test.expect(happnClient.log.error.callCount).to.be(1);
+      test
+        .expect(
+          happnClient.log.error.calledWith(
+            'Error on channel cleanup after permissions change, channel: 501',
+            { code: 501 }
+          )
+        )
+        .to.be(true);
+      done();
+    });
+
+    it('tests that __testAndCleanupChannel will unsubscribe if channel is still allowed', done => {
+      let happnClient = mockHappnClient();
+      happnClient._remoteOn = sinon.stub();
+      happnClient._remoteOff = sinon.stub();
+      happnClient._remoteOn.callsArgWith(2, null, { id: 'listenerId' });
+      happnClient.__testAndCleanupChannel('allowedChannel');
+      test.expect(happnClient._remoteOn.callCount).to.be(1);
+      test.expect(happnClient._remoteOff.callCount).to.be(1);
+      test.expect(happnClient._remoteOff.calledWith('allowedChannel', 'listenerId')).to.be(true);
       done();
     });
   });
