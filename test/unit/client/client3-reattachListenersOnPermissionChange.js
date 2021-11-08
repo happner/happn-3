@@ -570,7 +570,7 @@ describe(test.testName(__filename, 3), function() {
       done();
     });
 
-    it('tests that __testAndCleanupChannel will unsubscribe if channel is still allowed', done => {
+    it('tests that __testAndCleanupChannel will unsubscribe test handler if channel is still allowed', done => {
       let happnClient = mockHappnClient();
       happnClient._remoteOn = sinon.stub();
       happnClient._remoteOff = sinon.stub();
