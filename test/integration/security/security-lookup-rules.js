@@ -9,16 +9,30 @@ describe(test.testName(__filename), function() {
   let addedTestuser;
   let testClient;
 
-  it('sets up lookup rules and tests them', async () => {
-    const testGroup = {
-      name: 'OEM_ABC'
+  // this feature only applies to groups
+  it('sets up lookup rules and tests them - groups', async () => {
+    const testEnterpriseAdminGroup = {
+      name: 'ENTERPRISE_ADMIN_ABC'
+    };
+    const testOEMAdminGroup = {
+      name: 'OEM_ADMIN_ABC'
+    };
+    const test = {
+      name: 'SMC_ADMIN_ABC'
     };
 
-    let upsertedGroup = await serviceInstance.services.security.groups.upsertGroup(testGroup);
+    let enterpriseAdminGroup = await serviceInstance.services.security.groups.upsertGroup(
+      testGroup
+    );
+    let oemAdminGroup = await serviceInstance.services.security.groups.upsertGroup(testGroup);
+    let smcAdminGroup = await serviceInstance.services.security.groups.upsertGroup(testGroup);
 
     await serviceInstance.services.security.lookupTables.upsertLookupTable({
       name: 'OEM_ABC_LOOKUP',
-      paths: ['/device/OEM_ABC/*/SPECIAL_DEVICE_ID_1', '/device/OEM_ABC/*/SPECIAL_DEVICE_ID_2']
+      paths: [
+        '/device/OEM_ABC/COMPANY_ABC/SPECIAL_DEVICE_ID_1',
+        '/device/OEM_ABC/COMPANY_ABC/SPECIAL_DEVICE_ID_2'
+      ]
     });
 
     await serviceInstance.services.security.lookupTables.insertPath(
@@ -26,18 +40,47 @@ describe(test.testName(__filename), function() {
       '/device/OEM_ABC/*/SPECIAL_DEVICE_ID_3'
     );
 
-    await serviceInstance.services.security.groups.upsertPermission(
-      testGroup.name,
-      '^/_data/historianStore/(.*)',
-      {
-        lookup: {
-          actions: ['on', 'get', 'set'],
-          table: 'OEM_ABC_LOOKUP',
-          path: '/device/{{user.custom_data.oem}/*/{{$1}}'
-        }
-      },
-      true
-    );
+    // OEM Manager
+    await serviceInstance.services.security.groups.upsertLookupPermission(testGroup.name, {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['on', 'get', 'set'],
+      table: 'OEM_ABC_LOOKUP',
+      // maps to an array of paths, companies is an array
+      path: '/device/{{user.custom_data.oem}}/{{user.custom_data.companies}}/{{$1}}'
+    });
+
+    // SMC Manager
+    await serviceInstance.services.security.groups.upsertLookupPermission(testGroup.name, {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['on', 'get', 'set'],
+      table: 'OEM_ABC_LOOKUP',
+      // maps to an array of paths, organisations is an array
+      path: '/device/{{user.custom_data.organisations}}/*/{{$1}}'
+    });
+
+    // Enterprise admin
+    await serviceInstance.services.security.groups.upsertLookupPermission(testGroup.name, {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['on', 'get', 'set'],
+      table: 'OEM_ABC_LOOKUP',
+      path: '/device/{{user.custom_data.oem}}/{{user.custom_data.company}}/{{$1}}'
+    });
+
+    // OEM admin
+    await serviceInstance.services.security.groups.upsertLookupPermission(testGroup.name, {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['on', 'get', 'set'],
+      table: 'OEM_ABC_LOOKUP',
+      path: '/device/{{user.custom_data.oem}}/*/{{$1}}'
+    });
+
+    // SMC admin
+    await serviceInstance.services.security.groups.upsertLookupPermission(testGroup.name, {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['on', 'get', 'set'],
+      table: 'OEM_ABC_LOOKUP',
+      path: '/device/*/*/{{$1}}'
+    });
 
     test.expect(await trySetData('SPECIAL_DEVICE_ID_1')).to.be('unauthorised');
     test.expect(await trySetData('SPECIAL_DEVICE_ID_2')).to.be('unauthorised');
@@ -47,6 +90,13 @@ describe(test.testName(__filename), function() {
     test.expect(await trySetData('SPECIAL_DEVICE_ID_2')).to.be(true);
     test.expect(await trySetData('SPECIAL_DEVICE_ID_3')).to.be(true);
     test.expect(await trySetData('SPECIAL_DEVICE_ID_4')).to.be('unauthorised');
+
+    await serviceInstance.services.security.lookupTables.removePath(
+      'OEM_ABC_LOOKUP',
+      '/device/OEM_ABC/COMPANY_ABC/SPECIAL_DEVICE_ID_3'
+    );
+
+    test.expect(await trySetData('SPECIAL_DEVICE_ID_3')).to.be('unauthorised');
   });
 
   async function trySetData(deviceId) {
@@ -76,7 +126,9 @@ describe(test.testName(__filename), function() {
       username: 'TEST',
       password: 'TEST PWD',
       custom_data: {
-        oem: 'OEM_ABC'
+        oem: 'OEM_ABC',
+        company: 'COMPANY_ABC',
+        companiesArray: ['COMPANY_ABC', 'COMPANY_DEF', 'COMPANY_GHI']
       },
       permissions: {}
     };
