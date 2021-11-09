@@ -18,15 +18,20 @@ describe(test.testName(__filename), function() {
 
     await serviceInstance.services.security.lookupTables.upsertLookupTable({
       name: 'OEM_ABC_LOOKUP',
-      permissions: ['on', 'get', 'set'],
       paths: ['/device/OEM_ABC/*/SPECIAL_DEVICE_ID_1', '/device/OEM_ABC/*/SPECIAL_DEVICE_ID_2']
     });
+
+    await serviceInstance.services.security.lookupTables.insertPath(
+      'OEM_ABC_LOOKUP',
+      '/device/OEM_ABC/*/SPECIAL_DEVICE_ID_3'
+    );
 
     await serviceInstance.services.security.groups.upsertPermission(
       testGroup.name,
       '^/_data/historianStore/(.*)',
       {
         lookup: {
+          actions: ['on', 'get', 'set'],
           table: 'OEM_ABC_LOOKUP',
           path: '/device/{{user.custom_data.oem}/*/{{$1}}'
         }
@@ -34,14 +39,19 @@ describe(test.testName(__filename), function() {
       true
     );
 
-    test.expect(await trySetData()).to.be('unauthorised');
+    test.expect(await trySetData('SPECIAL_DEVICE_ID_1')).to.be('unauthorised');
+    test.expect(await trySetData('SPECIAL_DEVICE_ID_2')).to.be('unauthorised');
+    test.expect(await trySetData('SPECIAL_DEVICE_ID_3')).to.be('unauthorised');
     await serviceInstance.services.security.users.linkGroup(upsertedGroup, addedTestuser);
-    test.expect(await trySetData()).to.be(true);
+    test.expect(await trySetData('SPECIAL_DEVICE_ID_1')).to.be(true);
+    test.expect(await trySetData('SPECIAL_DEVICE_ID_2')).to.be(true);
+    test.expect(await trySetData('SPECIAL_DEVICE_ID_3')).to.be(true);
+    test.expect(await trySetData('SPECIAL_DEVICE_ID_4')).to.be('unauthorised');
   });
 
-  async function trySetData() {
+  async function trySetData(deviceId) {
     try {
-      await testClient.set('/_data/historianStore/SPECIAL_DEVICE_ID_1', { test: 'data' });
+      await testClient.set(`/_data/historianStore/${deviceId}`, { test: 'data' });
     } catch (e) {
       return e.message;
     }
