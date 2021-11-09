@@ -890,3 +890,7 @@
 -----------------
   - fix: SMC-4209 - concurrency issue, user created logged on deleted, causes security directory update to fatal
   - fix: SMC-4208 - merge insert now uses upsert, moved constants out of data service
+
+11.13.6 2021-11-09
+-----------------
+  - fix: SMC-4512 -  data provider get action causes fatal when allowNestedPermissions switched on
