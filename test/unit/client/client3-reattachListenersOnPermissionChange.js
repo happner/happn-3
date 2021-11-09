@@ -275,6 +275,23 @@ describe(test.testName(__filename, 3), function() {
         .to.be(true);
       done();
     });
+    it('tests that __reattachListenersOnPermissionChange will use state.refcount, or create an object there iof it doesnt exist (coverage)', done => {
+      let happnClient = mockHappnClient();
+      happnClient.__getChannelsFromPaths = sinon.stub().returns(null);
+      let permissions = {
+        'subscribed/on': { actions: ['on'] },
+        'subscribed/star': { actions: ['*'] }
+      };
+      test.expect(happnClient.__reattachListenersOnPermissionChange(permissions)).to.be(undefined); //getChannels passes back nothing, so undefined
+      test.expect(happnClient.__getChannelsFromPaths.calledOnce).to.be(true);
+      test.expect(happnClient.state.refCount).to.eql({});
+      let refCount = { key1: { a: 'b' }, key2: { c: 'd' } };
+      happnClient.state.refCount = refCount;
+      test.expect(happnClient.__reattachListenersOnPermissionChange(permissions)).to.be(undefined); //getChannels passes back nothing, so undefined
+      test.expect(happnClient.__getChannelsFromPaths.callCount).to.be(2);
+      test.expect(happnClient.state.refCount).to.be(refCount);
+      done();
+    });
 
     it('tests that __reattachListenersOnPermissionChange will reset listeners on all channels, and reattach listeners on each channel', done => {
       let happnClient = mockHappnClient();
@@ -522,6 +539,32 @@ describe(test.testName(__filename, 3), function() {
         .to.be(true);
       test.expect(happnClient.__clearListenerRef.calledOnce).to.be(true);
       test.expect(happnClient.__clearListenerRef.calledWith({ any: 'listener' })).to.be(true);
+      done();
+    });
+
+    it('tests that __tryReattachListener will set refcount to 1 if there are 0 references and remoteOn works', done => {
+      let happnClient = mockHappnClient();
+      happnClient._offPath = sinon.stub();
+      happnClient._offPath.callsArg(1);
+      happnClient._remoteOn = sinon.stub();
+      happnClient._remoteOn.callsArgWith(2, null, { id: 'listenerId' });
+      happnClient.__clearListenerRef = sinon.stub();
+      happnClient.log.error = sinon.stub();
+      happnClient.state.events = {
+        testChannel: [{ eventKey: 'event1' }, { eventKey: 'event2' }]
+      };
+      happnClient.state.refCount = { event1: 0 };
+      happnClient.__tryReattachListener(
+        { eventKey: 'event1', meta: { some: 'metaData' } },
+        'testChannel'
+      );
+      test.expect(happnClient._remoteOn.callCount).to.be(1);
+      test
+        .expect(happnClient._remoteOn.calledWith('testChannel', { meta: { some: 'metaData' } }))
+        .to.be(true);
+      test.expect(happnClient.state.refCount).to.eql({ event1: 1 });
+      test.expect(happnClient.state.listenerRefs).to.eql({ event1: 'listenerId' });
+
       done();
     });
   });
