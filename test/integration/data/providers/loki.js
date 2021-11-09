@@ -32,6 +32,10 @@ describe(test.testName(__dirname), function() {
     await testMerge();
   });
 
+  it('can increment', async () => {
+    await testIncrement();
+  });
+
   it('starts up the provider with a persistence filename, does some inserts, restarts the provider and checks the data is still there - fsync', async () => {
     await testPersistence({
       fsync: true
@@ -56,6 +60,12 @@ describe(test.testName(__dirname), function() {
     });
   });
 
+  it('can increment - fsync', async () => {
+    await testIncrement({
+      fsync: true
+    });
+  });
+
   async function testMerge(settings) {
     const lokiProvider = new LokiDataProvider(mockLogger);
     lokiProvider.settings = {
@@ -72,6 +82,25 @@ describe(test.testName(__dirname), function() {
     test
       .expect((await lokiProvider.findOne({ path: 'test/path/1' })).data)
       .to.eql({ test1: 'test1', test2: 'test2', test3: 'test3' });
+  }
+
+  async function testIncrement(settings) {
+    const lokiProvider = new LokiDataProvider(mockLogger);
+    lokiProvider.settings = {
+      ...{
+        filename: testFileName,
+        snapshotRollOverThreshold: 5
+      },
+      ...settings
+    };
+    await lokiProvider.initialize();
+    await lokiProvider.increment('test/increment', 'testGauge');
+    await lokiProvider.increment('test/increment', 'testGauge', 2);
+    await lokiProvider.increment('test/increment', 'testGauge');
+
+    const found = await lokiProvider.find('test/increment');
+
+    test.expect(found[0].data.testGauge.value).to.be(4);
   }
 
   async function testCount(settings) {

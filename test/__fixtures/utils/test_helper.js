@@ -18,6 +18,8 @@ function TestHelper() {
   this.security = require('./security-helper').create();
   this.sinon = require('sinon');
   this.fs = require('fs');
+  this.async = require('async');
+  this.findRecordInDataFileCallback = this.nodeUtils.callbackify(this.findRecordInDataFile);
 }
 
 TestHelper.create = function(){
@@ -41,7 +43,7 @@ TestHelper.prototype.testName = function(testFilename, depth){
 TestHelper.prototype.newTestFile = function (options) {
   if (!options) options = {};
   if (!options.dir) options.dir = 'test' + this.path.sep + 'tmp';
-  if (!options.ext) options.ext = 'nedb';
+  if (!options.ext) options.ext = 'txt';
   if (!options.name) options.name = shortid.generate();
   var folderName = this.path.resolve(options.dir);
   fs.ensureDirSync(folderName);
@@ -124,5 +126,42 @@ TestHelper.prototype.lineCount = async function(filePath) {
 TestHelper.prototype.shortid = function() {
   return require('shortid').generate();
 }
+
+TestHelper.prototype.findRecordInDataFile = function(path, filepath) {
+  return new Promise((resolve, reject) => {
+    let found = false;
+    let stream;
+    try {
+      const byline = require('byline');
+      stream = byline(this.fs.createReadStream(filepath, { encoding: 'utf8' }));
+    } catch (e) {
+      reject(e);
+      return;
+    }
+    stream.on('data', function(line) {
+      if (found) return;
+
+      var record = JSON.parse(line);
+
+      if (
+        record.operation != null &&
+        ['UPSERT', 'INSERT'].includes(record.operation.operationType) &&
+        record.operation.arguments[0] === path
+      ) {
+        found = true;
+        stream.end();
+        return resolve(record);
+      }
+    });
+
+    stream.on('error', function(e) {
+      if (!found) reject(e);
+    });
+
+    stream.on('end', function() {
+      if (!found) resolve(null);
+    });
+  });
+};
 
 module.exports = TestHelper;

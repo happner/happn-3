@@ -1,11 +1,7 @@
 var expect = require('expect.js');
 var happn = require('../../lib/index');
-var service = happn.service;
 var happn_client = happn.client;
 var async = require('async');
-
-var happnInstance = null;
-var test_id;
 
 function SanityTests() {
 
@@ -673,50 +669,7 @@ SanityTests.prototype.run = function (server, publisherclient, listenerclient) {
     }
   });
 
-
-  //We are testing pushing a specific value to a path which will actually become an array in the database
-
-  it('the publisher should push a sibling and get all siblings', function (callback) {
-
-
-    try {
-
-      var test_path_end = require('shortid').generate();
-
-      _this.publisherclient.setSibling('2_websockets_embedded_sanity/' + _this.test_id + '/siblings/' + test_path_end, {
-        property1: 'sib_post_property1',
-        property2: 'sib_post_property2'
-      }, function (e, results) {
-
-        expect(e == null).to.be(true);
-
-        _this.publisherclient.setSibling('2_websockets_embedded_sanity/' + _this.test_id + '/siblings/' + test_path_end, {
-          property1: 'sib_post_property1',
-          property2: 'sib_post_property2'
-        }, function (e, results) {
-
-          expect(e == null).to.be(true);
-
-          //the child method returns a child in the collection with a specified id
-          _this.publisherclient.get('2_websockets_embedded_sanity/' + _this.test_id + '/siblings/' + test_path_end + '/*', null, function (e, getresults) {
-            expect(e == null).to.be(true);
-            expect(getresults.length == 2).to.be(true);
-            callback(e);
-          });
-        });
-      });
-
-    } catch (e) {
-      callback(e);
-    }
-  });
-
-
-  //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
-
   it('the listener should pick up a single published event', function (callback) {
-
-
     try {
 
       //first listen for the change

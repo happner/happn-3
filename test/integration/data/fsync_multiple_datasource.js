@@ -1,6 +1,6 @@
 const test = require('../../__fixtures/utils/test_helper').create();
 describe(test.testName(__filename, 3), function() {
-  const fs = require('fs');
+  const fs = require('fs-extra');
 
   const sinon = require('sinon');
   const chai = require('chai');
@@ -161,46 +161,9 @@ describe(test.testName(__filename, 3), function() {
     );
 
     expect(fsyncSpy).to.have.not.been.called;
-
     const results = await multipleClient.get(test_path, null);
-
     expect(results.property1 === 'property1').to.be.true;
   });
-
-  const findRecordInDataFile = function(path, filepath) {
-    return new Promise((resolve, reject) => {
-      try {
-        setTimeout(function() {
-          const byline = require('byline');
-          const stream = byline(
-            fs.createReadStream(filepath, {
-              encoding: 'utf8'
-            })
-          );
-
-          let found = false;
-
-          stream.on('data', function(line) {
-            if (found) return;
-
-            const record = JSON.parse(line);
-
-            if (record._id === path) {
-              found = true;
-              stream.end();
-              resolve(record);
-            }
-          });
-
-          stream.on('end', function() {
-            if (!found) resolve(null);
-          });
-        }, 1000);
-      } catch (e) {
-        reject(e);
-      }
-    });
-  };
 
   it('should push some data into the multiple datastore, memory datastore, wildcard pattern', async function() {
     this.timeout(4000);
@@ -224,7 +187,7 @@ describe(test.testName(__filename, 3), function() {
     const results = await multipleClient.get(test_path, null);
     expect(results.property1 === 'property1').to.be.true;
 
-    const record = await findRecordInDataFile(test_path, tempFile1);
+    const record = await test.findRecordInDataFile(test_path, tempFile1);
     expect(record, 'record found in persisted file, meant to be in memory').to.be.null;
   });
 
@@ -250,7 +213,7 @@ describe(test.testName(__filename, 3), function() {
     const results = await multipleClient.get(test_path, null);
     expect(results.property1 === 'property1').to.be.true;
 
-    const record = await findRecordInDataFile(test_path, tempFile1);
+    const record = await test.findRecordInDataFile(test_path, tempFile1);
     expect(record, 'record not found in persisted file').to.not.be.null;
   });
 
@@ -274,7 +237,7 @@ describe(test.testName(__filename, 3), function() {
     const results = await multipleClient.get(test_path, null);
     expect(results.property1 === 'property1').to.be.true;
 
-    const record = await findRecordInDataFile(test_path, tempFile1);
+    const record = await test.findRecordInDataFile(test_path, tempFile1);
     expect(record, 'record found in persisted file, meant to be in memory').to.be.null;
   });
 
@@ -298,7 +261,7 @@ describe(test.testName(__filename, 3), function() {
     const results = await multipleClient.get(test_path, null);
     expect(results.property1 === 'property1').to.be.true;
 
-    const record = await findRecordInDataFile(test_path, tempFile1);
+    const record = await test.findRecordInDataFile(test_path, tempFile1);
     expect(record, 'record not found in persisted file').to.not.be.null;
   });
 
@@ -322,7 +285,7 @@ describe(test.testName(__filename, 3), function() {
     const results = await multipleClient.get(test_path, null);
     expect(results.property1 === 'property1').to.be.true;
 
-    const record = await findRecordInDataFile(test_path, tempFile1);
+    const record = await test.findRecordInDataFile(test_path, tempFile1);
     expect(record, 'record found in persisted file, meant to be in memory').to.be.null;
   });
 
@@ -342,7 +305,8 @@ describe(test.testName(__filename, 3), function() {
         ) {
           caughtCount++;
           if (caughtCount === 2) {
-            findRecordInDataFile(persistedTestPath, tempFile1)
+            test
+              .findRecordInDataFile(persistedTestPath, tempFile1)
               .then(record => {
                 if (record !== null) return callback();
                 callback(new Error('record not found in persisted file'));
@@ -405,7 +369,7 @@ describe(test.testName(__filename, 3), function() {
     const results = await multipleClient.get(test_path, null);
     expect(results.property1 === 'property1').to.be.true;
 
-    const record = await findRecordInDataFile(test_path, tempFile1);
+    const record = await test.findRecordInDataFile(test_path, tempFile1);
     expect(record, 'record found in persisted file, meant to be in memory').to.be.null;
   });
 
@@ -431,7 +395,7 @@ describe(test.testName(__filename, 3), function() {
     const results = await multipleClient.get(test_path, null);
     expect(results.property1).to.equal('property1');
 
-    const record = await findRecordInDataFile(test_path, tempFile1);
+    const record = await test.findRecordInDataFile(test_path, tempFile1);
     expect(record, 'record not found in persisted file').to.not.be.null;
   });
 

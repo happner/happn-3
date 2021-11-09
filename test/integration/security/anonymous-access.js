@@ -307,24 +307,6 @@ describe(test.testName(__filename, 3), function() {
       );
     });
 
-    it('delegated authority: checks prevented from setSibling', function(done) {
-      adminClient.setSibling(
-        '/anonymous/' + test_id + '/setSibling',
-        {
-          property1: 'property1'
-        },
-        {
-          onBehalfOf: anonymousClientWS.session.user.username
-        },
-        function(e) {
-          if (!e)
-            return done(new Error('you just set data that you shouldnt have permissions to set'));
-          expect(e.toString()).to.be('AccessDenied: unauthorized');
-          done();
-        }
-      );
-    });
-
     it('checks allowed get, and prevented from get', function(done) {
       adminClient.set(
         '/anonymous/' + test_id + '/get',

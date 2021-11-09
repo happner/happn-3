@@ -660,51 +660,6 @@ describe(
       }
     });
 
-    //We are testing pushing a specific value to a path which will actually become an array in the database
-
-    it('the publisher should push a sibling and get all siblings', function(callback) {
-      try {
-        var test_path_end = require('shortid').generate();
-
-        publisherclient.setSibling(
-          '2_websockets_embedded_sanity/' + test_id + '/siblings/' + test_path_end,
-          {
-            property1: 'sib_post_property1',
-            property2: 'sib_post_property2'
-          },
-          function(e) {
-            expect(e == null).to.be(true);
-
-            publisherclient.setSibling(
-              '2_websockets_embedded_sanity/' + test_id + '/siblings/' + test_path_end,
-              {
-                property1: 'sib_post_property1',
-                property2: 'sib_post_property2'
-              },
-              function(e) {
-                expect(e == null).to.be(true);
-
-                //the child method returns a child in the collection with a specified id
-                publisherclient.get(
-                  '2_websockets_embedded_sanity/' + test_id + '/siblings/' + test_path_end + '/*',
-                  null,
-                  function(e, getresults) {
-                    expect(e == null).to.be(true);
-                    expect(getresults.length === 2).to.be(true);
-                    callback(e);
-                  }
-                );
-              }
-            );
-          }
-        );
-      } catch (e) {
-        callback(e);
-      }
-    });
-
-    //  We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
-
     it('the listener should pick up a single published event', function(callback) {
       try {
         //first listen for the change

@@ -578,22 +578,22 @@ describe(
         $or: [
           {
             regions: {
-              $in: ['North', 'South', 'East', 'West']
+              $containsAny: ['North', 'South', 'East', 'West']
             }
           },
           {
             towns: {
-              $in: ['North.Cape Town', 'South.East London']
+              $containsAny: ['North.Cape Town', 'South.East London']
             }
           },
           {
             categories: {
-              $in: ['Action', 'History']
+              $containsAny: ['Action', 'History']
             }
           }
         ],
         keywords: {
-          $in: ['bass', 'Penny Siopis']
+          $containsAny: ['bass', 'Penny Siopis']
         }
       };
 
@@ -966,46 +966,6 @@ describe(
       }
     });
 
-    it('the publisher should push a sibling and get all siblings', function(callback) {
-      try {
-        var test_path_end = require('shortid').generate();
-
-        publisherclient.setSibling(
-          '2_websockets_embedded_sanity/' + test_id + '/siblings/' + test_path_end,
-          {
-            property1: 'sib_post_property1',
-            property2: 'sib_post_property2'
-          },
-          function(e) {
-            expect(e == null).to.be(true);
-
-            publisherclient.setSibling(
-              '2_websockets_embedded_sanity/' + test_id + '/siblings/' + test_path_end,
-              {
-                property1: 'sib_post_property1',
-                property2: 'sib_post_property2'
-              },
-              function(e) {
-                expect(e == null).to.be(true);
-
-                //the child method returns a child in the collection with a specified id
-                publisherclient.get(
-                  '2_websockets_embedded_sanity/' + test_id + '/siblings/' + test_path_end + '/*',
-                  null,
-                  function(e, getresults) {
-                    expect(e == null).to.be(true);
-                    expect(getresults.length === 2).to.be(true);
-                    callback(e);
-                  }
-                );
-              }
-            );
-          }
-        );
-      } catch (e) {
-        callback(e);
-      }
-    });
     it('the listener should pick up a single published event', function(callback) {
       try {
         listenerclient.on(

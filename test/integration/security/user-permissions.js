@@ -419,24 +419,6 @@ describe(
         );
       });
 
-      it('delegated authority: checks prevented from setSibling', function(done) {
-        adminClient.setSibling(
-          '/TEST/a7_eventemitter_security_access/' + test_id + '/setSibling',
-          {
-            property1: 'property1'
-          },
-          {
-            onBehalfOf: testClient.session.user.username
-          },
-          function(e) {
-            if (!e)
-              return done(new Error('you just set data that you shouldnt have permissions to set'));
-            expect(e.toString()).to.be('AccessDenied: unauthorized');
-            done();
-          }
-        );
-      });
-
       it('checks allowed get, and prevented from get', function(done) {
         adminClient.set(
           '/TEST/a7_eventemitter_security_access/' + test_id + '/get',

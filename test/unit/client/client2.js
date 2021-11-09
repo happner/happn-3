@@ -941,24 +941,6 @@ describe(
       );
     });
 
-    it('tests that the setSibling function will call the set function and so return a callback', function(done) {
-      var happnClient = mockHappnClient();
-
-      happnClient.__requestCallback = function(message, callback) {
-        callback();
-      };
-
-      happnClient.setSibling(
-        '/test/path',
-        {
-          test: 'data'
-        },
-        function() {
-          done();
-        }
-      );
-    });
-
     it('tests that the remove function will call the  __getDataRequest function and so return a callback', function(done) {
       var happnClient = mockHappnClient();
 

@@ -141,49 +141,5 @@ describe(
         }
       );
     });
-
-    it('the publisher should push a sibling and get all siblings', function(callback) {
-      this.timeout(default_timeout);
-
-      try {
-        var test_path_end = require('shortid').generate();
-
-        websocketsclient.setSibling(
-          'e2e_test1/siblings/' + test_path_end,
-          {
-            property1: 'sib_post_property1',
-            property2: 'sib_post_property2'
-          },
-          {},
-          function(e) {
-            expect(e == null).to.be(true);
-
-            websocketsclient.setSibling(
-              'e2e_test1/siblings/' + test_path_end,
-              {
-                property1: 'sib_post_property1',
-                property2: 'sib_post_property2'
-              },
-              {},
-              function(e) {
-                expect(e == null).to.be(true);
-
-                //the child method returns a child in the collection with a specified id
-                websocketsclient.get('e2e_test1/siblings/' + test_path_end + '/*', null, function(
-                  e,
-                  getresults
-                ) {
-                  expect(e == null).to.be(true);
-                  expect(getresults.length === 2).to.be(true);
-                  callback(e);
-                });
-              }
-            );
-          }
-        );
-      } catch (e) {
-        callback(e);
-      }
-    });
   }
 );
