@@ -7,7 +7,7 @@ describe(test.testName(__filename), function() {
   ].forEach(config => {
     context(config.name, function() {
       let instance, session;
-      beforeEach('it creates a test instance and an admin user', async () => {
+      before('it creates a test instance and an admin user', async () => {
         instance = await test.createInstance(config);
         session = await test.createAdminSession(instance);
       });
