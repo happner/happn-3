@@ -29,6 +29,22 @@ describe(test.testName(__filename), function() {
 
         test.expect(errorMessage).to.be('test: error');
       });
+
+      it('mocks a data get failure, we ensure the error is returned on callback, error source is provider', async () => {
+        test.sinon.stub(instance.services.data, 'db').returns({
+          find: (_path, _parameters, cb) => {
+            return cb(new Error('test: error'));
+          }
+        });
+        let errorMessage;
+        try {
+          await session.get('test/**');
+        } catch (error) {
+          errorMessage = error.message;
+        }
+
+        test.expect(errorMessage).to.be('test: error');
+      });
     });
   });
 });
