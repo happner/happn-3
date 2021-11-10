@@ -1,6 +1,6 @@
 const test = require('../../__fixtures/utils/test_helper').create();
 
-describe.only(test.testName(__filename), function() {
+describe(test.testName(__filename), function() {
   [
     { name: 'allow-nested-deactivated', secure: true },
     { name: 'allow-nested-activated', secure: true, allowNestedPermissions: true }
