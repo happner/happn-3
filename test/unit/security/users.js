@@ -648,7 +648,7 @@ describe(
           if (e) return done(e);
           happn.services.security.users.listUserNamesByGroup('test_1').then(function(userNames) {
             if (e) return done(e);
-            expect(userNames).to.eql([
+            expect(userNames.sort()).to.eql([
               'test_0',
               'test_1',
               'test_2',
