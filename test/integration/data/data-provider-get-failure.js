@@ -1,6 +1,6 @@
 const test = require('../../__fixtures/utils/test_helper').create();
 
-describe(test.testName(__filename), function() {
+describe.only(test.testName(__filename), function() {
   [
     { name: 'allow-nested-deactivated', secure: true },
     { name: 'allow-nested-activated', secure: true, allowNestedPermissions: true }
@@ -20,6 +20,22 @@ describe(test.testName(__filename), function() {
 
       it('mocks a data get failure, we ensure the error is returned on callback', async () => {
         test.sinon.stub(instance.services.data, '__getPullOptions').throws('test', 'error');
+        let errorMessage;
+        try {
+          await session.get('test/**');
+        } catch (error) {
+          errorMessage = error.message;
+        }
+
+        test.expect(errorMessage).to.be('test: error');
+      });
+
+      it('mocks a data get failure, we ensure the error is returned on callback, error source is provider', async () => {
+        test.sinon.stub(instance.services.data, 'db').returns({
+          find: (_path, _parameters, cb) => {
+            return cb(new Error('test: error'));
+          }
+        });
         let errorMessage;
         try {
           await session.get('test/**');
