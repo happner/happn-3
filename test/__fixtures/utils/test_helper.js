@@ -20,6 +20,7 @@ function TestHelper() {
   this.fs = require('fs');
   this.async = require('async');
   this.findRecordInDataFileCallback = this.nodeUtils.callbackify(this.findRecordInDataFile);
+  this.happn = require('../../../lib/index');
 }
 
 TestHelper.create = function(){
@@ -163,5 +164,32 @@ TestHelper.prototype.findRecordInDataFile = function(path, filepath) {
     });
   });
 };
+TestHelper.prototype.createInstance = function(config = {}) {
+  return new Promise((resolve, reject) => {
+    this.happn.service.create(config, function(e, happnInst) {
+      if (e) return reject(e);
+      resolve(happnInst);
+    });
+  });
+}
+
+TestHelper.prototype.destroyInstance = function(instance) {
+  return new Promise((resolve, reject) => {
+    if (!instance) return resolve();
+    instance.stop(function(e) {
+      if (e) return reject(e);
+      resolve();
+    });
+  });
+}
+
+TestHelper.prototype.createAdminSession = function(instance) {
+  return new Promise((resolve, reject) => {
+    instance.services.session.localAdminClient(function(e, session) {
+      if (e) return reject(e);
+      resolve(session);
+    });
+  });
+}
 
 module.exports = TestHelper;

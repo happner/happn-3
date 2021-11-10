@@ -441,13 +441,6 @@ describe(
         );
       });
 
-      it('compacts the db file', function(done) {
-        serviceInstance.services.data.compact(function(e) {
-          if (e) return done(e);
-          done();
-        });
-      });
-
       it('removes a templated permission from the group, checks we are no longer able to access the path the permission relates to', function(done) {
         this.timeout(10000);
 

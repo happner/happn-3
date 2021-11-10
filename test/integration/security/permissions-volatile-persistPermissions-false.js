@@ -13,6 +13,74 @@ describe(
     var happnPort = 55505;
     var happnPassword = 'password';
 
+    it('restarts the service, we ensure our users, groups and permissions are not persisted', async () => {
+      this.timeout(default_timeout);
+      await initService(tmpFile, 'admin_login', 'test_secret', false);
+      let previousSessionTokenSecret = currentService.services.security.config.sessionTokenSecret;
+
+      await addPermissions();
+      let initialPermissionsExist = await checkPermissionsExist();
+      expect(initialPermissionsExist).to.be(true);
+      //restart service
+      await initService(tmpFile, 'admin_login', undefined, false);
+
+      let usersGroupsExistAfterRestart = await checkUsersAndGroupsExist();
+
+      expect(usersGroupsExistAfterRestart).to.be(true);
+
+      let initialPermissionsExistAfterRestart = await checkPermissionsExist();
+      //must not exist after restart
+      expect(initialPermissionsExistAfterRestart).to.be(false);
+
+      //the session token secret must still be persisted
+      expect(previousSessionTokenSecret).to.be(
+        currentService.services.security.config.sessionTokenSecret
+      );
+      expect(previousSessionTokenSecret.length).to.be(11);
+    });
+
+    it('restarts the service, we ensure our users, groups and permissions are not persisted, negative test', async () => {
+      this.timeout(default_timeout);
+      await initService(tmpFile, 'admin_login', 'test_secret', true);
+      let previousSessionTokenSecret = currentService.services.security.config.sessionTokenSecret;
+
+      await addPermissions();
+      let initialPermissionsExist = await checkPermissionsExist();
+      expect(initialPermissionsExist).to.be(true);
+      //restart service
+      await initService(tmpFile, 'admin_login', undefined, true);
+
+      let usersGroupsExistAfterRestart = await checkUsersAndGroupsExist();
+
+      expect(usersGroupsExistAfterRestart).to.be(true);
+
+      let initialPermissionsExistAfterRestart = await checkPermissionsExist();
+      //must not exist after restart
+      expect(initialPermissionsExistAfterRestart).to.be(true);
+
+      //the session token secret must still be persisted
+      expect(previousSessionTokenSecret).to.be(
+        currentService.services.security.config.sessionTokenSecret
+      );
+      expect(previousSessionTokenSecret.length).to.be(11);
+    });
+
+    it('after restarting the mesh the _ADMIN can still write to the datastore', async () => {
+      await initService(tmpFile, 'admin_login', 'test_secret', false);
+
+      //restart service
+      await initService(tmpFile, 'admin_login', undefined, false);
+
+      var client = await happnClient.create({
+        port: happnPort,
+        username: '_ADMIN',
+        password: happnPassword
+      });
+
+      await client.set('/test/write', { hello: 'world' });
+      await client.disconnect();
+    });
+
     function stopService() {
       return new Promise((resolve, reject) => {
         if (currentService) {
@@ -111,74 +179,6 @@ describe(
       this.timeout(20000);
       await stopService();
       fs.unlinkSync(tmpFile);
-    });
-
-    it('restarts the service, we ensure our users, groups and permissions are not persisted', async () => {
-      this.timeout(default_timeout);
-      await initService(tmpFile, 'admin_login', 'test_secret', false);
-      let previousSessionTokenSecret = currentService.services.security.config.sessionTokenSecret;
-
-      await addPermissions();
-      let initialPermissionsExist = await checkPermissionsExist();
-      expect(initialPermissionsExist).to.be(true);
-      //restart service
-      await initService(tmpFile, 'admin_login', undefined, false);
-
-      let usersGroupsExistAfterRestart = await checkUsersAndGroupsExist();
-
-      expect(usersGroupsExistAfterRestart).to.be(true);
-
-      let initialPermissionsExistAfterRestart = await checkPermissionsExist();
-      //must not exist after restart
-      expect(initialPermissionsExistAfterRestart).to.be(false);
-
-      //the session token secret must still be persisted
-      expect(previousSessionTokenSecret).to.be(
-        currentService.services.security.config.sessionTokenSecret
-      );
-      expect(previousSessionTokenSecret.length).to.be(11);
-    });
-
-    it('restarts the service, we ensure our users, groups and permissions are not persisted, negative test', async () => {
-      this.timeout(default_timeout);
-      await initService(tmpFile, 'admin_login', 'test_secret', true);
-      let previousSessionTokenSecret = currentService.services.security.config.sessionTokenSecret;
-
-      await addPermissions();
-      let initialPermissionsExist = await checkPermissionsExist();
-      expect(initialPermissionsExist).to.be(true);
-      //restart service
-      await initService(tmpFile, 'admin_login', undefined, true);
-
-      let usersGroupsExistAfterRestart = await checkUsersAndGroupsExist();
-
-      expect(usersGroupsExistAfterRestart).to.be(true);
-
-      let initialPermissionsExistAfterRestart = await checkPermissionsExist();
-      //must not exist after restart
-      expect(initialPermissionsExistAfterRestart).to.be(true);
-
-      //the session token secret must still be persisted
-      expect(previousSessionTokenSecret).to.be(
-        currentService.services.security.config.sessionTokenSecret
-      );
-      expect(previousSessionTokenSecret.length).to.be(11);
-    });
-
-    it('after restarting the mesh the _ADMIN can still write to the datastore', async () => {
-      await initService(tmpFile, 'admin_login', 'test_secret', false);
-
-      //restart service
-      await initService(tmpFile, 'admin_login', undefined, false);
-
-      var client = await happnClient.create({
-        port: happnPort,
-        username: '_ADMIN',
-        password: happnPassword
-      });
-
-      await client.set('/test/write', { hello: 'world' });
-      await client.disconnect();
     });
   }
 );

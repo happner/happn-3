@@ -369,22 +369,22 @@ describe(
         $or: [
           {
             regions: {
-              $in: ['North', 'South', 'East', 'West']
+              $containsAny: ['North', 'South', 'East', 'West']
             }
           },
           {
             towns: {
-              $in: ['North.Cape Town', 'South.East London']
+              $containsAny: ['North.Cape Town', 'South.East London']
             }
           },
           {
             categories: {
-              $in: ['Action', 'History']
+              $containsAny: ['Action', 'History']
             }
           }
         ],
         keywords: {
-          $in: ['bass', 'Penny Siopis']
+          $containsAny: ['bass', 'Penny Siopis']
         }
       };
 
