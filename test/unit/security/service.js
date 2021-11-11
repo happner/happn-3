@@ -1619,8 +1619,8 @@ describe(
       var crypto = new CryptoService({
         logger: Logger
       });
-      let keyPair = crypto.createKeyPair();
       crypto.initialize({}, function(e) {
+        let keyPair = crypto.createKeyPair();
         if (e) return done(e);
 
         getService(config, function(e, instance) {
