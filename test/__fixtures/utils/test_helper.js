@@ -21,6 +21,7 @@ function TestHelper() {
   this.async = require('async');
   this.findRecordInDataFileCallback = this.nodeUtils.callbackify(this.findRecordInDataFile);
   this.happn = require('../../../lib/index');
+  this._ = require('underscore');
 }
 
 TestHelper.create = function(){

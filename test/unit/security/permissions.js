@@ -406,7 +406,7 @@ describe(test.testName(__filename, 3), function() {
           '/path2': { prohibit: ['delete', 'post', 'options'] },
           '/path3': { actions: ['set', 'get', 'on'], prohibit: ['delete', 'post', 'options'] }
         };
-        pm.upsertMultiplePermissions('testName', validPermissions);
+        await pm.upsertMultiplePermissions('testName', validPermissions);
         let permissionList = await pm.listPermissions('testName');
         test.expect(permissionList).to.eql([
           { action: 'delete', authorized: false, path: '/path2' },
