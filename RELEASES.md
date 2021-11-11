@@ -894,3 +894,7 @@
 11.13.6 2021-11-09
 -----------------
   - fix: SMC-4512 -  data provider get action causes fatal when allowNestedPermissions switched on
+
+11.13.8 2021-11-11
+-----------------
+  - fix: SMC-734: Updated happn-util-crypto, some changes to crypto calls
