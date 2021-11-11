@@ -27,13 +27,27 @@ TestHelper.create = function(){
   return new TestHelper();
 };
 
+TestHelper.prototype.describe = function(fileName, timeout, handler) {
+  if (typeof timeout === 'function') {
+    handler = timeout;
+    timeout = 5e3;
+  }
+  if (!timeout) {
+    timeout = 5e3;
+  }
+  describe(this.testName(fileName), function() {
+    this.timeout(timeout);
+    handler.bind(this)();
+  });
+}
+
 TestHelper.prototype.printOpenHandles = async function(delayMs){
   if (delayMs) await delay(delayMs);
   await why();
 };
 
 TestHelper.prototype.testName = function(testFilename, depth){
-  if (!depth) depth = 2;
+  if (!depth) depth = 3;
   var fileParts = testFilename.split(this.path.sep).reverse();
   var poParts = [];
   for (var i = 0; i < depth; i++)
@@ -54,8 +68,11 @@ TestHelper.prototype.newTestFile = function (options) {
   return fileName;
 };
 
-TestHelper.prototype.log = function(msg){
+TestHelper.prototype.log = function(msg, data){
   console.log(msg);
+  if (data) {
+    console.log(JSON.stringify(data, null, 2));
+  }
 }
 
 TestHelper.prototype.deleteFiles = function () {
@@ -179,6 +196,16 @@ TestHelper.prototype.destroyInstance = function(instance) {
     instance.stop(function(e) {
       if (e) return reject(e);
       resolve();
+    });
+  });
+}
+
+//createAdminWSSession
+TestHelper.prototype.createAdminWSSession = function() {
+  return new Promise((resolve, reject) => {
+    this.happn.client.create({ username: '_ADMIN', password: 'happn' }, function(e, session) {
+      if (e) return reject(e);
+      resolve(session);
     });
   });
 }

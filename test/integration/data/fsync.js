@@ -1,7 +1,7 @@
 const tester = require('../../__fixtures/utils/test_helper').create();
 
 describe(tester.testName(__filename, 3), function() {
-  const fs = require('fs');
+  const fs = require('fs-extra');
   const path = require('path');
 
   const sinon = require('sinon');
