@@ -129,7 +129,7 @@ describe(test.testName(__dirname), function() {
           }
         })
       )
-      .to.be(1);
+      .to.eql({ data: { value: 1 } });
 
     test
       .expect(
@@ -141,7 +141,7 @@ describe(test.testName(__dirname), function() {
           }
         })
       )
-      .to.be(2);
+      .to.eql({ data: { value: 2 } });
   }
 
   async function testRollOverThreshold(settings) {

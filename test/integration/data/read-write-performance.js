@@ -1,11 +1,10 @@
 const test = require('../../__fixtures/utils/test_helper').create();
-
-test.describe(__filename, function() {
+const constants = require('../../../lib/constants');
+test.describe(__filename, 10000, function() {
   var expect = require('chai').expect;
   var happnInstance = null;
 
   before('should initialize the service', async () => {
-    this.timeout(20000);
     happnInstance = await test.createInstance();
   });
 
@@ -23,11 +22,16 @@ test.describe(__filename, function() {
     });
   });
 
-  it('reading after 10000 entries takes only 2 times as long as 10 entries and writing takes only 3 times as long as 10 entries', async function() {
+  const ITEM_COUNT = 10000;
+  const READ_MULTIPLIER = 2;
+  const WRITE_MULTIPLIER = 15;
+
+  it(`reading after ${ITEM_COUNT} entries takes only ${READ_MULTIPLIER} times as long as 10 entries and writing takes only ${WRITE_MULTIPLIER} times as long as 10 entries`, async function() {
     const itemCountFirstCheck = 10;
     const itemCount = 10000;
-    let writeMultiplier = process.env.INTRAVENOUS ? 3 : 1.1;
-    let readMultiplier = process.env.INTRAVENOUS ? 2 : 1.1;
+
+    let writeMultiplier = WRITE_MULTIPLIER;
+    let readMultiplier = READ_MULTIPLIER;
     let timeFirstSet;
     let timeLastSet;
     let timeFirstGet;
@@ -49,12 +53,14 @@ test.describe(__filename, function() {
     timeFirstGet = Number(process.hrtime.bigint() - timeStart) / 1e6;
 
     await test.async.timesSeries(itemCount, async n => {
-      await setItem(test_base_url + (n + itemCountFirstCheck), test_string + n);
+      await setItem(test_base_url + (n + itemCountFirstCheck), test_string + n, true);
     });
 
     timeStart = process.hrtime.bigint();
     await setItem(test_base_url, test_string);
     timeLastSet = Number(process.hrtime.bigint() - timeStart) / 1e6;
+    test.log(`timeLastSet: ${timeLastSet}`);
+    test.log(`timeFirstSet: ${timeFirstSet}`);
     expect(timeLastSet).to.be.lt(timeFirstSet * writeMultiplier);
 
     await test.async.timesSeries(itemCount, async n => {
@@ -65,13 +71,18 @@ test.describe(__filename, function() {
       timesGet.push(Number(process.hrtime.bigint() - timeStart) / 1e6);
     });
 
-    expect(timesGet.reduce((result, value) => result + value / timesGet.length, 0)).to.be.lt(
-      timeFirstGet * readMultiplier
-    );
+    const timeLastGet = timesGet.reduce((result, value) => result + value / timesGet.length, 0);
+    test.log(`timeFirstGet: ${timeFirstGet}`);
+    test.log(`timeLastGet: ${timeLastGet}`);
 
-    function setItem(path, value) {
+    expect(timeLastGet).to.be.lt(timeFirstGet * readMultiplier);
+
+    function setItem(path, value, insert) {
       return client.set(path, value, {
-        noPublish: true
+        noPublish: true,
+        upsertType: insert
+          ? constants.DATA_OPERATION_TYPES.INSERT
+          : constants.DATA_OPERATION_TYPES.UPSERT
       });
     }
 

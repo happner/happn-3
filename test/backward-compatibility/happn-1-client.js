@@ -701,7 +701,7 @@ test.describe(__filename, function() {
     );
   });
 
-  it.only('subscribes with a count - we ensure the event only gets kicked off for the correct amounts', function(callback) {
+  it('subscribes with a count - we ensure the event only gets kicked off for the correct amounts (2)', function(callback) {
     var hits = 0;
     //first listen for the change
     listenerclient.on(
@@ -716,64 +716,73 @@ test.describe(__filename, function() {
       function(e) {
         if (e) return callback(e);
 
-        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/1', {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        });
+        test.async.timesSeries(
+          10,
+          (time, cb) => {
+            let path = '/1_eventemitter_embedded_sanity/' + test_id + `/count/2/${time}`;
+            test.log(`setting path: ${path}`);
+            publisherclient.set(
+              '/1_eventemitter_embedded_sanity/' + test_id + `/count/2/${time}`,
+              {
+                property1: 'property1',
+                property2: 'property2',
+                property3: 'property3'
+              },
+              e => {
+                if (e) return cb(e);
+                setTimeout(cb, 100);
+              }
+            );
+          },
+          e => {
+            if (e) return callback(e);
+            if (hits !== 2) return callback(new Error('hits should be 2'));
+            callback();
+          }
+        );
+      }
+    );
+  });
 
-        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/2', {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        });
+  it('subscribes with a count - we ensure the event only gets kicked off for the correct amounts (3)', function(callback) {
+    var hits = 0;
+    //first listen for the change
+    listenerclient.on(
+      '/1_eventemitter_embedded_sanity/' + test_id + '/count/3/*',
+      {
+        event_type: 'set',
+        count: 3
+      },
+      function() {
+        hits++;
+      },
+      function(e) {
+        if (e) return callback(e);
 
-        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/3', {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        });
-
-        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/4', {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        });
-
-        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/5', {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        });
-
-        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/6', {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        });
-
-        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/7', {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        });
-
-        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/8', {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        });
-
-        publisherclient.set('/1_eventemitter_embedded_sanity/' + test_id + '/count/2/9', {
-          property1: 'property1',
-          property2: 'property2',
-          property3: 'property3'
-        });
-
-        setTimeout(function() {
-          if (hits !== 2) return callback(new Error('hits should be 2'));
-          callback();
-        }, 5000);
+        test.async.timesSeries(
+          10,
+          (time, cb) => {
+            let path = '/1_eventemitter_embedded_sanity/' + test_id + `/count/2/${time}`;
+            test.log(`setting path: ${path}`);
+            publisherclient.set(
+              '/1_eventemitter_embedded_sanity/' + test_id + `/count/3/${time}`,
+              {
+                property1: 'property1',
+                property2: 'property2',
+                property3: 'property3'
+              },
+              e => {
+                if (e) return cb(e);
+                setTimeout(cb, 100);
+              }
+            );
+          },
+          e => {
+            if (e) return callback(e);
+            if (hits !== 3) return callback(new Error('hits should be 3'));
+            callback();
+          }
+        );
       }
     );
   });
