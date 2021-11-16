@@ -894,3 +894,7 @@
 11.13.6 2021-11-09
 -----------------
   - fix: SMC-4512 -  data provider get action causes fatal when allowNestedPermissions switched on
+
+11.X.X 2021-11-16
+-----------------
+  - fix: SMC-2716 -  fatal caused when message passed to processAuthorize (security service) has no message.request.path
