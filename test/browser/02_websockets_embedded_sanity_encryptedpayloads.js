@@ -225,22 +225,22 @@ describe('02_websockets_embedded_sanity_encrypted_payloads', function() {
       $or: [
         {
           regions: {
-            $in: ['North', 'South', 'East', 'West']
+            $containsAny: ['North', 'South', 'East', 'West']
           }
         },
         {
           towns: {
-            $in: ['North.Cape Town', 'South.East London']
+            $containsAny: ['North.Cape Town', 'South.East London']
           }
         },
         {
           categories: {
-            $in: ['Action', 'History']
+            $containsAny: ['Action', 'History']
           }
         }
       ],
       keywords: {
-        $in: ['bass', 'Penny Siopis']
+        $containsAny: ['bass', 'Penny Siopis']
       }
     };
 
