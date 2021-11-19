@@ -44,7 +44,7 @@ describe(test.testName(__filename), function() {
     await serviceInstance.services.security.lookupTables.upsertLookupTable({
       // /_SYSTEM/_SECURITY/LOOKUP TABLES/{LOOKUP TABLE}/{LOOKUP  PATH}
       name: 'SMC_LOOKUP',
-      // /_SYSTEM/_CSECURITY/LOOKUP PATHS/{LOOKUP TABLE}/{LOOKUP  PATH}
+      // /_SYSTEM/_SECURITY/LOOKUP PATHS/{LOOKUP TABLE}/{LOOKUP  PATH}
       paths: [
         '/device/OEM_ABC/COMPANY_ABC/SPECIAL_DEVICE_ID_1',
         '/device/OEM_ABC/COMPANY_ABC/SPECIAL_DEVICE_ID_2'
@@ -65,26 +65,26 @@ describe(test.testName(__filename), function() {
       'OEM_ABC_LOOKUP',
       '/device/OEM_ABC/COMPANY_ABC/SPECIAL_DEVICE_ID_3'
     );
+    // Enterprise admin
 
-    // SMC Manager
     await serviceInstance.services.security.groups.upsertLookupPermission(
       enterpriseAdminGroup.name,
       {
         regex: '^/_data/historianStore/(.*)',
         actions: ['on', 'get', 'set'],
         table: 'COMPANY_ABC_LOOKUP',
-        // maps to an array of paths, organisations is an array
-        path: '/device/{{user.custom_data.organisations}}/*/{{$1}}'
+        // maps to an array of paths, companies is an array
+        path: '/device/{{user.custom_data.oem}}/{{user.custom_data.companies}}/{{$1}}'
       }
     );
 
-    // Enterprise admin
+    // OEM admin
     await serviceInstance.services.security.groups.upsertLookupPermission(oemAdminGroup.name, {
       regex: '^/_data/historianStore/(.*)',
       actions: ['on', 'get', 'set'],
       table: 'OEM_ABC_LOOKUP',
-      // maps to an array of paths, companies is an array
-      path: '/device/{{user.custom_data.oem}}/{{user.custom_data.companies}}/{{$1}}'
+      // maps to an array of paths, organisations is an array
+      path: '/device/{{user.custom_data.organisations}}/*/{{$1}}'
     });
 
     // SMC admin
@@ -144,7 +144,7 @@ describe(test.testName(__filename), function() {
       custom_data: {
         oem: 'OEM_ABC',
         company: 'COMPANY_ABC',
-        companiesArray: ['COMPANY_ABC', 'COMPANY_DEF', 'COMPANY_GHI']
+        companies: ['COMPANY_ABC', 'COMPANY_DEF', 'COMPANY_GHI']
       },
       permissions: {}
     };
