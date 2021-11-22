@@ -117,7 +117,7 @@
       "docs",
       "gulpfile.js",
       "lib/services/connect/public/browser_primus.js",
-      "README.md"
+      "README.md",
       "RELEASES.md"
     ]
   },
