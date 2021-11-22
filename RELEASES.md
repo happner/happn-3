@@ -878,6 +878,24 @@
 -----------------
   - fix: SMC-3242 - Will correctly listRelevantPermissions for onBehalfOf sessions
 
-11.13.3 2021-08-31
+
+11.13.3 2021-09-08
+-----------------
+  - fix: SMC-4044 - cookie events not dependent on client login
+
+11.13.4 2021-09-20
+-----------------
+  - fix: SMC-4161 - user permissions not cleaned up on user deletion
+
+11.13.5 2021-09-27
+-----------------
+  - fix: SMC-4209 - concurrency issue, user created logged on deleted, causes security directory update to fatal
+  - fix: SMC-4208 - merge insert now uses upsert, moved constants out of data service
+
+11.13.6 2021-11-09
+-----------------
+  - fix: SMC-4512 -  data provider get action causes fatal when allowNestedPermissions switched on
+
+11.13.7 2021-08-31
 -----------------
   - feature: SMC-2954 - Allows for configuration and use of multiple authentication providers.

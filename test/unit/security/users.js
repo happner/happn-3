@@ -168,6 +168,212 @@ describe(
       });
     });
 
+    it('tests deleting a reserved user', function(done) {
+      mockServices(function(e, happn) {
+        if (e) return done(e);
+        happn.services.security.users.deleteUser({ username: '_ANONYMOUS' }, function(e) {
+          expect(e.message).to.be('unable to delete a user with the reserved name: _ANONYMOUS');
+          happn.services.security.users.deleteUser({ username: '_ADMIN' }, function(e) {
+            expect(e.message).to.be('unable to delete a user with the reserved name: _ADMIN');
+            done();
+          });
+        });
+      });
+    });
+
+    it('tests deleting an undefined user - promise', function(done) {
+      mockServices(async (e, happn) => {
+        try {
+          await happn.services.security.users.deleteUser(undefined);
+        } catch (e) {
+          expect(e.message).to.be('user is null or not an object');
+          done();
+        }
+      });
+    });
+
+    it('tests deleting a reserved user - promise', function(done) {
+      mockServices(async (_e, happn) => {
+        try {
+          await happn.services.security.users.deleteUser({ username: '_ANONYMOUS' });
+        } catch (e) {
+          expect(e.message).to.be('unable to delete a user with the reserved name: _ANONYMOUS');
+          done();
+        }
+      });
+    });
+
+    it('tests deleting a user happy path - promise', function(done) {
+      mockServices(async (_e, happn) => {
+        happn.services.security.users.permissionManager = {
+          removeAllUserPermissions: () => {}
+        };
+        happn.services.security.users.dataService = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.__cache_users = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.__cache_passwords = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.securityService.dataChanged = (
+          whatHappned,
+          data,
+          additionalInfo,
+          callback
+        ) => {
+          callback(null, { whatHappned, data, additionalInfo });
+        };
+
+        happn.services.security.users
+          .deleteUser({ username: 'test' })
+          .then(deleted => {
+            expect(deleted).to.eql({
+              obj: {
+                path: '/_SYSTEM/_SECURITY/_USER/test'
+              },
+              tree: {
+                path: '/_SYSTEM/_SECURITY/_USER/test/*'
+              }
+            });
+            done();
+          })
+          .catch(done);
+      });
+    });
+
+    it('tests deleting a user happy path - callback', function(done) {
+      mockServices(async (_e, happn) => {
+        happn.services.security.users.permissionManager = {
+          removeAllUserPermissions: () => {}
+        };
+        happn.services.security.users.dataService = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.__cache_users = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.__cache_passwords = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.securityService.dataChanged = (
+          whatHappned,
+          data,
+          additionalInfo,
+          callback
+        ) => {
+          callback(null, { whatHappned, data, additionalInfo });
+        };
+
+        happn.services.security.users.deleteUser({ username: 'test' }, (e, deleted) => {
+          expect(e).to.eql(null);
+          expect(deleted).to.eql({
+            obj: {
+              path: '/_SYSTEM/_SECURITY/_USER/test'
+            },
+            tree: {
+              path: '/_SYSTEM/_SECURITY/_USER/test/*'
+            }
+          });
+          done();
+        });
+      });
+    });
+
+    it('tests deleting a user sad path - promise', function(done) {
+      mockServices(async (_e, happn) => {
+        happn.services.security.users.permissionManager = {
+          removeAllUserPermissions: () => {
+            throw new Error('test');
+          }
+        };
+        happn.services.security.users.dataService = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.__cache_users = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.__cache_passwords = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.securityService.dataChanged = (
+          whatHappned,
+          data,
+          additionalInfo,
+          callback
+        ) => {
+          callback(null, { whatHappned, data, additionalInfo });
+        };
+
+        happn.services.security.users
+          .deleteUser({ username: 'test' })
+          .then(() => {
+            done(new Error('unexpected'));
+          })
+          .catch(e => {
+            expect(e.message).to.be('test');
+            done();
+          });
+      });
+    });
+
+    it('tests deleting a user sad path - callback', function(done) {
+      mockServices(async (_e, happn) => {
+        happn.services.security.users.permissionManager = {
+          removeAllUserPermissions: () => {
+            throw new Error('test');
+          }
+        };
+        happn.services.security.users.dataService = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.__cache_users = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.__cache_passwords = {
+          remove: path => {
+            return { path };
+          }
+        };
+        happn.services.security.users.securityService.dataChanged = (
+          whatHappned,
+          data,
+          additionalInfo,
+          callback
+        ) => {
+          callback(null, { whatHappned, data, additionalInfo });
+        };
+
+        happn.services.security.users.deleteUser({ username: 'test' }, e => {
+          expect(e.message).to.be('test');
+          done();
+        });
+      });
+    });
+
     it('searches for users  a custom filter to ensure we dont have to trim out groups, this will allow us to optimise the listUsers method', function(done) {
       mockServices(function(e, happn) {
         if (e) return done(e);

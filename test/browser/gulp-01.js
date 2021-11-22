@@ -84,6 +84,18 @@ gulp.task('default', async () => {
     );
   });
 
+  await serverHelper.createServer({
+    secure: true,
+    port: 55004,
+    services: {
+      security: {
+        config: {
+          cookieName: 'test-cookie'
+        }
+      }
+    }
+  });
+
   var karmaServer = new Server({
     configFile: __dirname + path.sep + '01.karma.conf.js',
     singleRun: true
