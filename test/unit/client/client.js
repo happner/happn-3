@@ -670,7 +670,7 @@ describe(test.testName(__filename, 3), function() {
     let document = { cookie: encodeURIComponent('notTheName=test;with;cookie') };
     test.expect(HappnClient.__getCookieInstance('cookieName', document)).to.be('');
     done();
-  }) 
+  });
 
   it('tests loginWithCookie', async () => {
     HappnClient.__getCookieInstance = () => {
