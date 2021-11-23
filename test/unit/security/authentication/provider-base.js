@@ -64,6 +64,7 @@ describe(
         done();
       });
     });
+
     it('tests the __providerCredsLogin method, when no provider is configured', done => {
       let baseProvider = BaseAuthProvider.create(mockHappn, {});
       baseProvider.__providerCredsLogin(null, null, e => {
