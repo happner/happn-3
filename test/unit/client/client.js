@@ -530,7 +530,7 @@ describe(test.testName(__filename, 3), function() {
       test.expect(e).to.be(undefined);
     });
   });
-  
+
   it('tests __getCookieInstance', done => {
     this.timeout(5000);
     let document = { cookie: encodeURIComponent('cookieName=test;with;cookie') };
@@ -670,8 +670,6 @@ describe(test.testName(__filename, 3), function() {
       interval: 650
     });
   });
-
-
 
   it('tests loginWithCookie', async () => {
     HappnClient.__getCookieInstance = () => {
