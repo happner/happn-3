@@ -6,6 +6,8 @@ describe(
     const happn = require('../../../../lib/index');
     const expect = require('expect.js');
     const path = require('path');
+    const why = require('why-is-node-running');
+    let instance;
     async function getService(config) {
       return new Promise((res, rej) => {
         happn.service.create(config, (e, service) => {
@@ -15,6 +17,9 @@ describe(
       });
     }
 
+    afterEach(async () => {
+      if (instance) await stopService(instance);
+    });
     async function stopService(instance) {
       return new Promise((res, rej) => {
         instance.stop(e => {
@@ -25,7 +30,7 @@ describe(
     }
 
     it('Tests having two auth providers in config, and that the correct one can be called by adding authType to credentials', async () => {
-      let instance = await getService({
+      instance = await getService({
         secure: true,
         services: {
           security: {
@@ -70,7 +75,7 @@ describe(
         'Login called in second auth provider'
       );
       instance.services.security.login(
-        { authType: 'happn3', username: 'non', password: 'non' },
+        { authType: 'happn', username: 'non', password: 'non' },
         'session',
         null,
         (e, result) => {
@@ -78,13 +83,12 @@ describe(
           expect(result).to.be(undefined);
           //Base class function
           instance.services.security.login(
-            { authType: 'happn3', username: testUser.username, password: testUser.password },
+            { authType: 'happn', username: testUser.username, password: testUser.password },
             'session',
             null,
-            async (e, result) => {
+            (e, result) => {
               expect(e).to.be(null);
-              expect(result.user).to.be(addedTestuser);
-              await stopService(instance);
+              expect(result.user).to.eql({ ...addedTestuser, groups: {} });
             }
           );
         }
@@ -92,7 +96,7 @@ describe(
     });
 
     it('Tests having two auth providers in config, and that the correct one can be called by adding authType at client  creation', async () => {
-      let instance = await getService({
+      instance = await getService({
         port: 55555,
         secure: true,
         services: {
@@ -159,7 +163,6 @@ describe(
       });
       expect(client).to.be.ok();
       await client.disconnect({ reconnect: false });
-      await stopService(instance);
     });
   }
 );

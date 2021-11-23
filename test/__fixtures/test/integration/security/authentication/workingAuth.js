@@ -8,7 +8,6 @@ module.exports = function(ParentClass) {
       return new TestAuthProvider(happn, config);
     }
    __providerCredsLogin(credentials, sessionId, callback) {      
-     console.log("IN SECOND")
       if (credentials.username === "secondTestuser@somewhere.com" && credentials.password === "secondPass") {        
         let user = {username: "secondTestuser@somewhere.com", groups:[]}
         return this.__loginOK(credentials, user, sessionId, callback);
