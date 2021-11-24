@@ -896,6 +896,6 @@
 -----------------
   - fix: SMC-4512 -  data provider get action causes fatal when allowNestedPermissions switched on
 
-11.13.7 2021-08-31
+11.14.0 2021-11-24
 -----------------
   - feature: SMC-2954 - Allows for configuration and use of multiple authentication providers.
