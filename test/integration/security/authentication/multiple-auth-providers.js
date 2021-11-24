@@ -6,7 +6,6 @@ describe(
     const happn = require('../../../../lib/index');
     const expect = require('expect.js');
     const path = require('path');
-    const why = require('why-is-node-running');
     let instance;
     async function getService(config) {
       return new Promise((res, rej) => {
