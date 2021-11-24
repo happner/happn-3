@@ -904,5 +904,3 @@
 11.14.1 2021-11-24
 -----------------
   - fix: SMC-4386 -  upsertMultiplePermissions will now allow for removing permissions/prohibitions as well as upserting permissions or prohibitions
-                  -  hence it is no longer necessary to upsert a prohibition to remove a permission.
-                  - __reattachChangedListeners has been rewritten as __reattachListenersOnPermissionChange for functionality and readibility
