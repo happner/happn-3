@@ -78,12 +78,10 @@ describe(
             username: '_ADMIN',
             password: 'happn'
           })
-
           .then(function(clientInstance) {
             adminClient = clientInstance;
             done();
           })
-
           .catch(function(e) {
             done(e);
           });

@@ -531,6 +531,20 @@ describe(test.testName(__filename, 3), function() {
     });
   });
 
+  it('tests __getCookieInstance', done => {
+    this.timeout(5000);
+    let document = { cookie: encodeURIComponent('cookieName=test;with;cookie') };
+    test.expect(HappnClient.__getCookieInstance('cookieName', document)).to.be('test');
+    done();
+  });
+
+  it('tests __getCookieInstance, no name match', done => {
+    this.timeout(5000);
+    let document = { cookie: encodeURIComponent('notTheName=test;with;cookie') };
+    test.expect(HappnClient.__getCookieInstance('cookieName', document)).to.be('');
+    done();
+  });
+
   it('tests the __writeCookie function ', function() {
     this.timeout(5000);
     const happnClient = mockHappnClient(null, null, null, null, null, null, function() {}, null);

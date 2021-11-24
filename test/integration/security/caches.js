@@ -14,6 +14,7 @@ describe(testHelper.testName(__filename, 3), function() {
   before('it starts the service with limited cache sizes for the security service', function(
     callback
   ) {
+    this.timeout(3000);
     getService(
       {
         secure: true,
