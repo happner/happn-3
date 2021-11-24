@@ -172,14 +172,20 @@ describe(
               .catch(function(e) {
                 expect(e.toString()).to.be('AccessDenied: Invalid credentials');
 
-                server1.services.security.__locks.get(testUser2.username, function(e, lock) {
-                  expect(lock.attempts).to.be(2);
-                  setTimeout(itemCB, 3000);
-                });
+                server1.services.security.authProviders.happn.__locks.get(
+                  testUser2.username,
+                  function(e, lock) {
+                    expect(lock.attempts).to.be(2);
+                    setTimeout(itemCB, 3000);
+                  }
+                );
               });
           },
           function(itemCB) {
-            server1.services.security.__locks.get(testUser2.username, function(e, lock) {
+            server1.services.security.authProviders.happn.__locks.get(testUser2.username, function(
+              e,
+              lock
+            ) {
               expect(e).to.be(null);
 
               expect(lock).to.be(null);
@@ -501,7 +507,7 @@ describe(
               })
               .catch(function(e) {
                 expect(e.toString()).to.be('AccessDenied: Invalid credentials');
-                expect(server1.services.security.__locks.get());
+                expect(server1.services.security.authProviders.happn.__locks.get());
                 itemCB();
               });
           },
