@@ -429,6 +429,79 @@ describe(test.testName(__filename, 3), function() {
     });
   });
 
+  it('tests the upsertMultiplePermissions method, removing permissions', function(done) {
+    mockServices(async (e, happn) => {
+      try {
+        if (e) return done(e);
+        let pm = new PermissionsManager(null, 'test', happn);
+        let validPermissions = {
+          '/path1': { actions: ['set', 'get', 'on'] },
+          '/path2': { prohibit: ['delete', 'post'] }
+        };
+        await pm.upsertMultiplePermissions('testName', validPermissions);
+        let permissionList = await pm.listPermissions('testName');
+        test.expect(permissionList).to.eql([
+          { action: 'delete', authorized: false, path: '/path2' },
+          { action: 'get', authorized: true, path: '/path1' },
+          { action: 'on', authorized: true, path: '/path1' },
+          { action: 'post', authorized: false, path: '/path2' },
+          { action: 'set', authorized: true, path: '/path1' }
+        ]);
+        let removePermissions = {
+          '/path1': { remove: true, actions: ['set', 'get'] },
+          '/path2': { remove: true, actions: ['delete'] } //Should not remove anything as this is a prohibition, not a permission
+        };
+        await pm.upsertMultiplePermissions('testName', removePermissions);
+        permissionList = await pm.listPermissions('testName');
+        test.expect(permissionList).to.eql([
+          { action: 'delete', authorized: false, path: '/path2' }, //Still here
+          { action: 'on', authorized: true, path: '/path1' },
+          { action: 'post', authorized: false, path: '/path2' }
+        ]);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+  });
+
+  it('tests the upsertMultiplePermissions method, removing prohibitions]', function(done) {
+    mockServices(async (e, happn) => {
+      try {
+        if (e) return done(e);
+        let pm = new PermissionsManager(null, 'test', happn);
+        let validPermissions = {
+          '/path1': { actions: ['set', 'get', 'on'] },
+          '/path2': { prohibit: ['delete', 'post'] }
+        };
+        await pm.upsertMultiplePermissions('testName', validPermissions);
+        let permissionList = await pm.listPermissions('testName');
+        test.expect(permissionList).to.eql([
+          { action: 'delete', authorized: false, path: '/path2' },
+          { action: 'get', authorized: true, path: '/path1' },
+          { action: 'on', authorized: true, path: '/path1' },
+          { action: 'post', authorized: false, path: '/path2' },
+          { action: 'set', authorized: true, path: '/path1' }
+        ]);
+        let removePermissions = {
+          '/path1': { remove: true, prohibit: ['get'] }, //Should not remove anything as this is a permission, not a prohibition
+          '/path2': { remove: true, prohibit: ['delete'] }
+        };
+        await pm.upsertMultiplePermissions('testName', removePermissions);
+        permissionList = await pm.listPermissions('testName');
+        test.expect(permissionList).to.eql([
+          { action: 'get', authorized: true, path: '/path1' }, //Still here
+          { action: 'on', authorized: true, path: '/path1' },
+          { action: 'post', authorized: false, path: '/path2' },
+          { action: 'set', authorized: true, path: '/path1' }
+        ]);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+  });
+
   it('tests the removeAllUserPermissions method', function(done) {
     mockServices(async (_e, happn) => {
       let pm = new PermissionsManager(null, 'test', happn);
