@@ -129,7 +129,9 @@ require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test =
             if (e) return callback(e);
 
             var currentPersistedRestartedServiceName = currentService.services.system.name;
-            test.expect(currentPersistedRestartedServiceName).to.be('5_eventemitter_stoppingstarting');
+            test
+              .expect(currentPersistedRestartedServiceName)
+              .to.be('5_eventemitter_stoppingstarting');
             callback();
           });
         });

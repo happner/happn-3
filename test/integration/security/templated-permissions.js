@@ -241,9 +241,11 @@ require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test =
           testClient.set('/forbidden/1', 1, function(e) {
             if (!e) return done(new Error('untest.expected access granted'));
             test.expect(e.toString()).to.be('AccessDenied: unauthorized');
-            test.expect(warnings[0]).to.be(
-              'illegal promotion of permissions via permissions template, permissionPath/forbidden/{{user.custom_data.custom_field_forbidden}}, replaced path: /forbidden/*'
-            );
+            test
+              .expect(warnings[0])
+              .to.be(
+                'illegal promotion of permissions via permissions template, permissionPath/forbidden/{{user.custom_data.custom_field_forbidden}}, replaced path: /forbidden/*'
+              );
             done();
           });
         }
