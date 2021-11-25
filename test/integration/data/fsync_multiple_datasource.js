@@ -1,15 +1,7 @@
-const test = require('../../__fixtures/utils/test_helper').create();
-describe(test.testName(__filename, 3), function() {
-  const fs = require('fs-extra');
-
-  const sinon = require('sinon');
-  const chai = require('chai');
-  chai.use(require('sinon-chai'));
-  const expect = require('chai').expect;
-
-  const async = require('async');
+require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test => {
+  const expect = test.chai.expect;
   const happn = require('../../../lib/index');
-  const tempFile1 = __dirname + '/tmp/testdata_' + require('shortid').generate() + '.db';
+  const tempFile1 = test.newTestFile();
   const test_id = Date.now() + '_' + require('shortid').generate();
 
   const services = [];
@@ -28,13 +20,13 @@ describe(test.testName(__filename, 3), function() {
     });
   };
 
-  /** @type {sinon.SinonSpy} */
+  /** @type {test.sinon.SinonSpy} */
   let fsyncSpy;
 
   before('should initialize the services', function(callback) {
     this.timeout(60000); //travis sometiems takes ages...
 
-    fsyncSpy = sinon.spy(fs, 'fsync');
+    fsyncSpy = test.sinon.spy(test.fs, 'fsync');
 
     const serviceConfigs = [
       {
@@ -71,7 +63,7 @@ describe(test.testName(__filename, 3), function() {
       }
     ];
 
-    async.eachSeries(
+    test.async.eachSeries(
       serviceConfigs,
       function(serviceConfig, serviceConfigCallback) {
         getService(serviceConfig, function(e, happnService) {
@@ -98,20 +90,9 @@ describe(test.testName(__filename, 3), function() {
     );
   });
 
-  after('should delete the temp data files', function(callback) {
+  after('should delete the temp data files', async () => {
     fsyncSpy.restore();
-
-    fs.unlink(tempFile1, function(e) {
-      if (e) return callback(e);
-
-      async.each(
-        services,
-        function(currentService, eachServiceCB) {
-          currentService.stop(eachServiceCB);
-        },
-        callback
-      );
-    });
+    await test.cleanup([], services);
   });
 
   beforeEach(async () => {

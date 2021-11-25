@@ -1,6 +1,4 @@
-const test = require('../../__fixtures/utils/test_helper').create();
-
-test.describe(__filename, 120000, function() {
+require('../../__fixtures/utils/test_helper').describe(__filename, 120000, function(test) {
   let happnInstance = null;
   let publisherclient;
   let listenerclient;

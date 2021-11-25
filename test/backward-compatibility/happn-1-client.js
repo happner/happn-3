@@ -1,5 +1,4 @@
-const test = require('../__fixtures/utils/test_helper').create();
-test.describe(__filename, function() {
+require('../../__fixtures/utils/test_helper').describe(__filename, 120000, function(test) {
   var happn = require('../../lib/index');
   var old_happn = require('happn');
   var service = happn.service;

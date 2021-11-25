@@ -1,5 +1,4 @@
-const test = require('../../__fixtures/utils/test_helper').create();
-test.describe(__filename, 10000, function() {
+require('../../__fixtures/utils/test_helper').describe(__filename, 120000, function(test) {
   let mode = 'embedded';
   let happnInstance = null;
   let test_id = test.shortid();

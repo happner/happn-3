@@ -1,6 +1,5 @@
-const test = require('../../__fixtures/utils/test_helper').create();
 const constants = require('../../../lib/constants');
-test.describe(__filename, 10000, function() {
+require('../../__fixtures/utils/test_helper').describe(__filename, 120000, function(test) {
   var expect = require('chai').expect;
   var happnInstance = null;
 

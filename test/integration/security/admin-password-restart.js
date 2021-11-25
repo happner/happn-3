@@ -1,110 +1,57 @@
-describe(
-  require('../../__fixtures/utils/test_helper')
-    .create()
-    .testName(__filename, 3),
-  function() {
-    var fs = require('fs');
-    var happn = require('../../../lib/index');
-    var default_timeout = 10000;
-    var tmpFile = __dirname + '/tmp/testdata_' + require('shortid').generate() + '.db';
-    var currentService = null;
+require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test => {
+  const filename = test.newTestFile();
+  let currentService = null;
 
-    var originalPassword = 'original';
-    var modifiedPassword = 'modified';
+  const originalPassword = 'original';
+  const modifiedPassword = 'modified';
 
-    var stopService = function(callback) {
-      if (currentService) {
-        currentService.stop(function(e) {
-          if (e && e.toString() !== 'Error: Not running') return callback(e);
-          callback();
-        });
-      } else callback();
-    };
+  async function stopService() {
+    await test.destroyInstance(currentService);
+  }
 
-    var initService = function(filename, name, callback) {
-      stopService(function(e) {
-        if (e) return callback(e);
-        var serviceConfig = {
-          name: name,
-          services: {
-            security: {
-              config: {
-                adminUser: { password: originalPassword }
-              }
-            },
-            data: {
-              config: {
-                filename: filename
-              }
-            }
-          },
-          secure: true
-        };
-
-        happn.service.create(serviceConfig, function(e, happnService) {
-          if (e) return callback(e);
-          currentService = happnService;
-          callback();
-        });
-      });
-    };
-
-    var getClient = function(service, password, callback) {
-      service.services.session.localClient(
-        {
-          username: '_ADMIN',
-          password: password
+  async function initService() {
+    await stopService();
+    currentService = await test.createInstance({
+      name: 'admin_password_restart',
+      services: {
+        security: {
+          config: {
+            adminUser: { password: originalPassword }
+          }
         },
-        function(e, instance) {
-          if (e) return callback(e);
-          callback(null, instance);
+        data: {
+          config: {
+            filename
+          }
         }
-      );
-    };
-
-    before('should initialize the service', function(callback) {
-      this.timeout(20000);
-
-      initService(tmpFile, 'admin_password_restart', callback);
-    });
-
-    after('should delete the temp data file', function(callback) {
-      this.timeout(20000);
-
-      stopService(function() {
-        fs.unlink(tmpFile, function() {
-          callback();
-        });
-      });
-    });
-
-    it('should modify the admin password, restart the service and log in with the new password', function(callback) {
-      this.timeout(default_timeout);
-
-      //check the original password works
-      getClient(currentService, originalPassword, function(e) {
-        if (e) return callback(e);
-
-        //modify the original password
-        currentService.services.security.users
-          .__upsertUser({ username: '_ADMIN', password: modifiedPassword })
-
-          .then(function() {
-            //test the login works with the modified password
-            getClient(currentService, modifiedPassword, function(e) {
-              if (e) return callback(e);
-
-              //restart the service and ensure we are able to login with the new password
-              initService(tmpFile, 'admin_password_restart', function(e) {
-                if (e) return callback(e);
-
-                //test the login works with the modified password
-                getClient(currentService, modifiedPassword, callback);
-              });
-            });
-          })
-          .catch(callback);
-      });
+      },
+      secure: true
     });
   }
-);
+
+  function getClient(service, password) {
+    return service.services.session.localClient({
+      username: '_ADMIN',
+      password: password
+    });
+  }
+
+  before('should initialize the service', async () => {
+    await initService();
+  });
+
+  after('should delete the temp data file', async () => {
+    await stopService();
+  });
+
+  it('should modify the admin password, restart the service and log in with the new password', async () => {
+    await getClient(currentService, originalPassword);
+    await currentService.services.security.users.__upsertUser({
+      username: '_ADMIN',
+      password: modifiedPassword
+    });
+    await getClient(currentService, modifiedPassword);
+    await initService();
+    await getClient(currentService, modifiedPassword);
+  });
+});

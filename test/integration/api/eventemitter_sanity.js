@@ -12,22 +12,12 @@ describe(test.testName(__filename, 3), function() {
 
   before('should initialize the service', function(callback) {
     test_id = Date.now() + '_' + require('shortid').generate();
+    service.create(config, function(e, happnInst) {
+      if (e) return callback(e);
 
-    try {
-      try {
-        require('fs').unlinkSync(__dirname + '/tmp/1_eventemitter_sanity.json');
-      } catch (e) {
-        // ignore
-      }
-      service.create(config, function(e, happnInst) {
-        if (e) return callback(e);
-
-        happnInstance = happnInst;
-        callback();
-      });
-    } catch (e) {
-      callback(e);
-    }
+      happnInstance = happnInst;
+      callback();
+    });
   });
 
   after(function(done) {

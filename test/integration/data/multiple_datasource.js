@@ -1,8 +1,8 @@
-const test = require('../../__fixtures/utils/test_helper').create();
-describe(test.testName(__filename, 3), function() {
-  let happn = require('../../../lib/index');
-  let tempFile1 = __dirname + '/tmp/testdata_' + require('shortid').generate() + '.db';
-  let test_id = Date.now() + '_' + require('shortid').generate();
+require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test => {
+  const happn = require('../../../lib/index');
+  const tempFile1 = test.newTestFile();
+  const test_id = Date.now() + '_' + require('shortid').generate();
+
   let services = [];
   let singleClient;
   let multipleClient;
@@ -85,18 +85,8 @@ describe(test.testName(__filename, 3), function() {
     );
   });
 
-  after('should delete the temp data files', function(callback) {
-    test.fs.unlink(tempFile1, function(e) {
-      if (e) return callback(e);
-
-      test.async.each(
-        services,
-        function(currentService, eachServiceCB) {
-          currentService.stop(eachServiceCB);
-        },
-        callback
-      );
-    });
+  after('should delete the temp data files', async () => {
+    await test.cleanup([], services);
   });
 
   it('should push some data into the single datastore service', function(callback) {

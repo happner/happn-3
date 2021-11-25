@@ -17,18 +17,21 @@ function TestHelper() {
   this.server = require('./server-helper').create();
   this.security = require('./security-helper').create();
   this.sinon = require('sinon');
-  this.fs = require('fs');
+  this.fs = require('fs-extra');
   this.async = require('async');
   this.findRecordInDataFileCallback = this.nodeUtils.callbackify(this.findRecordInDataFile);
   this.happn = require('../../../lib/index');
   this._ = require('underscore');
+  this.request = require('request');
+  this.chai = require('chai');
+  this.chai.use(require('sinon-chai'));
 }
 
 TestHelper.create = function(){
   return new TestHelper();
 };
 
-TestHelper.prototype.describe = function(fileName, timeout, handler) {
+TestHelper.describe = function(fileName, timeout, handler) {
   if (typeof timeout === 'function') {
     handler = timeout;
     timeout = 5e3;
@@ -36,9 +39,10 @@ TestHelper.prototype.describe = function(fileName, timeout, handler) {
   if (!timeout) {
     timeout = 5e3;
   }
-  describe(this.testName(fileName), function() {
+  const testHelper = TestHelper.create();
+  describe(testHelper.testName(fileName), function() {
     this.timeout(timeout);
-    handler.bind(this)();
+    handler.bind(this)(testHelper);
   });
 }
 
@@ -61,9 +65,7 @@ TestHelper.prototype.newTestFile = function (options) {
   if (!options.dir) options.dir = 'test' + this.path.sep + 'tmp';
   if (!options.ext) options.ext = 'txt';
   if (!options.name) options.name = shortid.generate();
-  var folderName = this.path.resolve(options.dir);
-  fs.ensureDirSync(folderName);
-  var fileName = folderName + this.path.sep + options.name + '.' + options.ext;
+  const fileName = this.ensureTmpPath(options.name + '.' + options.ext);
   fs.writeFileSync(fileName, '');
   this.__testFiles.push(fileName);
   return fileName;
@@ -74,6 +76,26 @@ TestHelper.prototype.log = function(msg, data){
   if (data) {
     console.log(JSON.stringify(data, null, 2));
   }
+}
+
+TestHelper.prototype.cleanup = async function(sessions = [], instances = []){
+  this.deleteFiles();
+  for (let session of sessions) {
+    await this.destroySession(session);
+  }
+  for (let instance of instances) {
+    await this.destroyInstance(instance);
+  }
+}
+
+TestHelper.prototype.unlinkFiles = function(files) {
+  files.forEach(file => {
+    try {
+      this.fs.unlinkSync(file);
+    } catch(e) {
+      //do nothing
+    }
+  })
 }
 
 TestHelper.prototype.deleteFiles = function () {
@@ -89,8 +111,7 @@ TestHelper.prototype.deleteFiles = function () {
       errors++;
     }
   });
-  var results = {deleted: deleted, errors: errors, lastError: lastError};
-  return results;
+  return {deleted, errors, lastError};
 };
 
 TestHelper.prototype.randomInt = function(min, max){
@@ -144,6 +165,13 @@ TestHelper.prototype.lineCount = async function(filePath) {
 
 TestHelper.prototype.shortid = function() {
   return require('shortid').generate();
+}
+
+TestHelper.prototype.ensureTmpPath = function(suffix) {
+  const tmpPath = this.path.resolve(__dirname, '../tmp');
+  this.fs.ensureDirSync(tmpPath);
+  if (!suffix) return tmpPath;
+  return `${tmpPath}${this.path.sep}${suffix}`;
 }
 
 TestHelper.prototype.findRecordInDataFile = function(path, filepath) {
@@ -201,7 +229,11 @@ TestHelper.prototype.destroyInstance = function(instance) {
   });
 }
 
-//createAdminWSSession
+TestHelper.prototype.destroySession = function(session) {
+  if (!session) return;
+  return session.disconnect();
+}
+
 TestHelper.prototype.createAdminWSSession = function() {
   return new Promise((resolve, reject) => {
     this.happn.client.create({ username: '_ADMIN', password: 'happn' }, function(e, session) {
