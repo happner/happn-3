@@ -129,7 +129,7 @@ describe(test.testName(__filename, 3), function() {
       .then(done)
 
       .catch(done);
-  });
+  }).timeout(10000);
 
   it('enables subscribe and unsubscribe', function(done) {
     var client;

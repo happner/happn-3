@@ -9,7 +9,7 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    if (process.env.INTRAVENOUS) return; //skip all tests in travis
+    if (process.env.RUNNING_IN_ACTIONS) return; //skip all tests in github actions CI
 
     let clientFolder = homedir() + path.sep + '.happner' + path.sep;
 

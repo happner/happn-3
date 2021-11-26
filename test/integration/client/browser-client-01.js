@@ -8,7 +8,7 @@ describe(
     var service = happn.service;
     var happnInstance = null;
 
-    if (process.env.INTRAVENOUS) return; //skip all tests in travis
+    if (process.env.RUNNING_IN_ACTIONS) return; //skip all tests in github actions CI
 
     it('should initialize the service', function(callback) {
       this.timeout(20000);

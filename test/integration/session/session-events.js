@@ -24,9 +24,7 @@ describe(tests.testName(__filename, 3), function() {
       tests.expect(eventData.id).to.be(eventEmitterClientSessionId);
       tests.expect(eventData.legacyPing).to.be(false);
       tests.expect(Number.isInteger(eventData.msgCount)).to.be(true);
-      tests.expect(eventData.isEncrypted).to.be(false);
       tests.expect(eventData.protocol).to.be(protocol || `happn_${tests.package.protocol}`);
-      tests.expect(eventData.tlsEncrypted).to.be(false);
       tests.expect(eventData.browser).to.be(false);
       tests.expect(eventData.intraProc).to.be(true);
       if (username) tests.expect(eventData.user.username).to.be(username);
@@ -36,9 +34,7 @@ describe(tests.testName(__filename, 3), function() {
       tests.expect(eventData.id).to.be(socketClientSessionId);
       tests.expect(eventData.legacyPing).to.be(false);
       tests.expect(Number.isInteger(eventData.msgCount)).to.be(true);
-      tests.expect(eventData.isEncrypted).to.be(false);
       tests.expect(eventData.protocol).to.be(protocol || `happn_${tests.package.protocol}`);
-      tests.expect(eventData.tlsEncrypted).to.be(false);
       tests.expect(eventData.browser).to.be(false);
       tests.expect(eventData.intraProc).to.be(false);
       tests.expect(eventData.sourceAddress).to.be('127.0.0.1');

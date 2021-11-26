@@ -19,7 +19,7 @@ require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test =
         },
         data: {
           config: {
-            filename: filename
+            filename
           }
         }
       },

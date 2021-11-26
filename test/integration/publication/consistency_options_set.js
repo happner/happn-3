@@ -29,6 +29,7 @@ describe(
     });
 
     it('does a set with a publish, deferred consistency, picks up publication log from the onPublished event handler', function(done) {
+      this.timeout(10000);
       var clientConfig = {};
 
       var config = {
@@ -102,6 +103,8 @@ describe(
     });
 
     it('does a set with a publish, transactional (default) consistency publishResults:true, picks up publication log the set results meta', function(done) {
+      this.timeout(10000);
+
       var clientConfig = {};
 
       var config = {

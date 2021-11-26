@@ -1,4 +1,4 @@
-describe('02_websockets_embedded_sanity_encrypted_payloads', function() {
+xdescribe('02_websockets_embedded_sanity_encrypted_payloads', function() {
   var expect, happn_client;
 
   if (typeof window === 'undefined') {
