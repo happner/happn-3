@@ -1714,10 +1714,10 @@ describe(
 
       securityService.happn = {
         services: {
-          utils: utils
+          utils: utils,
+          security: securityService
         }
       };
-
       securityService
         .__initializeProfiles(serviceConfig.services.security.config)
         .then(function() {
@@ -1726,6 +1726,7 @@ describe(
           expect(securityService.__cache_Profiles[1].policy.inactivity_threshold).to.be(
             60000 * 60 * 48
           );
+          // delete serviceConfig.services.security.config.authProvider;
           done();
         })
         .catch(done);
@@ -1863,7 +1864,12 @@ describe(
         function(e, instance) {
           if (e) return done(e);
 
-          instance.services.security.login = function(credentials, sessionId, request, callback) {
+          instance.services.security.authProviders.default.login = function(
+            credentials,
+            sessionId,
+            request,
+            callback
+          ) {
             callback(null, 2);
           };
 
