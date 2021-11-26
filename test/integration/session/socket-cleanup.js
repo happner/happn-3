@@ -73,7 +73,7 @@ describe(testHelper.testName(__filename, 3), function() {
     var Socket = Primus.createSocket({
       manual: true
     });
-    const socket = new Socket('http://localhost:55000', {
+    const socket = new Socket('http://127.0.0.1:55000', {
       strategy: 'disconnect,online'
     });
     socket.once('close', destroyZombie(socket));
