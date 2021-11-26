@@ -878,6 +878,7 @@
 -----------------
   - fix: SMC-3242 - Will correctly listRelevantPermissions for onBehalfOf sessions
 
+
 11.13.3 2021-09-08
 -----------------
   - fix: SMC-4044 - cookie events not dependent on client login
@@ -895,6 +896,16 @@
 -----------------
   - fix: SMC-4512 -  data provider get action causes fatal when allowNestedPermissions switched on
 
-11.13.8 2021-11-11
+11.14.0 2021-11-24
 -----------------
-  - fix: SMC-734: Updated happn-util-crypto, some changes to crypto calls
+  - feature: SMC-2954 - Allows for configuration and use of multiple authentication providers.
+
+11.14.1 2021-11-24
+-----------------
+  - fix: SMC-4386 -  upsertMultiplePermissions will now allow for removing permissions/prohibitions as well as upserting permissions or prohibitions
+
+11.15.0 2021-11-26
+-----------------
+  - feature: SMC-734: Updated happn-util-crypto - removed bitcore, changes to crypto calls, removed payload encryption
+  - maybe-breaking: SMC-734: removed encrypted payloads as it is not being used anywhere
+  - lintignored session-management test, may be breaking eslint due to callback hell

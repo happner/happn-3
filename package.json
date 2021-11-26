@@ -1,6 +1,6 @@
 {
   "name": "happn-3",
-  "version": "11.13.8",
+  "version": "11.15.0-prerelease-1",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "keywords": [
     "mongo",
@@ -26,7 +26,7 @@
     "test": "npm run lint && mocha --exit silence.js test/integration/** test/unit/** test/backward-compatibility/**",
     "test-010": "source ~/.nvm/nvm.sh && nvm use 0.10 && rm -rf node_modules && npm install && node_modules/mocha/bin/_mocha test/integration/**",
     "test-browser": "UPDATE_BROWSER_PRIMUS=true gulp --gulpfile test/browser/gulp-01.js",
-    "test-cover": "UPDATE_BROWSER_PRIMUS=true nyc --reporter=lcov --reporter=text-summary --reporter=html _mocha --exit silence.js test/integration/** test/unit/** test/backward-compatibility/**",
+    "test-cover": "UPDATE_BROWSER_PRIMUS=true nyc --reporter=lcov --reporter=text-summary --reporter=html _mocha --recursive --exit silence.js test/integration/** test/unit/** test/backward-compatibility/**",
     "test-lint": "npm run lint",
     "test-longrunning": "node test/test-longrunning/serial-run.js",
     "test-perf": "npm run lint && mocha silence.js test/performance/subscriptions.js",
@@ -50,7 +50,7 @@
     "happn-sillyname": "^0.1.1",
     "happn-stats": "^1.0.8",
     "happn-tcp-port-used": "^1.0.3",
-    "happn-util-crypto": "^1.1.0-prerelease-734-b",
+    "happn-util-crypto": "^2.0.0",
     "happner-hyperid": "^2.0.0",
     "homedir": "^0.6.0",
     "hsts": "^2.1.0",
@@ -103,7 +103,7 @@
     "npm-programmatic": "0.0.12",
     "nyc": "^13.3.0",
     "prettier": "^1.18.2",
-    "request": "^2.88.0",
+    "request": "^2.88.2",
     "require-self": "^0.2.1",
     "semver": "^7.1.1",
     "sinon": "^10.0.0",
@@ -116,7 +116,9 @@
       "test",
       "docs",
       "gulpfile.js",
-      "lib/services/connect/public/browser_primus.js"
+      "lib/services/connect/public/browser_primus.js",
+      "README.md",
+      "RELEASES.md"
     ]
   },
   "protocol": "4",
