@@ -145,9 +145,9 @@ require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test =
     var serviceConfig = config.test8_config;
 
     getService(serviceConfig, function(e) {
-      test.expect(e.toString()).to.equal(
-        'Error: missing key file: ' + serviceConfig.services.transport.config.keyPath
-      );
+      test
+        .expect(e.toString())
+        .to.equal('Error: missing key file: ' + serviceConfig.services.transport.config.keyPath);
       done();
     });
   });
@@ -158,9 +158,9 @@ require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test =
     var serviceConfig = config.test9_config;
 
     getService(serviceConfig, function(e) {
-      test.expect(e.toString()).to.equal(
-        'Error: missing cert file: ' + serviceConfig.services.transport.config.certPath
-      );
+      test
+        .expect(e.toString())
+        .to.equal('Error: missing cert file: ' + serviceConfig.services.transport.config.certPath);
       done();
     });
   });

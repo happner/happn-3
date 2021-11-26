@@ -229,16 +229,27 @@ TestHelper.prototype.destroyInstance = function(instance) {
   });
 }
 
-TestHelper.prototype.destroySession = function(session) {
-  if (!session) return;
-  return session.disconnect();
-}
-
 TestHelper.prototype.createAdminWSSession = function() {
   return new Promise((resolve, reject) => {
     this.happn.client.create({ username: '_ADMIN', password: 'happn' }, function(e, session) {
       if (e) return reject(e);
       resolve(session);
+    });
+  });
+}
+
+TestHelper.prototype.destroySessions = async function(sessions) {
+  for (let session of sessions) {
+    await this.destroySession(session);
+  }
+}
+
+TestHelper.prototype.destroySession = function(session) {
+  return new Promise((resolve, reject) => {
+    if (!session) return resolve();
+    session.disconnect(function(e) {
+      if (e) return reject(e);
+      resolve();
     });
   });
 }

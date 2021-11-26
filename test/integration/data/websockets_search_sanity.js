@@ -225,9 +225,9 @@ require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test =
             options: options
           },
           function(e) {
-            test.expect(e.toString()).to.be(
-              'SystemError: $regex parameter value must be an Array or a string'
-            );
+            test
+              .expect(e.toString())
+              .to.be('SystemError: $regex parameter value must be an Array or a string');
             done();
           }
         );
