@@ -392,7 +392,7 @@ describe(
 
         stopServices(happnMock, done);
       });
-    });
+    }).timeout(4000);
 
     it('should test the sign and fail to verify function of the crypto service, bad nonce', function(done) {
       mockServices(function(e, happnMock) {
@@ -416,7 +416,7 @@ describe(
 
         stopServices(happnMock, done);
       });
-    });
+    }).timeout(4000);
 
     it('should test the sign and verify function of the crypto service', function(done) {
       mockServices(function(e, happnMock) {
@@ -435,7 +435,7 @@ describe(
         expect(verifyResult).to.be(true);
         stopServices(happnMock, done);
       });
-    });
+    }).timeout(4000);
 
     it('should test the sign and verify function of the crypto service, from a generated nonce', function(done) {
       mockServices(function(e, happnMock) {
@@ -453,7 +453,7 @@ describe(
         expect(verifyResult).to.be(true);
         stopServices(happnMock, done);
       });
-    });
+    }).timeout(4000);
 
     it('should test the default config settings', function(done) {
       var happn = require('../../../lib/index');
@@ -550,10 +550,7 @@ describe(
 
       var clientInstance = happn_client.__instance({
         username: '_ADMIN',
-        keyPair: {
-          publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2',
-          privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M='
-        }
+        keyPair: crypto.createKeyPair()
       });
 
       clientInstance.serverInfo = {};
@@ -1402,16 +1399,16 @@ describe(
 
     it('tests the security services createAuthenticationNonce and verifyAuthenticationDigest methods', function(done) {
       this.timeout(5000);
+      var Crypto = require('happn-util-crypto');
+      var crypto = new Crypto();
+      let keyPair = crypto.createKeyPair();
 
       var happn = require('../../../lib/index');
       var happn_client = happn.client;
 
       var clientInstance = happn_client.__instance({
         username: '_ADMIN',
-        keyPair: {
-          publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2',
-          privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M='
-        }
+        keyPair
       });
 
       clientInstance.__ensureCryptoLibrary(function(e) {
@@ -1419,7 +1416,7 @@ describe(
 
         mockServices(function(e, happnMock) {
           var mockSession = {
-            publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
+            publicKey: keyPair.publicKey
           };
 
           expect(happnMock.services.security.config.defaultNonceTTL).to.be(60000);
@@ -1445,16 +1442,16 @@ describe(
 
     it('tests the security services createAuthenticationNonce method, timing out', function(done) {
       this.timeout(5000);
+      var Crypto = require('happn-util-crypto');
+      var crypto = new Crypto();
+      let keyPair = crypto.createKeyPair();
 
       var happn = require('../../../lib/index');
       var happn_client = happn.client;
 
       var clientInstance = happn_client.__instance({
         username: '_ADMIN',
-        keyPair: {
-          publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2',
-          privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M='
-        }
+        keyPair
       });
 
       clientInstance.__ensureCryptoLibrary(function(e) {
@@ -1462,7 +1459,7 @@ describe(
 
         mockServices(function(e, happnMock) {
           var mockSession = {
-            publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
+            publicKey: keyPair.publicKey
           };
 
           expect(happnMock.services.security.config.defaultNonceTTL).to.be(60000);
@@ -1487,6 +1484,9 @@ describe(
 
     it('should create a user with a public key, then login using a signature', function(done) {
       this.timeout(20000);
+      var Crypto = require('happn-util-crypto');
+      var crypto = new Crypto();
+      let keyPair = crypto.createKeyPair();
 
       var config = {
         secure: true,
@@ -1527,7 +1527,7 @@ describe(
 
         var testUser = {
           username: 'WEB_SESSION',
-          publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
+          publicKey: keyPair.publicKey
         };
 
         var addedTestGroup;
@@ -1562,9 +1562,8 @@ describe(
                     happn.client
                       .create({
                         username: testUser.username,
-                        publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2',
-                        privateKey: 'Kd9FQzddR7G6S9nJ/BK8vLF83AzOphW2lqDOQ/LjU4M=',
-                        loginType: 'digest'
+                        loginType: 'digest',
+                        ...keyPair
                       })
 
                       .then(function(clientInstance) {
@@ -1620,8 +1619,8 @@ describe(
       var crypto = new CryptoService({
         logger: Logger
       });
-
       crypto.initialize({}, function(e) {
+        let keyPair = crypto.createKeyPair();
         if (e) return done(e);
 
         getService(config, function(e, instance) {
@@ -1638,7 +1637,7 @@ describe(
 
           var testUser = {
             username: 'WEB_SESSION',
-            publicKey: 'AlHCtJlFthb359xOxR5kiBLJpfoC2ZLPLWYHN3+hdzf2'
+            publicKey: keyPair.publicKey
           };
 
           var addedTestGroup;
@@ -1895,7 +1894,7 @@ describe(
             });
         }
       );
-    });
+    }).timeout(5000);
 
     it('tests resetSessionPermissions method - link-group', function(done) {
       this.timeout(5000);
@@ -2699,7 +2698,7 @@ describe(
           callback
         );
       });
-    });
+    }).timeout(4000);
 
     it('tests the authorizeOnBehalfOf method, onBehalfOf not found', function(done) {
       mockServices(function(e, happnMock) {
@@ -2888,7 +2887,7 @@ describe(
           done();
         });
       });
-    });
+    }).timeout(5000);
 
     it('tests the __getOnBehalfOfSession method - cached', function(done) {
       mockServices(function(e, happnMock) {

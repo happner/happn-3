@@ -3,7 +3,7 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
-    this.timeout(5000);
+    this.timeout(20000);
 
     var expect = require('expect.js');
     var async = require('async');

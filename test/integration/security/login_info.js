@@ -156,7 +156,6 @@ describe(
           expect(events.connect.happn.name).to.equal(service2Name);
           expect(events.authentic.id).to.equal(sessionId);
           expect(events.authentic.timestamp > 0).to.be(true);
-          expect(events.authentic.tlsEncrypted).to.be(false);
           expect(events.authentic.cookieName).to.be('happn_token');
           expect(events.authentic.browser).to.be(false);
           expect(events.authentic.intraProc).to.be(false);

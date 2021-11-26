@@ -7,9 +7,6 @@ describe(
     var async = require('async');
     var Logger = require('happn-logger');
 
-    var Crypto = require('happn-util-crypto');
-    var crypto = new Crypto();
-
     var testConfigs = {};
 
     testConfigs.data = {};
@@ -47,19 +44,14 @@ describe(
       );
     });
 
-    var bobKeyPair = crypto.createKeyPair();
-
-    var generatedPrivateKeyBob = bobKeyPair.privateKey;
-    var generatedPublicKeyBob = bobKeyPair.publicKey;
-
-    var generatedPrivateKeyAlice;
-    var generatedPublicKeyAlice;
+    var generatedPrivateKey;
+    var generatedPublicKey;
 
     it('should generate a keypair', function(callback) {
       var keyPair = testServices.crypto.createKeyPair();
 
-      generatedPrivateKeyAlice = keyPair.privateKey;
-      generatedPublicKeyAlice = keyPair.publicKey;
+      generatedPrivateKey = keyPair.privateKey;
+      generatedPublicKey = keyPair.publicKey;
 
       callback();
     });
@@ -79,17 +71,9 @@ describe(
     it('should encrypt and decrypt data using the security layer', function(callback) {
       var message = 'this is a secret';
 
-      var encrypted = testServices.crypto.asymmetricEncrypt(
-        generatedPublicKeyBob,
-        generatedPrivateKeyAlice,
-        message
-      );
+      var encrypted = testServices.crypto.asymmetricEncrypt(generatedPrivateKey, message);
 
-      var decrypted = testServices.crypto.asymmetricDecrypt(
-        generatedPublicKeyAlice,
-        generatedPrivateKeyBob,
-        encrypted
-      );
+      var decrypted = testServices.crypto.asymmetricDecrypt(generatedPublicKey, encrypted);
 
       if (message === encrypted) throw new Error('encrypted data matches secret message');
       if (message !== decrypted.toString())

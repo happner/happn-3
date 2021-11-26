@@ -38,8 +38,7 @@ describe(
             }
           }
         },
-        secure: true,
-        encryptPayloads: true
+        secure: true
       });
     }
 
