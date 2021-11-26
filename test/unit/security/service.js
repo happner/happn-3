@@ -10,7 +10,7 @@ describe(
     var Logger = require('happn-logger');
     var CheckPoint = require('../../../lib/services/security/checkpoint');
     const util = require('util');
-
+    const _ = require('lodash');
     var serviceConfig = {
       services: {
         security: {
@@ -3115,6 +3115,46 @@ describe(
         errorHappened = true;
       }
       expect(errorHappened).to.be(true);
+    });
+
+    it('tests the processAuthorize method, will return an error early if no message.request.path', done => {
+      const SecurityService = require('../../../lib/services/security/service');
+      const ErrorService = require('../../../lib/services/error/service');
+
+      const serviceInst = new SecurityService({
+        logger: Logger
+      });
+
+      const errorServiceInst = new ErrorService({
+        logger: Logger
+      });
+      _.set(serviceInst, 'happn.services.error', errorServiceInst);
+      let message = { request: { noPath: {}, action: 'on' } };
+      serviceInst.processAuthorize(message, (e, r) => {
+        expect(e.toString()).to.be('AccessDenied: invalid path');
+        expect(r).to.be(undefined);
+        done();
+      });
+    });
+
+    it('tests the processAuthorize method, will return an error early if nullish (empty string) message.request.path', done => {
+      const SecurityService = require('../../../lib/services/security/service');
+      const ErrorService = require('../../../lib/services/error/service');
+
+      const serviceInst = new SecurityService({
+        logger: Logger
+      });
+
+      const errorServiceInst = new ErrorService({
+        logger: Logger
+      });
+      _.set(serviceInst, 'happn.services.error', errorServiceInst);
+      let message = { request: { path: '', action: 'on' } };
+      serviceInst.processAuthorize(message, (e, r) => {
+        expect(e.toString()).to.be('AccessDenied: invalid path');
+        expect(r).to.be(undefined);
+        done();
+      });
     });
   }
 );

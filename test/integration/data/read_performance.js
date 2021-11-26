@@ -53,8 +53,8 @@ describe(
       this.timeout(default_timeout);
       const itemCountFirstCheck = 10;
       const itemCount = 10000;
-      let writeMultiplier = process.env.INTRAVENOUS ? 3 : 1.1;
-      let readMultiplier = process.env.INTRAVENOUS ? 2 : 1.1;
+      let writeMultiplier = 3;
+      let readMultiplier = 2;
       let timeFirstSet;
       let timeLastSet;
       let timeFirstGet;

@@ -896,7 +896,6 @@
 -----------------
   - fix: SMC-4512 -  data provider get action causes fatal when allowNestedPermissions switched on
 
-
 11.14.0 2021-11-24
 -----------------
   - feature: SMC-2954 - Allows for configuration and use of multiple authentication providers.
@@ -904,3 +903,10 @@
 11.14.1 2021-11-24
 -----------------
   - fix: SMC-4386 -  upsertMultiplePermissions will now allow for removing permissions/prohibitions as well as upserting permissions or prohibitions
+
+11.14.2 2021-11-26
+-----------------
+  - fix: SMC-2716 -  fatal caused when message passed to processAuthorize (security service) has no message.request.path
+  - fixed test was leaking clients
+
+  
