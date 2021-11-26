@@ -7,6 +7,8 @@ const Happn = require('../../..'),
   request = require('request'),
   wait = require('await-delay');
 
+if (process.env.RUNNING_IN_ACTIONS) return; //skip all tests in github actions CI
+
 describe(testHelper.testName(__filename, 3), function() {
   this.timeout(120e3);
 

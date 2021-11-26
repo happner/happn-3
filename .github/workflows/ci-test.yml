@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
     env:
-        INTRAVENOUS: yes
+        RUNNING_IN_ACTIONS: yes
     runs-on: ubuntu-latest
     strategy:
       matrix:
