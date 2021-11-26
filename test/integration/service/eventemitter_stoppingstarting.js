@@ -3,7 +3,7 @@ require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test =
     var happn = require('../../../lib/index');
 
     var default_timeout = 10000;
-    var testDbFile = __dirname + '/tmp/testdata_' + require('shortid').generate() + '.db';
+    var testDbFile = test.newTestFile({ ext: 'db' });
     var persistKey = '/persistence_test/' + require('shortid').generate();
     var currentService = null;
 

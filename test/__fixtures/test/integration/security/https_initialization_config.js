@@ -1,8 +1,6 @@
-var path = require('path');
-var fs = require('fs');
-var shortid = require('shortid');
-
+const test = require('../../../utils/test_helper').create();
 module.exports = {
+  test,
   test1_config: {
     services:{
       transport:{
@@ -19,8 +17,8 @@ module.exports = {
       transport:{
         config:{
           mode: 'https',
-          certPath: __dirname + path.sep + 'https_initialization.pem',
-          keyPath: __dirname + path.sep + 'https_initialization.rsa'
+          certPath: __dirname + test.path.sep + 'https_initialization.pem',
+          keyPath: __dirname + test.path.sep + 'https_initialization.rsa'
         }
       }
     }
@@ -30,8 +28,8 @@ module.exports = {
       transport:{
         config:{
           mode: 'https',
-          certPath: path.resolve(__dirname, '../../../../test-temp') + path.sep + 'https_initialization' + shortid.generate() + '.pem',
-          keyPath: path.resolve(__dirname, '../../../../test-temp') + path.sep + 'https_initialization' + shortid.generate() + '.rsa'
+          certPath: test.newTestFile({ name: 'cert', ext: 'pem' }),
+          keyPath: test.newTestFile({ name: 'key', ext: 'rsa' })
         }
       }
     }
@@ -83,8 +81,8 @@ module.exports = {
       transport:{
         config:{
           mode: 'https',
-          certPath: __dirname + path.sep + 'https_initialization.pem',
-          keyPath: __dirname + path.sep + 'https_initialization_notexist.rsa'
+          certPath: __dirname + test.path.sep + 'https_initialization.pem',
+          keyPath: __dirname + test.path.sep + 'https_initialization_notexist.rsa'
         }
       }
     }
@@ -94,8 +92,8 @@ module.exports = {
       transport:{
         config:{
           mode: 'https',
-          certPath: __dirname + path.sep + 'https_initialization_notexist.pem',
-          keyPath: __dirname + path.sep + 'https_initialization.rsa'
+          certPath: __dirname + test.path.sep + 'https_initialization_notexist.pem',
+          keyPath: __dirname + test.path.sep + 'https_initialization.rsa'
         }
       }
     }

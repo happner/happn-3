@@ -1,29 +1,19 @@
-const tester = require('../../__fixtures/utils/test_helper').create();
-
-describe(tester.testName(__filename, 3), function() {
-  const fs = require('fs-extra');
-  const path = require('path');
-
-  const sinon = require('sinon');
-  const chai = require('chai');
-  chai.use(require('sinon-chai'));
-  const expect = require('chai').expect;
-
+require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test => {
   const happn = require('../../../lib/index');
   const service = happn.service;
   const default_timeout = 10000;
   let happnInstance = null;
   let test_id;
 
-  const test_file_path = path.resolve(__dirname, '..', '..', 'test-temp', 'test-file.js');
+  const testDbFile = test.newTestFile();
 
-  /** @type {sinon.SinonSpy} */
+  /** @type {test.sinon.SinonSpy} */
   let fsyncSpy;
 
   before('should initialize the service', async function() {
     this.timeout(20000);
 
-    fsyncSpy = sinon.spy(fs, 'fsync');
+    fsyncSpy = test.sinon.spy(test.fs, 'fsync');
 
     test_id = Date.now() + '_' + require('shortid').generate();
 
@@ -31,7 +21,7 @@ describe(tester.testName(__filename, 3), function() {
       services: {
         data: {
           config: {
-            filename: test_file_path,
+            filename: testDbFile,
             fsync: true
           }
         }
@@ -39,11 +29,9 @@ describe(tester.testName(__filename, 3), function() {
     });
   });
 
-  after(function(done) {
-    this.timeout(10000);
+  after(async () => {
     fsyncSpy.restore();
-    happnInstance.stop(done);
-    fs.unlinkSync(test_file_path);
+    test.cleanup([], [happnInstance]);
   });
 
   let publisherclient;
@@ -63,8 +51,6 @@ describe(tester.testName(__filename, 3), function() {
   });
 
   it('the publisher should set string data', async () => {
-    this.timeout(default_timeout);
-
     const test_string = require('shortid').generate();
     const test_base_url =
       '/a1_eventemitter_embedded_datatypes/' + test_id + '/set/string/' + test_string;
@@ -73,13 +59,13 @@ describe(tester.testName(__filename, 3), function() {
       noPublish: true
     });
 
-    expect(fsyncSpy).to.have.been.called;
+    test.chai.expect(fsyncSpy).to.have.been.called;
 
-    expect(setResult.value).to.equal(test_string);
+    test.chai.expect(setResult.value).to.equal(test_string);
 
     const getResult = await publisherclient.get(test_base_url, null);
 
-    expect(getResult.value).to.equal(test_string);
-    expect(fs.existsSync(test_file_path)).to.be.true;
+    test.chai.expect(getResult.value).to.equal(test_string);
+    test.chai.expect(test.fs.existsSync(testDbFile)).to.be.true;
   });
 });

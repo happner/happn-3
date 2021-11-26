@@ -1,8 +1,6 @@
-const test = require('../../../__fixtures/utils/test_helper').create();
-const LokiDataProvider = require('../../../../lib/services/data/providers/loki');
-describe(test.testName(__dirname), function() {
-  this.timeout(60000);
-  const testFileName = test.path.resolve(__dirname, '../../../test-temp/loki-provider.db');
+require('../../../__fixtures/utils/test_helper').describe(__filename, 20000, test => {
+  const LokiDataProvider = require('../../../../lib/services/data/providers/loki');
+  const testFileName = test.newTestFile();
   const mockLogger = {
     info: test.sinon.stub(),
     error: test.sinon.stub(),
@@ -10,11 +8,11 @@ describe(test.testName(__dirname), function() {
     trace: test.sinon.stub()
   };
   beforeEach('delete temp file', async () => {
-    try {
-      test.fs.unlinkSync(testFileName);
-    } catch (e) {
-      //do nothing
-    }
+    test.unlinkFiles([testFileName]);
+  });
+
+  after(async () => {
+    await test.cleanup();
   });
 
   it('starts up the provider with a persistence filename, does some inserts, restarts the provider and checks the data is still there', async () => {

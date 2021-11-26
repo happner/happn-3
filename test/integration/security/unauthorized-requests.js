@@ -23,6 +23,10 @@ require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test =
     });
   }
 
+  after(async () => {
+    await test.cleanup();
+  });
+
   context('secure mesh', function() {
     var self = this;
     setup.apply(self, [
@@ -61,7 +65,7 @@ require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test =
 
     it("the server should wait for the whole payload before responding with '401 Unauthorized'", async function() {
       const bigBuffer = Buffer.alloc(30 * 1024 * 1024);
-      const filename = test.path.join(__dirname, 'tmp', 'uploadFile');
+      const filename = test.newTestFile();
       await test.fs.promises.writeFile(filename, bigBuffer);
       await new Promise((resolve, reject) => {
         doRequest(
@@ -97,7 +101,7 @@ require('../../__fixtures/utils/test_helper').describe(__filename, 20000, test =
 
     it("the server should wait for the whole payload before responding with '403 Forbidden'", async function() {
       const bigBuffer = Buffer.alloc(30 * 1024 * 1024);
-      const filename = test.path.join(__dirname, 'tmp', 'uploadFile');
+      const filename = test.newTestFile();
       await test.fs.promises.writeFile(filename, bigBuffer);
       await new Promise((resolve, reject) => {
         doRequest(
