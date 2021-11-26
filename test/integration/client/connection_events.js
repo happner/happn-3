@@ -1,10 +1,11 @@
 var expect = require('expect.js');
 var Happn = require('../../../');
 const util = require('util');
-const tests = require('../../__fixtures/utils/test_helper').create();
-describe(tests.testName(__filename, 3), function() {
-  var server;
-  this.timeout(5000);
+const test = require('../../__fixtures/utils/test_helper').create();
+describe(test.testName(__filename, 3), function() {
+  let server;
+  let clients = [];
+
   var startServer = function(callback) {
     Happn.service
       .create()
@@ -15,18 +16,9 @@ describe(tests.testName(__filename, 3), function() {
       .catch(callback);
   };
 
-  var stopServerDisconnect = function(callback) {
-    if (!server) return callback();
-    server.stop(
-      {
-        reconnect: false
-      },
-      function(e) {
-        if (e) return callback(e);
-        server = undefined; // ?? perhaps also on e, messy
-        callback();
-      }
-    );
+  var stopServerDisconnect = async function() {
+    await test.destroySessions(clients);
+    await test.destroyInstance(server);
   };
 
   var stopServerReconnect = function(callback) {
@@ -54,7 +46,7 @@ describe(tests.testName(__filename, 3), function() {
     Promise.resolve()
 
       .then(function() {
-        // other tests may have left the server stopped.
+        // other test may have left the server stopped.
         if (server) return;
         return util.promisify(startServer)();
       })
@@ -64,6 +56,7 @@ describe(tests.testName(__filename, 3), function() {
       })
 
       .then(function(_client) {
+        clients.push(_client);
         client = _client;
       })
 
@@ -78,7 +71,7 @@ describe(tests.testName(__filename, 3), function() {
       })
 
       .then(function() {
-        return tests.delay(500);
+        return test.delay(500);
       })
 
       .then(function() {
@@ -97,7 +90,7 @@ describe(tests.testName(__filename, 3), function() {
     Promise.resolve()
 
       .then(function() {
-        // other tests may have left the server stopped.
+        // other test may have left the server stopped.
         if (server) return;
         return util.promisify(startServer)();
       })
@@ -107,6 +100,7 @@ describe(tests.testName(__filename, 3), function() {
       })
 
       .then(function(_client) {
+        clients.push(_client);
         client = _client;
       })
 
@@ -125,7 +119,7 @@ describe(tests.testName(__filename, 3), function() {
       })
 
       .then(function() {
-        return tests.delay(3000);
+        return test.delay(1000);
       })
 
       .then(function() {
@@ -145,7 +139,7 @@ describe(tests.testName(__filename, 3), function() {
     Promise.resolve()
 
       .then(function() {
-        // other tests may have left the server stopped.
+        // other test may have left the server stopped.
         if (server) return;
         return util.promisify(startServer)();
       })
@@ -155,6 +149,7 @@ describe(tests.testName(__filename, 3), function() {
       })
 
       .then(function(_client) {
+        clients.push(_client);
         client = _client;
       })
 
@@ -190,7 +185,7 @@ describe(tests.testName(__filename, 3), function() {
       })
 
       .then(function() {
-        return tests.delay(500);
+        return test.delay(500);
       })
 
       .then(function() {

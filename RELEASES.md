@@ -904,8 +904,14 @@
 -----------------
   - fix: SMC-4386 -  upsertMultiplePermissions will now allow for removing permissions/prohibitions as well as upserting permissions or prohibitions
 
-11.15.0 2021-11-26
+11.14.2 2021-11-26
+-----------------
+  - fix: SMC-2716 -  fatal caused when message passed to processAuthorize (security service) has no message.request.path
+  - fixed test was leaking clients
+
+12.0.0 2021-11-26
 -----------------
   - feature: SMC-734: Updated happn-util-crypto - removed bitcore, changes to crypto calls, removed payload encryption
   - maybe-breaking: SMC-734: removed encrypted payloads as it is not being used anywhere
   - lintignored session-management test, may be breaking eslint due to callback hell
+
