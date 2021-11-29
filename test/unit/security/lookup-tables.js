@@ -306,7 +306,12 @@ describe(test.testName(__filename, 3), function() {
 
   it('tests that __testLookupPermission will return true if there is a path match.', async () => {
     let path = '1/2/3/4';
-    let permission = { actions: ['on'], regex: '^1/(.*)/3/(.*)', table: 'testTable5' , path: "1/{{$1}}/3/{{user.name}}/{{$2}}"};
+    let permission = {
+      actions: ['on'],
+      regex: '^1/(.*)/3/(.*)',
+      table: 'testTable5',
+      path: '1/{{$1}}/3/{{user.name}}/{{$2}}'
+    };
     let identity = { user: { name: 'bob' } };
     let lookupTables = LookupTables.create();
     lookupTables.initialize(mockHappn);
@@ -319,13 +324,12 @@ describe(test.testName(__filename, 3), function() {
       .to.be(true);
   });
 
-
   it('tests that testLookupTables will return true if there is a path match in any permission.', async () => {
     // IN PROGRESS, WILL FAIL
     let permission1 = {
       regex: '^/_data/historianStore/(.*)',
       actions: ['on'],
-      table: 'testTable7',
+      table: 'testTable6',
       path: '/device/{{user.name}}/{{user.company}}/{{$1}}'
     };
 
@@ -342,16 +346,44 @@ describe(test.testName(__filename, 3), function() {
       table: 'testTable8',
       path: '/device/another/{user.company}/{{$1}}'
     };
-    let permission = { actions: ['on'], regex: '^1/(.*)/3/(.*)', table: 'testTable5' , path: "1/{{$1}}/3/{{user.name}}/{{$2}}"};
-    let identity = { user: { name: 'bob' } };
+    let identity = { user: { name: 'bob', company: 'tenacious' } };
     let lookupTables = LookupTables.create();
     lookupTables.initialize(mockHappn);
     await lookupTables.upsertLookupTable({
-      name: 'testTable5',
-      paths: ['1/2/3/bob/4', '4/5/6', '7/8/9']
+      name: 'testTable6',
+      paths: ['1/2/3/4', '2/3/4/5', '/device/bob/tenacious/deviceA'] //Last should match on deviceA
     });
+
+    await lookupTables.upsertLookupTable({
+      name: 'testTable7',
+      paths: ['1/56/3/4', '2/34/4/5', '4/5/6/7/8'] //No Match
+    });
+    await lookupTables.upsertLookupTable({
+      name: 'testTable7',
+      paths: ['1/567/3/4', '2/345/4/5', '4/5/6/7/8/9/10'] //No Match
+    });
+    await lookupTables.upsertLookupPermission('testGroup5', permission1);
+    await lookupTables.upsertLookupPermission('testGroup5', permission2);
+    await lookupTables.upsertLookupPermission('testGroup5', permission3);
+    // test
+    //   .expect(
+    //     await lookupTables.testLookupTables(
+    //       identity,
+    //       'testGroup5',
+    //       '/_data/historianStore/notDeviceA',
+    //       'on'
+    //     )
+    //   )
+    //   .to.be(false);
     test
-      .expect(await lookupTables.__testLookupPermission(identity, permission, path, 'on'))
+      .expect(
+        await lookupTables.testLookupTables(
+          identity,
+          'testGroup5',
+          '/_data/historianStore/deviceA',
+          'on'
+        )
+      )
       .to.be(true);
   });
 });
