@@ -7,7 +7,6 @@ const path = require('path');
 const fs = require('fs');
 
 describe(test.testName(__filename, 3), function() {
-  var async = require('async');
   var Logger = require('happn-logger');
   const util = require('util');
   let mockErrorService;
@@ -65,7 +64,7 @@ describe(test.testName(__filename, 3), function() {
   it('Can upsert a path into a lookupTable (creatng table)', async () => {
     let lookupTables = LookupTables.create();
     lookupTables.initialize(mockHappn);
-    await lookupTables.insertPath('/1/2/3', 'newUpsertTable');
+    await lookupTables.insertPath('newUpsertTable', '/1/2/3');
     let stored = await mockHappn.services.data.get(
       '/_SYSTEM/_SECURITY/_LOOKUP/newUpsertTable/1/2/3'
     );
@@ -103,9 +102,15 @@ describe(test.testName(__filename, 3), function() {
     test.expect(stored.data).to.eql({ authorized: true });
     stored = await mockHappn.services.data.get('/_SYSTEM/_SECURITY/_LOOKUP/upsertNewPath/10/11/12');
     test.expect(stored).to.not.be.ok();
-    await lookupTables.insertPath('/10/11/12', 'upsertNewPath');
+    test
+      .expect(lookupTables.tables.search('/10/11/12', { subscriberKey: 'upsertNewPath' }).length)
+      .to.be(0);
+    await lookupTables.insertPath('upsertNewPath', '/10/11/12');
     stored = await mockHappn.services.data.get('/_SYSTEM/_SECURITY/_LOOKUP/upsertNewPath/10/11/12');
     test.expect(stored.data).to.eql({ authorized: true });
+    test
+      .expect(lookupTables.tables.search('/10/11/12', { subscriberKey: 'upsertNewPath' })[0])
+      .to.eql({ subscriberKey: 'upsertNewPath', path: '10/11/12', authorized: true });
   });
 
   it('Can remove a path from a lookupTable', async () => {
@@ -128,7 +133,7 @@ describe(test.testName(__filename, 3), function() {
   it('Shouldnt error if we try to remove a non-existent path', async () => {
     let lookupTables = LookupTables.create();
     lookupTables.initialize(mockHappn);
-    await lookupTables.removePath('/1/2/3', 'nonExistentTables');
+    await lookupTables.removePath('/1/2/3', 'nonExistentTable');
   });
 
   it('Can extract a path (table name not repeated)', done => {
@@ -324,8 +329,27 @@ describe(test.testName(__filename, 3), function() {
       .to.be(true);
   });
 
-  it('tests that testLookupTables will return true if there is a path match in any permission.', async () => {
-    // IN PROGRESS, WILL FAIL
+  it.only('tests that __testLookupPermission will return true if there is a wildcard path match.', async () => {
+    let path = '1/2/3/4';
+    let permission = {
+      actions: ['on'],
+      regex: '^1/(.*)/3/(.*)',
+      table: 'testTable5',
+      path: '1/{{$1}}/*/{{user.name}}/{{$2}}'
+    };
+    let identity = { user: { name: 'bob' } };
+    let lookupTables = LookupTables.create();
+    lookupTables.initialize(mockHappn);
+    await lookupTables.upsertLookupTable({
+      name: 'wildcardTable',
+      paths: ['1/2/3/bob/4', '4/5/6', '7/8/9']
+    });
+    test
+      .expect(await lookupTables.__testLookupPermission(identity, permission, path, 'on'))
+      .to.be(true);
+  });
+
+  it('tests that authorizeGroup will return true if there is a path match in any permission.', async () => {
     let permission1 = {
       regex: '^/_data/historianStore/(.*)',
       actions: ['on'],
@@ -365,25 +389,80 @@ describe(test.testName(__filename, 3), function() {
     await lookupTables.upsertLookupPermission('testGroup5', permission1);
     await lookupTables.upsertLookupPermission('testGroup5', permission2);
     await lookupTables.upsertLookupPermission('testGroup5', permission3);
-    // test
-    //   .expect(
-    //     await lookupTables.testLookupTables(
-    //       identity,
-    //       'testGroup5',
-    //       '/_data/historianStore/notDeviceA',
-    //       'on'
-    //     )
-    //   )
-    //   .to.be(false);
     test
       .expect(
-        await lookupTables.testLookupTables(
+        await lookupTables.authorizeGroup(
+          identity,
+          'testGroup5',
+          '/_data/historianStore/notDeviceA',
+          'on'
+        )
+      )
+      .to.be(false);
+    test
+      .expect(
+        await lookupTables.authorizeGroup(
           identity,
           'testGroup5',
           '/_data/historianStore/deviceA',
           'on'
         )
       )
+      .to.be(true);
+  });
+
+  it('tests that authorize will return true if there is a path match in any of the sesssions groups permissions, false otherwise.', async () => {
+    let permission1 = {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['on'],
+      table: 'testTable9',
+      path: '/device/{{user.name}}/{{user.company}}/{{$1}}'
+    };
+
+    let permission2 = {
+      regex: '^/_data/otherProvider/(.*)/(.*)',
+      actions: ['get'],
+      table: 'testTable10',
+      path: '/device/blah/blah/{{$1}}'
+    };
+
+    let permission3 = {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['get', 'on'],
+      table: 'testTable11',
+      path: '/device/another/{user.company}/{{$1}}'
+    };
+
+    let lookupTables = LookupTables.create();
+    lookupTables.initialize(mockHappn);
+    await lookupTables.upsertLookupTable({
+      name: 'testTable9',
+      paths: ['1/2/3/4', '2/3/4/5', '/device/bob/tenacious/deviceA'] //Last should match on deviceA
+    });
+
+    await lookupTables.upsertLookupTable({
+      name: 'testTable10',
+      paths: ['1/56/3/4', '2/34/4/5', '4/5/6/7/8'] //No Match
+    });
+    await lookupTables.upsertLookupTable({
+      name: 'testTable11',
+      paths: ['1/567/3/4', '2/345/4/5', '4/5/6/7/8/9/10'] //No Match
+    });
+    await lookupTables.upsertLookupPermission('testGroup6', permission1);
+    await lookupTables.upsertLookupPermission('testGroup7', permission2);
+    await lookupTables.upsertLookupPermission('testGroup8', permission3);
+    let session = {
+      user: {
+        name: 'bob',
+        company: 'tenacious',
+        groups: { testGroup6: {}, testGroup7: {}, testGroup8: {} }
+      }
+    };
+    test
+      .expect(await lookupTables.authorize(session, '/_data/historianStore/notDeviceA', 'on'))
+      .to.be(false);
+    test
+      .expect(await lookupTables.authorize(session, '/_data/historianStore/deviceA', 'on'))
       .to.be(true);
   });
 });
