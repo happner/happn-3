@@ -64,7 +64,7 @@ describe(test.testName(__filename), function() {
   // this feature only applies to groups
   it('sets up lookup rules and tests them - Enterprise Admin - (1/3) permissivity', async () => {
     const testEnterpriseAdminGroup = {
-      name: 'ENTERPRISE_ADM_ABC'
+      name: 'OEM_MANAGER_ABC'
     };
 
     let enterpriseAdminGroup = await serviceInstance.services.security.groups.upsertGroup(
@@ -72,7 +72,7 @@ describe(test.testName(__filename), function() {
     );
 
     await serviceInstance.services.security.lookupTables.upsertLookupTable({
-      name: 'ENTERPRISE_ADMIN_ABC_LOOKUP',
+      name: 'OEM_MANAGERIN_ABC_LOOKUP',
       paths: [
         '/device/OEM_ABC/COMPANY_ABC/SPECIAL_DEVICE_ID_1',
         '/device/OEM_ABC/COMPANY_DEF/SPECIAL_DEVICE_ID_2'
@@ -80,7 +80,7 @@ describe(test.testName(__filename), function() {
     });
 
     await serviceInstance.services.security.lookupTables.insertPath(
-      'ENTERPRISE_ADMIN_ABC_LOOKUP',
+      'OEM_MANAGERIN_ABC_LOOKUP',
       '/device/OEM_ABC/COMPANY_GHI/SPECIAL_DEVICE_ID_3'
     );
     // Enterprise admin
@@ -89,7 +89,7 @@ describe(test.testName(__filename), function() {
       {
         regex: '^/_data/historianStore/(.*)',
         actions: ['on', 'get', 'set'],
-        table: 'ENTERPRISE_ADMIN_ABC_LOOKUP',
+        table: 'OEM_MANAGERIN_ABC_LOOKUP',
         // maps to an array of paths, companies is an array
         path: '/device/{{user.custom_data.oem}}/{{user.custom_data.companies}}/{{$1}}'
       }
@@ -108,7 +108,7 @@ describe(test.testName(__filename), function() {
     test.expect(await trySetData('SPECIAL_DEVICE_ID_4')).to.be('unauthorized');
 
     await serviceInstance.services.security.lookupTables.removePath(
-      'ENTERPRISE_ADMIN_ABC_LOOKUP',
+      'OEM_MANAGERIN_ABC_LOOKUP',
       '/device/OEM_ABC/COMPANY_GHI/SPECIAL_DEVICE_ID_3'
     );
 
@@ -118,7 +118,7 @@ describe(test.testName(__filename), function() {
 
   it('sets up lookup rules and tests them -  oem admin groups (2/3) permissivity', async () => {
     const testOEMAdminGroup = {
-      name: 'OEM_ADM_ABC'
+      name: 'SMC_MANAGER_ABC'
     };
 
     let oemAdminGroup = await serviceInstance.services.security.groups.upsertGroup(
@@ -222,7 +222,7 @@ describe(test.testName(__filename), function() {
 
   it('sets up lookup rules and tests them -  multiple  array values', async () => {
     const testOEMAdminGroupMultiArray = {
-      name: 'OEM_ADM_ABC-Mulyi'
+      name: 'SMC_MANAGER_ABC-Mulyi'
     };
 
     let oemAdminMultiGroup = await serviceInstance.services.security.groups.upsertGroup(
