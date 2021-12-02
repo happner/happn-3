@@ -178,7 +178,6 @@ describe(
       expect(sharedUtils.wildcardMatch('*/short', '/test/complex/and/long')).to.be(false);
       expect(sharedUtils.wildcardMatch('/test*/short', '/test/complex/and/short/')).to.be(false);
 
-      expect(sharedUtils.wildcardMatch('/test/*/short', '/test/complex/and/short')).to.be(false);
       done();
     });
 
