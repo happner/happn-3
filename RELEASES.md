@@ -915,3 +915,7 @@
   - maybe-breaking: SMC-734: removed encrypted payloads as it is not being used anywhere
   - lintignored session-management test, may be breaking eslint due to callback hell
 
+12.0.1 2021-12-02
+-----------------
+  - SMC-4466: light client modifications - able to pass null options into create
+
