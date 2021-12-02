@@ -915,3 +915,7 @@
   - maybe-breaking: SMC-734: removed encrypted payloads as it is not being used anywhere
   - lintignored session-management test, may be breaking eslint due to callback hell
 
+12.0.0 2021-12-02
+-----------------
+  - fix: SMC-4466 - light client times out for secure requests
+
