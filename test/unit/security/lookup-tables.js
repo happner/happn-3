@@ -86,7 +86,7 @@ describe(test.testName(__filename, 3), function() {
     done();
   });
 
-  it('Can upsert a path into a lookupTable (creatng table)', async () => {
+  it('Can insert a path into a lookupTable (creatng table)', async () => {
     await lookupTables.insertPath('newUpsertTable', '/1/2/3');
     let stored = await mockHappn.services.data.get(
       '/_SYSTEM/_SECURITY/_LOOKUP/newUpsertTable/1/2/3'
@@ -109,7 +109,7 @@ describe(test.testName(__filename, 3), function() {
     }
   });
 
-  it('Can upsert a path into a lookupTable (table already exists)', async () => {
+  it('Can insert a path into a lookupTable (table already exists)', async () => {
     let table = {
       name: 'upsertNewPath',
       paths: ['1/2/3', '4/5/6', '7/8/9']
@@ -162,7 +162,7 @@ describe(test.testName(__filename, 3), function() {
     test.expect(stored).to.not.be.ok();
   });
 
-  it('Shouldnt error if we try to remove a non-existent path', async () => {
+  it('Should not error if we try to remove a non-existent path', async () => {
     await lookupTables.removePath('nonExistentTable', '/1/2/3');
   });
 
@@ -198,9 +198,37 @@ describe(test.testName(__filename, 3), function() {
     table = await lookupTables.fetchLookupTable('longtable');
     test.expect(table).to.eql(longtable);
   });
-  // it('tests the __storePermission function', async () => {
-  //   await lookupTables.__storePermissions;
-  // });
+
+  it('tests the __storePermissions function', async () => {
+    let permissions = [{ table: 'someTable', other: 'details' }];
+    await lookupTables.__storePermissions('someGroup', permissions, 'someTable');
+    let storedGxT = await mockHappn.services.data.get(
+      `/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/someTable/someGroup`
+    );
+    let storedTxG = await mockHappn.services.data.get(
+      `/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/someGroup/someTable`
+    );
+    test.expect(storedGxT).to.be.ok();
+    test.expect(storedGxT.data).to.eql({});
+    test.expect(storedTxG).to.be.ok();
+    test.expect(storedTxG.data).to.eql({ permissions });
+  });
+
+  it('Can Fetch Groups by table', async () => {
+    let permissions = [
+      { table: 'someTable', other: 'details' },
+      { table: 'someOtherTable', other: 'details' }
+    ];
+    await lookupTables.__storePermissions('groupGxT1', permissions, 'tableGxT1');
+    await lookupTables.__storePermissions('groupGxT2', permissions, 'tableGxT1');
+    await lookupTables.__storePermissions('groupGxT3', permissions, 'tableGxT2');
+    test
+      .expect(await lookupTables.__getGroupsByTable('tableGxT1'))
+      .to.eql(['groupGxT1', 'groupGxT2']);
+    test.expect(await lookupTables.__getGroupsByTable('tableGxT2')).to.eql(['groupGxT3']);
+    test.expect(await lookupTables.__getGroupsByTable('notATableInDB')).to.eql([]);
+  });
+
   it('Can upsert a group lookup permission', async () => {
     let permission = {
       regex: '^/_data/historianStore/(.*)',
@@ -271,8 +299,8 @@ describe(test.testName(__filename, 3), function() {
       `/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/TABLE2/testGroup3`
     );
     test
-    .expect(stored2._meta.path)
-    .to.be(`/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/TABLE2/testGroup3`);
+      .expect(stored2._meta.path)
+      .to.be(`/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/TABLE2/testGroup3`);
   });
 
   it('Can fetch all of a groups lookup permissions', async () => {
@@ -302,6 +330,74 @@ describe(test.testName(__filename, 3), function() {
 
     let stored = await lookupTables.__fetchGroupLookupPermissions('testGroup4');
     test.expect(stored).to.eql([permission1, permission2, permission3]);
+  });
+
+  it('Can remove a groups lookup permissions', async () => {
+    let permission1 = {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['on'],
+      table: 'removeTable1',
+      path: '/device/{{user.custom_data.oem}}/{{user.custom_data.companies}}/{{$1}}'
+    };
+    let permission2 = {
+      regex: '^/_data/historianStore/device1/(.*)',
+      actions: ['get'],
+      table: 'removeTable2',
+      path: '/device/blah/blah/{{$1}}'
+    };
+
+    let permission3 = {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['get', 'on'],
+      table: 'removeTable1',
+      path: '/device/another/{user.company}/{{$1}}'
+    };
+    await lookupTables.upsertLookupPermission('testRemovalGroup', permission1);
+    await lookupTables.upsertLookupPermission('testRemovalGroup', permission2);
+    await lookupTables.upsertLookupPermission('testRemovalGroup', permission3);
+
+    let stored = await lookupTables.__fetchGroupLookupPermissions('testRemovalGroup');
+    test
+      .expect(sortPermissions(stored))
+      .to.eql(sortPermissions([permission1, permission2, permission3]));
+
+    await lookupTables.removeLookupPermission('testRemovalGroup', permission3);
+    stored = await lookupTables.__fetchGroupLookupPermissions('testRemovalGroup');
+    test.expect(sortPermissions(stored)).to.eql(sortPermissions([permission1, permission2]));
+  });
+
+  it('Can remove all permissions on a table from a group', async () => {
+    let permission1 = {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['on'],
+      table: 'tableRemoveTable1',
+      path: '/device/{{user.custom_data.oem}}/{{user.custom_data.companies}}/{{$1}}'
+    };
+    let permission2 = {
+      regex: '^/_data/historianStore/device1/(.*)',
+      actions: ['get'],
+      table: 'tableRemoveTable1',
+      path: '/device/blah/blah/{{$1}}'
+    };
+
+    let permission3 = {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['get', 'on'],
+      table: 'tableRemoveTable2',
+      path: '/device/another/{user.company}/{{$1}}'
+    };
+    await lookupTables.upsertLookupPermission('tableRemovalGroup', permission1);
+    await lookupTables.upsertLookupPermission('tableRemovalGroup', permission2);
+    await lookupTables.upsertLookupPermission('tableRemovalGroup', permission3);
+
+    let stored = await lookupTables.__fetchGroupLookupPermissions('tableRemovalGroup');
+    test
+      .expect(sortPermissions(stored))
+      .to.eql(sortPermissions([permission1, permission2, permission3]));
+
+    await lookupTables.removeAllTablePermission('tableRemovalGroup', 'tableRemoveTable1');
+    stored = await lookupTables.__fetchGroupLookupPermissions('tableRemovalGroup');
+    test.expect(sortPermissions(stored)).to.eql(sortPermissions([permission3]));
   });
 
   it('can build permissions path from regex matches - tests __buildPermissionsPaths', done => {
@@ -498,16 +594,7 @@ describe(test.testName(__filename, 3), function() {
       .to.be(true);
   });
 
-  function testCachedPaths(tableName, pathsArray) {
-    let cachedPaths = lookupTables.tables
-      .searchAll({ filter: { subscriberKey: tableName, authorized: true } })
-      .map(data => data.path);
-    test.expect(cachedPaths).to.eql(pathsArray);
-    return true;
-  }
-
-  function testCachedPermissions(group, expectedPermissions) {
-    let cached = lookupTables.caches.permissions.getSync(group, { clone: false });
-    test.expect(cached).to.eql(expectedPermissions);
+  function sortPermissions(perms) {
+    return perms.sort((a, b) => (a.path < b.path ? -1 : 1));
   }
 });
