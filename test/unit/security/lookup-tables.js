@@ -216,8 +216,8 @@ describe(test.testName(__filename, 3), function() {
 
   it('Can Fetch Groups by table', async () => {
     let permissions = [
-      { table: 'someTable', other: 'details' },
-      { table: 'someOtherTable', other: 'details' }
+      { table: 'tableGxT1', other: 'details' },
+      { table: 'tableGxT2', other: 'details' }
     ];
     await lookupTables.__storePermissions('groupGxT1', permissions, 'tableGxT1');
     await lookupTables.__storePermissions('groupGxT2', permissions, 'tableGxT1');
@@ -352,17 +352,17 @@ describe(test.testName(__filename, 3), function() {
       table: 'removeTable1',
       path: '/device/another/{user.company}/{{$1}}'
     };
-    await lookupTables.upsertLookupPermission('testRemovalGroup', permission1);
-    await lookupTables.upsertLookupPermission('testRemovalGroup', permission2);
-    await lookupTables.upsertLookupPermission('testRemovalGroup', permission3);
+    await lookupTables.upsertLookupPermission('testRemoveGroup', permission1);
+    await lookupTables.upsertLookupPermission('testRemoveGroup', permission2);
+    await lookupTables.upsertLookupPermission('testRemoveGroup', permission3);
 
-    let stored = await lookupTables.__fetchGroupLookupPermissions('testRemovalGroup');
+    let stored = await lookupTables.__fetchGroupLookupPermissions('testRemoveGroup');
     test
       .expect(sortPermissions(stored))
       .to.eql(sortPermissions([permission1, permission2, permission3]));
 
-    await lookupTables.removeLookupPermission('testRemovalGroup', permission3);
-    stored = await lookupTables.__fetchGroupLookupPermissions('testRemovalGroup');
+    await lookupTables.removeLookupPermission('testRemoveGroup', permission3);
+    stored = await lookupTables.__fetchGroupLookupPermissions('testRemoveGroup');
     test.expect(sortPermissions(stored)).to.eql(sortPermissions([permission1, permission2]));
   });
 
@@ -386,18 +386,76 @@ describe(test.testName(__filename, 3), function() {
       table: 'tableRemoveTable2',
       path: '/device/another/{user.company}/{{$1}}'
     };
-    await lookupTables.upsertLookupPermission('tableRemovalGroup', permission1);
-    await lookupTables.upsertLookupPermission('tableRemovalGroup', permission2);
-    await lookupTables.upsertLookupPermission('tableRemovalGroup', permission3);
+    await lookupTables.upsertLookupPermission('tableRemoveGroup', permission1);
+    await lookupTables.upsertLookupPermission('tableRemoveGroup', permission2);
+    await lookupTables.upsertLookupPermission('tableRemoveGroup', permission3);
 
-    let stored = await lookupTables.__fetchGroupLookupPermissions('tableRemovalGroup');
+    let stored = await lookupTables.__fetchGroupLookupPermissions('tableRemoveGroup');
     test
       .expect(sortPermissions(stored))
       .to.eql(sortPermissions([permission1, permission2, permission3]));
 
-    await lookupTables.removeAllTablePermission('tableRemovalGroup', 'tableRemoveTable1');
-    stored = await lookupTables.__fetchGroupLookupPermissions('tableRemovalGroup');
+    await lookupTables.removeAllTablePermission('tableRemoveGroup', 'tableRemoveTable1');
+    stored = await lookupTables.__fetchGroupLookupPermissions('tableRemoveGroup');
     test.expect(sortPermissions(stored)).to.eql(sortPermissions([permission3]));
+  });
+
+  it('Can tests that when we request groups by table, we dont get groups where the permission has been removed.', async () => {
+    let permission1 = {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['on'],
+      table: 'GxTRemoveTable1',
+      path: '/device/{{user.custom_data.oem}}/{{user.custom_data.companies}}/{{$1}}'
+    };
+    let permission2 = {
+      regex: '^/_data/historianStore/device1/(.*)',
+      actions: ['get'],
+      table: 'GxTRemoveTable1',
+      path: '/device/blah/blah/{{$1}}'
+    };
+
+    let permission3 = {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['get', 'on'],
+      table: 'GxTRemoveTable2',
+      path: '/device/another/{user.company}/{{$1}}'
+    };
+
+    let permission4 = {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['get', 'on'],
+      table: 'GxTRemoveTable2',
+      path: '/device/another/{user.blah}/{{$1}}'
+    };
+    await lookupTables.upsertLookupPermission('GxTRemoveGroup1', permission1);
+    await lookupTables.upsertLookupPermission('GxTRemoveGroup1', permission2);
+    await lookupTables.upsertLookupPermission('GxTRemoveGroup2', permission2);
+    await lookupTables.upsertLookupPermission('GxTRemoveGroup3', permission3);
+    await lookupTables.upsertLookupPermission('GxTRemoveGroup3', permission4);
+
+    //Removing individual permissions
+    let stored = await lookupTables.__getGroupsByTable('GxTRemoveTable1');
+    test.expect(stored).to.eql(['GxTRemoveGroup1', 'GxTRemoveGroup2']);
+
+    await lookupTables.removeLookupPermission('GxTRemoveGroup1', permission1);
+    stored = await lookupTables.__getGroupsByTable('GxTRemoveTable1');
+    test.expect(stored).to.eql(['GxTRemoveGroup1', 'GxTRemoveGroup2']);
+
+    await lookupTables.removeLookupPermission('GxTRemoveGroup1', permission2);
+    stored = await lookupTables.__getGroupsByTable('GxTRemoveTable1');
+    test.expect(stored).to.eql(['GxTRemoveGroup2']);
+
+    await lookupTables.removeLookupPermission('GxTRemoveGroup2', permission2);
+    stored = await lookupTables.__getGroupsByTable('GxTRemoveTable1');
+    test.expect(stored).to.eql([]);
+
+    //removeAllTablePermissions
+    stored = await lookupTables.__getGroupsByTable('GxTRemoveTable2');
+    test.expect(stored).to.eql(['GxTRemoveGroup3']);
+    await lookupTables.removeAllTablePermission('GxTRemoveGroup3', 'GxTRemoveTable2');
+    stored = await lookupTables.__getGroupsByTable('GxTRemoveTable2');
+    test.expect(stored).to.eql([]);
+
   });
 
   it('can build permissions path from regex matches - tests __buildPermissionsPaths', done => {
