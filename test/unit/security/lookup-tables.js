@@ -214,6 +214,10 @@ describe(test.testName(__filename, 3), function() {
     test.expect(storedTxG.data).to.eql({ permissions });
   });
 
+  it('Test Fetch Groups by table - nothing stored', async () => {
+    test.expect(await lookupTables.__getGroupsByTable('thisTableDontExist')).to.eql([]);
+  });
+
   it('Can Fetch Groups by table', async () => {
     let permissions = [
       { table: 'tableGxT1', other: 'details' },
@@ -455,7 +459,6 @@ describe(test.testName(__filename, 3), function() {
     await lookupTables.removeAllTablePermission('GxTRemoveGroup3', 'GxTRemoveTable2');
     stored = await lookupTables.__getGroupsByTable('GxTRemoveTable2');
     test.expect(stored).to.eql([]);
-
   });
 
   it('can build permissions path from regex matches - tests __buildPermissionsPaths', done => {
