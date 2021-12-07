@@ -13,7 +13,6 @@ describe(test.testName(__filename, 3), function() {
   const util = require('util');
   let mockErrorService;
   let dbPath = path.resolve(__dirname, '../../__fixtures/test/test_lookup_db');
-  let stripLeadingSlashes;
   let lookupTables;
 
   before('01. Sets up errorService', done => {
@@ -82,7 +81,6 @@ describe(test.testName(__filename, 3), function() {
     initializedLookupTables.initialize(mockHappn);
     test.expect(initializedLookupTables).to.be.ok();
     lookupTables = initializedLookupTables;
-    stripLeadingSlashes = lookupTables.__stripLeadingSlashes;
     done();
   });
 
@@ -199,6 +197,12 @@ describe(test.testName(__filename, 3), function() {
     test.expect(table).to.eql(longtable);
   });
 
+  it('Can fetch a lookupTable - non-existent table', async () => {
+    let table = await lookupTables.fetchLookupTable('ThisTableDoesntExist');
+    test.expect(table).to.eql({ name: 'ThisTableDoesntExist', paths: [] });
+    // A lookup table with no paths is equivalent to a non-existant one.
+  });
+
   it('tests the __storePermissions function', async () => {
     let permissions = [{ table: 'someTable', other: 'details' }];
     await lookupTables.__storePermissions('someGroup', permissions, 'someTable');
@@ -212,6 +216,49 @@ describe(test.testName(__filename, 3), function() {
     test.expect(storedGxT.data).to.eql({});
     test.expect(storedTxG).to.be.ok();
     test.expect(storedTxG.data).to.eql({ permissions });
+  });
+
+  it('tests the __storePermissions function - np matching permissions', async () => {
+    let matchingPermissions = [{ table: 'nonMatchingTable', other: 'details' }];
+    let permissions = [{ table: 'someTable', other: 'details' }];
+    await lookupTables.__storePermissions(
+      'nonMatchingGroup',
+      matchingPermissions,
+      'nonMatchingTable'
+    );
+    test
+      .expect(
+        await mockHappn.services.data.get(
+          `/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/nonMatchingTable/nonMatchingGroup`
+        )
+      )
+      .to.be.ok();
+    test
+      .expect(
+        await mockHappn.services.data.get(
+          `/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/nonMatchingTable/nonMatchingGroup`
+        )
+      )
+      .to.be.ok();
+    await lookupTables.__storePermissions('nonMatchingGroup', permissions, 'nonMatchingTable');
+    //When we store permissions, we are storing all permissions for that group/table combination.
+    // Since permissions has no relevant permissions for nonMatchingTable, we are storing no permissions
+    //- i.e. removing these entries from DB
+
+    test
+      .expect(
+        await mockHappn.services.data.get(
+          `/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/nonMatchingTable/nonMatchingGroup`
+        )
+      )
+      .to.not.be.ok();
+    test
+      .expect(
+        await mockHappn.services.data.get(
+          `/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/nonMatchingTable/nonMatchingGroup`
+        )
+      )
+      .to.not.be.ok();
   });
 
   it('Test Fetch Groups by table - nothing stored', async () => {
@@ -307,6 +354,10 @@ describe(test.testName(__filename, 3), function() {
       .to.be(`/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/TABLE2/testGroup3`);
   });
 
+  it('Tests fetching a groups lookup permissions - non-existant group or no lookups saved', async () => {
+    test.expect(await lookupTables.__fetchGroupLookupPermissions('notARealGroup')).to.eql([]);
+  });
+
   it('Can fetch all of a groups lookup permissions', async () => {
     let permission1 = {
       regex: '^/_data/historianStore/(.*)',
@@ -334,6 +385,31 @@ describe(test.testName(__filename, 3), function() {
 
     let stored = await lookupTables.__fetchGroupLookupPermissions('testGroup4');
     test.expect(stored).to.eql([permission1, permission2, permission3]);
+  });
+
+  it('Tests that removing a groups lookup permission returns early if permissions are empty or permission is not in permissions', async () => {
+    let oldStore = lookupTables.__storePermissions;
+    lookupTables.__storePermissions = sinon.spy();
+    let permission1 = {
+      regex: '^/_data/historianStore/(.*)',
+      actions: ['on'],
+      table: 'removeTable1',
+      path: '/device/{{user.custom_data.oem}}/{{user.custom_data.companies}}/{{$1}}'
+    };
+    let permission2 = {
+      regex: '^/_data/historianStore/device1/(.*)',
+      actions: ['get'],
+      table: 'removeTable2',
+      path: '/device/blah/blah/{{$1}}'
+    };
+    await lookupTables.removeLookupPermission('NonExistantGroup', permission1);
+    test.expect(lookupTables.__storePermissions.notCalled).to.be(true);
+    await lookupTables.upsertLookupPermission('NoMatchRemoveGroup', permission1);
+    test.expect(lookupTables.__storePermissions.calledOnce).to.be(true);
+    await lookupTables.removeLookupPermission('NoMatchRemoveGroup', permission2);
+    test.expect(lookupTables.__storePermissions.calledOnce).to.be(true); //Not called again in above line
+
+    lookupTables.__storePermissions = oldStore;
   });
 
   it('Can remove a groups lookup permissions', async () => {

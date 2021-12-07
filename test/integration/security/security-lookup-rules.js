@@ -217,7 +217,6 @@ describe(test.testName(__filename), function() {
 
     test.expect(await trySetData('SPECIAL_DEVICE_ID_3')).to.be('unauthorized');
     await serviceInstance.services.security.users.unlinkGroup(smcAdminGroup, addedTestuser);
-
   });
 
   it('sets up lookup rules and tests them -  multiple  array values', async () => {
