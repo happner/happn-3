@@ -107,6 +107,28 @@ describe(test.testName(__filename, 3), function() {
     }
   });
 
+  it('Can delete a lookupTable', async () => {
+    let table = {
+      name: 'deleteTable',
+      paths: ['/1/2/3', '/4/5/6', '/7/8/9'] //Inconsitency deliberate
+    };
+    await lookupTables.upsertLookupTable(table);
+    for (let lookupPath of table.paths) {
+      let testPath = lookupPath.replace(/^\//, '');
+      let stored = await mockHappn.services.data.get(
+        `/_SYSTEM/_SECURITY/_LOOKUP/deleteTable/${testPath}`
+      );
+      test.expect(stored.data).to.eql({ authorized: true });
+    }
+    await lookupTables.deleteLookupTable(table.name);
+    test
+      .expect(await mockHappn.services.data.get(`/_SYSTEM/_SECURITY/_LOOKUP/deleteTable/**`))
+      .to.eql([]);
+    test
+      .expect(await lookupTables.fetchLookupTable(table.name))
+      .to.eql({ name: table.name, paths: [] });
+  });
+
   it('Can insert a path into a lookupTable (table already exists)', async () => {
     let table = {
       name: 'upsertNewPath',
