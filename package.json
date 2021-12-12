@@ -1,6 +1,6 @@
 {
   "name": "happn-3",
-  "version": "11.15.0-prerelease-4550",
+  "version": "12.1.0-prerelease-4550-1",
   "description": "pub/sub api as a service using primus and mongo & redis or nedb, can work as cluster, single process or embedded using nedb",
   "keywords": [
     "mongo",
@@ -50,7 +50,7 @@
     "happn-sillyname": "^0.1.1",
     "happn-stats": "^1.0.8",
     "happn-tcp-port-used": "^1.0.3",
-    "happn-util-crypto": "^1.0.2",
+    "happn-util-crypto": "^2.0.0",
     "happner-hyperid": "^2.0.0",
     "homedir": "^0.6.0",
     "hsts": "^2.1.0",

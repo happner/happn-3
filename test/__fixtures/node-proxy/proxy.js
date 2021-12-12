@@ -9,7 +9,7 @@ program
   .option("-s, --secure [secure]", "Secure")
   .parse(process.argv);
 
-let host = program.host || 'localhost';
+let host = program.host || '127.0.0.1';
 let port = program.port || 55000;
 let listen = program.listen || 11235;
 let secure = program.secure || false;

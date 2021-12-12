@@ -899,3 +899,23 @@
 11.14.0 2021-11-24
 -----------------
   - feature: SMC-2954 - Allows for configuration and use of multiple authentication providers.
+
+11.14.1 2021-11-24
+-----------------
+  - fix: SMC-4386 -  upsertMultiplePermissions will now allow for removing permissions/prohibitions as well as upserting permissions or prohibitions
+
+11.14.2 2021-11-26
+-----------------
+  - fix: SMC-2716 -  fatal caused when message passed to processAuthorize (security service) has no message.request.path
+  - fixed test was leaking clients
+
+12.0.0 2021-11-26
+-----------------
+  - feature: SMC-734: Updated happn-util-crypto - removed bitcore, changes to crypto calls, removed payload encryption
+  - maybe-breaking: SMC-734: removed encrypted payloads as it is not being used anywhere
+  - lintignored session-management test, may be breaking eslint due to callback hell
+
+12.0.1 2021-12-02
+-----------------
+  - SMC-4466: light client modifications - able to pass null options into create
+

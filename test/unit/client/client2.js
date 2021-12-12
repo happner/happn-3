@@ -398,77 +398,6 @@ describe(
       });
     });
 
-    it('tests the __encryptLogin and __decryptLogin functions.', function(done) {
-      var happnClient = mockHappnClient();
-      var pubKey = 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG';
-      happnClient.__prepareInstanceOptions({
-        keyPair: {
-          privateKey: 'pqPVklZ9kdANfeEZhNFYYznGKKh/cz3qI7JUfVEJRwg=',
-          publicKey: 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG'
-        }
-      });
-      var parameters = {
-        publicKey: pubKey,
-        username: 'Janco',
-        password: 'private'
-      };
-      happnClient.__ensureCryptoLibrary();
-
-      const encryptedLogin = happnClient.__encryptLogin(parameters, pubKey);
-
-      expect(encryptedLogin.publicKey).to.eql(pubKey);
-      expect(encryptedLogin.loginType).to.eql('password');
-      // encryptedLogin.encrypted returns a buffer
-      // Had to test encrypt and decrypt together
-      happnClient.serverInfo.publicKey = pubKey;
-      const decryptedLogin = happnClient.__decryptLogin(encryptedLogin);
-      expect(decryptedLogin).to.eql(parameters);
-      done();
-    });
-
-    it('tests the __encryptPayload function.', function(done) {
-      var happnClient = mockHappnClient();
-
-      // //needs utils to be
-      // var utils = require('../../../lib/services/utils/shared');
-      // happnClient.utils = utils;
-      happnClient.__ensureCryptoLibrary();
-      happnClient.session.secret = '990413ee0e4911e9ab14d663bd873d94';
-      var message = {
-        text: 'unencrypted text',
-        _meta: {
-          eventId: 'MyEvent|1'
-        },
-        sessionId: 1
-      };
-      const newMessage = happnClient.__encryptPayload(message);
-
-      var re = /^[a-zA-Z0-9]*$/;
-      expect(newMessage.sessionId).to.eql(1);
-      expect(re.test(newMessage.encrypted)).to.be(true);
-      done();
-    });
-
-    it('tests the __decryptPayload function.', function(done) {
-      var happnClient = mockHappnClient();
-      var message =
-        'b5428d67b42b083f6b1da9aebf78909e0bc4cef3d55afe318900585e7a979da144d0367489771efa9325e914c27f08223cad12bc09c9e62c2855f6c4c426ada7b0750a67d266361cbd';
-      //Message string gotten from __encryptPayload test above
-      var message2 = {
-        text: 'unencrypted text',
-        _meta: {
-          eventId: 'MyEvent|1'
-        },
-        sessionId: 1
-      };
-
-      happnClient.__ensureCryptoLibrary();
-      happnClient.session.secret = '990413ee0e4911e9ab14d663bd873d94';
-      const newMessage = happnClient.__decryptPayload(message);
-      expect(newMessage).to.eql(message2);
-      done();
-    });
-
     it('tests the __ensureCryptoLibrary function returns a callback.', function(done) {
       var happnClient = mockHappnClient();
 
@@ -564,7 +493,7 @@ describe(
       done();
     });
 
-    it('tests the __prepareLogin function will calback login paramaters if not encrypted or digest.', function(done) {
+    it('tests the __prepareLogin function will calback login paramaters if not digest.', function(done) {
       var happnClient = mockHappnClient();
       var loginParameters = {
         name: 'Janco',
@@ -573,32 +502,6 @@ describe(
       };
       happnClient.__prepareLogin(loginParameters, function(e, data) {
         expect(data).to.eql(loginParameters);
-        done();
-      });
-    });
-
-    it('tests the __prepareLogin function will calback encrypted login paramaters serverinfo.encryptedPayloads is true.', function(done) {
-      var happnClient = mockHappnClient();
-      happnClient.serverInfo.encryptPayloads = true;
-      happnClient.__prepareInstanceOptions({
-        keyPair: {
-          privateKey: 'pqPVklZ9kdANfeEZhNFYYznGKKh/cz3qI7JUfVEJRwg=',
-          publicKey: 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG'
-        }
-      });
-      var pubKey = 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG';
-      happnClient.__ensureCryptoLibrary();
-      happnClient.serverInfo.publicKey = pubKey;
-
-      var loginParameters = {
-        name: 'Janco',
-        password: 'private',
-        loginType: 'password'
-      };
-
-      happnClient.__prepareLogin(loginParameters, function(e, data) {
-        const decryptedLogin = happnClient.__decryptLogin(data);
-        expect(decryptedLogin).to.eql(loginParameters);
         done();
       });
     });
@@ -712,10 +615,6 @@ describe(
       done();
     });
 
-    xit('tests the __performDataRequest function.', function() {
-      //NB::: DONE in test/unit/client/client.js
-    });
-
     it('tests the __performSystemRequest function writes a message to the socket with null options.', function(done) {
       var happnClient = mockHappnClient();
       happnClient.socket.write = function(message) {
@@ -742,7 +641,6 @@ describe(
       );
     });
 
-    //ISSUE:::
     it('tests the __performSystemRequest function writes a message to the socket with timeout options.', function(done) {
       this.timeout(20000);
       var happnClient = mockHappnClient();
@@ -1125,75 +1023,6 @@ describe(
         message: 'Hello'
       };
       happnClient.handle_publication(message);
-    });
-
-    it('tests the handle_publication function with an encrypted payload', function(done) {
-      var happnClient = mockHappnClient();
-      var message = {
-        encrypted:
-          'b5428d67b42b083f6b1da9aebf78909e0bc4cef3d55afe318900585e7a979da144d0367489771efa9325e914c27f08223cad12bc09c9e62c2855f6c4c426ada7b0750a67d266361cbd'
-      };
-      var message2 = {
-        text: 'unencrypted text',
-        _meta: {
-          eventId: 'MyEvent|1'
-        },
-        sessionId: 1
-      };
-      happnClient.__ensureCryptoLibrary();
-      happnClient.session.secret = '990413ee0e4911e9ab14d663bd873d94';
-      happnClient.__requestCallback(
-        {
-          eventId: 'MyEvent|1'
-        },
-        function(e, data) {
-          expect(data).to.eql(message2);
-          done();
-        },
-        {},
-        'MyEvent|1'
-      );
-
-      happnClient.handle_publication(message);
-    });
-
-    it('tests the handle_publication with an encrypted login', function(done) {
-      var happnClient = mockHappnClient();
-      happnClient.__requestCallback(
-        {
-          eventId: 'login'
-        },
-        function(e, data) {
-          expect(data).to.eql(parameters);
-          done();
-        },
-        {},
-        'login'
-      );
-
-      var pubKey = 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG';
-      happnClient.__prepareInstanceOptions({
-        keyPair: {
-          privateKey: 'pqPVklZ9kdANfeEZhNFYYznGKKh/cz3qI7JUfVEJRwg=',
-          publicKey: 'AwKAM+xrypUPLMMKgQBJ6oSpg2+9szVLlL5u7yjM8XlG'
-        }
-      });
-      var parameters = {
-        publicKey: pubKey,
-        username: 'Janco',
-        password: 'private',
-        _meta: {
-          eventId: 'login'
-        }
-      };
-      happnClient.__ensureCryptoLibrary();
-      const encryptedLogin = happnClient.__encryptLogin(parameters, pubKey);
-      encryptedLogin._meta = {
-        type: 'login'
-      };
-
-      happnClient.serverInfo.publicKey = pubKey;
-      happnClient.handle_publication(encryptedLogin);
     });
 
     it("tests the handle_publication function calls __handleSystemMessage if _meta.type = 'system'", function(done) {

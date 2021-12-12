@@ -80,7 +80,7 @@ describe(test.testName(__filename), function() {
     });
 
     await serviceInstance.services.security.lookupTables.insertPath(
-      'OEM_MANAGERIN_ABC_LOOKUP',
+      'OEM_MANAGER_ABC_LOOKUP',
       '/device/OEM_ABC/COMPANY_GHI/SPECIAL_DEVICE_ID_3'
     );
     // Enterprise admin
@@ -89,7 +89,7 @@ describe(test.testName(__filename), function() {
       {
         regex: '^/_data/historianStore/(.*)',
         actions: ['on', 'get', 'set'],
-        table: 'OEM_MANAGERIN_ABC_LOOKUP',
+        table: 'OEM_MANAGER_ABC_LOOKUP',
         // maps to an array of paths, companies is an array
         path: '/device/{{user.custom_data.oem}}/{{user.custom_data.companies}}/{{$1}}'
       }
@@ -108,7 +108,7 @@ describe(test.testName(__filename), function() {
     test.expect(await trySetData('SPECIAL_DEVICE_ID_4')).to.be('unauthorized');
 
     await serviceInstance.services.security.lookupTables.removePath(
-      'OEM_MANAGERIN_ABC_LOOKUP',
+      'OEM_MANAGER_ABC_LOOKUP',
       '/device/OEM_ABC/COMPANY_GHI/SPECIAL_DEVICE_ID_3'
     );
 

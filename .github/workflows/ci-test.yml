@@ -5,11 +5,11 @@ on: [push]
 jobs:
   build:
     env:
-        INTRAVENOUS: yes
+        RUNNING_IN_ACTIONS: yes
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x,14.x,16.x]
+        node-version: [14.x,16.x,17.x]
         mongodb-version: ['4.4']
 
     steps:
