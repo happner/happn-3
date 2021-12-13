@@ -377,7 +377,7 @@ describe(test.testName(__filename, 3), function() {
   });
 
   it('Tests fetching a groups lookup permissions - non-existant group or no lookups saved', async () => {
-    test.expect(await lookupTables.__fetchGroupLookupPermissions('notARealGroup')).to.eql([]);
+    test.expect(await lookupTables.fetchLookupPermissions('notARealGroup')).to.eql([]);
   });
 
   it('Can fetch all of a groups lookup permissions', async () => {
@@ -405,7 +405,7 @@ describe(test.testName(__filename, 3), function() {
     await lookupTables.upsertLookupPermission('testGroup4', permission2);
     await lookupTables.upsertLookupPermission('testGroup4', permission3);
 
-    let stored = await lookupTables.__fetchGroupLookupPermissions('testGroup4');
+    let stored = await lookupTables.fetchLookupPermissions('testGroup4');
     test.expect(stored).to.eql([permission1, permission2, permission3]);
   });
 
@@ -458,13 +458,13 @@ describe(test.testName(__filename, 3), function() {
     await lookupTables.upsertLookupPermission('testRemoveGroup', permission2);
     await lookupTables.upsertLookupPermission('testRemoveGroup', permission3);
 
-    let stored = await lookupTables.__fetchGroupLookupPermissions('testRemoveGroup');
+    let stored = await lookupTables.fetchLookupPermissions('testRemoveGroup');
     test
       .expect(sortPermissions(stored))
       .to.eql(sortPermissions([permission1, permission2, permission3]));
 
     await lookupTables.removeLookupPermission('testRemoveGroup', permission3);
-    stored = await lookupTables.__fetchGroupLookupPermissions('testRemoveGroup');
+    stored = await lookupTables.fetchLookupPermissions('testRemoveGroup');
     test.expect(sortPermissions(stored)).to.eql(sortPermissions([permission1, permission2]));
   });
 
@@ -492,13 +492,13 @@ describe(test.testName(__filename, 3), function() {
     await lookupTables.upsertLookupPermission('tableRemoveGroup', permission2);
     await lookupTables.upsertLookupPermission('tableRemoveGroup', permission3);
 
-    let stored = await lookupTables.__fetchGroupLookupPermissions('tableRemoveGroup');
+    let stored = await lookupTables.fetchLookupPermissions('tableRemoveGroup');
     test
       .expect(sortPermissions(stored))
       .to.eql(sortPermissions([permission1, permission2, permission3]));
 
     await lookupTables.removeAllTablePermission('tableRemoveGroup', 'tableRemoveTable1');
-    stored = await lookupTables.__fetchGroupLookupPermissions('tableRemoveGroup');
+    stored = await lookupTables.fetchLookupPermissions('tableRemoveGroup');
     test.expect(sortPermissions(stored)).to.eql(sortPermissions([permission3]));
   });
 
