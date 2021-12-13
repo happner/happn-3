@@ -7,10 +7,10 @@ const test = require('../../__fixtures/utils/test_helper').create();
 const wait = require('await-delay');
 const path = require('path');
 const fs = require('fs');
+const UtilsService = require('../../../lib/services/utils/service');
 
 describe(test.testName(__filename, 3), function() {
   var Logger = require('happn-logger');
-  const util = require('util');
   let mockErrorService;
   let dbPath = path.resolve(__dirname, '../../__fixtures/test/test_lookup_db');
   let lookupTables;
@@ -30,7 +30,7 @@ describe(test.testName(__filename, 3), function() {
     services: {
       error: mockErrorService,
       log: Logger,
-      util,
+      utils: new UtilsService(),
       security: { dataChanged: () => {} }
     }
   };
@@ -193,7 +193,6 @@ describe(test.testName(__filename, 3), function() {
   });
 
   it('Can extract a path (table name repeated)', done => {
-    // This is unlikely, but I guess it could happen??
     let path = '/domain/component/tableName/1/2/3/tableName/5/6/7';
     test.expect(lookupTables.__extractPath(path, 'tableName')).to.be('1/2/3/tableName/5/6/7');
     done();
@@ -569,26 +568,28 @@ describe(test.testName(__filename, 3), function() {
     done();
   });
 
-  it('tests that __testLookupPermission will return early if action not included in permission', async () => {
+  it('tests that __authorizeLookupPermission will return early if action not included in permission', async () => {
     let path = { match: sinon.stub() };
     let permission = { actions: ['on'] };
     test
-      .expect(await lookupTables.__testLookupPermission({}, permission, path, 'get'))
+      .expect(await lookupTables.__authorizeLookupPermission({}, permission, path, 'get'))
       .to.be(false);
     test.expect(path.match.notCalled).to.be(true);
   });
 
-  it('tests that __testLookupPermission will return early if regEx doesnt match', async () => {
+  it('tests that __authorizeLookupPermission will return early if regEx doesnt match', async () => {
     let path = '1/2/3/4';
     let permission = { actions: ['on'], regex: '^/_data/historianStore/device1/(.*)' };
     let oldBuild = lookupTables.__buildPermissionPaths;
     lookupTables.__buildPermissionPaths = sinon.spy();
-    test.expect(await lookupTables.__testLookupPermission({}, permission, path, 'on')).to.be(false);
+    test
+      .expect(await lookupTables.__authorizeLookupPermission({}, permission, path, 'on'))
+      .to.be(false);
     test.expect(lookupTables.__buildPermissionPaths.notCalled).to.be(true);
     lookupTables.__buildPermissionPaths = oldBuild;
   });
 
-  it('tests that __testLookupPermission will return false if table doesnt exist', async () => {
+  it('tests that __authorizeLookupPermission will return false if table doesnt exist', async () => {
     let path = '1/2/3/bob';
     let permission = {
       actions: ['on'],
@@ -597,11 +598,11 @@ describe(test.testName(__filename, 3), function() {
     };
     let identity = { user: { name: 'bob' } };
     test
-      .expect(await lookupTables.__testLookupPermission(identity, permission, path, 'on'))
+      .expect(await lookupTables.__authorizeLookupPermission(identity, permission, path, 'on'))
       .to.be(false);
   });
 
-  it('tests that __testLookupPermission will return true if there is a path match.', async () => {
+  it('tests that __authorizeLookupPermission will return true if there is a path match.', async () => {
     let path = '1/2/3/4';
     let permission = {
       actions: ['on'],
@@ -616,11 +617,11 @@ describe(test.testName(__filename, 3), function() {
       paths: ['1/2/3/bob/4', '4/5/6', '7/8/9']
     });
     test
-      .expect(await lookupTables.__testLookupPermission(identity, permission, path, 'on'))
+      .expect(await lookupTables.__authorizeLookupPermission(identity, permission, path, 'on'))
       .to.be(true);
   });
 
-  it('tests that __testLookupPermission will return true if there is a wildcard path match.', async () => {
+  it('tests that __authorizeLookupPermission will return true if there is a wildcard path match.', async () => {
     let path = '1/2/3/4';
     let permission = {
       actions: ['on'],
@@ -635,7 +636,7 @@ describe(test.testName(__filename, 3), function() {
       paths: ['1/2/3/bob/4', '4/5/6', '7/8/9']
     });
     test
-      .expect(await lookupTables.__testLookupPermission(identity, permission, path, 'on'))
+      .expect(await lookupTables.__authorizeLookupPermission(identity, permission, path, 'on'))
       .to.be(true);
   });
 
