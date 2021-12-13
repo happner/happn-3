@@ -920,7 +920,7 @@
   - SMC-4466: light client modifications - able to pass null options into create
 
 
-12.1.1 2021-12-13
+12.1.0 2021-12-13
 -----------------
   - SMC-4550: Feature - added lokup tables and permissions
 
