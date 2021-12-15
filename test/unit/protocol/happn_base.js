@@ -11,125 +11,10 @@ describe(
 
       const UtilsService = require('../../../lib/services/utils/service');
 
-      const CryptoService = require('../../../lib/services/crypto/service');
-      var cryptoService = new CryptoService();
-
-      cryptoService.initialize({}, function(e) {
-        if (e) return callback(e);
-
-        var keyPair = cryptoService.createKeyPair();
-
-        protocol.protocolVersion = 'happn';
-        //this.happn.services.security._keyPair.privateKey
-        protocol.happn = {
-          services: {
-            utils: new UtilsService(),
-            crypto: cryptoService,
-            security: {
-              _keyPair: {
-                privateKey: keyPair.privateKey
-              }
-            }
-          }
-        };
-
-        protocol.__createResponse = function(e, message, response, opts) {
-          var _meta = {};
-
-          var local = opts ? opts.local : false;
-
-          if (response == null)
-            response = {
-              data: null
-            };
-          else {
-            if (response._meta) _meta = response._meta;
-            if (response.paths) response = response.paths;
-          }
-
-          _meta.type = 'response';
-          _meta.status = 'ok';
-
-          if (_meta.published == null) _meta.published = false;
-
-          _meta.eventId = message.eventId;
-
-          delete _meta._id;
-
-          //we need these passed in case we are encrypting the resulting payload
-          if (['login', 'describe'].indexOf(message.action) === -1)
-            _meta.sessionId = message.sessionId;
-
-          _meta.action = message.action;
-
-          response._meta = _meta;
-
-          response.protocol = this.protocolVersion;
-
-          if (e) {
-            response._meta.status = 'error';
-
-            response._meta.error = {};
-
-            if (e.name == null) response._meta.error.name = e.toString();
-            else response._meta.error.name = e.name;
-
-            if (typeof e === 'object') {
-              Object.keys(e).forEach(function(key) {
-                response._meta.error[key] = e[key];
-              });
-
-              if (response._meta.error.message == null && e.message)
-                response._meta.error.message = e.message; //this is a non-iterable property
-            }
-
-            return response;
-          }
-
-          if (
-            message.action === 'on' &&
-            message.options &&
-            (message.options.initialCallback || message.options.initialEmit)
-          )
-            response.data = this.__formatReturnItems(response.initialValues, local);
-
-          if (Array.isArray(response)) {
-            response = this.__formatReturnItems(response, local);
-
-            if (!local) response.push(_meta);
-            //we encapsulate the meta data in the array, so we can pop it on the other side
-            else response._meta = _meta; // the _meta is preserved as an external property because we arent having to serialize
-          }
-          return response;
-        };
-        return callback(null, protocol, keyPair.publicKey);
-      });
-    }
-
-    function mockProtocolMockCrypto() {
-      const Protocol = require('../../../lib/services/protocol/happn_base');
-      const protocol = new Protocol();
-
-      const UtilsService = require('../../../lib/services/utils/service');
-
       protocol.protocolVersion = 'happn';
-      //this.happn.services.security._keyPair.privateKey
       protocol.happn = {
         services: {
-          utils: new UtilsService(),
-          crypto: {
-            asymmetricDecrypt: function(pubKey, privKey, encrypted) {
-              return encrypted;
-            },
-            symmetricDecryptObject: function(encrypted) {
-              return encrypted;
-            }
-          },
-          security: {
-            _keyPair: {
-              privateKey: 'mock-priv-key'
-            }
-          }
+          utils: new UtilsService()
         }
       };
 
@@ -156,7 +41,91 @@ describe(
 
         delete _meta._id;
 
-        //we need these passed in case we are encrypting the resulting payload
+        if (['login', 'describe'].indexOf(message.action) === -1)
+          _meta.sessionId = message.sessionId;
+
+        _meta.action = message.action;
+
+        response._meta = _meta;
+
+        response.protocol = this.protocolVersion;
+
+        if (e) {
+          response._meta.status = 'error';
+
+          response._meta.error = {};
+
+          if (e.name == null) response._meta.error.name = e.toString();
+          else response._meta.error.name = e.name;
+
+          if (typeof e === 'object') {
+            Object.keys(e).forEach(function(key) {
+              response._meta.error[key] = e[key];
+            });
+
+            if (response._meta.error.message == null && e.message)
+              response._meta.error.message = e.message; //this is a non-iterable property
+          }
+
+          return response;
+        }
+
+        if (
+          message.action === 'on' &&
+          message.options &&
+          (message.options.initialCallback || message.options.initialEmit)
+        )
+          response.data = this.__formatReturnItems(response.initialValues, local);
+
+        if (Array.isArray(response)) {
+          response = this.__formatReturnItems(response, local);
+
+          if (!local) response.push(_meta);
+          //we encapsulate the meta data in the array, so we can pop it on the other side
+          else response._meta = _meta; // the _meta is preserved as an external property because we arent having to serialize
+        }
+        return response;
+      };
+      return callback(null, protocol);
+    }
+
+    function mockProtocolMockCrypto() {
+      const Protocol = require('../../../lib/services/protocol/happn_base');
+      const protocol = new Protocol();
+
+      const UtilsService = require('../../../lib/services/utils/service');
+
+      protocol.protocolVersion = 'happn';
+
+      protocol.happn = {
+        services: {
+          utils: new UtilsService()
+        }
+      };
+
+      protocol.__createResponse = function(e, message, response, opts) {
+        var _meta = {};
+
+        var local = opts ? opts.local : false;
+
+        if (response == null)
+          response = {
+            data: null
+          };
+        else {
+          if (response._meta) _meta = response._meta;
+          if (response.paths) response = response.paths;
+        }
+
+        _meta.type = 'response';
+        _meta.status = 'ok';
+
+        if (_meta.published == null) _meta.published = false;
+
+        _meta.eventId = message.eventId;
+
+        delete _meta._id;
+
         if (['login', 'describe'].indexOf(message.action) === -1)
           _meta.sessionId = message.sessionId;
 
@@ -207,41 +176,12 @@ describe(
       return protocol;
     }
 
-    it('tests the fail method, not login action, encrypted payloads', function(done) {
+    it('tests the fail method, login action', function(done) {
       mockProtocol(function(e, protocol) {
         if (e) return done(e);
 
         var failure = protocol.fail({
           session: {
-            isEncrypted: true,
-            secret: '1898981',
-            protocol: 'happn'
-          },
-          error: new Error('test error'),
-          request: {
-            action: 'set'
-          },
-          response: {
-            data: 'test'
-          }
-        });
-
-        expect(failure.response).to.eql({
-          encrypted:
-            '0764bcc8773108aa57b37fd437c7f285081ab9c8bc20e7640bce4be2ed00f2d801e589fd8f098851b74e5f818b2888ba1c9e4afd12a2426a08354fcc5e03b4ab88379db26b331864b97cb5c0e2499634cb2aa2802be2157ab01f2e22262e70fc5548f7b5e16029178b8ce68550100f5e5d7c69004d9ea9e864d16dabb1242fb4cb20869382bab0598db46a9e61c8f315bf58d29353b35bad1212fb4f16d77baf'
-        });
-
-        done();
-      });
-    });
-
-    it('tests the fail method, login action, encrypted payloads', function(done) {
-      mockProtocol(function(e, protocol) {
-        if (e) return done(e);
-
-        var failure = protocol.fail({
-          session: {
-            isEncrypted: true,
             secret: '1898981',
             protocol: 'happn'
           },
@@ -271,13 +211,12 @@ describe(
       });
     });
 
-    it('tests the fail method, not login action, encrypted payloads, negative', function(done) {
+    it('tests the fail method, not login action', function(done) {
       mockProtocol(function(e, protocol) {
         if (e) return done(e);
 
         var failure = protocol.fail({
           session: {
-            isEncrypted: false,
             secret: '1898981'
           },
           error: new Error('test error'),
@@ -317,7 +256,6 @@ describe(
       var inputMessage = {
         error: new Error('test error'),
         session: {
-          isEncrypted: false,
           secret: '1898981'
         },
         request: {
@@ -362,7 +300,6 @@ describe(
       var inputMessage = {
         error: new Error('test error'),
         session: {
-          isEncrypted: false,
           secret: '1898981'
         },
         request: {
@@ -501,28 +438,6 @@ describe(
         { test: 'data', _meta: 'test-meta' },
         { test: 'data-1', _meta: 'test-meta-1' }
       ]);
-    });
-
-    it('tests the __encryptMessage function', function(done) {
-      mockProtocol(function(e, protocol) {
-        if (e) return done(e);
-        expect(protocol.__encryptMessage({ test: 'message' }, 'secret')).to.eql(
-          '21d200969337ede62f5d82578a737328a574'
-        );
-        done();
-      });
-    });
-
-    it('tests the __encryptLogin function', function(done) {
-      mockProtocol(function(e, protocol, publicKey) {
-        if (e) return done(e);
-        var encryptedLogin = protocol
-          .__encryptLogin({ publicKey: publicKey }, { test: 'response' })
-          .toString();
-        expect(encryptedLogin).to.not.be(null);
-        expect(encryptedLogin).to.not.be(undefined);
-        done();
-      });
     });
   }
 );

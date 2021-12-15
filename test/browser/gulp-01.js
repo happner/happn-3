@@ -19,7 +19,6 @@ gulp.task('default', async () => {
 
   await serverHelper.createServer({
     secure: true,
-    encryptPayloads: true,
     services: {
       security: {
         config: {

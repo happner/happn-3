@@ -8,7 +8,6 @@ describe(tests.testName(__filename, 3), function() {
   var happnInstance1 = null;
   var serviceConfig1 = {
     secure: true,
-    encryptPayloads: true,
     services: {
       security: {
         config: {
@@ -333,7 +332,10 @@ describe(tests.testName(__filename, 3), function() {
 
   function checkLocks(username) {
     return new Promise((resolve, reject) => {
-      happnInstance1.services.security.__locks.get(username, function(e, lock) {
+      happnInstance1.services.security.authProviders.default.__locks.get(username, function(
+        e,
+        lock
+      ) {
         if (e) reject(e);
         resolve(lock);
       });

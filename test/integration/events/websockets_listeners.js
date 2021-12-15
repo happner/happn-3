@@ -228,12 +228,8 @@ describe(
                   publisherclient.remove(
                     '/e2e_test1/testsubscribe/data/delete_me',
                     null,
-                    function() /*
-                    e,
-                    result
-                    */
-                    {
-                      //do nothing
+                    function() {
+                      //do notshing
                     }
                   );
                 } else callback(e);
@@ -481,17 +477,9 @@ describe(
             },
             null,
             function(/*e, put_result*/) {
-              publisherclient.remove(
-                '/e2e_test1/testsubscribe/data/catch_all',
-                null,
-                function() /*
-                e,
-                del_result
-                */
-                {
-                  //do nothing
-                }
-              );
+              publisherclient.remove('/e2e_test1/testsubscribe/data/catch_all', null, function() {
+                //do nothing
+              });
             }
           );
         }

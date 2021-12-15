@@ -1855,6 +1855,96 @@ serviceInstanceLocked.services.session.localClient({
 });
 
 ```
+AUTHENTICATION PROVIDER(S)
+--------------------------
+Happn-3 can now be configured with multiple, and/or custom authentication providers. By default, happn-3 will launch using the "happn" authentication provider, 
+and work as it has always done. In order to use a different authentication provider, you must pass in either an absolute path, or an installed module name, 
+in the security service config. Note that the standard happn provider is always available unless you specify the fal
+Example: Happn-3 and 2 other providers, otherAuthProvider default
+```javascript
+const serviceConfig = {
+  secure: true,
+  services: {
+    security: {
+      config: {
+        authProviders:{          
+          otherAuthProvider: '/path/to/other/provider.js',
+          moduleProvider: 'moduleName'       
+        },
+        defaultAuthProvider: 'otherAuthProvider'
+    }
+  }
+};
+
+var happn = require('../lib/index')
+var service = happn.service;
+service.create(serviceConfig, function(e, happnInst) {
+  //server created with three auth providers, one at /path/to/other/provider.js, one in module 'moduleName', and the standard happn provider
+});
+```
+ Note that the standard happn provider is always available unless you specify the flag happn: false in authProviders 
+
+ ```javascript
+const serviceConfig = {
+  secure: true,
+  services: {
+    security: {
+      config: {
+        authProviders:{          
+          otherAuthProvider: '/path/to/other/provider.js',          
+          happn:false      
+        },
+        defaultAuthProvider: 'otherAuthProvider'
+    }
+  }
+};
+
+var happn = require('../lib/index')
+var service = happn.service;
+service.create(serviceConfig, function(e, happnInst) {
+  //server created with only one auth provider,  at /path/to/other/provider.js, and NO  standard happn provider
+});
+```
+In order to specify which authentication provider to use, requests should add a flag, `authType: 'auth-provider-name'`, to the credentials object used at login, where name is the providers name (as it appears as a key in config.authProviders). For example to authenticate with moduleProvider:
+```
+happn.client.create({username: "user", password: "pass", authType: "moduleProvider"}, ...)
+\\or
+happpnInstance.services.security.login( {username: "user", password: "pass", authType: "moduleProvider"}, ...)
+```
+Also note, that when using non default authprovider settings, the happn-3 auth provider must be included explicitly in security.config.
+
+CREATING CUSTOM AUTH PROVIDERS (AND TEMPLATE)
+---------------------------------------------
+The file or module which contains the custom auth provider should be structured as a function which returns a class that extends the functions argument.
+The custom auth provider should implement at least one of the functions, __providerCredsLogin and __providerTokenLogin and will have access to the __loginOK and __loginFailed methods,
+as well as the other methods of the base auth provider class which can be examined at ./lib/services/security/authentication/provider-base.js
+Example/template auth module:
+```
+module.exports = function(BaseClass) {  
+  return class AuthProvider extends BaseClass {
+    coonstructor(happn,config) {
+      super(happn,config)
+    }
+    static create(happn,config) {
+      return new AuthProvider(happn,config)
+    }
+
+    __providerCredsLogin(credentials, sessionId, callback) {
+      // Examine credentials.username and credentials.password
+      //Login OK
+      if (ok)  return this.__loginOK(credentials, user, sessionId, callback) //User can be fetched from this.users.getUser();      
+      if (!ok)  return this.__loginFailed(credentials.userName, 'ErrorMessage', new Error("failed"), callback )
+    }
+
+    __providerTokenLogin(credentials, previousSession, sessionId, callback) {
+      // Examine credentials.username and credentials.token
+      //Login OK
+      if (ok)  return this.__loginOK(credentials, user, sessionId, callback) //User can be fetched from this.users.getUser();      
+      if (!ok)  return this.__loginFailed(credentials.userName, 'ErrorMessage', new Error("failed"), callback )
+    }
+  } 
+}
+```
 
 UNCONFIGURED SESSION CLEANUP
 -----------------------------------------

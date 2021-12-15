@@ -3,6 +3,7 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
+    this.timeout(5000);
     var happn = require('../../../lib/index');
     var serviceInstance;
     var adminClient;

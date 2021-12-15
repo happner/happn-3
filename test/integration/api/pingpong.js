@@ -62,6 +62,6 @@ describe(
           callback();
         });
       });
-    });
+    }).timeout(5000);
   }
 );

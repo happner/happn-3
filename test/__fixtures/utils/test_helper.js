@@ -17,6 +17,7 @@ function TestHelper() {
   this.security = require('./security-helper').create();
   this.sinon = require('sinon');
   this.fs = require('fs');
+  this.happn = require('../../../lib/index');
 }
 
 TestHelper.create = function(){
@@ -104,5 +105,49 @@ TestHelper.prototype.doRequest = function(path, token) {
     });
   });
 };
+
+TestHelper.prototype.createInstance = function(config = {}) {
+  return new Promise((resolve, reject) => {
+    this.happn.service.create(config, function(e, happnInst) {
+      if (e) return reject(e);
+      resolve(happnInst);
+    });
+  });
+}
+
+TestHelper.prototype.destroyInstance = function(instance) {
+  return new Promise((resolve, reject) => {
+    if (!instance) return resolve();
+    instance.stop(function(e) {
+      if (e) return reject(e);
+      resolve();
+    });
+  });
+}
+
+TestHelper.prototype.destroySessions = async function(sessions) {
+  for (let session of sessions) {
+    await this.destroySession(session);
+  }
+}
+
+TestHelper.prototype.destroySession = function(session) {
+  return new Promise((resolve, reject) => {
+    if (!session) return resolve();
+    session.disconnect(function(e) {
+      if (e) return reject(e);
+      resolve();
+    });
+  });
+}
+
+TestHelper.prototype.createAdminSession = function(instance) {
+  return new Promise((resolve, reject) => {
+    instance.services.session.localAdminClient(function(e, session) {
+      if (e) return reject(e);
+      resolve(session);
+    });
+  });
+}
 
 module.exports = TestHelper;

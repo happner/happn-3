@@ -14,6 +14,7 @@ describe(
     };
 
     before('it starts completely defaulted service', function(done) {
+      this.timeout(5000);
       getService({}, function(e, service) {
         if (e) return done(e);
 

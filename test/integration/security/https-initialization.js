@@ -119,8 +119,7 @@ describe(
       var serviceConfig = config.test5_config;
 
       getService(serviceConfig, function(e) {
-        // expect(e.toString()).to.equal('Error: error creating server: PEM_read_bio_PrivateKey');
-        expect(e.toString()).to.match(/PEM/);
+        expect(e.toString()).to.match(/PEM|unsupported/);
         done();
       });
     });
