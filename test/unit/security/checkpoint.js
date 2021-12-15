@@ -4,7 +4,7 @@ describe(
     .testName(__filename, 3),
   function() {
     this.timeout(5000);
-
+    const sinon = require('sinon');
     var expect = require('expect.js');
     var async = require('async');
     var Logger = require('happn-logger');
@@ -252,7 +252,7 @@ describe(
     it('tests caching in checkpoint, __permissionCache', function(done) {
       initializeCheckpoint(function(e, checkpoint) {
         if (e) return done(e);
-
+        mockLookup(checkpoint, null, false);
         expect(
           checkpoint.__cache_checkpoint_authorization.getSync(
             'TEST-SESSION-ID' + '/test/path' + 'set'
@@ -314,7 +314,7 @@ describe(
 
       initializeCheckpoint(function(e, checkpoint) {
         if (e) return done(e);
-
+        mockLookup(checkpoint, null, false);
         expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(
           null
         );
@@ -378,6 +378,7 @@ describe(
 
       initializeCheckpoint(function(e, checkpoint) {
         if (e) return done(e);
+        mockLookup(checkpoint, null, false);
         expect(checkpoint.__cache_checkpoint_permissionset.getSync(testPermissionSetKey)).to.be(
           null
         );
@@ -430,6 +431,7 @@ describe(
       var testPermissionSetKey = generatePermissionSetKey(user);
       initializeCheckpoint(function(e, checkpoint) {
         if (e) return done(e);
+        mockLookup(checkpoint, null, false);
         expect(checkpoint.__cache_checkpoint_authorization.getSync(authorizationKey)).to.be(null);
         //session, path, action, callback
         checkpoint._authorizeUser(
@@ -480,6 +482,7 @@ describe(
       var testPermissionSetKey = generatePermissionSetKey(user);
       initializeCheckpoint(function(e, checkpoint) {
         if (e) return done(e);
+        mockLookup(checkpoint, null, false);
         expect(checkpoint.__cache_checkpoint_authorization_token.getSync(authorizationKey)).to.be(
           null
         );
@@ -519,6 +522,7 @@ describe(
       initializeCheckpoint(
         function(e, checkpoint) {
           if (e) return done(e);
+          mockLookup(checkpoint, null, false);
 
           async.timesSeries(
             10,
@@ -587,6 +591,7 @@ describe(
       initializeCheckpoint(
         function(e, checkpoint) {
           if (e) return done(e);
+          mockLookup(checkpoint, null, false);
 
           async.timesSeries(
             10,
@@ -825,5 +830,11 @@ describe(
         });
       });
     });
+
+    function mockLookup(checkpoint, error, response) {
+      checkpoint.securityService.lookupTables = {};
+      checkpoint.securityService.lookupTables.authorizeCallback = sinon.stub();
+      checkpoint.securityService.lookupTables.authorizeCallback.callsArgWith(3, error, response);
+    }
   }
 );
