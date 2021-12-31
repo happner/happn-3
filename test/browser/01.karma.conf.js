@@ -13,7 +13,7 @@ module.exports = function(config) {
     files: [
       'test/browser/browser-client-02.js',
       'test/browser/01_security_hsts_cookie.js',
-      'test/browser/02_websockets_embedded_sanity_encryptedpayloads.js',
+      'test/browser/02_websockets_embedded_sanity.js',
       'test/browser/03_heartbeats.js',
       'test/browser/04_https_cookie.js',
       'test/browser/05_https_cookieLogin.js',
