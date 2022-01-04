@@ -1,4 +1,4 @@
-xdescribe('02_websockets_embedded_sanity_encrypted_payloads', function() {
+describe('02_websockets_embedded_sanity', function() {
   var expect, happn_client;
 
   if (typeof window === 'undefined') {
@@ -30,11 +30,7 @@ xdescribe('02_websockets_embedded_sanity_encrypted_payloads', function() {
           {
             config: {
               username: '_ADMIN',
-              password: 'happn',
-              keyPair: {
-                publicKey: 'AjN7wyfbEdI2LzWyFo6n31hvOrlYvkeHad9xGqOXTm1K',
-                privateKey: 'y5RTfdnn21OvbQrnBMiKBP9DURduo0aijMIGyLJFuJQ='
-              }
+              password: 'happn'
             }
           },
           function(e, instance) {
