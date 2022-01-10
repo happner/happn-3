@@ -932,4 +932,8 @@
 -----------------
   - SMC-4938: Fix - lookup tables fail for rest request
 
+12.1.3 2022-01-08
+-----------------
+  - SMC-4938: Fix - dont delete session.username
+
 
