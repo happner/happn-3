@@ -15,6 +15,7 @@ describe(test.testName(__filename, 3), function() {
   let dbPath = path.resolve(__dirname, '../../__fixtures/test/test_lookup_db');
   let lookupTables;
   let getUserReturns = {};
+  let dataChangedSpy = sinon.spy();
 
   before('01. Sets up errorService', done => {
     const ErrorService = require('../../../lib/services/error/service');
@@ -32,7 +33,7 @@ describe(test.testName(__filename, 3), function() {
       error: mockErrorService,
       log: Logger,
       utils: new UtilsService(),
-      security: { dataChanged: () => {}, users: { getUser: () => getUserReturns } }
+      security: { dataChanged: dataChangedSpy, users: { getUser: () => getUserReturns } }
     }
   };
 
@@ -58,6 +59,11 @@ describe(test.testName(__filename, 3), function() {
     mockDataService.happn = mockHappn;
     mockDataService.__updateDatabaseVersions = () => {};
     mockDataService.initialize({ filename: dbPath }, done);
+  });
+
+  beforeEach('Resets dataChanged spy', done => {
+    dataChangedSpy.resetHistory();
+    done();
   });
 
   after('deletes test DB', done => {
@@ -91,6 +97,7 @@ describe(test.testName(__filename, 3), function() {
       '/_SYSTEM/_SECURITY/_LOOKUP/newUpsertTable/1/2/3'
     );
     test.expect(stored.data).to.eql({ authorized: true });
+    test.expect(dataChangedSpy.calledOnce).to.be(true);
   });
 
   it('Can upsert a lookupTable', async () => {
