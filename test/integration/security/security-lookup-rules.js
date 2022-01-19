@@ -75,7 +75,7 @@ describe(test.testName(__filename), function() {
     );
 
     await serviceInstance.services.security.lookupTables.upsertLookupTable({
-      name: 'OEM_MANAGERIN_ABC_LOOKUP',
+      name: 'OEM_MANAGER_ABC_LOOKUP',
       paths: [
         '/device/OEM_ABC/COMPANY_ABC/SPECIAL_DEVICE_ID_1',
         '/device/OEM_ABC/COMPANY_DEF/SPECIAL_DEVICE_ID_2'
