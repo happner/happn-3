@@ -8,6 +8,7 @@ const wait = require('await-delay');
 const path = require('path');
 const fs = require('fs');
 const UtilsService = require('../../../lib/services/utils/service');
+const CONSTANTS = require('../../../lib').constants;
 
 describe(test.testName(__filename, 3), function() {
   var Logger = require('happn-logger');
@@ -98,6 +99,14 @@ describe(test.testName(__filename, 3), function() {
     );
     test.expect(stored.data).to.eql({ authorized: true });
     test.expect(dataChangedSpy.calledOnce).to.be(true);
+    test
+      .expect(
+        dataChangedSpy.calledWith(CONSTANTS.SECURITY_DIRECTORY_EVENTS.LOOKUP_TABLE_CHANGED, {
+          groups: [],
+          table: 'newUpsertTable'
+        })
+      )
+      .to.be(true);
   });
 
   it('Can upsert a lookupTable', async () => {
@@ -112,6 +121,15 @@ describe(test.testName(__filename, 3), function() {
         `/_SYSTEM/_SECURITY/_LOOKUP/upsertFullTable/${testPath}`
       );
       test.expect(stored.data).to.eql({ authorized: true });
+      test.expect(dataChangedSpy.calledOnce).to.be(true);
+      test
+        .expect(
+          dataChangedSpy.calledWith(CONSTANTS.SECURITY_DIRECTORY_EVENTS.LOOKUP_TABLE_CHANGED, {
+            groups: [],
+            table: 'upsertFullTable'
+          })
+        )
+        .to.be(true);
     }
   });
 
@@ -128,6 +146,7 @@ describe(test.testName(__filename, 3), function() {
       );
       test.expect(stored.data).to.eql({ authorized: true });
     }
+    dataChangedSpy.resetHistory();
     await lookupTables.deleteLookupTable(table.name);
     test
       .expect(await mockHappn.services.data.get(`/_SYSTEM/_SECURITY/_LOOKUP/deleteTable/**`))
@@ -135,6 +154,15 @@ describe(test.testName(__filename, 3), function() {
     test
       .expect(await lookupTables.fetchLookupTable(table.name))
       .to.eql({ name: table.name, paths: [] });
+    test.expect(dataChangedSpy.calledOnce).to.be(true);
+    test
+      .expect(
+        dataChangedSpy.calledWith(CONSTANTS.SECURITY_DIRECTORY_EVENTS.LOOKUP_TABLE_CHANGED, {
+          groups: [],
+          table: 'deleteTable'
+        })
+      )
+      .to.be(true);
   });
 
   it('Can insert a path into a lookupTable (table already exists)', async () => {
@@ -143,15 +171,26 @@ describe(test.testName(__filename, 3), function() {
       paths: ['1/2/3', '4/5/6', '7/8/9']
     };
     await lookupTables.upsertLookupTable(table);
+    dataChangedSpy.resetHistory();
+
     let stored = await mockHappn.services.data.get(
       '/_SYSTEM/_SECURITY/_LOOKUP/upsertNewPath/1/2/3'
     );
-    test.expect(stored.data).to.eql({ authorized: true });
     stored = await mockHappn.services.data.get('/_SYSTEM/_SECURITY/_LOOKUP/upsertNewPath/10/11/12');
     test.expect(stored).to.not.be.ok();
     await lookupTables.insertPath('upsertNewPath', '/10/11/12');
     stored = await mockHappn.services.data.get('/_SYSTEM/_SECURITY/_LOOKUP/upsertNewPath/10/11/12');
     test.expect(stored.data).to.eql({ authorized: true });
+    test.expect(stored.data).to.eql({ authorized: true });
+    test.expect(dataChangedSpy.calledOnce).to.be(true);
+    test
+      .expect(
+        dataChangedSpy.calledWith(CONSTANTS.SECURITY_DIRECTORY_EVENTS.LOOKUP_TABLE_CHANGED, {
+          groups: [],
+          table: 'upsertNewPath'
+        })
+      )
+      .to.be(true);
   });
 
   it('If we upsert a lookupTable with the same name as an already existing one, paths are merged', async () => {
@@ -164,8 +203,17 @@ describe(test.testName(__filename, 3), function() {
       paths: ['a/b/c', 'd/e/f']
     };
     await lookupTables.upsertLookupTable(table);
+    dataChangedSpy.resetHistory();
     await lookupTables.upsertLookupTable(table2);
-
+    test.expect(dataChangedSpy.calledOnce).to.be(true);
+    test
+      .expect(
+        dataChangedSpy.calledWith(CONSTANTS.SECURITY_DIRECTORY_EVENTS.LOOKUP_TABLE_CHANGED, {
+          groups: [],
+          table: 'upsertOverTable'
+        })
+      )
+      .to.be(true);
     for (let lookupPath of table.paths.concat(table2.paths)) {
       let testPath = lookupPath.replace(/^\//, '');
       let stored = await mockHappn.services.data.get(
@@ -181,10 +229,20 @@ describe(test.testName(__filename, 3), function() {
       paths: ['1/2/3', '4/5/6', '7/8/9']
     };
     await lookupTables.upsertLookupTable(table);
+    dataChangedSpy.resetHistory();
     let stored = await mockHappn.services.data.get('/_SYSTEM/_SECURITY/_LOOKUP/removeTable/1/2/3');
     test.expect(stored.data).to.eql({ authorized: true });
 
     await lookupTables.removePath('removeTable', '/1/2/3');
+    test.expect(dataChangedSpy.calledOnce).to.be(true);
+    test
+      .expect(
+        dataChangedSpy.calledWith(CONSTANTS.SECURITY_DIRECTORY_EVENTS.LOOKUP_TABLE_CHANGED, {
+          groups: [],
+          table: 'removeTable'
+        })
+      )
+      .to.be(true);
     await wait(500);
     stored = await mockHappn.services.data.get('/_SYSTEM/_SECURITY/_LOOKUP/removeTable/1/2/3');
     test.expect(stored).to.not.be.ok();
@@ -247,7 +305,7 @@ describe(test.testName(__filename, 3), function() {
     test.expect(storedTxG.data).to.eql({ permissions });
   });
 
-  it('tests the __storePermissions function - np matching permissions', async () => {
+  it('tests the __storePermissions function - no matching permissions', async () => {
     let matchingPermissions = [{ table: 'nonMatchingTable', other: 'details' }];
     let permissions = [{ table: 'someTable', other: 'details' }];
     await lookupTables.__storePermissions(
@@ -316,7 +374,17 @@ describe(test.testName(__filename, 3), function() {
       table: 'COMPANY_ABC_LOOKUP',
       path: '/device/{{user.custom_data.oem}}/{{user.custom_data.companies}}/{{$1}}'
     };
+
     await lookupTables.upsertLookupPermission('testGroup', permission); //Group need not exist to upsert a lookup permission. Is this an issue?
+    test.expect(dataChangedSpy.calledOnce).to.be(true);
+    test
+      .expect(
+        dataChangedSpy.calledWith(CONSTANTS.SECURITY_DIRECTORY_EVENTS.LOOKUP_PERMISSION_CHANGED, {
+          group: 'testGroup',
+          table: 'COMPANY_ABC_LOOKUP'
+        })
+      )
+      .to.be(true);
     let stored = await mockHappn.services.data.get(
       `/_SYSTEM/_SECURITY/_PERMISSIONS/_LOOKUP/testGroup/COMPANY_ABC_LOOKUP`
     );
@@ -462,6 +530,17 @@ describe(test.testName(__filename, 3), function() {
       path: '/device/another/{user.company}/{{$1}}'
     };
     await lookupTables.upsertLookupPermission('testRemoveGroup', permission1);
+
+    test.expect(dataChangedSpy.calledOnce).to.be(true);
+    test
+      .expect(
+        dataChangedSpy.calledWith(CONSTANTS.SECURITY_DIRECTORY_EVENTS.LOOKUP_PERMISSION_CHANGED, {
+          group: 'testRemoveGroup',
+          table: 'removeTable1'
+        })
+      )
+      .to.be(true);
+
     await lookupTables.upsertLookupPermission('testRemoveGroup', permission2);
     await lookupTables.upsertLookupPermission('testRemoveGroup', permission3);
 
@@ -504,8 +583,18 @@ describe(test.testName(__filename, 3), function() {
       .expect(sortPermissions(stored))
       .to.eql(sortPermissions([permission1, permission2, permission3]));
 
+    dataChangedSpy.resetHistory();
     await lookupTables.removeAllTablePermission('tableRemoveGroup', 'tableRemoveTable1');
     stored = await lookupTables.fetchLookupPermissions('tableRemoveGroup');
+    test.expect(dataChangedSpy.calledOnce).to.be(true);
+    test
+      .expect(
+        dataChangedSpy.calledWith(CONSTANTS.SECURITY_DIRECTORY_EVENTS.LOOKUP_PERMISSION_CHANGED, {
+          group: 'tableRemoveGroup',
+          table: 'tableRemoveTable1'
+        })
+      )
+      .to.be(true);
     test.expect(sortPermissions(stored)).to.eql(sortPermissions([permission3]));
   });
 
