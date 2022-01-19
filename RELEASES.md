@@ -936,4 +936,8 @@
 -----------------
   - SMC-4938: Fix - dont delete session.username
 
+12.1.4 2022-01-19
+-----------------
+  - SMC-4550: Fix -correctly calling securityDirectoryChanged on permission removal and group/permission table unlinking
+
 
