@@ -65,7 +65,8 @@ describe(
                       name: 'test_group_2',
                       permissions: {
                         'test/path/2': { actions: ['get'] },
-                        '/custom/{{user.custom_data.custom_field1}}': { actions: ['*'] }
+                        '/custom/{{user.custom_data.custom_field1}}': { actions: ['*'] },
+                        '/custom2/{{[user.custom_data.custom_field2]}}': { actions: ['*'] }
                       }
                     };
 
@@ -310,7 +311,7 @@ describe(
       });
     });
 
-    it('tests the __loadPermissionSet method does permissions replacements, using a mocked identity with templated permissions, ensures template elements that dont match the context (identity / session) are skipped', function(done) {
+    it.only('tests the __loadPermissionSet method does permissions replacements, using a mocked identity with templated permissions, ensures template elements that dont match the context (identity / session) are skipped', function(done) {
       initializeCheckpoint(function(e, checkpoint) {
         if (e) return done(e);
         var mockedIdentity = {
@@ -318,7 +319,8 @@ describe(
             username: 'test_user',
             custom_data: {
               custom_field: 'test_custom_field',
-              custom_field1: 'test_custom_field1'
+              custom_field1: 'test_custom_field1',
+              custom_field2: ['test_custom_field2', 'x']
             },
             groups: {
               test_group_1: {},
@@ -364,6 +366,16 @@ describe(
               },
               test_custom_field1: {
                 $leaf: '/custom/test_custom_field1',
+                actions: ['*']
+              }
+            },
+            custom2: {
+              test_custom_field2: {
+                $leaf: '/custom2/test_custom_field2',
+                actions: ['*']
+              },
+              x: {
+                $leaf: '/custom2/x',
                 actions: ['*']
               }
             }
