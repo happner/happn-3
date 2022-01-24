@@ -42,7 +42,6 @@
     "dev-null": "^0.1.1",
     "fast-clone": "^1.5.3",
     "fs-extra": "^7.0.1",
-    "handlebars": "^4.7.6",
     "happn-logger": "^1.1.1",
     "happn-nedb": "^1.9.1",
     "happn-password-hash-and-salt": "^1.2.0",
