@@ -253,7 +253,7 @@ describe(test.testName(__filename, 3), function() {
     });
   });
 
-  it.only('does a whole bunch of edits to the same group in parallel, we then check all the correct permissions exist in the group', function(done) {
+  it('does a whole bunch of edits to the same group in parallel, we then check all the correct permissions exist in the group', function(done) {
     var permissionCount = 1000;
 
     this.timeout(permissionCount * 20);
