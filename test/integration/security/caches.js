@@ -31,10 +31,6 @@ describe(testHelper.testName(__filename, 3), function() {
                 max: 6,
                 maxAge: 0
               },
-              __cache_compiled_permissions_templates: {
-                max: 3,
-                maxAge: 0
-              },
               __cache_groups: {
                 //groups cache
                 max: 5,
@@ -68,10 +64,6 @@ describe(testHelper.testName(__filename, 3), function() {
         expect(
           serviceInstance.services.security.checkpoint.__cache_checkpoint_permissionset.__cache.max
         ).to.be(6);
-        expect(
-          serviceInstance.services.security.checkpoint.__cache_compiled_permissions_templates
-            .__cache.max
-        ).to.be(3);
 
         serviceInstance.services.session
           .localClient({
@@ -312,10 +304,6 @@ describe(testHelper.testName(__filename, 3), function() {
         expect(
           serviceInstance.services.security.groups.permissionManager.cache.__cache.values().length
         ).to.be(5);
-        expect(
-          serviceInstance.services.security.checkpoint.__cache_compiled_permissions_templates.__cache.values()
-            .length
-        ).to.be(3);
 
         done();
       }
