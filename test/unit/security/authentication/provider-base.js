@@ -3,6 +3,7 @@ describe(
     .create()
     .testName(__filename, 3),
   function() {
+    this.timeout(10e3);
     const async = require('async');
     const expect = require('expect.js');
     const Logger = require('happn-logger');
