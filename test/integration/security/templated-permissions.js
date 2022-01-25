@@ -249,7 +249,7 @@ describe(test.testName(__filename), function() {
             test
               .expect(warnings[0])
               .to.be(
-                'illegal promotion of permissions via permissions template, permissionPath: /forbidden/{{user.custom_data.custom_field_forbidden}}, substitution key: user.custom_data.custom_field_forbidden, value: *'
+                'failed creating permission set: illegal promotion of permissions via permissions template, permissionPath: /forbidden/{{user.custom_data.custom_field_forbidden}}, substitution key: user.custom_data.custom_field_forbidden, value: *'
               );
             done();
           });
