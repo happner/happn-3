@@ -940,4 +940,8 @@
 -----------------
   - SMC-4550: Fix -correctly calling securityDirectoryChanged on permission removal and group/permission table unlinking
 
+12.1.5 2022-01-25
+-----------------
+  - SMC-4550: Fixed array templated permission substitution
+
 
