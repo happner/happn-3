@@ -249,7 +249,7 @@ describe(test.testName(__filename), function() {
             test
               .expect(warnings[0])
               .to.be(
-                'illegal promotion of permissions via permissions template, permissionPath/forbidden/{{user.custom_data.custom_field_forbidden}}, replaced path: /forbidden/*'
+                'illegal promotion of permissions via permissions template, permissionPath: /forbidden/{{user.custom_data.custom_field_forbidden}}, substitution key: user.custom_data.custom_field_forbidden, value: *'
               );
             done();
           });
@@ -435,7 +435,7 @@ describe(test.testName(__filename), function() {
       );
     });
 
-    it.only('can work with array values in session fields', async () => {
+    it('can work with array values in session fields', async () => {
       this.timeout(10000);
       const customArrayPath1 = '/custom-array/array_item_1';
       const customArrayPath2 = '/custom-array/array_item_2';
@@ -469,7 +469,7 @@ describe(test.testName(__filename), function() {
       //should fail because path 2 was removed from custom data
       test
         .expect(
-          await test.trySomething(async () => {
+          await test.tryAsyncMethod(async () => {
             await testClient.set(customArrayPath2, {
               test: 'data2'
             });
@@ -486,13 +486,13 @@ describe(test.testName(__filename), function() {
       await serviceInstance.services.security.groups.removePermission(
         testGroup.name,
         '/custom-array/{{user.custom_data.custom_field_array}}',
-        'set'
+        '*'
       );
 
       //should fail because the whole permission was removed
       test
         .expect(
-          await test.trySomething(async () => {
+          await test.tryAsyncMethod(async () => {
             await testClient.set(customArrayPath1, {
               test: 'data1'
             });
@@ -502,7 +502,7 @@ describe(test.testName(__filename), function() {
 
       test
         .expect(
-          await test.trySomething(async () => {
+          await test.tryAsyncMethod(async () => {
             await testClient.set(customArrayPath3, {
               test: 'data1'
             });
