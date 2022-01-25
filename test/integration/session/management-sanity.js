@@ -7,7 +7,7 @@ describe(testHelper.testName(__filename, 3), function() {
   const happn_client = happn.client;
   const async = require('async');
 
-  this.timeout(20000);
+  this.timeout(60e3);
 
   var serviceInstance;
   var clientInstance;

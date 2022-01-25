@@ -253,10 +253,10 @@ describe(test.testName(__filename, 3), function() {
     });
   });
 
-  it('does a whole bunch of edits to the same group in parallel, we then check all the correct permissions exist in the group', function(done) {
+  it.only('does a whole bunch of edits to the same group in parallel, we then check all the correct permissions exist in the group', function(done) {
     var permissionCount = 1000;
 
-    this.timeout(permissionCount * 15);
+    this.timeout(permissionCount * 20);
 
     mockServices(function(e, happn) {
       if (e) return done(e);
