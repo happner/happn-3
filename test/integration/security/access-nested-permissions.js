@@ -1,5 +1,5 @@
 const test = require('../../__fixtures/utils/test_helper').create();
-describe(test.testName(__filename, 3), function() {
+describe.only(test.testName(__filename, 3), function() {
   const happn = require('../../../lib/index');
   let serviceInstance;
   let adminClient;
