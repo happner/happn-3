@@ -665,6 +665,18 @@ describe(test.testName(__filename, 3), function() {
     done();
   });
 
+  it('can build permissions path from regex matches - array lookups', done => {
+    let path = '/{{username}}/{{company}}/test';
+    let user = { username: ['1', '2'], company: ['3', '4', '5'] };
+    let matches = [];
+
+    let pathsArray = lookupTables.__buildPermissionPaths(user, path, matches);
+    test
+      .expect(pathsArray.sort())
+      .to.eql(['/1/3/test', '/1/4/test', '/1/5/test', '/2/3/test', '/2/4/test', '/2/5/test']);
+    done();
+  });
+
   it('tests that __authorizeLookupPermission will return early if action not included in permission', async () => {
     let path = { match: sinon.stub() };
     let permission = { actions: ['on'] };
