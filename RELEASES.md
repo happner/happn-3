@@ -947,5 +947,6 @@
 12.1.6 2022-01-26
 -----------------
   - SMC-4550: subscriptions service does not pollute request with parsed path info
+  - SMC-4550: unification of templated paths parser
 
 
