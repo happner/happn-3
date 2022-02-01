@@ -87,9 +87,7 @@ describe(
           }
         };
 
-        var prepared = instance.prepareSubscribeMessage(subscribeMessage);
-
-        instance.processSubscribe(prepared, function(e, result) {
+        instance.processSubscribe(subscribeMessage, function(e, result) {
           expect(result.response._meta.status).to.be('ok');
           expect(
             instance.getRecipients({
@@ -138,14 +136,11 @@ describe(
           }
         };
 
-        var subscribePrepared = instance.prepareSubscribeMessage(subscribeMessage);
-        var unsubscribePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
-
         instance.processSubscribe = util.promisify(instance.processSubscribe);
         instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
         instance
-          .processSubscribe(subscribePrepared)
+          .processSubscribe(subscribeMessage)
           .then(function(result) {
             expect(result.response._meta.status).to.be('ok');
             return Promise.resolve(
@@ -160,7 +155,7 @@ describe(
           })
           .then(function(getRecipientsResult) {
             expect(getRecipientsResult.length).to.be(1);
-            return instance.processUnsubscribe(unsubscribePrepared);
+            return instance.processUnsubscribe(unsubscribeMessage);
           })
           .then(function() {
             return Promise.resolve(
@@ -225,18 +220,14 @@ describe(
         };
         var referenceId = null;
 
-        var subscribeMessagePrepared = instance.prepareSubscribeMessage(subscribeMessage);
-        var subscribeMessage1Prepared = instance.prepareSubscribeMessage(subscribeMessage1);
-        var unsubscribeMessagePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
-
         instance.processSubscribe = util.promisify(instance.processSubscribe);
         instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
         instance
-          .processSubscribe(subscribeMessagePrepared)
+          .processSubscribe(subscribeMessage)
           .then(function(result) {
             expect(result.response._meta.status).to.be('ok');
-            return instance.processSubscribe(subscribeMessage1Prepared);
+            return instance.processSubscribe(subscribeMessage1);
           })
           .then(function(result) {
             referenceId = result.response.data.id;
@@ -253,8 +244,8 @@ describe(
           })
           .then(function(result) {
             expect(result.length).to.be(2);
-            unsubscribeMessagePrepared.request.options.referenceId = referenceId;
-            return instance.processUnsubscribe(unsubscribeMessagePrepared);
+            unsubscribeMessage.request.options.referenceId = referenceId;
+            return instance.processUnsubscribe(unsubscribeMessage);
           })
           .then(function() {
             return Promise.resolve(
@@ -319,19 +310,16 @@ describe(
         };
 
         var referenceId = null;
-        var subscribeMessagePrepared = instance.prepareSubscribeMessage(subscribeMessage);
-        var subscribeMessage1Prepared = instance.prepareSubscribeMessage(subscribeMessage1);
-        var unsubscribeMessagePrepared = instance.prepareSubscribeMessage(unsubscribeMessage);
 
         instance.processSubscribe = util.promisify(instance.processSubscribe);
         instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
         instance
-          .processSubscribe(subscribeMessagePrepared)
+          .processSubscribe(subscribeMessage)
           .then(function(result) {
             referenceId = result.response.data.id;
             expect(result.response._meta.status).to.be('ok');
-            return instance.processSubscribe(subscribeMessage1Prepared);
+            return instance.processSubscribe(subscribeMessage1);
           })
           .then(function(result) {
             expect(result.response._meta.status).to.be('ok');
@@ -340,8 +328,8 @@ describe(
             expect(instance.allListeners('1')[0].data.path).to.be('/test/path/*');
             expect(instance.allListeners('1')[1].subscriberKey).to.be('1');
             expect(instance.allListeners('1')[1].data.path).to.be('/test/path/1');
-            unsubscribeMessagePrepared.request.options.referenceId = referenceId;
-            return instance.processUnsubscribe(unsubscribeMessagePrepared);
+            unsubscribeMessage.request.options.referenceId = referenceId;
+            return instance.processUnsubscribe(unsubscribeMessage);
           })
           .then(function() {
             expect(instance.allListeners('1').length).to.be(1);
@@ -383,12 +371,10 @@ describe(
           }
         };
 
-        var prepared = instance.prepareSubscribeMessage(subscribeMessage);
-
         instance.processSubscribe = util.promisify(instance.processSubscribe);
         instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
-        instance.processSubscribe(prepared).then(function(result) {
+        instance.processSubscribe(subscribeMessage).then(function(result) {
           expect(result.response._meta.status).to.be('ok');
           expect(result.response.initialValues.length).to.be(2);
 
@@ -428,12 +414,10 @@ describe(
           }
         };
 
-        var prepared = instance.prepareSubscribeMessage(subscribeMessage);
-
         instance.processSubscribe = util.promisify(instance.processSubscribe);
         instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
-        instance.processSubscribe(prepared).then(function(result) {
+        instance.processSubscribe(subscribeMessage).then(function(result) {
           expect(result.response._meta.status).to.be('ok');
           expect(result.response.initialValues.length).to.be(2);
           done();
@@ -462,13 +446,11 @@ describe(
           }
         };
 
-        var prepared = instance.prepareSubscribeMessage(subscribeMessage);
-
         instance.processSubscribe = util.promisify(instance.processSubscribe);
         instance.processUnsubscribe = util.promisify(instance.processUnsubscribe);
 
         instance
-          .processSubscribe(prepared)
+          .processSubscribe(subscribeMessage)
           .then(function(result) {
             expect(result.response._meta.status).to.be('ok');
             return Promise.resolve(

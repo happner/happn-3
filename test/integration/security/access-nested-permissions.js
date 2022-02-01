@@ -238,24 +238,15 @@ describe(test.testName(__filename, 3), function() {
       function handler(data) {
         events.push(data);
       }
-
       await testClient.on('/ALLOWED/**', handler);
-
       await adminClient.set('/ALLOWED/0', { test: 0 });
-
       await test.delay(2000);
-
       test.expect(events[0].test).to.be(0);
-
       await testClient.on('/TEST/**', handler);
-
       await adminClient.set('/TEST/1/2/3', { test: 1 });
-
       await adminClient.set('/TEST/2/3/4/5/6', { test: 2 });
-
       await adminClient.set('/TEST/4/5/6', { test: 'not-subscribed' });
       await test.delay(4000);
-
       test.expect(events[1].test).to.be(1);
       test.expect(events[2].test).to.be(2);
       test.expect(events.length).to.be(3);

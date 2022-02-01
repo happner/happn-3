@@ -1,39 +1,17 @@
 const test = require('../../__fixtures/utils/test_helper').create();
 describe(test.testName(__filename), function() {
-  it('can getTags', () => {
-    const permissionsTemplate = require('../../../lib/services/security/permissions-template').create();
-    test
-      .expect(
-        permissionsTemplate.getTags('/{{test1}}/{{test2}}', {
-          test1: ['test1'],
-          test2: ['test2']
-        })
-      )
-      .to.eql({
-        test1: ['test1'],
-        test2: ['test2']
-      });
-
-    test
-      .expect(
-        permissionsTemplate.getTags('{{test1}}/{{test2}}', {
-          test1: ['test1', 'test3'],
-          test2: ['test2']
-        })
-      )
-      .to.eql({
-        test1: ['test1', 'test3'],
-        test2: ['test2']
-      });
-  });
-
+  const UtilsService = require('../../../lib/services/utils/service');
   it('calculates permissions based on the contents of an object: no and single substition', () => {
-    const permissionsTemplate = require('../../../lib/services/security/permissions-template').create();
+    const permissionsTemplate = require('../../../lib/services/security/permissions-template').create(
+      new UtilsService()
+    );
     test
       .expect(permissionsTemplate.parsePermissions('/existent/no-substitution', {}))
       .to.eql(['/existent/no-substitution']);
     test
-      .expect(permissionsTemplate.parsePermissions('/non-existentsubstitution/{{test}}', {}))
+      .expect(
+        permissionsTemplate.parsePermissions('/non-existentsubstitution/{{test}}/{{test1}}', {})
+      )
       .to.eql([]);
     test
       .expect(
@@ -56,10 +34,64 @@ describe(test.testName(__filename), function() {
         '/matrix-substitution/found2/found3',
         '/matrix-substitution/found2/found4'
       ]);
+
+    test
+      .expect(
+        permissionsTemplate.parsePermissions(
+          '/matrix-substitution/{{test}}/{{test1}}/{{test2}}/{{test3}}/{{test4}}',
+          {
+            test: [1, 2, 3],
+            test1: [4],
+            test2: [5, 6],
+            test3: [7, 8],
+            test4: [9, 10, 11]
+          }
+        )
+      )
+      .to.eql([
+        '/matrix-substitution/1/4/5/7/9',
+        '/matrix-substitution/1/4/5/7/10',
+        '/matrix-substitution/1/4/5/7/11',
+        '/matrix-substitution/1/4/5/8/9',
+        '/matrix-substitution/1/4/5/8/10',
+        '/matrix-substitution/1/4/5/8/11',
+        '/matrix-substitution/1/4/6/7/9',
+        '/matrix-substitution/1/4/6/7/10',
+        '/matrix-substitution/1/4/6/7/11',
+        '/matrix-substitution/1/4/6/8/9',
+        '/matrix-substitution/1/4/6/8/10',
+        '/matrix-substitution/1/4/6/8/11',
+        '/matrix-substitution/2/4/5/7/9',
+        '/matrix-substitution/2/4/5/7/10',
+        '/matrix-substitution/2/4/5/7/11',
+        '/matrix-substitution/2/4/5/8/9',
+        '/matrix-substitution/2/4/5/8/10',
+        '/matrix-substitution/2/4/5/8/11',
+        '/matrix-substitution/2/4/6/7/9',
+        '/matrix-substitution/2/4/6/7/10',
+        '/matrix-substitution/2/4/6/7/11',
+        '/matrix-substitution/2/4/6/8/9',
+        '/matrix-substitution/2/4/6/8/10',
+        '/matrix-substitution/2/4/6/8/11',
+        '/matrix-substitution/3/4/5/7/9',
+        '/matrix-substitution/3/4/5/7/10',
+        '/matrix-substitution/3/4/5/7/11',
+        '/matrix-substitution/3/4/5/8/9',
+        '/matrix-substitution/3/4/5/8/10',
+        '/matrix-substitution/3/4/5/8/11',
+        '/matrix-substitution/3/4/6/7/9',
+        '/matrix-substitution/3/4/6/7/10',
+        '/matrix-substitution/3/4/6/7/11',
+        '/matrix-substitution/3/4/6/8/9',
+        '/matrix-substitution/3/4/6/8/10',
+        '/matrix-substitution/3/4/6/8/11'
+      ]);
   });
 
   it('calculates permissions based on the contents of an object: mixed substitution', () => {
-    const permissionsTemplate = require('../../../lib/services/security/permissions-template').create();
+    const permissionsTemplate = require('../../../lib/services/security/permissions-template').create(
+      new UtilsService()
+    );
     test
       .expect(
         permissionsTemplate.parsePermissions('/multiple-substitution/{{test}}', {
@@ -94,7 +126,9 @@ describe(test.testName(__filename), function() {
       ]);
   });
   it('calculates permissions based on the contents of an object: bad substitution', () => {
-    const permissionsTemplate = require('../../../lib/services/security/permissions-template').create();
+    const permissionsTemplate = require('../../../lib/services/security/permissions-template').create(
+      new UtilsService()
+    );
     test
       .expect(
         permissionsTemplate.parsePermissions('/multiple-substitution/{{test', {

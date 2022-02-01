@@ -665,6 +665,38 @@ describe(test.testName(__filename, 3), function() {
     done();
   });
 
+  it('can build permissions path from regex matches - array lookups', done => {
+    let path = '/{{username}}/{{company}}/test';
+    let user = { username: ['1', '2'], company: ['3', '4', '5'] };
+    let matches = [];
+
+    let pathsArray = lookupTables.__buildPermissionPaths(user, path, matches);
+    test
+      .expect(pathsArray.sort())
+      .to.eql(['/1/3/test', '/1/4/test', '/1/5/test', '/2/3/test', '/2/4/test', '/2/5/test']);
+    done();
+  });
+
+  it('can fail to build lookup paths * in context', () => {
+    let thisLookupTables = LookupTables.create();
+    thisLookupTables.initialize(mockHappn);
+    let path = '/{{username}}/{{company}}/test';
+    let user = { username: ['1', '2'], company: ['*', '4', '5'] };
+    let user1 = { username: '*', company: ['1', '4', '5'] };
+    let matches = [];
+
+    test
+      .expect(() => thisLookupTables.__buildPermissionPaths(user, path, matches))
+      .to.throwError(
+        'illegal promotion of permissions via permissions template, permissionPath: /{{username}}/{{company}}/test, substitution key: company, value: *'
+      );
+    test
+      .expect(() => thisLookupTables.__buildPermissionPaths(user1, path, matches))
+      .to.throwError(
+        'illegal promotion of permissions via permissions template, permissionPath: /{{username}}/{{company}}/test, substitution key: company, value: *'
+      );
+  });
+
   it('tests that __authorizeLookupPermission will return early if action not included in permission', async () => {
     let path = { match: sinon.stub() };
     let permission = { actions: ['on'] };
