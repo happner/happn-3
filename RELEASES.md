@@ -949,4 +949,9 @@
   - SMC-4550: subscriptions service does not pollute request with parsed path info
   - SMC-4550: unification of templated paths parser
 
+12.1.7 2022-02-03
+-----------------
+  - SMC-5125: Permissions-sets now accurately reflect templated paths
+
+
 
