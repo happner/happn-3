@@ -75,31 +75,6 @@ describe(
 
     before('should initialize the service', initializeMockServices);
 
-    it('should have a default keypair in memory', function(callback) {
-      expect(testServices.security._keyPair !== undefined).to.be(true);
-      callback();
-    });
-
-    it('the default keypair in memory must exist in the system security leaf', function(callback) {
-      testServices.data.get('/_SYSTEM/_SECURITY/_SETTINGS/KEYPAIR', {}, function(e, response) {
-        if (e) return callback(e);
-
-        if (!response) return callback(new Error('keypair doesnt exist in database'));
-
-        expect(testServices.crypto.serializeKeyPair(testServices.security._keyPair)).to.be(
-          response.data.value
-        );
-        expect(
-          testServices.crypto.deserializeKeyPair(response.data.value).privateKey.toString()
-        ).to.be(testServices.security._keyPair.privateKey.toString());
-        expect(
-          testServices.crypto.deserializeKeyPair(response.data.value).publicKey.toString()
-        ).to.be(testServices.security._keyPair.publicKey.toString());
-
-        callback();
-      });
-    });
-
     it('should have a default admin group', function(callback) {
       testServices.data.get('/_SYSTEM/_SECURITY/_GROUP/_ADMIN', {}, function(e, response) {
         if (e) return callback(e);
