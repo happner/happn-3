@@ -161,37 +161,6 @@ describe(
           });
         });
       });
-
-      it('should stop then start and verify the server keypair', function(callback) {
-        this.timeout(default_timeout);
-        initService(tmpFile, 'b2_eventemitter_security_stoppingstarting', function(e) {
-          if (e) return callback(e);
-
-          var currentPersistedServicePublicKey = currentService.services.security._keyPair.publicKey.toString();
-
-          expect(currentPersistedServicePublicKey).to.not.be(null);
-          expect(currentPersistedServicePublicKey).to.not.be(undefined);
-          expect(currentPersistedServicePublicKey).to.not.be('');
-
-          initService(null, null, function() {
-            var currentUnPersistedServicePublicKey = currentService.services.security._keyPair.publicKey.toString();
-            expect(currentUnPersistedServicePublicKey).to.not.be(currentPersistedServicePublicKey);
-            expect(currentUnPersistedServicePublicKey).to.not.be(null);
-            expect(currentUnPersistedServicePublicKey).to.not.be(undefined);
-            expect(currentUnPersistedServicePublicKey).to.not.be('');
-
-            initService(tmpFile, null, function(e) {
-              if (e) return callback(e);
-
-              var currentPersistedRestartedServicePublicKey = currentService.services.security._keyPair.publicKey.toString();
-              expect(currentPersistedRestartedServicePublicKey).to.be(
-                currentPersistedServicePublicKey
-              );
-              callback();
-            });
-          });
-        });
-      });
     });
   }
 );

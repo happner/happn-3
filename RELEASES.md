@@ -953,5 +953,9 @@
 -----------------
   - SMC-5125: Permissions-sets now accurately reflect templated paths
 
+12.1.8 2022-02-14
+-----------------
+  - SMC-5146: startup fail due to needless KEYPAIR ensure in security (only used by payload encryption - no longer supported)
+
 
 
