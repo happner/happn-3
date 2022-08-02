@@ -160,6 +160,9 @@ describe(
       await delay(1000);
 
       expect(clientsSessionEvents).to.eql({
+        'session-ended-1': {
+          reason: 'token-revoked'
+        },
         'session-ended-2': {
           reason: 'token-revoked'
         },
@@ -225,6 +228,9 @@ describe(
       await delay(1000);
 
       expect(clientsSessionEvents).to.eql({
+        'session-ended-1': {
+          reason: 'token-revoked'
+        },
         'session-ended-2': {
           reason: 'token-revoked'
         },
@@ -290,6 +296,7 @@ describe(
       await delay(1000);
 
       expect(clientsSessionEvents).to.eql({
+        'session-ended-4': { reason: 'token-revoked' },
         'session-ended-1': {
           reason: 'token-revoked'
         },
