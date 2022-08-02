@@ -17,7 +17,7 @@ Happn.service.create(config)
     console.log("READY");
     setInterval(() => {
       console.log("OPEN_SOCKETS" + Object.keys(server.services.session.__sessions).length);
-    }, 1000);
+    }, 5e2); //emit open sockets every half second
   })
   .catch(function (e) {
     console.warn('service failed to start:::', e.toString());

@@ -47,7 +47,7 @@ describe(
     //   log();
     // })
 
-    it('should connect, server is restarted client reconnects but fails to authenticate, we keep trying to reconnect', async () => {
+    it('should connect, server is restarted client reconnects but fails to connect, we keep trying to reconnect', async () => {
       var service = await createService();
       var client = await createClient();
 
@@ -70,11 +70,11 @@ describe(
 
       await stopService(service);
       //eslint-disable-next-line no-console
-      console.log('stopped service, setting up an error in client authenticate...');
+      console.log('stopped service, setting up an error in client connect...');
 
-      client.__oldAuthenticate = client.authenticate.bind(client);
+      client.__oldConnect = client.connect.bind(client);
 
-      client.authenticate = function(callback) {
+      client.connect = function(callback) {
         callback(new Error('test failure'));
       }.bind(client);
 
@@ -113,9 +113,9 @@ describe(
 
       await stopService(service);
       //eslint-disable-next-line no-console
-      console.log('stopped service, setting up an error in client authenticate...');
+      console.log('stopped service, setting up an error in client connect...');
 
-      client.__oldAuthenticate = client.authenticate.bind(client);
+      client.__oldConnect = client.connect.bind(client);
 
       client.__reattachListeners = function(callback) {
         callback(new Error('test failure'));

@@ -957,5 +957,10 @@
 -----------------
   - SMC-5146: startup fail due to needless KEYPAIR ensure in security (only used by payload encryption - no longer supported)
 
+12.1.9 2022-08-02
+-----------------
+  - TEN-126: reconnect on socket error
+
+
 
 

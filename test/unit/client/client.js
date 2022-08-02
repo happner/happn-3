@@ -1,6 +1,6 @@
 const test = require('../../__fixtures/utils/test_helper').create();
 describe(test.testName(__filename, 3), function() {
-  this.timeout(15000);
+  this.timeout(20e3);
   const HappnClient = require('../../../lib/client');
   const Constants = require('../../../lib/constants');
   function mockHappnClient(
@@ -78,8 +78,26 @@ describe(test.testName(__filename, 3), function() {
     done();
   });
 
+  it('tests the __performDataRequest function set null options, disconnected state', function(done) {
+    var happnClient = mockHappnClient(null, Constants.CLIENT_STATE.DISCONNECTED);
+
+    happnClient.__performDataRequest(
+      '/test/path',
+      'set',
+      {
+        test: 'data'
+      },
+      null,
+      function(e) {
+        test.expect(e.toString()).to.be('Error: client is disconnected');
+        test.expect(e.detail).to.be('action: set, path: /test/path');
+        done();
+      }
+    );
+  });
+
   it('tests the __performDataRequest function set null options, inactive state', function(done) {
-    var happnClient = mockHappnClient(null, Constants.CLIENT_STATE.ERROR);
+    var happnClient = mockHappnClient(null, Constants.CLIENT_STATE.RECONNECT_ACTIVE);
 
     happnClient.__performDataRequest(
       '/test/path',
@@ -158,7 +176,7 @@ describe(test.testName(__filename, 3), function() {
         test: 'data'
       });
     } catch (e) {
-      test.expect(e.toString()).to.be('Error: client not active');
+      test.expect(e.toString()).to.be('Error: client in an error state');
       test.expect(e.detail).to.be('action: set, path: /test/path');
       done();
     }
@@ -511,8 +529,6 @@ describe(test.testName(__filename, 3), function() {
   });
 
   it('tests the __connectionCleanup function, socket present', function(done) {
-    this.timeout(5000);
-
     const socket = {
       end: () => {
         return socket;
@@ -532,21 +548,18 @@ describe(test.testName(__filename, 3), function() {
   });
 
   it('tests __getCookieInstance', done => {
-    this.timeout(5000);
     let document = { cookie: encodeURIComponent('cookieName=test;with;cookie') };
     test.expect(HappnClient.__getCookieInstance('cookieName', document)).to.be('test');
     done();
   });
 
   it('tests __getCookieInstance, no name match', done => {
-    this.timeout(5000);
     let document = { cookie: encodeURIComponent('notTheName=test;with;cookie') };
     test.expect(HappnClient.__getCookieInstance('cookieName', document)).to.be('');
     done();
   });
 
   it('tests the __writeCookie function ', function() {
-    this.timeout(5000);
     const happnClient = mockHappnClient(null, null, null, null, null, null, function() {}, null);
     happnClient.options = happnClient.options || {};
     happnClient.options.protocol = 'https';
@@ -579,7 +592,6 @@ describe(test.testName(__filename, 3), function() {
   });
 
   it('tests the cookie lifecycle events, write and delete', async () => {
-    this.timeout(5000);
     const eventsHappnToken = [];
     const eventsNotFound = [];
     const eventsSpecified = [];
@@ -656,7 +668,6 @@ describe(test.testName(__filename, 3), function() {
   });
 
   it('tests getCookieEventDefaults', async () => {
-    this.timeout(5000);
     test.expect(HappnClient.getCookieEventDefaults(null, null)).to.eql({
       cookieName: 'happn_token',
       interval: 1000
