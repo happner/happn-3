@@ -681,4 +681,23 @@ describe(test.testName(__filename, 3), function() {
       interval: 650
     });
   });
+
+  it('tests loginWithCookie', async () => {
+    HappnClient.__getCookieInstance = () => {
+      return 'instance';
+    };
+    const happnClient = mockHappnClient(null, null, null, null, null, null, function() {}, null);
+    happnClient.options = happnClient.options || {};
+    happnClient.options.protocol = 'https';
+    this.timeout(5000);
+    let error;
+    function callback(e) {
+      error = e;
+    }
+    test.expect(happnClient.loginWithCookie({}, {}, false, callback)).to.be(false);
+    test.expect(error.message).to.be('Logging in with cookie only valid in browser');
+    const loginParameters = {};
+    happnClient.loginWithCookie(loginParameters, {}, true, callback);
+    test.expect(loginParameters).to.eql({ token: 'instance', useCookie: true });
+  });
 });
