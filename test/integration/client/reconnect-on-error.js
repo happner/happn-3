@@ -86,6 +86,15 @@ describe(test.testName(__filename, 3), function() {
     test.expect(webSocketsClient.__reconnectTimeout).to.be(null); //this should have been cleared and negated
   });
 
+  it('connects and disconnects', async () => {
+    await connectClientPromise();
+    await webSocketsClient.disconnect();
+    await connectClientPromise();
+    await killAndRestartServerAfter(3);
+    await connectClientPromise();
+    await webSocketsClient.disconnect();
+  });
+
   async function connectClientPromise(options) {
     return new Promise((resolve, reject) => {
       connectClient('happn', options, e => {
