@@ -124,6 +124,7 @@ describe(test.testName(__filename, 3), function() {
     happnClient.__prepareInstanceOptions({});
     test.expect(happnClient.options).to.eql({
       retryOnSocketErrorMaxInterval: 120e3,
+      reconnectWait: 1000,
       callTimeout: 60000,
       defaultVariableDepth: 5,
       host: '127.0.0.1',
@@ -159,6 +160,7 @@ describe(test.testName(__filename, 3), function() {
     });
     test.expect(happnClient.options).to.eql({
       retryOnSocketErrorMaxInterval: 120e3,
+      reconnectWait: 1000,
       keyPair: {
         publicKey: 123,
         privateKey: 456
