@@ -961,6 +961,11 @@
 -----------------
   - TEN-126: reconnect on socket error
 
+12.1.10 2022-08-03
+-----------------
+  - TEN-126: correct cleanup of timeouts on disconnection
+
+
 
 
 
