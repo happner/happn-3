@@ -80,7 +80,7 @@ describe(test.testName(__filename, 3), function() {
       reconnectWait: 5e3 // we will now wait 5 seconds before trying to re-establish a connection
     });
     webSocketsClient.socket.emit('error', new Error('test error'));
-    await test.delay(1e3); // ensure the client is enetering a reconnection loop
+    await test.delay(1e3); // ensure the client is entering a reconnection loop
     test.expect(webSocketsClient.__reconnectTimeout).to.not.eql(null);
     await webSocketsClient.disconnect(); // disconnect while the server is down
     test.expect(webSocketsClient.__reconnectTimeout).to.be(null); //this should have been cleared and negated
