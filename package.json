@@ -92,7 +92,7 @@
     "happner-serial-mocha": "^1.5.2",
     "http-proxy": "^1.18.0",
     "jsprim": "^2.0.0",
-    "karma": "^4.0.0",
+    "karma": "^6.4.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.0.0",
     "karma-coverage": "^2.0.2",
